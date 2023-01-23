@@ -18,7 +18,21 @@ struct Simulation{T<:Real}
     drivingfield::DrivingField{T}
     numericalparams::NumericalParameters{T}
     dimensions::UInt8
-    Simulation{T}(h,n,p,d) where {T<:Real} = new(h,n,p,d)
+    function Simulation{T}(h,df,p,d) where {T<:Real}
+        if p isa NumericalParams1d{T} && d!=1
+            printstyled("warning: ",color = :red)
+            print("given dimensions ($d) not matching $p")
+            println("; setting dimensions to 1")
+            new(h,df,p,UInt8(1))
+        elseif p isa NumericalParams2d{T} && d!=2
+            printstyled("warning: ",color = :red)
+            print("given dimensions ($d) not matching $p")
+            println("; setting dimensions to 1")
+            new(h,df,p,UInt8(2))
+        else
+            new(h,df,p,d)
+        end
+    end
 end
 Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},d::UInt8) where {T<:Real} = Simulation{T}(h,df,p,d)
 Simulation(h::Hamiltonian{Real},df::DrivingField{Real},p::NumericalParameters{Real},d::UInt8)  = Simulation(promote(h,df,p)...,d)
@@ -57,17 +71,17 @@ function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param:
     if comp isa Hamiltonian{T}
         for i in 1:length(sweeplist)
             new_h           = set(comp,PropertyLens(param),range[i])
-            sweeplist[i]    = Simulation(new_h,sim.drivingfield,sim.numericalparams)
+            sweeplist[i]    = Simulation(new_h,sim.drivingfield,sim.numericalparams,sim.dimensions)
         end
     elseif comp isa DrivingField{T}
         for i in 1:length(sweeplist)
             new_df          = set(comp,PropertyLens(param),range[i])
-            sweeplist[i]    = Simulation(sim.hamiltonian,new_df,sim.numericalparams)
+            sweeplist[i]    = Simulation(sim.hamiltonian,new_df,sim.numericalparams,sim.dimensions)
         end
     elseif comp isa NumericalParameters{T}
         for i in 1:length(sweeplist)
             new_p           = set(comp,PropertyLens(param),range[i])
-            sweeplist[i]    = Simulation(sim.hamiltonian,sim.drivingfield,new_p)
+            sweeplist[i]    = Simulation(sim.hamiltonian,sim.drivingfield,new_p,sim.dimensions)
         end
     else
         return nothing

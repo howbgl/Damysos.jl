@@ -1,7 +1,7 @@
 module Damysos
 
 
-using Unitful,Accessors,Revise
+using Unitful,Accessors
 export Hamiltonian,GappedDirac,getϵ,getdx_cc,getdx_cv,getdx_vc,getdx_vv,getdipoles_x,getvels_x
 export getvx_cc,getvx_cv,getvx_vc,getvx_vv
 export DrivingField,GaussianPulse,get_efield,get_vecpot
@@ -18,16 +18,19 @@ struct Simulation{T<:Real}
     drivingfield::DrivingField{T}
     numericalparams::NumericalParameters{T}
     dimensions::UInt8
+    Simulation{T}(h,n,p,d) where {T<:Real} = new(h,n,p,d)
 end
 Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},d::UInt8) where {T<:Real} = Simulation{T}(h,df,p,d)
 Simulation(h::Hamiltonian{Real},df::DrivingField{Real},p::NumericalParameters{Real},d::UInt8)  = Simulation(promote(h,df,p)...,d)
 Simulation(h::Hamiltonian,df::DrivingField,p::NumericalParameters,d::Integer) = Simulation(h,df,p,UInt8(d))
 function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
-    print(io,"Simulation{$T} with components{$T}:\n")
+    print(io,"Simulation{$T} ($(s.dimensions)d) with components{$T}:\n")
     for n in fieldnames(Simulation{T})
-        print("  ")
-        Base.show(io,MIME"text/plain"(),getfield(s,n))
-        print('\n')
+        if !(n == :dimensions)
+            print("  ")
+            Base.show(io,MIME"text/plain"(),getfield(s,n))
+            print('\n')
+        end
     end
 end
 
@@ -80,6 +83,7 @@ end
 struct GappedDirac{T<:Real} <: Hamiltonian{T}
     Δ::T
     t2::T
+    GappedDirac{T}(Δ,t2) where {T<:Real} = new(Δ,t2) 
 end
 GappedDirac(Δ::T,t2::T) where {T<:Real} = GappedDirac{T}(Δ,t2)
 GappedDirac(Δ::Real,t2::Real)           = GappedDirac(promote(Δ,t2)...)
@@ -103,6 +107,7 @@ struct GaussianPulse{T<:Real} <: DrivingField{T}
     σ::T
     ω::T
     eE::T
+    GaussianPulse{T}(σ,ω,eE) where {T<:Real} = new(σ,ω,eE)
 end
 GaussianPulse(σ::T,ω::T,eE::T) where {T<:Real} = GaussianPulse{T}(σ,ω,eE)
 GaussianPulse(σ::Real,ω::Real,eE::Real)        = GaussianPulse(promote(σ,ω,eE)...)
@@ -124,22 +129,30 @@ struct NumericalParams2d{T<:Real} <: NumericalParameters{T}
     kymax::T
     dt::T
     t0::T
+    NumericalParams2d{T}(dkx,dky,kxmax,kymax,dt,t0) where {T<:Real} = new(dkx,dky,kxmax,kymax,dt,t0) 
 end
 NumericalParams2d(dkx::T,dky::T,kxmax::T,kymax::T,dt::T,t0::T) where {T<:Real}    = NumericalParams2d{T}(dkx,dky,kxmax,kymax,dt,t0)
 NumericalParams2d(dkx::Real,dky::Real,kxmax::Real,kymax::Real,dt::Real,t0::Real)  = NumericalParams2d(promote(dkx,dky,kxmax,kymax,dt,t0)...)
 
-getparams(p::NumericalParams2d{T}) where {T<:Real} = (dkx=p.dkx,dky=p.dky,kxmax=p.kxmax,kymax=p.kymax,dt=p.dt,t0=p.t0,kxsamples=LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx))),kysamples=LinRange(-p.kymax,p.kymax,2*Int(cld(p.kymax,p.dky))))
+getparams(p::NumericalParams2d{T}) where {T<:Real} = (dkx=p.dkx,dky=p.dky,kxmax=p.kxmax,kymax=p.kymax,dt=p.dt,t0=p.t0,
+nkx=2*Int(cld(p.kxmax,p.dkx)),nky=2*Int(cld(p.kymax,p.dky)),nt=2*Int(cld(abs(p.t0),p.dt)),
+tsamples=LinRange(-abs(p.t0),abs(p.t0),2*Int(cld(abs(p.t0),p.dt))),
+kxsamples=LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx))),kysamples=LinRange(-p.kymax,p.kymax,2*Int(cld(p.kymax,p.dky))))
 
 struct NumericalParams1d{T<:Real} <: NumericalParameters{T}
     dkx::T
     kxmax::T
     dt::T
     t0::T
+    NumericalParams1d{T}(dkx,kxmax,dt,t0) where{T<:Real} = new(dkx,kxmax,dt,t0)
 end
 NumericalParams1d(dkx::T,kxmax::T,dt::T,t0::T) where {T<:Real} = NumericalParams1d{T}(dkx,kxmax,dt,t0)
 NumericalParams1d(dkx::Real,kxmax::Real,dt::Real,t0::Real)     = NumericalParams1d(promote(dkx,kxmax,dt,t0)...)
 
-getparams(p::NumericalParams1d{T}) where {T<:Real} = (dkx=p.dkx,kxmax=p.kxmax,dt=p.dt,t0=p.t0,kxsamples=kxsamples=LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx))))
+getparams(p::NumericalParams1d{T}) where {T<:Real} = (dkx=p.dkx,kxmax=p.kxmax,dt=p.dt,t0=p.t0,
+nkx=2*Int(cld(p.kxmax,p.dkx)),nt=2*Int(cld(abs(p.t0),p.dt)),
+tsamples=LinRange(-abs(p.t0),abs(p.t0),2*Int(cld(abs(p.t0),p.dt))),
+kxsamples=LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx))))
 
 
 end

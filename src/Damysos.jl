@@ -8,7 +8,8 @@ export getvx_cc,getvx_cv,getvx_vc,getvx_vv
 export DrivingField,GaussianPulse,get_efield,get_vecpot
 export NumericalParameters,NumericalParams2d,NumericalParams1d
 export Simulation,Ensemble,getparams,parametersweep
-export Observable,Velocity,Occupation,getnames_obs
+export Observable,Velocity,Occupation,Timesteps,getnames_obs
+export UnitScaling,semiclassical_interband_range
 export run_simulation,run_simulation1d,run_simulation2d
 
 abstract type SimulationComponent{T} end
@@ -17,29 +18,35 @@ abstract type DrivingField{T}           <: SimulationComponent{T} end
 abstract type NumericalParameters{T}    <: SimulationComponent{T} end
 abstract type Observable{T}             <: SimulationComponent{T} end
 
+struct UnitScaling{T<:Real}
+    timescale::Unitful.Time{T}
+    lengthscale::Unitful.Length{T}
+end
+
 struct Simulation{T<:Real}
     hamiltonian::Hamiltonian{T}
     drivingfield::DrivingField{T}
     numericalparams::NumericalParameters{T}
     observables::Vector{Observable{T}}
+    unitscaling::UnitScaling{T}
     dimensions::UInt8
-    function Simulation{T}(h,df,p,obs,d) where {T<:Real}
+    function Simulation{T}(h,df,p,obs,us,d) where {T<:Real}
         if p isa NumericalParams1d{T} && d!=1
             printstyled("warning: ",color = :red)
             print("given dimensions ($d) not matching $p")
             println("; setting dimensions to 1")
-            new(h,df,p,obs,UInt8(1))
+            new(h,df,p,obs,us,UInt8(1))
         elseif p isa NumericalParams2d{T} && d!=2
             printstyled("warning: ",color = :red)
             print("given dimensions ($d) not matching $p")
             println("; setting dimensions to 1")
-            new(h,df,p,obs,UInt8(2))
+            new(h,df,p,obs,us,UInt8(2))
         else
-            new(h,df,p,obs,d)
+            new(h,df,p,obs,us,d)
         end
     end
 end
-Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},obs::Vector{O} where {O<:Observable{T}},d::Integer) where {T<:Real} = Simulation{T}(h,df,p,obs,UInt8(abs(d)))
+Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer) where {T<:Real} = Simulation{T}(h,df,p,obs,us,UInt8(abs(d)))
 function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
     print(io,"Simulation{$T} ($(s.dimensions)d) with components{$T}:\n")
     for n in fieldnames(Simulation{T})
@@ -66,8 +73,8 @@ struct Ensemble{T<:Real}
     plotpath::String
 end
 Ensemble(sl::Vector{Simulation{T}},name::String) where {T<:Real} = Ensemble(sl,name,"/home/how09898/phd/data/hhgjl/","/home/how09898/phd/plots/hhgjl/")
-Ensemble(sl::Vector{Simulation{T}},name) where {T<:Real}  = Ensemble(sl,String(name)) 
-Ensemble(sl::Vector{Simulation{T}}) where {T<:Real}  = Ensemble(sl,"default") 
+Ensemble(sl::Vector{Simulation{T}},name) where {T<:Real}         = Ensemble(sl,String(name)) 
+Ensemble(sl::Vector{Simulation{T}}) where {T<:Real}              = Ensemble(sl,"default") 
 
 Base.size(a::Ensemble)                  = (size(a.simlist))
 Base.setindex!(a::Ensemble,v,i::Int)    = (a.simlist[i] = v)
@@ -85,22 +92,24 @@ function getshortname(ens::Ensemble{T}) where {T<:Real}
     return "Ensemble{$T}[$(length(ens.simlist))]($(ens.simlist[1].dimensions)d)" * split("_$(ens.simlist[1].hamiltonian)",'{')[1] * split("_$(ens.simlist[1].drivingfield)",'{')[1]
 end
 
+getshortname(obs::Observable{T}) where {T<:Real} = split("$obs",'{')[1]
+
 function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol, range::AbstractVector{T}) where {T<:Real}
     sweeplist    = Vector{Simulation{T}}(undef,length(range))
     if comp isa Hamiltonian{T}
         for i in 1:length(sweeplist)
             new_h           = set(comp,PropertyLens(param),range[i])
-            sweeplist[i]    = Simulation(new_h,sim.drivingfield,sim.numericalparams,sim.observables,sim.dimensions)
+            sweeplist[i]    = Simulation(new_h,sim.drivingfield,sim.numericalparams,sim.observables,sim.unitscaling,sim.dimensions)
         end
     elseif comp isa DrivingField{T}
         for i in 1:length(sweeplist)
             new_df          = set(comp,PropertyLens(param),range[i])
-            sweeplist[i]    = Simulation(sim.hamiltonian,new_df,sim.numericalparams,sim.observables,sim.dimensions)
+            sweeplist[i]    = Simulation(sim.hamiltonian,new_df,sim.numericalparams,sim.observables,sim.unitscaling,sim.dimensions)
         end
     elseif comp isa NumericalParameters{T}
         for i in 1:length(sweeplist)
             new_p           = set(comp,PropertyLens(param),range[i])
-            sweeplist[i]    = Simulation(sim.hamiltonian,sim.drivingfield,new_p,sim.observables,sim.dimensions)
+            sweeplist[i]    = Simulation(sim.hamiltonian,sim.drivingfield,new_p,sim.observables,sim.unitscaling,sim.dimensions)
         end
     else
         return nothing
@@ -120,6 +129,20 @@ struct GappedDirac{T<:Real} <: Hamiltonian{T}
 end
 GappedDirac(Δ::T,t2::T) where {T<:Real}      = GappedDirac{T}(Δ,t2)
 GappedDirac(Δ::Real,t2::Real)                = GappedDirac(promote(Δ,t2)...)
+function GappedDirac(mass::Unitful.Energy{T},fermivelocity::Unitful.Velocity{T},
+                    dephasing::Unitful.Time{T}) where{T<:Real}
+    tc = uconvert(u"fs",0.1*Unitful.ħ/mass)
+    lc = uconvert(u"nm",fermivelocity*tc)
+    us = UnitScaling(tc,lc)
+    return GappedDirac(us,mass,fermivelocity,dephasing)
+end
+function GappedDirac(us::UnitScaling{T},mass::Unitful.Energy{T},
+    fermivelocity::Unitful.Velocity{T},dephasing::Unitful.Time{T}) where{T<:Real}
+    Δ   = uconvert(Unitful.NoUnits,mass*us.timescale/Unitful.ħ)
+    t2  = uconvert(Unitful.NoUnits,dephasing/us.timescale)
+    return us,GappedDirac(Δ,t2)
+end
+
 getparams(h::GappedDirac{T}) where {T<:Real} = (Δ=h.Δ,t2=h.t2)
 
 getϵ(h::GappedDirac{T})     where {T<:Real}  = (kx,ky) -> sqrt(kx^2+ky^2+h.Δ^2)
@@ -149,6 +172,14 @@ struct GaussianPulse{T<:Real} <: DrivingField{T}
 end
 GaussianPulse(σ::T,ω::T,eE::T) where {T<:Real} = GaussianPulse{T}(σ,ω,eE)
 GaussianPulse(σ::Real,ω::Real,eE::Real)        = GaussianPulse(promote(σ,ω,eE)...)
+function GaussianPulse(us::UnitScaling{T},standard_dev::Unitful.Time{T},
+                    frequency::Unitful.Frequency{T},fieldstrength::Unitful.EField{T}) where{T<:Real}
+    σ   = uconvert(Unitful.NoUnits,standard_dev/us.timescale)
+    ω   = uconvert(Unitful.NoUnits,2π*frequency*us.timescale)
+    e   = uconvert(u"C",1u"eV"/1u"V")
+    eE  = uconvert(Unitful.NoUnits,e*us.timescale*us.lengthscale*fieldstrength/Unitful.ħ)
+    return GaussianPulse(σ,ω,eE)
+end
 
 getparams(df::GaussianPulse{T}) where {T<:Real}  = (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE)
 
@@ -188,7 +219,7 @@ NumericalParams1d(dkx::T,kxmax::T,dt::T,t0::T) where {T<:Real} = NumericalParams
 NumericalParams1d(dkx::Real,kxmax::Real,dt::Real,t0::Real)     = NumericalParams1d(promote(dkx,kxmax,dt,t0)...)
 
 getparams(p::NumericalParams1d{T}) where {T<:Real} = (dkx=p.dkx,kxmax=p.kxmax,
-nkx=2*Int(cld(p.kxmax,p.dkx)),nt=2*Int(cld(abs(p.t0),p.dt)),
+nkx=2*Int(cld(p.kxmax,p.dkx)),nt=2*Int(cld(abs(p.t0),p.dt)),dt=p.dt,
 tsamples=LinRange(-abs(p.t0),abs(p.t0),2*Int(cld(abs(p.t0),p.dt))),
 kxsamples=LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx))))
 
@@ -236,7 +267,6 @@ end
 struct Occupation{T<:Real} <: Observable{T}
     dummy::T
 end
-
 getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cb_occ", "cb_occ_k"]
 getparams(occ::Occupation{T}) where {T<:Real}    = getnames_obs(occ)
 arekresolved(occ::Occupation{T}) where {T<:Real} = [false, true]
@@ -331,7 +361,13 @@ function run_simulation1d(sim::Simulation{T},ky::T;rtol=1e-10,atol=1e-10,savedat
     obs = calc_obs(sim,sol)
 
     if savedata == true
-        Damysos.savedata(sim,obs)
+        datapath = Damysos.savedata(sim,obs)
+        println("Data saved at ",datapath)
+    end
+
+    if saveplots == true
+        plotpath = Damysos.plotdata(sim,datapath)
+        println("Plots saved at ",plotpath)
     end
 
     return obs
@@ -355,7 +391,13 @@ function run_simulation2d(sim::Simulation{T};savedata=true,saveplots=true,kwargs
     end
 
     if savedata == true
-        Damysos.savedata(sim,total_obs)
+        datapath = Damysos.savedata(sim,total_obs)
+        println("Data saved at ",datapath)
+    end
+
+    if saveplots == true
+        plotpath = Damysos.plotdata(sim,datapath)
+        println("Plots saved at ",plotpath)
     end
 
     return total_obs
@@ -399,7 +441,7 @@ function savedata(sim::Simulation{T},obs;datapath="/home/how09898/phd/data/hhgjl
             if arekres[i] == false
                 setproperty!(dat,Symbol(names[i]),obs[i])
             else
-                println("Skipping k-resolved observables for now...")
+                println("Skip saving k-resolved observables for now...")
             end
         end 
     else
@@ -414,7 +456,7 @@ function savedata(sim::Simulation{T},obs;datapath="/home/how09898/phd/data/hhgjl
         end
     end
 
-    CSV.write(datapath*filename*".csv",dat)
+    return CSV.write(datapath*filename*".csv",dat)
 end
 
 function savedata(ens::Ensemble{T},obs;datapath="/home/how09898/phd/data/hhgjl/") where {T<:Real}
@@ -432,6 +474,79 @@ function savedata(ens::Ensemble{T},obs;datapath="/home/how09898/phd/data/hhgjl/"
         println("Aborting...")
     end
 
+end
+
+function plotdata(ens::Ensemble{T},obs,datapath::String;plotpath="/home/how09898/phd/plots/hhgjl/",kwargs...) where {T<:Real}
+    ensemblename = lowercase(getshortname(ens))
+    if !isdir(plotpath*ensemblename)
+        mkpath(plotpath*ensemblename)
+    end
+
+    if length(eachindex(ens.simlist)) == length(eachindex(obs))
+        for i in eachindex(obs)
+            Damysos.plotdata(ens.simlist[i],obs[i];plotpath=plotpath*ensemblename*'/')
+        end
+    else
+        println("length(eachindex(ens.simlist)) != length(eachindex(obs)) in savedata(ens::Ensemble{T},obs,datapath=...)")
+        println("Aborting...")
+    end
+end
+
+function plotdata(sim::Simulation{T},datapath::String;plotpath="/home/how09898/phd/plots/hhgjl/default/",kwargs...) where {T<:Real}
+    p           = getparams(sim)
+    alldata     = DataFrame(CSV.File(datapath))
+    filename    = splitext(basename(datapath))[1]
+
+    println("Skip plotting k-resolved data for now...")
+
+    for obs in sim.observables
+        obspath = plotpath*filename
+        if !isdir(obspath)
+            mkpath(obspath)
+        end
+        plotdata(obs,alldata,p;plotpath=obspath*'/'*getshortname(obs),kwargs...)
+        
+    end
+    return plotpath*filename*"/"
+end
+
+function plotdata(obs::Observable{T},alldata::DataFrame,p;plotpath="/home/how09898/phd/plots/hhgjl/default/defaultobs",fftwindow=blackman,kwargs...) where {T<:Real}
+    nonkresolved_obs = []
+    periodograms     = []
+    for i in eachindex(getnames_obs(obs))
+        arekres     = arekresolved(obs)
+        obsnames    = getnames_obs(obs)
+        if arekres[i] == true
+            continue
+        else
+            push!(nonkresolved_obs,obsnames[i])
+            data = getproperty(alldata,Symbol(obsnames[i]))
+            push!(periodograms,periodogram(data,nfft=8*length(data),fs=1/p.dt,window=fftwindow))
+        end
+    end
+    nonkresolved_data = select(alldata,nonkresolved_obs)
+    maxharm = maximum(periodograms[1].freq)/p.ν
+    fftfig  = plot(1/p.ν .* periodograms[1].freq, 
+                hcat([x.power for x in periodograms]...),
+                yscale=:log10,
+                xticks=0:5:maxharm,
+                xminorticks=0:maxharm,
+                xminorgrid=true,
+                xgridalpha=0.3,
+                label=permutedims(nonkresolved_obs))
+    fig     = plot(p.tsamples,Matrix(nonkresolved_data),label=permutedims(nonkresolved_obs))
+    return savefig(fig,plotpath*".pdf")*" & "*savefig(fftfig,plotpath*"_spec.pdf")
+end
+
+function semiclassical_interband_range(h::GappedDirac,df::GaussianPulse)
+    ϵ        = getϵ(h)
+    ωmin     = 2.0*ϵ(0.0,0.0)
+    kmax     = df.eE/df.ω
+    ωmax     = 2.0*ϵ(kmax,0.0)
+    min_harm = ωmin/df.ω
+    max_harm = ωmax/df.ω
+    println("Approximate range of semiclassical interband: ",min_harm," to ",
+            max_harm," (harmonic number)")
 end
 
 end

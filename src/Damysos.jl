@@ -30,23 +30,33 @@ struct Simulation{T<:Real}
     observables::Vector{Observable{T}}
     unitscaling::UnitScaling{T}
     dimensions::UInt8
-    function Simulation{T}(h,df,p,obs,us,d) where {T<:Real}
+    name::String
+    datapath::String
+    plotpath::String
+    function Simulation{T}(h,df,p,obs,us,d,name,dpath,ppath) where {T<:Real}
         if p isa NumericalParams1d{T} && d!=1
             printstyled("warning: ",color = :red)
             print("given dimensions ($d) not matching $p")
             println("; setting dimensions to 1")
-            new(h,df,p,obs,us,UInt8(1))
+            new(h,df,p,obs,us,UInt8(1),name,dpath,ppath)
         elseif p isa NumericalParams2d{T} && d!=2
             printstyled("warning: ",color = :red)
             print("given dimensions ($d) not matching $p")
             println("; setting dimensions to 1")
-            new(h,df,p,obs,us,UInt8(2))
+            new(h,df,p,obs,us,UInt8(2),name,dpath,ppath)
         else
-            new(h,df,p,obs,us,d)
+            new(h,df,p,obs,us,d,name,dpath,ppath)
         end
     end
 end
-Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer) where {T<:Real} = Simulation{T}(h,df,p,obs,us,UInt8(abs(d)))
+Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer,
+    name::String,dpath::String,ppath::String) where {T<:Real} = Simulation{T}(h,df,p,obs,us,UInt8(abs(d)),name,dpath,ppath)
+Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer,name) where {T<:Real} = Simulation(h,df,p,obs,us,d,String(name),"/home/how09898/phd/data/hhgjl/","/home/how09898/phd/plots/hhgjl/")
+Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer) where {T<:Real} = Simulation(h,df,p,obs,us,d,randstring(4),"/home/how09898/phd/data/hhgjl/","/home/how09898/phd/plots/hhgjl/")
+
 function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
     print(io,"Simulation{$T} ($(s.dimensions)d) with components{$T}:\n")
     for n in fieldnames(Simulation{T})
@@ -58,13 +68,20 @@ function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
     end
 end
 
-getparams(sim::Simulation{T}) where {T<:Real} = merge((bz=(-sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω),),
-    getparams(sim.hamiltonian),getparams(sim.drivingfield),getparams(sim.numericalparams))
 function getshortname(sim::Simulation{T}) where {T<:Real}
     return "Simulation{$T}($(sim.dimensions)d)" * split("_$(sim.hamiltonian)",'{')[1] * split("_$(sim.drivingfield)",'{')[1]
 end
+
+function saveparams(sim::Simulation{T}) where {T<:Real}
+    CSV.write(sim.datapath * getfilename(sim) * "_params.csv",DataFrame([getparams(sim)]))
+end
+
+getparams(sim::Simulation{T}) where {T<:Real} = merge((bz=(-sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω),),
+    getparams(sim.hamiltonian),getparams(sim.drivingfield),getparams(sim.numericalparams))
 getnames_obs(sim::Simulation{T}) where {T<:Real} = vcat(getnames_obs.(sim.observables)...)
 arekresolved(sim::Simulation{T}) where {T<:Real} = vcat(arekresolved.(sim.observables)...)
+getfilename(sim::Simulation{T}) where {T<:Real}  = getshortname(sim)*'_'*sim.name
+
 
 struct Ensemble{T<:Real}
     simlist::Vector{Simulation{T}}
@@ -74,7 +91,7 @@ struct Ensemble{T<:Real}
 end
 Ensemble(sl::Vector{Simulation{T}},name::String) where {T<:Real} = Ensemble(sl,name,"/home/how09898/phd/data/hhgjl/","/home/how09898/phd/plots/hhgjl/")
 Ensemble(sl::Vector{Simulation{T}},name) where {T<:Real}         = Ensemble(sl,String(name)) 
-Ensemble(sl::Vector{Simulation{T}}) where {T<:Real}              = Ensemble(sl,"default") 
+Ensemble(sl::Vector{Simulation{T}}) where {T<:Real}              = Ensemble(sl,"defaultens") 
 
 Base.size(a::Ensemble)                  = (size(a.simlist))
 Base.setindex!(a::Ensemble,v,i::Int)    = (a.simlist[i] = v)
@@ -91,6 +108,8 @@ end
 function getshortname(ens::Ensemble{T}) where {T<:Real}
     return "Ensemble{$T}[$(length(ens.simlist))]($(ens.simlist[1].dimensions)d)" * split("_$(ens.simlist[1].hamiltonian)",'{')[1] * split("_$(ens.simlist[1].drivingfield)",'{')[1]
 end
+
+getfilename(ens::Ensemble{T}) where {T<:Real} = getshortname(ens) * ens.name
 
 getshortname(obs::Observable{T}) where {T<:Real} = split("$obs",'{')[1]
 
@@ -361,13 +380,11 @@ function run_simulation1d(sim::Simulation{T},ky::T;rtol=1e-10,atol=1e-10,savedat
     obs = calc_obs(sim,sol)
 
     if savedata == true
-        datapath = Damysos.savedata(sim,obs)
-        println("Data saved at ",datapath)
+        Damysos.savedata(sim,obs)
     end
 
     if saveplots == true
-        plotpath = Damysos.plotdata(sim,datapath)
-        println("Plots saved at ",plotpath)
+        Damysos.plotdata(sim)
     end
 
     return obs
@@ -391,13 +408,11 @@ function run_simulation2d(sim::Simulation{T};savedata=true,saveplots=true,kwargs
     end
 
     if savedata == true
-        datapath = Damysos.savedata(sim,total_obs)
-        println("Data saved at ",datapath)
+        Damysos.savedata(sim,total_obs)
     end
 
     if saveplots == true
-        plotpath = Damysos.plotdata(sim,datapath)
-        println("Plots saved at ",plotpath)
+        Damysos.plotdata(sim,datapath)
     end
 
     return total_obs
@@ -412,29 +427,36 @@ function run_simulation(sim::Simulation{T};kwargs...) where {T<:Real}
     return obs
 end
 
-function run_simulation(ens::Ensemble{T};savedata=true,saveplots=true,kwargs...) where {T<:Real}
+function run_simulation(ens::Ensemble{T};savedata=true,saveplots=true,
+                makecombined_plots=true,kwargs...) where {T<:Real}
+    
+    datapath = "/home/how09898/phd/data/hhgjl/" * lowercase(getshortname(ens))
+    plotpath = "/home/how09898/phd/plots/hhgjl/" * lowercase(getshortname(ens))
+
     allobs = []
+
     for i in eachindex(ens.simlist)
-        obs = run_simulation(ens.simlist[i];savedata=false,saveplots=false,kwargs...)
+        obs = run_simulation(ens.simlist[i];savedata=savedata,saveplots=saveplots,
+                            datapath=datapath,plotpath=plotpath,kwargs...)
         push!(allobs,obs)
     end
 
-    if savedata == true
-        Damysos.savedata(sim,allobs)
+    if makecombined_plots == true
+        Damysos.plotdata(ens,allobs)
     end
 
     return allobs
 end
 
-function savedata(sim::Simulation{T},obs;datapath="/home/how09898/phd/data/hhgjl/default/") where {T<:Real}
-    if !isdir(datapath)
-        mkpath(datapath)
+function savedata(sim::Simulation{T},obs) where {T<:Real}
+
+    if !isdir(sim.datapath)
+        mkpath(sim.datapath)
     end
     dat         = DataFrame()
     names       = getnames_obs(sim)
     arekres     = arekresolved(sim)
-    filename    = lowercase(getshortname(sim)*'_'*randstring(4))
-
+    filename    = getfilename(sim)
 
     if length(eachindex(names)) == length(eachindex(obs))   
         for i in eachindex(names)
@@ -445,74 +467,91 @@ function savedata(sim::Simulation{T},obs;datapath="/home/how09898/phd/data/hhgjl
             end
         end 
     else
-        println("length(eachindex(names)) != length(eachindex(obs)) in savedata(sim::Simulation{T},obs,datapath=...)")
-        println("Using numbers instead...")
+        println("length(eachindex(names)) != length(eachindex(obs)) in savedata(sim::Simulation{T},obs)")
+        println("Using numbers as names instead...")
         for i in eachindex(names)
             if arekres[i] == false
                 setproperty!(dat,Symbol(i),obs[i])
             else
-                println("Skipping k-resolved observables for now...")
+                println("Skip saving k-resolved observables for now...")
             end
         end
     end
 
-    return CSV.write(datapath*filename*".csv",dat)
+    CSV.write(sim.datapath*filename*".csv",dat)
+    println("Saved Simulation data at ",sim.datapath*filename,".csv")
+
+    return nothing
 end
 
-function savedata(ens::Ensemble{T},obs;datapath="/home/how09898/phd/data/hhgjl/") where {T<:Real}
-    ensemblename = lowercase(getshortname(ens))
-    if !isdir(datapath*ensemblename)
-        mkpath(datapath*ensemblename)
-    end
-
-    if length(eachindex(ens.simlist)) == length(eachindex(obs))
-        for i in eachindex(obs)
-            Damysos.savedata(ens.simlist[i],obs[i];datapath=datapath*ensemblename*'/')
-        end
-    else
-        println("length(eachindex(ens.simlist)) != length(eachindex(obs)) in savedata(ens::Ensemble{T},obs,datapath=...)")
-        println("Aborting...")
-    end
-
-end
-
-function plotdata(ens::Ensemble{T},obs,datapath::String;plotpath="/home/how09898/phd/plots/hhgjl/",kwargs...) where {T<:Real}
+function plotdata(ens::Ensemble{T},obs;plotpath="/home/how09898/phd/plots/hhgjl/",kwargs...) where {T<:Real}
     ensemblename = lowercase(getshortname(ens))
     if !isdir(plotpath*ensemblename)
         mkpath(plotpath*ensemblename)
     end
 
     if length(eachindex(ens.simlist)) == length(eachindex(obs))
-        for i in eachindex(obs)
-            Damysos.plotdata(ens.simlist[i],obs[i];plotpath=plotpath*ensemblename*'/')
+
+        allobsnames = getnames_obs(ens[1])
+        arekres     = arekresolved(ens[1])
+        for i in eachindex(allobsnames)
+            if arekres[i] == true
+                continue
+            else
+                figs    = plot();
+                fftfigs = plot();
+                for j in eachindex(obs)
+                    p           = getparams(ens[j])
+                    plot!(figs,p.tsamples,obs[j][i],label=String(j))
+
+                    pdg         = periodogram(obs[j][i],nfft=8*length(obs[j][i]),fs=1/p.dt,window=blackman)
+                    maxharm     = maximum(pdg.freq)/p.ν
+                    plot!(fftfigs,
+                        1/p.ν .* pdg.freq, 
+                        pdg.power,
+                        yscale=:log10,
+                        xticks=0:5:maxharm,
+                        xminorticks=0:maxharm,
+                        xminorgrid=true,
+                        xgridalpha=0.3,
+                        label=String(j))
+                end
+                savefig(figs,plotpath*ensemblename*'/'*allobsnames[i]*".pdf")
+                savefig(fftfigs,plotpath*ensemblename*'/'*allobsnames[i]*"_spec.pdf")
+            end
         end
+        
     else
         println("length(eachindex(ens.simlist)) != length(eachindex(obs)) in savedata(ens::Ensemble{T},obs,datapath=...)")
         println("Aborting...")
     end
 end
 
-function plotdata(sim::Simulation{T},datapath::String;plotpath="/home/how09898/phd/plots/hhgjl/default/",kwargs...) where {T<:Real}
+function plotdata(sim::Simulation{T};fftwindow=blackman,kwargs...) where {T<:Real}
     p           = getparams(sim)
-    alldata     = DataFrame(CSV.File(datapath))
-    filename    = splitext(basename(datapath))[1]
+    filename    = getfilename(sim)
+    alldata     = DataFrame(CSV.File(sim.datapath*filename*".csv"))
 
     println("Skip plotting k-resolved data for now...")
 
     for obs in sim.observables
-        obspath = plotpath*filename
+        obspath = sim.plotpath*filename*'/'*getshortname(obs)
         if !isdir(obspath)
             mkpath(obspath)
         end
-        plotdata(obs,alldata,p;plotpath=obspath*'/'*getshortname(obs),kwargs...)
+        plotdata(obs,alldata,p,obspath;fftwindow=fftwindow,kwargs...)
         
     end
-    return plotpath*filename*"/"
+
+    println("Saved plots at ",sim.plotpath*filename*"/")
+    return nothing
 end
 
-function plotdata(obs::Observable{T},alldata::DataFrame,p;plotpath="/home/how09898/phd/plots/hhgjl/default/defaultobs",fftwindow=blackman,kwargs...) where {T<:Real}
+function plotdata(obs::Observable{T},alldata::DataFrame,p,plotpath::String;fftwindow=blackman,kwargs...) where {T<:Real}
+
     nonkresolved_obs = []
     periodograms     = []
+
     for i in eachindex(getnames_obs(obs))
         arekres     = arekresolved(obs)
         obsnames    = getnames_obs(obs)
@@ -535,7 +574,11 @@ function plotdata(obs::Observable{T},alldata::DataFrame,p;plotpath="/home/how098
                 xgridalpha=0.3,
                 label=permutedims(nonkresolved_obs))
     fig     = plot(p.tsamples,Matrix(nonkresolved_data),label=permutedims(nonkresolved_obs))
-    return savefig(fig,plotpath*".pdf")*" & "*savefig(fftfig,plotpath*"_spec.pdf")
+
+    savefig(fig,plotpath*".pdf")
+    savefig(fftfig,plotpath*"_spec.pdf")
+
+    return nothing
 end
 
 function semiclassical_interband_range(h::GappedDirac,df::GaussianPulse)

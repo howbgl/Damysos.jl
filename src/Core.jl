@@ -87,15 +87,11 @@ end
 
 function run_simulation(ens::Ensemble{T};savedata=true,saveplots=true,
                 makecombined_plots=true,kwargs...) where {T<:Real}
-    
-    datapath = "/home/how09898/phd/data/hhgjl/" * lowercase(getshortname(ens))
-    plotpath = "/home/how09898/phd/plots/hhgjl/" * lowercase(getshortname(ens))
 
     allobs = []
 
     for i in eachindex(ens.simlist)
-        obs = run_simulation(ens.simlist[i];savedata=savedata,saveplots=saveplots,
-                            datapath=datapath,plotpath=plotpath,kwargs...)
+        obs = run_simulation(ens.simlist[i];savedata=savedata,saveplots=saveplots,kwargs...)
         push!(allobs,obs)
     end
 

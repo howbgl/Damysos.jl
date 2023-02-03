@@ -1,6 +1,6 @@
 
 function plotdata(ens::Ensemble{T},obs;plotpath="/home/how09898/phd/plots/hhgjl/",kwargs...) where {T<:Real}
-    ensemblename = lowercase(getshortname(ens))
+    ensemblename = lowercase(getshortname(ens))*ens.name
     if !isdir(plotpath*ensemblename)
         mkpath(plotpath*ensemblename)
     end
@@ -17,7 +17,7 @@ function plotdata(ens::Ensemble{T},obs;plotpath="/home/how09898/phd/plots/hhgjl/
                 fftfigs = plot();
                 for j in eachindex(obs)
                     p           = getparams(ens[j])
-                    plot!(figs,p.tsamples,obs[j][i],label=String(j))
+                    plot!(figs,p.tsamples,obs[j][i],label=ens[j].name)
 
                     pdg         = periodogram(obs[j][i],nfft=8*length(obs[j][i]),fs=1/p.dt,window=blackman)
                     maxharm     = maximum(pdg.freq)/p.ν
@@ -29,7 +29,7 @@ function plotdata(ens::Ensemble{T},obs;plotpath="/home/how09898/phd/plots/hhgjl/
                         xminorticks=0:maxharm,
                         xminorgrid=true,
                         xgridalpha=0.3,
-                        label=String(j))
+                        label=ens[j].name)
                 end
                 savefig(figs,plotpath*ensemblename*'/'*allobsnames[i]*".pdf")
                 savefig(fftfigs,plotpath*ensemblename*'/'*allobsnames[i]*"_spec.pdf")
@@ -42,10 +42,10 @@ function plotdata(ens::Ensemble{T},obs;plotpath="/home/how09898/phd/plots/hhgjl/
     end
 end
 
-function plotdata(sim::Simulation{T};fftwindow=blackman,kwargs...) where {T<:Real}
+function plotdata(sim::Simulation{T};fftwindow=hanning,kwargs...) where {T<:Real}
     p           = getparams(sim)
     filename    = getfilename(sim)
-    alldata     = DataFrame(CSV.File(sim.datapath*filename*".csv"))
+    alldata     = DataFrame(CSV.File(sim.datapath*filename*"/data.csv"))
 
     println("Skip plotting k-resolved data for now...")
 
@@ -62,7 +62,7 @@ function plotdata(sim::Simulation{T};fftwindow=blackman,kwargs...) where {T<:Rea
     return nothing
 end
 
-function plotdata(obs::Observable{T},alldata::DataFrame,p,plotpath::String;fftwindow=blackman,kwargs...) where {T<:Real}
+function plotdata(obs::Observable{T},alldata::DataFrame,p,plotpath::String;fftwindow=hanning,kwargs...) where {T<:Real}
 
     nonkresolved_obs = []
     periodograms     = []

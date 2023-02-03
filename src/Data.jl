@@ -29,8 +29,8 @@ function savedata(sim::Simulation{T},obs) where {T<:Real}
         end
     end
 
-    CSV.write(sim.datapath*filename*'/'*"data.csv",dat)
-    println("Saved Simulation data at ",sim.datapath*filename*'/',".csv")
+    CSV.write(sim.datapath*filename*"/data.csv",dat)
+    println("Saved Simulation data at ",sim.datapath*filename,"/data.csv")
 
     return nothing
 end

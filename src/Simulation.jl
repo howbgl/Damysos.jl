@@ -4,6 +4,8 @@ struct UnitScaling{T<:Real}
     timescale::Unitful.Time{T}
     lengthscale::Unitful.Length{T}
 end
+getparams(us::UnitScaling{T}) where {T<:Real} = (timescale=us.timescale,lengthscale=us.lengthscale)
+
 
 struct Simulation{T<:Real}
     hamiltonian::Hamiltonian{T}
@@ -58,67 +60,54 @@ function saveparams(sim::Simulation{T}) where {T<:Real}
     if !isdir(sim.datapath * getfilename(sim))
         mkpath(sim.datapath * getfilename(sim))
     end
-    CSV.write(sim.datapath * getfilename(sim) * "/params.csv",DataFrame([getparams(sim)]))
+    params = merge((name=sim.name,h="$(typeof(sim.hamiltonian))",df="$(typeof(sim.drivingfield))",
+                par="$(typeof(sim.numericalparams))",obs="$(sim.observables)",dim=sim.dimensions),
+                getparams(sim))
+    CSV.write(sim.datapath * getfilename(sim) * "/params.csv",DataFrame([params]))
 end
 
-getparams(sim::Simulation{T}) where {T<:Real} = merge((bz=(-sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω),),
-    getparams(sim.hamiltonian),getparams(sim.drivingfield),getparams(sim.numericalparams))
+function getparams(sim::Simulation{T}) where {T<:Real}
+    merge((bz=(-sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω),),
+    getparams(sim.hamiltonian),getparams(sim.drivingfield),getparams(sim.numericalparams),getparams(sim.unitscaling))
+end
+
 getnames_obs(sim::Simulation{T}) where {T<:Real} = vcat(getnames_obs.(sim.observables)...)
 arekresolved(sim::Simulation{T}) where {T<:Real} = vcat(arekresolved.(sim.observables)...)
 getfilename(sim::Simulation{T}) where {T<:Real}  = getshortname(sim)*'_'*sim.name
 
 
-struct Ensemble{T<:Real}
-    simlist::Vector{Simulation{T}}
-    name::String
-    datapath::String
-    plotpath::String
-end
-Ensemble(sl::Vector{Simulation{T}},name::String) where {T<:Real} = Ensemble(sl,name,"/home/how09898/phd/data/hhgjl/","/home/how09898/phd/plots/hhgjl/")
-Ensemble(sl::Vector{Simulation{T}},name) where {T<:Real}         = Ensemble(sl,String(name)) 
-Ensemble(sl::Vector{Simulation{T}}) where {T<:Real}              = Ensemble(sl,"defaultens") 
-
-Base.size(a::Ensemble)                  = (size(a.simlist))
-Base.setindex!(a::Ensemble,v,i::Int)    = (a.simlist[i] = v)
-Base.getindex(a::Ensemble,i::Int)       = a.simlist[i]
-function Base.show(io::IO,::MIME"text/plain",e::Ensemble{T}) where {T}
-    print(io,"Ensemble{$T} of Simulations{$T}:\n")
-    for i in 1:length(e.simlist)
-        print(io,"  #$i\n","  ")
-        Base.show(io,MIME"text/plain"(),e.simlist[i])
-        print(io,"\n")
-    end
-end
-
-function getshortname(ens::Ensemble{T}) where {T<:Real}
-    return "Ensemble{$T}[$(length(ens.simlist))]($(ens.simlist[1].dimensions)d)" * split("_$(ens.simlist[1].hamiltonian)",'{')[1] * split("_$(ens.simlist[1].drivingfield)",'{')[1]
-end
-
-getfilename(ens::Ensemble{T}) where {T<:Real} = getshortname(ens) * ens.name
-
 getshortname(obs::Observable{T}) where {T<:Real} = split("$obs",'{')[1]
 
 function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol, range::AbstractVector{T}) where {T<:Real}
+
+    ensname     = "_$param"*"_sweep"
+    ensdirname  = lowercase("Ensemble[$(length(range))]{$T}($(sim.dimensions)d)" * split("_$(sim.hamiltonian)",'{')[1] * split("_$(sim.drivingfield)",'{')[1]) * ensname
+
     sweeplist    = Vector{Simulation{T}}(undef,length(range))
-    if comp isa Hamiltonian{T}
-        for i in 1:length(sweeplist)
-            new_h           = set(comp,PropertyLens(param),range[i])
-            sweeplist[i]    = Simulation(new_h,sim.drivingfield,sim.numericalparams,sim.observables,sim.unitscaling,sim.dimensions)
+    for i in eachindex(sweeplist)
+        name = "$param=$(range[i])"
+        if comp isa Hamiltonian{T}
+            new_h  = set(comp,PropertyLens(param),range[i])
+            new_df = sim.drivingfield
+            new_p  = sim.numericalparams
+        elseif comp isa DrivingField{T}
+            new_h  = sim.hamiltonian
+            new_df = set(comp,PropertyLens(param),range[i])
+            new_p  = sim.numericalparams
+        elseif comp isa NumericalParameters{T}
+            new_h  = sim.hamiltonian
+            new_df = sim.drivingfield
+            new_p  = set(comp,PropertyLens(param),range[i])
+        else
+            return nothing
         end
-    elseif comp isa DrivingField{T}
-        for i in 1:length(sweeplist)
-            new_df          = set(comp,PropertyLens(param),range[i])
-            sweeplist[i]    = Simulation(sim.hamiltonian,new_df,sim.numericalparams,sim.observables,sim.unitscaling,sim.dimensions)
-        end
-    elseif comp isa NumericalParameters{T}
-        for i in 1:length(sweeplist)
-            new_p           = set(comp,PropertyLens(param),range[i])
-            sweeplist[i]    = Simulation(sim.hamiltonian,sim.drivingfield,new_p,sim.observables,sim.unitscaling,sim.dimensions)
-        end
-    else
-        return nothing
+        sweeplist[i] = Simulation(new_h,new_df,new_p,sim.observables,
+                        sim.unitscaling,sim.dimensions,name,
+                        sim.datapath * ensdirname * '/' * name * '/',
+                        sim.plotpath * ensdirname * '/' * name * '/')
     end
-    return Ensemble(sweeplist)
+
+    return Ensemble(sweeplist,ensname)
 end
 
 function Base.show(io::IO,::MIME"text/plain",c::SimulationComponent{T}) where {T}

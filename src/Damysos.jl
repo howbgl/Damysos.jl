@@ -19,6 +19,7 @@ abstract type NumericalParameters{T}    <: SimulationComponent{T} end
 abstract type Observable{T}             <: SimulationComponent{T} end
 
 include("Simulation.jl")
+include("Ensemble.jl")
 include("Hamiltonians.jl")
 include("DrivingFields.jl")
 include("NumericalParams.jl")

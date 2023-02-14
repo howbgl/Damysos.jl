@@ -1,5 +1,5 @@
 
-function plotdata(ens::Ensemble{T},obs;plotpath="/home/how09898/phd/plots/hhgjl/",maxharm=60,kwargs...) where {T<:Real}
+function plotdata(ens::Ensemble{T},obs;plotpath="/home/how09898/phd/plots/hhgjl/",maxharm=50,kwargs...) where {T<:Real}
     ensemblename = lowercase(getshortname(ens))*ens.name
     if !isdir(plotpath*ensemblename)
         mkpath(plotpath*ensemblename)
@@ -20,7 +20,7 @@ function plotdata(ens::Ensemble{T},obs;plotpath="/home/how09898/phd/plots/hhgjl/
                     plot!(figs,p.tsamples,obs[j][i],label=ens[j].name)
 
                     pdg         = periodogram(obs[j][i],nfft=8*length(obs[j][i]),fs=1/p.dt,window=blackman)
-                    xmax        = maximum([maxharm,maximum(pdg.freq)/p.ν])
+                    xmax        = minimum([maxharm,maximum(pdg.freq)/p.ν])
                     ydata       = pdg.power
                     xdata       = 1/p.ν .* pdg.freq
                     cut_inds    = ydata .> floatmin(T)
@@ -68,7 +68,7 @@ function plotdata(sim::Simulation{T};fftwindow=hanning,kwargs...) where {T<:Real
     return nothing
 end
 
-function plotdata(obs::Observable{T},alldata::DataFrame,p,plotpath::String;fftwindow=hanning,kwargs...) where {T<:Real}
+function plotdata(obs::Observable{T},alldata::DataFrame,p,plotpath::String;fftwindow=hanning,maxharm=50,kwargs...) where {T<:Real}
 
     nonkresolved_obs = []
     periodograms     = []
@@ -85,12 +85,12 @@ function plotdata(obs::Observable{T},alldata::DataFrame,p,plotpath::String;fftwi
         end
     end
     nonkresolved_data = select(alldata,nonkresolved_obs)
-    maxharm = maximum(periodograms[1].freq)/p.ν
+    xmax    = minimum([maxharm,maximum(periodograms[1].freq)/p.ν])
     fftfig  = plot(1/p.ν .* periodograms[1].freq, 
                 hcat([x.power for x in periodograms]...),
                 yscale=:log10,
-                xticks=0:5:maxharm,
-                xminorticks=0:maxharm,
+                xticks=0:5:xmax,
+                xminorticks=0:xmax,
                 xminorgrid=true,
                 xgridalpha=0.3,
                 label=permutedims(nonkresolved_obs))

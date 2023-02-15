@@ -1,7 +1,7 @@
 module Damysos
 
 
-using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,Plots,DSP,DataFrames,Random,CSV
+using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,Plots,DSP,DataFrames,Random,CSV,Formatting,Folds
 
 export Hamiltonian,GappedDirac,getϵ,getdx_cc,getdx_cv,getdx_vc,getdx_vv,getdipoles_x,getvels_x
 export getvx_cc,getvx_cv,getvx_vc,getvx_vv
@@ -9,8 +9,9 @@ export DrivingField,GaussianPulse,get_efield,get_vecpot
 export NumericalParameters,NumericalParams2d,NumericalParams1d
 export Simulation,Ensemble,getparams,parametersweep
 export Observable,Velocity,Occupation,Timesteps,getnames_obs
-export UnitScaling,semiclassical_interband_range
+export UnitScaling,semiclassical_interband_range,maximum_k
 export run_simulation,run_simulation1d,run_simulation2d
+export savemetadata,save,load
 
 abstract type SimulationComponent{T} end
 abstract type Hamiltonian{T}            <: SimulationComponent{T} end

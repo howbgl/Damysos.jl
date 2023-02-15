@@ -50,7 +50,7 @@ end
 
 function plotdata(sim::Simulation{T};fftwindow=hanning,kwargs...) where {T<:Real}
     p           = getparams(sim)
-    filename    = getfilename(sim)
+    filename    = getname(sim)
     alldata     = DataFrame(CSV.File(sim.datapath*filename*"/data.csv"))
 
     println("Skip plotting k-resolved data for now...")

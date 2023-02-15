@@ -81,7 +81,7 @@ function run_simulation(sim::Simulation{T};kwargs...) where {T<:Real}
     elseif sim.dimensions==2
         obs = run_simulation2d(sim;kwargs...)
     end
-    saveparams(sim)
+    savemetadata(sim)
     return obs
 end
 
@@ -98,6 +98,8 @@ function run_simulation(ens::Ensemble{T};savedata=true,saveplots=true,
     if makecombined_plots == true
         Damysos.plotdata(ens,allobs)
     end
+
+    savemetadata(ens)
 
     return allobs
 end

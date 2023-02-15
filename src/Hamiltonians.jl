@@ -14,10 +14,12 @@ function GappedDirac(mass::Unitful.Energy{T},fermivelocity::Unitful.Velocity{T},
     us = UnitScaling(tc,lc)
     return GappedDirac(us,mass,fermivelocity,dephasing)
 end
+GappedDirac(umass,ufermivelocity,udephasingtime)=GappedDirac(promote(umass,ufermivelocity,udephasingtime)...)
 function GappedDirac(us::UnitScaling{T},mass::Unitful.Energy{T},
     fermivelocity::Unitful.Velocity{T},dephasing::Unitful.Time{T}) where{T<:Real}
-    Δ   = uconvert(Unitful.NoUnits,mass*us.timescale/Unitful.ħ)
-    t2  = uconvert(Unitful.NoUnits,dephasing/us.timescale)
+    p   = getparams(us)
+    Δ   = uconvert(Unitful.NoUnits,mass*p.timescale/Unitful.ħ)
+    t2  = uconvert(Unitful.NoUnits,dephasing/p.timescale)
     return us,GappedDirac(Δ,t2)
 end
 

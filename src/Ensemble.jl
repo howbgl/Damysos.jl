@@ -25,4 +25,4 @@ function getshortname(ens::Ensemble{T}) where {T<:Real}
     return "Ensemble[$(length(ens.simlist))]{$T}($(ens.simlist[1].dimensions)d)" * split("_$(ens.simlist[1].hamiltonian)",'{')[1] * split("_$(ens.simlist[1].drivingfield)",'{')[1]
 end
 
-getfilename(ens::Ensemble{T}) where {T<:Real} = getshortname(ens) * ens.name
+getname(ens::Ensemble{T}) where {T<:Real} = getshortname(ens) * ens.name

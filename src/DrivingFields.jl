@@ -9,12 +9,14 @@ GaussianPulse(σ::T,ω::T,eE::T) where {T<:Real} = GaussianPulse{T}(σ,ω,eE)
 GaussianPulse(σ::Real,ω::Real,eE::Real)        = GaussianPulse(promote(σ,ω,eE)...)
 function GaussianPulse(us::UnitScaling{T},standard_dev::Unitful.Time{T},
                     frequency::Unitful.Frequency{T},fieldstrength::Unitful.EField{T}) where{T<:Real}
-    σ   = uconvert(Unitful.NoUnits,standard_dev/us.timescale)
-    ω   = uconvert(Unitful.NoUnits,2π*frequency*us.timescale)
+    p   = getparams(us)
+    σ   = uconvert(Unitful.NoUnits,standard_dev/p.timescale)
+    ω   = uconvert(Unitful.NoUnits,2π*frequency*p.timescale)
     e   = uconvert(u"C",1u"eV"/1u"V")
-    eE  = uconvert(Unitful.NoUnits,e*us.timescale*us.lengthscale*fieldstrength/Unitful.ħ)
+    eE  = uconvert(Unitful.NoUnits,e*p.timescale*p.lengthscale*fieldstrength/Unitful.ħ)
     return GaussianPulse(σ,ω,eE)
 end
+GaussianPulse(us,ustandard_dev,ufrequency,ufieldstrength) = GaussianPulse(us,promote(ustandard_dev,ufrequency,ufieldstrength)...)
 
 getparams(df::GaussianPulse{T}) where {T<:Real}  = (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE)
 

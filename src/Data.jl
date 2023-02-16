@@ -5,6 +5,7 @@ function ensurepath(path::String)
     end
 end
 
+
 function savedata(sim::Simulation{T},obs) where {T<:Real}
 
     dat         = DataFrame()
@@ -25,7 +26,8 @@ function savedata(sim::Simulation{T},obs) where {T<:Real}
             end
         end 
     else # Fallback option if names don't match data: use numbers as names
-        println("length(eachindex(names)) != length(eachindex(obs)) in savedata(sim::Simulation{T},obs)")
+        println("length(eachindex(names)) != length(eachindex(obs))\
+                 in savedata(sim::Simulation{T},obs)")
         println("Using numbers as names instead...")
         for i in eachindex(names)
             if arekres[i] == false
@@ -42,12 +44,14 @@ function savedata(sim::Simulation{T},obs) where {T<:Real}
     return nothing
 end
 
+
 function savemetadata(sim::Simulation)
 
     filename = getname(sim) * "/simulation.meta"
     save(sim.datapath*filename,sim)
     println("Simulation metadata saved at ",sim.datapath*filename)
 end
+
 
 function savemetadata(ens::Ensemble)
     
@@ -56,6 +60,7 @@ function savemetadata(ens::Ensemble)
     println("Ensemble metadata save at ",ens.datapath*filename)
 end
 
+
 function save(filepath::String,object)
     ensurepath(dirname(filepath))
     touch(filepath)
@@ -63,6 +68,7 @@ function save(filepath::String,object)
     write(file,"$object")
     close(file)
 end
+
 
 function load(filepath::String)
 

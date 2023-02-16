@@ -3,8 +3,13 @@ struct UnitScaling{T<:Real}
     timescale::T
     lengthscale::T
 end
-UnitScaling(timescale,lengthscale) = UnitScaling(ustrip(u"fs",timescale),ustrip(u"nm",lengthscale))
-getparams(us::UnitScaling{T}) where {T<:Real} = (timescale=Quantity(us.timescale,u"fs"),lengthscale=Quantity(us.lengthscale,u"nm"))
+function UnitScaling(timescale,lengthscale) 
+    return UnitScaling(ustrip(u"fs",timescale),ustrip(u"nm",lengthscale))
+end
+function getparams(us::UnitScaling{T}) where {T<:Real} 
+    return (timescale=Quantity(us.timescale,u"fs"),
+            lengthscale=Quantity(us.lengthscale,u"nm"))
+end
 
 
 struct Simulation{T<:Real}
@@ -33,13 +38,30 @@ struct Simulation{T<:Real}
         end
     end
 end
-Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
+
+function Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
     obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer,
-    id::String,dpath::String,ppath::String) where {T<:Real} = Simulation{T}(h,df,p,obs,us,UInt8(abs(d)),id,dpath,ppath)
-Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
-    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer,id) where {T<:Real} = Simulation(h,df,p,obs,us,d,String(id),"/home/how09898/phd/data/hhgjl/","/home/how09898/phd/plots/hhgjl/")
-Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
-    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer) where {T<:Real} = Simulation(h,df,p,obs,us,d,randstring(4),"/home/how09898/phd/data/hhgjl/","/home/how09898/phd/plots/hhgjl/")
+    id::String,dpath::String,ppath::String) where {T<:Real} 
+
+    return Simulation{T}(h,df,p,obs,us,UInt8(abs(d)),id,dpath,ppath)
+end
+
+function Simulation(h::Hamiltonian{T},df::DrivingField{T},
+    p::NumericalParameters{T},obs::Vector{O} where {O<:Observable{T}},
+    us::UnitScaling{T},d::Integer,id) where {T<:Real} 
+
+    return Simulation(h,df,p,obs,us,d,String(id),
+                "/home/how09898/phd/data/hhgjl/",
+                "/home/how09898/phd/plots/hhgjl/")
+end
+
+function Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer) where {T<:Real} 
+    
+    return Simulation(h,df,p,obs,us,d,randstring(4),
+                "/home/how09898/phd/data/hhgjl/",
+                "/home/how09898/phd/plots/hhgjl/")
+end
 
 function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
     print(io,"Simulation{$T} ($(s.dimensions)d) with components{$T}:\n")
@@ -53,12 +75,17 @@ function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
 end
 
 function getshortname(sim::Simulation{T}) where {T<:Real}
-    return "Simulation{$T}($(sim.dimensions)d)" * split("_$(sim.hamiltonian)",'{')[1] * split("_$(sim.drivingfield)",'{')[1]
+    return "Simulation{$T}($(sim.dimensions)d)" * getshortname(sim.hamiltonian) * 
+            getshortname(sim.drivingfield)
 end
 
 function getparams(sim::Simulation{T}) where {T<:Real}
-    merge((bz=(-sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω),),
-    getparams(sim.hamiltonian),getparams(sim.drivingfield),getparams(sim.numericalparams),getparams(sim.unitscaling))
+    merge((bz=(-sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, 
+        sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω),),
+        getparams(sim.hamiltonian),
+        getparams(sim.drivingfield),
+        getparams(sim.numericalparams),
+        getparams(sim.unitscaling))
 end
 
 getnames_obs(sim::Simulation{T}) where {T<:Real} = vcat(getnames_obs.(sim.observables)...)

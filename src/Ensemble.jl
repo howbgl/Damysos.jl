@@ -5,9 +5,13 @@ struct Ensemble{T<:Real}
     datapath::String
     plotpath::String
 end
-Ensemble(sl::Vector{Simulation{T}},name::String) where {T<:Real} = Ensemble(sl,name,"/home/how09898/phd/data/hhgjl/","/home/how09898/phd/plots/hhgjl/")
-Ensemble(sl::Vector{Simulation{T}},name) where {T<:Real}         = Ensemble(sl,String(name)) 
-Ensemble(sl::Vector{Simulation{T}}) where {T<:Real}              = Ensemble(sl,"defaultens") 
+function Ensemble(sl::Vector{Simulation{T}},name::String) where {T<:Real} 
+    return Ensemble(sl,name,
+                        "/home/how09898/phd/data/hhgjl/",
+                        "/home/how09898/phd/plots/hhgjl/")
+end
+Ensemble(sl::Vector{Simulation{T}},name) where {T<:Real}    = Ensemble(sl,String(name)) 
+Ensemble(sl::Vector{Simulation{T}}) where {T<:Real}         = Ensemble(sl,"defaultens") 
 
 Base.size(a::Ensemble)                  = (size(a.simlist))
 Base.setindex!(a::Ensemble,v,i::Int)    = (a.simlist[i] = v)
@@ -22,7 +26,8 @@ function Base.show(io::IO,::MIME"text/plain",e::Ensemble{T}) where {T}
 end
 
 function getshortname(ens::Ensemble{T}) where {T<:Real}
-    return "Ensemble[$(length(ens.simlist))]{$T}($(ens.simlist[1].dimensions)d)" * split("_$(ens.simlist[1].hamiltonian)",'{')[1] * split("_$(ens.simlist[1].drivingfield)",'{')[1]
+    return "Ensemble[$(length(ens.simlist))]{$T}($(ens[1].dimensions)d)" * 
+            getshortname(ens[1].hamiltonian) * getshortname(ens[1].drivingfield)
 end
 
 getname(ens::Ensemble{T}) where {T<:Real} = getshortname(ens) * ens.name

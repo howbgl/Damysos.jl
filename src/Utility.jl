@@ -1,9 +1,10 @@
 
 
-function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol, range::AbstractVector{T}) where {T<:Real}
+function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol, 
+                        range::AbstractVector{T}) where {T<:Real}
 
-
-    ensname      = lowercase(getname(Ensemble([sim],"_$param"*"_sweep"*"_$(sprintf1("%x",hash([sim,comp,param,range])))")))
+    hashstring   = sprintf1("%x",hash([sim,comp,param,range]))
+    ensname      = getname(Ensemble([sim],"_$param"*"_sweep"*hashstring))
 
     sweeplist    = Vector{Simulation{T}}(undef,length(range))
     for i in eachindex(sweeplist)

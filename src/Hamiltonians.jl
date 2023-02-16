@@ -1,4 +1,5 @@
 
+getshortname(h::Hamiltonian{T}) where {T<:Real} = split("_$h",'{')[1]
 
 struct GappedDirac{T<:Real} <: Hamiltonian{T}
     Δ::T
@@ -14,7 +15,9 @@ function GappedDirac(mass::Unitful.Energy{T},fermivelocity::Unitful.Velocity{T},
     us = UnitScaling(tc,lc)
     return GappedDirac(us,mass,fermivelocity,dephasing)
 end
-GappedDirac(umass,ufermivelocity,udephasingtime)=GappedDirac(promote(umass,ufermivelocity,udephasingtime)...)
+function GappedDirac(umass,ufermivelocity,udephasingtime)
+    return GappedDirac(promote(umass,ufermivelocity,udephasingtime)...)
+end
 function GappedDirac(us::UnitScaling{T},mass::Unitful.Energy{T},
     fermivelocity::Unitful.Velocity{T},dephasing::Unitful.Time{T}) where{T<:Real}
     p   = getparams(us)

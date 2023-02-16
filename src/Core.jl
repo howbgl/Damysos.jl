@@ -1,5 +1,6 @@
 
-function run_simulation1d(sim::Simulation{T},ky::T;rtol=1e-10,atol=1e-10,savedata=true,saveplots=true,kwargs...) where {T<:Real}
+function run_simulation1d(sim::Simulation{T},ky::T;
+        rtol=1e-10,atol=1e-10,savedata=true,saveplots=true,kwargs...) where {T<:Real}
 
     p              = getparams(sim)
     
@@ -9,14 +10,15 @@ function run_simulation1d(sim::Simulation{T},ky::T;rtol=1e-10,atol=1e-10,savedat
     tsamples       = p.tsamples
     tspan          = (tsamples[1],tsamples[end])
     
-    a              = get_vecpot(sim.drivingfield)
-    f              = get_efield(sim.drivingfield)
+    a              = get_vecpotx(sim.drivingfield)
+    f              = get_efieldx(sim.drivingfield)
     ϵ              = getϵ(sim.hamiltonian)
 
     dcc,dcv,dvc,dvv          = getdipoles_x(sim.hamiltonian)
 
     rhs_cc(t,cv,kx,ky)     = 2.0 * f(t) * imag(cv * dvc(kx-a(t), ky))
-    rhs_cv(t,cc,cv,kx,ky)  = (-γ - 2.0im * ϵ(kx-a(t),ky)) * cv - 1.0im * f(t) * (2.0 * dvv(kx-a(t),ky) * cv + dcv(kx-a(t),ky) * (2.0cc - 1.0))
+    rhs_cv(t,cc,cv,kx,ky)  = (-γ - 2.0im * ϵ(kx-a(t),ky)) * cv - 1.0im * f(t) * 
+                        (2.0 * dvv(kx-a(t),ky) * cv + dcv(kx-a(t),ky) * (2.0cc - 1.0))
 
 
     @inline function rhs!(du,u,p,t)
@@ -47,11 +49,13 @@ function run_simulation1d(sim::Simulation{T},ky::T;rtol=1e-10,atol=1e-10,savedat
     return obs
 end
 
-function run_simulation2d(sim::Simulation{T};savedata=true,saveplots=true,kwargs...) where {T<:Real}
+function run_simulation2d(sim::Simulation{T};
+                savedata=true,saveplots=true,kwargs...) where {T<:Real}
 
     p         = getparams(sim)
     total_obs = []
-    last_obs  = run_simulation1d(sim,p.kysamples[1];savedata=false,saveplots=false,kwargs...)
+    last_obs  = run_simulation1d(sim,p.kysamples[1];
+                                savedata=false,saveplots=false,kwargs...)
 
     for i in 2:p.nky
         if mod(i,10)==0
@@ -59,7 +63,8 @@ function run_simulation2d(sim::Simulation{T};savedata=true,saveplots=true,kwargs
         end
         obs = run_simulation1d(sim,p.kysamples[i];savedata=false,saveplots=false,kwargs...)
         for o in obs
-            push!(total_obs,trapz((:,hcat(p.kysamples[i-1],p.kysamples[i])),hcat(last_obs[j],o)))
+            push!(total_obs,
+                trapz((:,hcat(p.kysamples[i-1],p.kysamples[i])),hcat(last_obs[j],o)))
         end
         last_obs = deepcopy(obs)
     end

@@ -7,6 +7,7 @@ struct GappedDirac{T<:Real} <: Hamiltonian{T}
     GappedDirac{T}(Δ,t2) where {T<:Real} = new(Δ,t2) 
 end
 GappedDirac(Δ::T,t2::T) where {T<:Real}      = GappedDirac{T}(Δ,t2)
+GappedDirac(Δ::Real,t2::Real)                = GappedDirac(promote(Δ,t2)...)
 function GappedDirac(us::UnitScaling{T},mass::Unitful.Energy{T},
     fermivelocity::Unitful.Velocity{T},dephasing::Unitful.Time{T}) where{T<:Real}
     p   = getparams(us)
@@ -15,16 +16,15 @@ function GappedDirac(us::UnitScaling{T},mass::Unitful.Energy{T},
     return GappedDirac(Δ,t2)
 end
 
-GappedDirac(Δ::Real,t2::Real)                = GappedDirac(promote(Δ,t2)...)
-function scaleGappedDirac(mass::Unitful.Energy{T},fermivelocity::Unitful.Velocity{T},
+function scalegapped_dirac(mass::Unitful.Energy{T},fermivelocity::Unitful.Velocity{T},
                     dephasing::Unitful.Time{T}) where{T<:Real}
     tc = uconvert(u"fs",0.1*Unitful.ħ/mass)
     lc = uconvert(u"nm",fermivelocity*tc)
     us = UnitScaling(tc,lc)
-    return GappedDirac(us,mass,fermivelocity,dephasing)
+    return us,GappedDirac(us,mass,fermivelocity,dephasing)
 end
-function scaleGappedDirac(umass,ufermivelocity,udephasingtime)
-    return scaleGappedDirac(promote(umass,ufermivelocity,udephasingtime)...)
+function scalegapped_dirac(umass,ufermivelocity,udephasingtime)
+    return scalegapped_dirac(promote(umass,ufermivelocity,udephasingtime)...)
 end
 
 getparams(h::GappedDirac{T}) where {T<:Real} = (Δ=h.Δ,t2=h.t2)

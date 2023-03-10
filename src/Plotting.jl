@@ -19,7 +19,7 @@ function plotdata(ens::Ensemble{T},obs;
                 fftfigs = plot();
                 for j in eachindex(obs)
                     p           = getparams(ens[j])
-                    plot!(figs,p.tsamples,obs[j][i],label=ens[j].name)
+                    plot!(figs,p.tsamples,obs[j][i],label=ens[j].id)
 
                     pdg         = periodogram(obs[j][i],
                                     nfft=8*length(obs[j][i]),
@@ -42,7 +42,7 @@ function plotdata(ens::Ensemble{T},obs;
                         xminorticks=0:xmax,
                         xminorgrid=true,
                         xgridalpha=0.3,
-                        label=ens[j].name)
+                        label=ens[j].id)
                 end
                 savefig(figs,plotpath*ensemblename*'/'*allobsnames[i]*".pdf")
                 savefig(fftfigs,plotpath*ensemblename*'/'*allobsnames[i]*"_spec.pdf")

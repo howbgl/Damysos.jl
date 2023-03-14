@@ -76,7 +76,7 @@ function run_simulation2d!(sim::Simulation{T};
         last_obs = deepcopy(obs)
     end
 
-    
+    sim.observables .= total_obs
 
     if savedata == true
         Damysos.savedata(sim)
@@ -111,7 +111,7 @@ function run_simulation!(ens::Ensemble{T};savedata=true,saveplots=true,
     end
 
     if makecombined_plots == true
-        Damysos.plotdata(ens,allobs)
+        Damysos.plotdata(ens)
     end
 
     savemetadata(ens)

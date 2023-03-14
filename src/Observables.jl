@@ -63,10 +63,9 @@ end
 
 struct Occupation{T<:Real} <: Observable{T}
     cbocc::Vector{T}
-    cbocck::Vector{Matrix{T}}
 end
 function Occupation(h::Hamiltonian{T}) where {T<:Real}
-    return Occupation(Vector{T}(undef,0),Vector{Matrix{Float64}}(undef,0))
+    return Occupation(Vector{T}(undef,0))
 end
 
 getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc", "cbocck"]
@@ -104,10 +103,24 @@ function integrate1d_obs(sim::Simulation{T},o::Occupation{T},sol,
     occ         = trapz((p.kxsamples,:),occ_k .* moving_bz)
 
     o.cbocc     = occ
-    o.cbocck    = hcat(occ_k_itp) # o.cbocck must be matrix!
 
     return o
 end
+
+function integrate2d_obs!(sim::Simulation{T},occs::Vector{Occupation{T}},
+    kysamples::Vector{T},total_obs::Vector{Observable{T}}) where {T<:Real}
+
+    vx      = trapz((:,hcat(kysamples)),hcat([v.vx for v in vels]...))
+    vxintra = trapz((:,hcat(kysamples)),hcat([v.vxintra for v in vels]...))
+    vxinter = trapz((:,hcat(kysamples)),hcat([v.vxinter for v in vels]...))
+
+    total_vel           = filter(x -> x isa Velocity,total_obs)[1]
+    total_vel.vx        .+= vx
+    total_vel.vxintra   .+= vxintra
+    total_vel.vxinter   .+= vxinter
+    return nothing
+end
+
 
 
 function calc_obs(sim::Simulation{T},sol) where {T<:Real}

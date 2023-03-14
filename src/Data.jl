@@ -24,6 +24,10 @@ function savedata(sim::Simulation{T}) where {T<:Real}
     return nothing
 end
 
+function loaddata(sim::Simulation)
+    return DataFrame(CSV.File(sim.datapath*getname(sim)*"/data.csv"))
+end
+
 function addproperobs!(dat::DataFrame,v::Velocity)
     dat.vx          = v.vx
     dat.vxintra     = v.vxintra

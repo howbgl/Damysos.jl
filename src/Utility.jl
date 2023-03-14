@@ -26,7 +26,7 @@ function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param:
         else
             return nothing
         end
-        sweeplist[i] = Simulation(new_h,new_df,new_p,sim.observables,
+        sweeplist[i] = Simulation(new_h,new_df,new_p,deepcopy(sim.observables),
                 sim.unitscaling,sim.dimensions,name,
                 sim.datapath * ensname * '/' * name * '/',
                 sim.plotpath * ensname * '/' * name * '/')

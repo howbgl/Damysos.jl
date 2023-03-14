@@ -15,8 +15,8 @@ const σ         = 2tcycle
 us,h    = scalegapped_dirac(m,vf,t2)
 df      = GaussianPulse(us,σ,freq,emax)
 pars    = NumericalParams1d(0.01,10,0.1,-5*df.σ)
-obs     = [Velocity(0.0)]
+obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,1)
 ens     = parametersweep(sim,sim.hamiltonian,:Δ,LinRange(h.Δ,10*h.Δ,4))
-run_simulation(ens)
+run_simulation!(ens)
 

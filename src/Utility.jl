@@ -4,7 +4,9 @@ function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param:
                         range::AbstractVector{T}) where {T<:Real}
 
     hashstring   = sprintf1("%x",hash([sim,comp,param,range]))
-    ensname      = getname(Ensemble([sim],"_$param"*"_sweep"*hashstring))
+    ensname      = "Ensemble[$(length(range))]{$T}($(sim.dimensions)d)" * 
+            getshortname(sim.hamiltonian) * getshortname(sim.drivingfield) *
+            "_$param"*"_sweep_" * hashstring
 
     sweeplist    = Vector{Simulation{T}}(undef,length(range))
     for i in eachindex(sweeplist)
@@ -31,7 +33,7 @@ function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param:
     end
 
 
-    return Ensemble(sweeplist,ensname,
+    return Ensemble(sweeplist,"_$param"*"_sweep_"*hashstring,
                 sim.datapath * ensname * '/',
                 sim.plotpath * ensname * '/')
 end

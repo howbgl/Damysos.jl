@@ -23,16 +23,19 @@ struct Simulation{T<:Real}
     datapath::String
     plotpath::String
     function Simulation{T}(h,df,p,obs,us,d,id,dpath,ppath) where {T<:Real}
+
         if p isa NumericalParams1d{T} && d!=1
             printstyled("warning: ",color = :red)
             print("given dimensions ($d) not matching $p")
             println("; setting dimensions to 1")
             new(h,df,p,obs,us,UInt8(1),id,dpath,ppath)
+
         elseif p isa NumericalParams2d{T} && d!=2
             printstyled("warning: ",color = :red)
             print("given dimensions ($d) not matching $p")
             println("; setting dimensions to 1")
             new(h,df,p,obs,us,UInt8(2),id,dpath,ppath)
+            
         else
             new(h,df,p,obs,us,d,id,dpath,ppath)
         end

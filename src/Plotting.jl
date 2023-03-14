@@ -1,11 +1,9 @@
 
 function plotdata(ens::Ensemble{T},obs;
-        plotpath="/home/how09898/phd/plots/hhgjl/",maxharm=50,kwargs...) where {T<:Real}
+        maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
 
-    ensemblename = lowercase(getshortname(ens))*ens.name
-    if !isdir(plotpath*ensemblename)
-        mkpath(plotpath*ensemblename)
-    end
+    ensemblename = getname(ens)
+    ensurepath(ens.plotpath*ensemblename)
 
     if length(eachindex(ens.simlist)) == length(eachindex(obs))
 
@@ -24,7 +22,7 @@ function plotdata(ens::Ensemble{T},obs;
                     pdg         = periodogram(obs[j][i],
                                     nfft=8*length(obs[j][i]),
                                     fs=1/p.dt,
-                                    window=blackman)
+                                    window=fftwindow)
                     xmax        = minimum([maxharm,maximum(pdg.freq)/p.ν])
                     ydata       = pdg.power
                     xdata       = 1/p.ν .* pdg.freq
@@ -44,8 +42,8 @@ function plotdata(ens::Ensemble{T},obs;
                         xgridalpha=0.3,
                         label=ens[j].id)
                 end
-                savefig(figs,plotpath*ensemblename*'/'*allobsnames[i]*".pdf")
-                savefig(fftfigs,plotpath*ensemblename*'/'*allobsnames[i]*"_spec.pdf")
+                savefig(figs,ens.plotpath*allobsnames[i]*".pdf")
+                savefig(fftfigs,ens.plotpath*allobsnames[i]*"_spec.pdf")
             end
         end
         
@@ -65,9 +63,7 @@ function plotdata(sim::Simulation{T};fftwindow=hanning,kwargs...) where {T<:Real
 
     for obs in sim.observables
         obspath = sim.plotpath*filename*'/'
-        if !isdir(obspath)
-            mkpath(obspath)
-        end
+        ensurepath(obspath)
         plotdata(obs,alldata,p,obspath;fftwindow=fftwindow,kwargs...)
         
     end
@@ -77,7 +73,7 @@ function plotdata(sim::Simulation{T};fftwindow=hanning,kwargs...) where {T<:Real
 end
 
 function plotdata(obs::Observable{T},alldata::DataFrame,p,plotpath::String;
-                fftwindow=hanning,maxharm=50,kwargs...) where {T<:Real}
+                fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
 
     nonkresolved_obs = []
     periodograms     = []
@@ -113,4 +109,20 @@ function plotdata(obs::Observable{T},alldata::DataFrame,p,plotpath::String;
     savefig(fftfig,plotpath*getshortname(obs)*"_spec.pdf")
 
     return nothing
+end
+
+function plotfield(sim::Simulation{T}) where {T<:Real}
+
+    name    = getshortname(sim)
+    p       = getparams(sim)
+    ts      = p.tsamples
+    ax      = get_vecpotx(sim)
+    ay      = get_vecpoty(sim)
+    ex      = get_efieldx(sim)
+    ey      = get_efieldy(sim)
+    figa    = plot(ts, [ax.(ts) ay.(ts)],label=["Ax" "Ay"]);
+    savefig(figa,sim.plotpath*name*"_vecfield.pdf")
+    fige    = plot(ts, [ex.(ts) ey.(ts)],label=["Ax" "Ay"]);
+    savefig(fige,sim.plotpath*name*"_efield.pdf")
+
 end

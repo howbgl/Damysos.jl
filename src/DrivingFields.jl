@@ -45,3 +45,8 @@ end
 @inline function get_vecpoty(df::GaussianPulse{T}) where {T<:Real}
     return t -> sin(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
 end
+
+get_efieldx(sim::Simulation{T}) where {T<:Real} = get_efieldx(sim.drivingfield)
+get_efieldy(sim::Simulation{T}) where {T<:Real} = get_efieldy(sim.drivingfield)
+get_vecpotx(sim::Simulation{T}) where {T<:Real} = get_vecpotx(sim.drivingfield)
+get_vecpoty(sim::Simulation{T}) where {T<:Real} = get_vecpoty(sim.drivingfield)

@@ -13,7 +13,7 @@ export NumericalParameters,NumericalParams2d,NumericalParams1d
 export Simulation,Ensemble,getparams,parametersweep
 export Observable,Velocity,Occupation,Timesteps,getnames_obs
 export UnitScaling,semiclassical_interband_range,maximum_k
-export run_simulation,run_simulation1d,run_simulation2d
+export run_simulation!,run_simulation1d!,run_simulation2d!
 export savemetadata,save,load
 
 abstract type SimulationComponent{T} end

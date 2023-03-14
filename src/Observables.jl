@@ -1,6 +1,11 @@
 
 struct Velocity{T<:Real} <: Observable{T}
-    dummy::T
+    vx::Vector{T}
+    vxintra::Vector{T}
+    vxinter::Vector{T}
+end
+function Velocity(h::Hamiltonian{T}) where {T<:Real}
+    return Velocity(Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0))
 end
 
 getnames_obs(v::Velocity{T}) where {T<:Real} = ["vx","vxintra","vxinter"]
@@ -22,10 +27,10 @@ function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,
     end
 end
 
-function integrate_obs(sim::Simulation{T},v::Velocity{T},sol,
+function integrate1d_obs(sim::Simulation{T},v::Velocity{T},sol,
                     moving_bz::Array{T}) where {T<:Real}
-    p           = getparams(sim)
 
+    p           = getparams(sim)
     vxintra_k   = zeros(T,p.nkx,length(sol.t))
     vxinter_k   = zeros(T,p.nkx,length(sol.t))
     vxintra     = zeros(T,length(sol.t))
@@ -38,14 +43,33 @@ function integrate_obs(sim::Simulation{T},v::Velocity{T},sol,
     vxinter = trapz((p.kxsamples,:),vxinter_k .* moving_bz)
     @. vx   = vxinter + vxintra
 
-    return vx,vxintra,vxinter
+    return Velocity(vx,vxintra,vxinter)
+end
+
+function integrate2d_obs!(sim::Simulation{T},vels::Vector{Velocity{T}},
+    kysamples::Vector{T},total_obs::Vector{Observable{T}}) where {T<:Real}
+
+    vx      = trapz((:,hcat(kysamples)),hcat([v.vx for v in vels]...))
+    vxintra = trapz((:,hcat(kysamples)),hcat([v.vxintra for v in vels]...))
+    vxinter = trapz((:,hcat(kysamples)),hcat([v.vxinter for v in vels]...))
+
+    total_vel           = filter(x -> x isa Velocity,total_obs)[1]
+    total_vel.vx        .+= vx
+    total_vel.vxintra   .+= vxintra
+    total_vel.vxinter   .+= vxinter
+    return nothing
 end
 
 
 struct Occupation{T<:Real} <: Observable{T}
-    dummy::T
+    cbocc::Vector{T}
+    cbocck::Vector{Matrix{T}}
 end
-getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cb_occ", "cb_occ_k"]
+function Occupation(h::Hamiltonian{T}) where {T<:Real}
+    return Occupation(Vector{T}(undef,0),Vector{Matrix{Float64}}(undef,0))
+end
+
+getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc", "cbocck"]
 getparams(occ::Occupation{T}) where {T<:Real}    = getnames_obs(occ)
 arekresolved(occ::Occupation{T}) where {T<:Real} = [false, true]
 
@@ -65,7 +89,7 @@ function calcobs_k1d!(sim::Simulation{T},occ::Occupation{T},sol,
    end
 end
 
-function integrate_obs(sim::Simulation{T},o::Occupation{T},sol,
+function integrate1d_obs(sim::Simulation{T},o::Occupation{T},sol,
                     moving_bz::Array{T}) where {T<:Real}
 
     p           = getparams(sim)
@@ -79,7 +103,10 @@ function integrate_obs(sim::Simulation{T},o::Occupation{T},sol,
 
     occ         = trapz((p.kxsamples,:),occ_k .* moving_bz)
 
-    return occ,occ_k_itp
+    o.cbocc     = occ
+    o.cbocck    = hcat(occ_k_itp) # o.cbocck must be matrix!
+
+    return o
 end
 
 
@@ -96,9 +123,6 @@ function calc_obs(sim::Simulation{T},sol) where {T<:Real}
         moving_bz[:,i] .= bzmask.(p.kxsamples .- a(sol.t[i]))
     end
 
-    obs     = []
-    for i in 1:length(sim.observables)
-        append!(obs,integrate_obs(sim,sim.observables[i],sol,moving_bz))
-    end
+    obs     = [integrate1d_obs(sim,o,sol,moving_bz) for o in sim.observables]
     return obs
 end

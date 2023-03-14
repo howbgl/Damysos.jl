@@ -1,5 +1,5 @@
 
-function run_simulation1d(sim::Simulation{T},ky::T;
+function run_simulation1d!(sim::Simulation{T},ky::T;
         rtol=1e-10,atol=1e-10,savedata=true,saveplots=true,kwargs...) where {T<:Real}
 
     p              = getparams(sim)
@@ -36,67 +36,77 @@ function run_simulation1d(sim::Simulation{T},ky::T;
     prob           = ODEProblem(rhs!,u0,tspan)
     sol            = solve(prob;saveat=tsamples,reltol=rtol,abstol=atol,kwargs...)
     
-    obs = calc_obs(sim,sol)
+    sim.observables .= calc_obs(sim,sol)
 
     if savedata == true
-        Damysos.savedata(sim,obs)
+        Damysos.savedata(sim)
     end
 
     if saveplots == true
         Damysos.plotdata(sim)
+        plotfield(sim)
     end
 
-    return obs
+    return sim.observables
 end
 
-function run_simulation2d(sim::Simulation{T};
+function run_simulation2d!(sim::Simulation{T};
                 savedata=true,saveplots=true,kwargs...) where {T<:Real}
 
     p         = getparams(sim)
-    total_obs = []
-    last_obs  = run_simulation1d(sim,p.kysamples[1];
-                                savedata=false,saveplots=false,kwargs...)
+    total_obs = run_simulation1d!(sim,p.kysamples[1];
+                    savedata=false,saveplots=false,kwargs...)
+    last_obs  = deepcopy(total_obs)
 
     for i in 2:p.nky
         if mod(i,10)==0
             println(100.0i/p.nky,"%")
         end
-        obs = run_simulation1d(sim,p.kysamples[i];savedata=false,saveplots=false,kwargs...)
+        obs = run_simulation1d!(sim,p.kysamples[i];savedata=false,saveplots=false,kwargs...)
+        
         for o in obs
-            push!(total_obs,
-                trapz((:,hcat(p.kysamples[i-1],p.kysamples[i])),hcat(last_obs[j],o)))
+            lasto = filter(x -> x isa typeof(o),last_obs)
+            nexto = filter(x -> x isa typeof(o),obs)
+            if length(lasto) != 1 || length(nexto) != 1
+                println("WARNING: length(lasto) != 1 || length(nexto) != 1")
+            end
+
+            integrate2d_obs!(sim,[lasto[1],nexto[1]],collect(p.kysamples[i-1:i]),total_obs) 
         end
         last_obs = deepcopy(obs)
     end
 
+    
+
     if savedata == true
-        Damysos.savedata(sim,total_obs)
+        Damysos.savedata(sim)
     end
 
     if saveplots == true
-        Damysos.plotdata(sim,datapath)
+        Damysos.plotdata(sim)
+        plotfield(sim)
     end
 
     return total_obs
 end
 
-function run_simulation(sim::Simulation{T};kwargs...) where {T<:Real}
+function run_simulation!(sim::Simulation{T};kwargs...) where {T<:Real}
     if sim.dimensions==1
-        obs = run_simulation1d(sim,0.0;kwargs...)
+        obs = run_simulation1d!(sim,0.0;kwargs...)
     elseif sim.dimensions==2
-        obs = run_simulation2d(sim;kwargs...)
+        obs = run_simulation2d!(sim;kwargs...)
     end
     savemetadata(sim)
     return obs
 end
 
-function run_simulation(ens::Ensemble{T};savedata=true,saveplots=true,
+function run_simulation!(ens::Ensemble{T};savedata=true,saveplots=true,
                 makecombined_plots=true,kwargs...) where {T<:Real}
 
     allobs = []
 
     for i in eachindex(ens.simlist)
-        obs = run_simulation(ens.simlist[i];savedata=savedata,saveplots=saveplots,kwargs...)
+        obs = run_simulation!(ens.simlist[i];savedata=savedata,saveplots=saveplots,kwargs...)
         push!(allobs,obs)
     end
 

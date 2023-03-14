@@ -7,11 +7,11 @@ struct Ensemble{T<:Real}
 end
 function Ensemble(sl::Vector{Simulation{T}},id::String) where {T<:Real} 
     return Ensemble(sl,id,
-                        "/home/how09898/phd/data/hhgjl/",
-                        "/home/how09898/phd/plots/hhgjl/")
+                        "/home/how09898/phd/data/hhgjl/$id",
+                        "/home/how09898/phd/plots/hhgjl/$id")
 end
 Ensemble(sl::Vector{Simulation{T}},id) where {T<:Real}      = Ensemble(sl,String(id)) 
-Ensemble(sl::Vector{Simulation{T}}) where {T<:Real}         = Ensemble(sl,"defaultens") 
+Ensemble(sl::Vector{Simulation{T}}) where {T<:Real}         = Ensemble(sl,randstring(4)) 
 
 Base.size(a::Ensemble)                  = (size(a.simlist))
 Base.setindex!(a::Ensemble,v,i::Int)    = (a.simlist[i] = v)

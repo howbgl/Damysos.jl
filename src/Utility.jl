@@ -28,14 +28,14 @@ function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param:
         end
         sweeplist[i] = Simulation(new_h,new_df,new_p,deepcopy(sim.observables),
                 sim.unitscaling,sim.dimensions,name,
-                sim.datapath * ensname * '/' * name * '/',
-                sim.plotpath * ensname * '/' * name * '/')
+                "/home/how09898/phd/data/hhgjl/" * ensname * '/' * name * '/',
+                "/home/how09898/phd/plots/hhgjl/" * ensname * '/' * name * '/')
     end
 
 
     return Ensemble(sweeplist,"_$param"*"_sweep_"*hashstring,
-                sim.datapath * ensname * '/',
-                sim.plotpath * ensname * '/')
+                "/home/how09898/phd/data/hhgjl/" * ensname * '/',
+                "/home/how09898/phd/plots/hhgjl/" * ensname * '/')
 end
 
 

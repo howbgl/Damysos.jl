@@ -17,5 +17,5 @@ df      = GaussianPulse(us,σ,freq,emax)
 pars    = NumericalParams2d(0.1,0.1,10,0.1,0.1,-5df.σ)
 obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,2)
-ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(0.1,1,4))
+ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(0.1,0.01,4))
 run_simulation!(ens)

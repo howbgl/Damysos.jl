@@ -9,23 +9,22 @@ end
 function savedata(sim::Simulation{T}) where {T<:Real}
 
     dat         = DataFrame(t=getparams(sim).tsamples)
-    filename    = getname(sim)*"/data.csv"
     
-    ensurepath(dirname(sim.datapath*filename))
+    ensurepath(dirname(sim.datapath))
 
     for o in sim.observables
         addproperobs!(dat,o)
         saveimproperobs(o)
     end
 
-    CSV.write(sim.datapath*filename,dat)
-    println("Saved Simulation data at ",sim.datapath*filename)
+    CSV.write(sim.datapath*"data.csv",dat)
+    println("Saved Simulation data at ",sim.datapath*"data.csv",)
 
     return nothing
 end
 
 function loaddata(sim::Simulation)
-    return DataFrame(CSV.File(sim.datapath*getname(sim)*"/data.csv"))
+    return DataFrame(CSV.File(sim.datapath*"data.csv"))
 end
 
 function addproperobs!(dat::DataFrame,v::Velocity)
@@ -50,7 +49,7 @@ end
 
 function savemetadata(sim::Simulation)
 
-    filename = getname(sim) * "/simulation.meta"
+    filename = "simulation.meta"
     save(sim.datapath*filename,sim)
     println("Simulation metadata saved at ",sim.datapath*filename)
 end
@@ -58,7 +57,7 @@ end
 
 function savemetadata(ens::Ensemble)
     
-    filename = getname(ens) * "/ensemble.meta"
+    filename =  "ensemble.meta"
     save(ens.datapath*filename,ens)
     println("Ensemble metadata save at ",ens.datapath*filename)
 end

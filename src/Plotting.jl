@@ -26,7 +26,7 @@ function plotdata(ens::Ensemble{T},vel::Velocity{T};
                                 fs=1/p.dt,
                                 window=fftwindow)
                 xmax        = minimum([maxharm,maximum(pdg.freq)/p.ν])
-                ydata       = pdg.power
+                ydata       = pdg.power/maximum(pdg.power)
                 xdata       = 1/p.ν .* pdg.freq
                 cut_inds    = ydata .> floatmin(T)
                 if length(ydata[cut_inds]) < length(ydata)
@@ -132,6 +132,27 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
     savefig(fftfig,sim.plotpath*"vx_spec.pdf")
 
     return nothing
+end
+
+function plotdata(sim::Simulation{T},occ::Occupation{T};
+                fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
+   
+    p   = getparams(sim)
+    fig = plot(p.tsamples,occ.cbocc,label="CB occupation") 
+    pdg = periodogram(occ.cbocc,nfft=8*length(occ.cbocc),fs=1/p.dt,window=fftwindow)
+    xmax    = minimum([maxharm,maximum(pdg.freq)/p.ν])
+    fftfig  = plot(1/p.ν .* pdg.freq, 
+                pdg.power,
+                yscale=:log10,
+                xlims=[0,xmax],
+                xticks=0:5:xmax,
+                xminorticks=0:xmax,
+                xminorgrid=true,
+                xgridalpha=0.3,
+                label="CB occupation")
+
+    savefig(fig,sim.plotpath*"cbocc.pdf")
+    savefig(fftfig,sim.plotpath*"cbocc_spec.pdf")
 end
 
 function plotfield(sim::Simulation{T}) where {T<:Real}

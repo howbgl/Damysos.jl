@@ -52,18 +52,16 @@ end
 function Simulation(h::Hamiltonian{T},df::DrivingField{T},
     p::NumericalParameters{T},obs::Vector{O} where {O<:Observable{T}},
     us::UnitScaling{T},d::Integer,id) where {T<:Real} 
-
+    name = "Simulation{$T}($(d)d)" * getshortname(h) *  getshortname(df) * "_$id"
     return Simulation(h,df,p,obs,us,d,String(id),
-                "/home/how09898/phd/data/hhgjl/",
-                "/home/how09898/phd/plots/hhgjl/")
+                "/home/how09898/phd/data/hhgjl/"*name*"/",
+                "/home/how09898/phd/plots/hhgjl/"*name*"/")
 end
 
 function Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
     obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer) where {T<:Real} 
-    
-    return Simulation(h,df,p,obs,us,d,randstring(4),
-                "/home/how09898/phd/data/hhgjl/",
-                "/home/how09898/phd/plots/hhgjl/")
+    id = sprintf1("%x",hash([h,df,p,obs,us,d]))
+    return Simulation(h,df,p,obs,us,d,id)
 end
 
 function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}

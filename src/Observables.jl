@@ -102,22 +102,16 @@ function integrate1d_obs(sim::Simulation{T},o::Occupation{T},sol,
 
     occ         = trapz((p.kxsamples,:),occ_k .* moving_bz)
 
-    o.cbocc     = occ
-
-    return o
+    return Occupation(occ)
 end
 
 function integrate2d_obs!(sim::Simulation{T},occs::Vector{Occupation{T}},
     kysamples::Vector{T},total_obs::Vector{Observable{T}}) where {T<:Real}
 
-    vx      = trapz((:,hcat(kysamples)),hcat([v.vx for v in vels]...))
-    vxintra = trapz((:,hcat(kysamples)),hcat([v.vxintra for v in vels]...))
-    vxinter = trapz((:,hcat(kysamples)),hcat([v.vxinter for v in vels]...))
+    cbocc  = trapz((:,hcat(kysamples)),hcat([o.cbocc for o in occs]...))
 
-    total_vel           = filter(x -> x isa Velocity,total_obs)[1]
-    total_vel.vx        .+= vx
-    total_vel.vxintra   .+= vxintra
-    total_vel.vxinter   .+= vxinter
+    total_occ           = filter(x -> x isa Occupation,total_obs)[1]
+    total_vel.cbocc     .+= cbocc
     return nothing
 end
 

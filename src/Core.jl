@@ -91,6 +91,10 @@ function run_simulation2d!(sim::Simulation{T};
 end
 
 function run_simulation!(sim::Simulation{T};kwargs...) where {T<:Real}
+
+    println("Startin Simulation:")
+    println("$sim")
+
     if sim.dimensions==1
         obs = run_simulation1d!(sim,0.0;kwargs...)
     elseif sim.dimensions==2

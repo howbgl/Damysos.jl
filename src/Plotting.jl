@@ -8,6 +8,33 @@ function plotdata(ens::Ensemble{T};maxharm=30,fftwindow=hanning,kwargs...) where
 end
 
 
+function plotspectrum!(figure,data::Vector{T},freq,dt;maxharm=30,fftwindow=hanning,
+                        label="",title="",kwargs...) where {T<:Real}
+    pdg         = periodogram(data,nfft=8*length(data),fs=1/dt,window=fftwindow)
+    xmax        = minimum([maxharm,maximum(pdg.freq)/freq])
+    ydata       = pdg.power .* (pdg.freq .^ 2)
+    ydata       = ydata / maximum(ydata)
+    xdata       = 1/freq .* pdg.freq
+    cut_inds    = ydata .> floatmin(T)
+    if length(ydata[cut_inds]) < length(ydata)
+        println("Removing zeros/negatives in plotting spectrum of $title ($label)")
+    end
+    plot!(figure,
+        xdata[cut_inds], 
+        ydata[cut_inds],
+        yscale=:log10,
+        xlims=[0,xmax],
+        xticks=0:5:xmax,
+        xminorticks=0:xmax,
+        xminorgrid=true,
+        xgridalpha=0.3,
+        label=label,
+        title=title)
+
+    return nothing
+end
+
+
 function plotdata(ens::Ensemble{T},vel::Velocity{T};
         maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
 
@@ -21,36 +48,14 @@ function plotdata(ens::Ensemble{T},vel::Velocity{T};
                 data    = getproperty(v,vsymb)
                 plot!(fig,p.tsamples,data,label=sim.id)
 
-                pdg         = periodogram(data,
-                                nfft=8*length(data),
-                                fs=1/p.dt,
-                                window=fftwindow)
-                xmax        = minimum([maxharm,maximum(pdg.freq)/p.ν])
-                ydata       = pdg.power/maximum(pdg.power)
-                xdata       = 1/p.ν .* pdg.freq
-                cut_inds    = ydata .> floatmin(T)
-                if length(ydata[cut_inds]) < length(ydata)
-                    println("Warning: Discarding negative or zero values in plotting\
-                        of spectrum of $vname, $sim")
-                end
-                plot!(fftfig,
-                    xdata[cut_inds], 
-                    ydata[cut_inds],
-                    yscale=:log10,
-                    xlims=[0,xmax],
-                    xticks=0:5:xmax,
-                    xminorticks=0:xmax,
-                    xminorgrid=true,
-                    xgridalpha=0.3,
-                    label=sim.id)
+                plotspectrum!(fftfig,data,p.ν,p.dt,label=sim.id,title=vname,maxharm=maxharm,
+                                fftwindow=fftwindow,kwargs...)
             end
                 savefig(fig,ens.plotpath*vname*".pdf")
-                savefig(fftfig,ens.plotpath*vname*"_spec.pdf")
-            
-        end
-
-        
+                savefig(fftfig,ens.plotpath*vname*"_spec.pdf")            
+        end        
 end
+
 
 function plotdata(ens::Ensemble{T},occ::Occupation{T};
     maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
@@ -63,33 +68,11 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
         data    = o.cbocc
         plot!(fig,p.tsamples,data,label=sim.id)
 
-        pdg         = periodogram(data,
-                        nfft=8*length(data),
-                        fs=1/p.dt,
-                        window=fftwindow)
-        xmax        = minimum([maxharm,maximum(pdg.freq)/p.ν])
-        ydata       = pdg.power
-        xdata       = 1/p.ν .* pdg.freq
-        cut_inds    = ydata .> floatmin(T)
-        if length(ydata[cut_inds]) < length(ydata)
-            println("Warning: Discarding negative or zero values in plotting\
-                of spectrum of cbocc, $sim")
-        end
-        plot!(fftfig,
-            xdata[cut_inds], 
-            ydata[cut_inds],
-            yscale=:log10,
-            xlims=[0,xmax],
-            xticks=0:5:xmax,
-            xminorticks=0:xmax,
-            xminorgrid=true,
-            xgridalpha=0.3,
-            label="sim.id")
+        plotspectrum!(figure,data,p.ν,p.dt,label=sim.id,title="CB occupation",
+                        maxharm=maxharm,fftwindow=fftwindow,kwargs...)
     end
         savefig(fig,ens.plotpath*"cbocc.pdf")
         savefig(fftfig,ens.plotpath*"cbocc_spec.pdf")
-
-
 end
 
 function plotdata(sim::Simulation{T};fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
@@ -98,35 +81,26 @@ function plotdata(sim::Simulation{T};fftwindow=hanning,maxharm=30,kwargs...) whe
 
     for obs in sim.observables
         ensurepath(sim.plotpath)
-        plotdata(sim,obs;fftwindow=fftwindow,maxharm=maxharm,kwargs...)
-        
+        plotdata(sim,obs;fftwindow=fftwindow,maxharm=maxharm,kwargs...)        
     end
 
     println("Saved plots at ",sim.plotpath)
     return nothing
 end
 
+
 function plotdata(sim::Simulation{T},vel::Velocity{T};
                 fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
 
     p   = getparams(sim)
-    fig = plot(p.tsamples,[vel.vx vel.vxintra vel.vxinter],
-            label=["vx" "vxintra" "vxinter"])
-    
-            periodograms = []
-    for data in [vel.vx,vel.vxintra,vel.vxinter]
-        push!(periodograms,periodogram(data,nfft=8*length(data),fs=1/p.dt,window=fftwindow))
+    fig = plot(p.tsamples,[vel.vx vel.vxintra vel.vxinter],label=["vx" "vxintra" "vxinter"])
+
+    fftfig = plot();
+    periodograms = []
+    for (data,name) in zip([vel.vx,vel.vxintra,vel.vxinter],["vx", "vxintra", "vxinter"])
+        plotspectrum!(fftfig,data,p.ν,p.dt,label=name,title=name,
+                    maxharm=maxharm,fftwindow=fftwindow,kwargs...)
     end
-    xmax    = minimum([maxharm,maximum(periodograms[1].freq)/p.ν])
-    fftfig  = plot(1/p.ν .* periodograms[1].freq, 
-                hcat([x.power for x in periodograms]...),
-                yscale=:log10,
-                xlims=[0,xmax],
-                xticks=0:5:xmax,
-                xminorticks=0:xmax,
-                xminorgrid=true,
-                xgridalpha=0.3,
-                label=["vx" "vxintra" "vxinter"])
 
     savefig(fig,sim.plotpath*"vx.pdf")
     savefig(fftfig,sim.plotpath*"vx_spec.pdf")
@@ -134,26 +108,20 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
     return nothing
 end
 
+
 function plotdata(sim::Simulation{T},occ::Occupation{T};
                 fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
    
-    p   = getparams(sim)
-    fig = plot(p.tsamples,occ.cbocc,label="CB occupation") 
-    pdg = periodogram(occ.cbocc,nfft=8*length(occ.cbocc),fs=1/p.dt,window=fftwindow)
-    xmax    = minimum([maxharm,maximum(pdg.freq)/p.ν])
-    fftfig  = plot(1/p.ν .* pdg.freq, 
-                pdg.power,
-                yscale=:log10,
-                xlims=[0,xmax],
-                xticks=0:5:xmax,
-                xminorticks=0:xmax,
-                xminorgrid=true,
-                xgridalpha=0.3,
-                label="CB occupation")
+    p       = getparams(sim)
+    fig     = plot(p.tsamples,occ.cbocc,label="CB occupation") 
+    fftfig  = plot();
+    plotspectrum!(fftfig,data,p.ν,p.dt,label="CB",title="CB occupation",
+                    maxharm=maxharm,fftwindow=fftwindow,kwargs...)
 
     savefig(fig,sim.plotpath*"cbocc.pdf")
     savefig(fftfig,sim.plotpath*"cbocc_spec.pdf")
 end
+
 
 function plotfield(sim::Simulation{T}) where {T<:Real}
 

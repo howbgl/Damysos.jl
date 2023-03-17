@@ -1,16 +1,16 @@
-using Unitful,Pkg
+using Pkg
 
 Pkg.activate(".")
 
-using Damysos
+using Damysos,Unitful
 
 const vf        = u"4.3e5m/s"
-const freq      = u"8THz"
+const freq      = u"15THz"
 const m         = u"10meV"
-const emax      = u"0.28MV/cm"
+const emax      = u"0.5MV/cm"
 const tcycle    = uconvert(u"fs",1/freq)
 const t2        = 0.6tcycle
-const σ         = u"500fs"
+const σ         = u"200fs"
 
 us,h    = scalegapped_dirac(m,vf,t2)
 df      = GaussianPulse(us,σ,freq,emax)

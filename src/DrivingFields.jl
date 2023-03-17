@@ -46,6 +46,17 @@ end
     return t -> sin(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
 end
 
+function printparamsSI(df::GaussianPulse,us::UnitScaling;digits=3)
+    σ       = timeSI(df.σ,us)
+    ν       = frequencySI(df.ω/2π,us)
+    field   = electricfieldSI(df.eE,us)
+    str = "σ  = $(round(typeof(σ),σ,sigdigits=digits))\n"
+    str *= "ν  = $(round(typeof(ν),ν,sigdigits=digits))\n"
+    str *= "E₀ = $(round(typeof(field),field,sigdigits=digits))\n"
+    str *= "φ = $(round(df.φ,sigdigits=digits))\n"
+    return str
+end
+
 get_efieldx(sim::Simulation{T}) where {T<:Real} = get_efieldx(sim.drivingfield)
 get_efieldy(sim::Simulation{T}) where {T<:Real} = get_efieldy(sim.drivingfield)
 get_vecpotx(sim::Simulation{T}) where {T<:Real} = get_vecpotx(sim.drivingfield)

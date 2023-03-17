@@ -1,4 +1,5 @@
 
+
 getshortname(h::Hamiltonian{T}) where {T<:Real} = split("_$h",'{')[1]
 
 struct GappedDirac{T<:Real} <: Hamiltonian{T}
@@ -47,3 +48,10 @@ getvy_vv(h::GappedDirac{T}) where {T<:Real}  = (kx,ky) -> -ky/sqrt(kx^2+ky^2+h.�
 getdipoles_x(h::GappedDirac{T}) where {T<:Real}  = (getdx_cc(h),getdx_cv(h),getdx_vc(h),getdx_vv(h))
 getvels_x(h::GappedDirac{T}) where {T<:Real}     = (getvx_cc(h),getvx_cv(h),getvx_vc(h),getvx_vv(h))  
 
+function printparamsSI(h::GappedDirac,us::UnitScaling;digits=3)
+    Δ   = energySI(h.Δ,us)
+    t2  = timeSI(h.t2,us)
+    str = "Δ = $(round(typeof(Δ),Δ,sigdigits=digits))\n"
+    str *= "T₂ = $(round(typeof(t2),t2,sigdigits=digits))\n"
+    return str
+end

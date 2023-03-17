@@ -11,6 +11,35 @@ function getparams(us::UnitScaling{T}) where {T<:Real}
             lengthscale=Quantity(us.lengthscale,u"nm"))
 end
 
+function energySI(en,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(u"meV",en*Unitful.ħ/tc)
+end
+function electricfieldSI(field,us::UnitScaling)
+    tc,lc   = getparams(us)
+    e   = uconvert(u"C",1u"eV"/1u"V")
+    return uconvert(u"MV/cm",field*Unitful.ħ/(e*tc*lc))
+end
+function timeSI(time,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(u"fs",time*tc)
+end
+function lengthSI(length,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(u"Å",length*lc)
+end
+function frequencySI(ν,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(u"THz",ν/tc)
+end
+function velocitySI(v,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(u"m/s",v*lc/tc)
+end
+function wavenumberSI(k,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(u"Å^-1",k/lc)
+end
 
 struct Simulation{T<:Real}
     hamiltonian::Hamiltonian{T}
@@ -99,4 +128,11 @@ getshortname(obs::Observable{T}) where {T<:Real} = split("$obs",'{')[1]
 function Base.show(io::IO,::MIME"text/plain",c::SimulationComponent{T}) where {T}
     pars = getparams(c)
     print(io,split("$c",'{')[1],":  $pars")
+end
+
+function printparamsSI(sim::Simulation)
+    str = printparamsSI(sim.hamiltonian,sim.unitscaling)
+    str *= printparamsSI(sim.drivingfield,sim.unitscaling)
+    str *= printparamsSI(sim.numericalparams,sim.unitscaling)
+    return str
 end

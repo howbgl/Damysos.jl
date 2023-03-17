@@ -1,7 +1,7 @@
 module Damysos
 
 
-using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,Plots
+using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie
 using DSP,DataFrames,Random,CSV,Formatting,Folds
 
 export Hamiltonian,GappedDirac,scalegapped_dirac

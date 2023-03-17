@@ -33,6 +33,29 @@ function getparams(p::NumericalParams2d{T}) where {T<:Real}
     kysamples=LinRange(-p.kymax,p.kymax,2*Int(cld(p.kymax,p.dky))))
 end
 
+function printparamsSI(p::NumericalParams2d,us::UnitScaling;digits=3)
+    kxmax   = wavenumberSI(p.kxmax,us)
+    dkx     = wavenumberSI(p.dkx,us)
+    nkx     = getparams(p).nkx
+    kymax   = wavenumberSI(p.kymax,us)
+    dky     = wavenumberSI(p.dky,us)
+    nky     = getparams(p).nky
+    t0      = timeSI(p.t0,us)
+    dt      = timeSI(p.dt,us)
+    nt      = getparams(p).nt
+    str = "kxmax  = $(round(typeof(kxmax),kxmax,sigdigits=digits))\n"
+    str *= "dkx  = $(round(typeof(dkx),dkx,sigdigits=digits))\n"
+    str *= "nkx  = $nkx\n"
+    str *= "kymax  = $(round(typeof(kymax),kymax,sigdigits=digits))\n"
+    str *= "dky  = $(round(typeof(dky),dky,sigdigits=digits))\n"
+    str *= "nky  = $nky\n"
+    str *= "t0 = $(round(typeof(t0),t0,sigdigits=digits))\n"
+    str *= "dt = $(round(typeof(dt),dt,sigdigits=digits))\n"
+    str *= "nt  = $nt\n"
+    return str
+end
+
+
 struct NumericalParams1d{T<:Real} <: NumericalParameters{T}
     dkx::T
     kxmax::T
@@ -58,4 +81,20 @@ function getparams(p::NumericalParams1d{T}) where {T<:Real}
     dt=p.dt,
     tsamples=LinRange(-abs(p.t0),abs(p.t0),2*Int(cld(abs(p.t0),p.dt))),
     kxsamples=LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx))))
+end
+
+function printparamsSI(p::NumericalParams1d,us::UnitScaling;digits=3)
+    kxmax   = wavenumberSI(p.kxmax,us)
+    dkx     = wavenumberSI(p.dkx,us)
+    nkx     = getparams(p).nkx
+    t0      = timeSI(p.t0,us)
+    dt      = timeSI(p.dt,us)
+    nt      = getparams(p).nt
+    str = "kxmax  = $(round(typeof(kxmax),kxmax,sigdigits=digits))\n"
+    str *= "dkx  = $(round(typeof(dkx),dkx,sigdigits=digits))\n"
+    str *= "nkx  = $nkx\n"
+    str *= "t0 = $(round(typeof(t0),t0,sigdigits=digits))\n"
+    str *= "dt = $(round(typeof(dt),dt,sigdigits=digits))\n"
+    str *= "nt  = $nt\n"
+    return str
 end

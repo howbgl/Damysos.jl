@@ -92,8 +92,7 @@ end
 
 function run_simulation!(sim::Simulation{T};kwargs...) where {T<:Real}
 
-    println("Startin Simulation:")
-    println("$sim")
+    println("Starting $(getshortname(sim)) (id: $(sim.id))")
 
     if sim.dimensions==1
         obs = run_simulation1d!(sim,0.0;kwargs...)
@@ -105,13 +104,21 @@ function run_simulation!(sim::Simulation{T};kwargs...) where {T<:Real}
 end
 
 function run_simulation!(ens::Ensemble{T};savedata=true,saveplots=true,
-                makecombined_plots=true,kwargs...) where {T<:Real}
+                ensembleparallel=true,
+                makecombined_plots=true,
+                kwargs...) where {T<:Real}
 
     allobs = []
 
-    for i in eachindex(ens.simlist)
-        obs = run_simulation!(ens.simlist[i];savedata=savedata,saveplots=saveplots,kwargs...)
-        push!(allobs,obs)
+    if ensembleparallel
+        allobs = Folds.collect(
+            run_simulation!(s;savedata=savedata,saveplots=saveplots,kwargs...)
+            for s in ens.simlist)
+    else
+        for i in eachindex(ens.simlist)
+            obs = run_simulation!(ens.simlist[i];savedata=savedata,saveplots=saveplots,kwargs...)
+            push!(allobs,obs)
+        end
     end
 
     if makecombined_plots == true

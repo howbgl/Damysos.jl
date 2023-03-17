@@ -1,3 +1,65 @@
+
+
+function plottimeseries(timeseries::Vector{Vector{T}},labels::Vector{String},tsamples;
+                        title="",
+                        sidelabel="",
+                        kwargs...) where {T<:Real}
+
+    f   = Figure()
+    ax  = Axis(f[1,1],title=title,xlabel="t/tc")
+
+    for (data,label) in zip(timeseries,labels)
+        
+        lines!(ax,tsamples,data,label=label)
+    end
+
+    axislegend(ax)
+    Label(f[1,2],sidelabel,tellheight=false,justification = :left)
+    
+    return f
+end
+
+function plotspectra(timeseries::Vector{Vector{T}},labels::Vector{String},freq,dt;
+                    maxharm=30,
+                    fftwindow=hanning,
+                    title="",
+                    sidelabel="",
+                    kwargs...) where {T<:Real}
+
+    f   = Figure()
+    ax  = Axis(f[1,1],
+                title=title,
+                xlabel="Ω/ω",
+                ylabel="|I|²",
+                yscale=log10,
+                xminorticksvisible=true,
+                xminorgridvisible=true,
+                xminorticks=0:1:maxharm,
+                xticks=0:5:maxharm)
+    xlims!(ax,[0,maxharm])
+
+    for (data,label) in zip(timeseries,labels)
+
+        pdg         = periodogram(data,
+                                    nfft=8*length(data),
+                                    fs=1/dt,
+                                    window=fftwindow)
+        ydata       = pdg.power .* (pdg.freq .^ 2)
+        ydata       = ydata / maximum(ydata)
+        xdata       = 1/freq .* pdg.freq
+        cut_inds    = ydata .> floatmin(T)
+        if length(ydata[cut_inds]) < length(ydata)
+            println("Removing zeros/negatives in plotting spectrum of $title ($label)")
+        end
+        lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label) 
+    end
+
+    axislegend(ax)
+    Label(f[1,2],sidelabel,tellheight=false,justification = :left)
+    
+    return f
+end
+
 function plotdata(ens::Ensemble{T};maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
     ensemblename = getname(ens)
     ensurepath(ens.plotpath*ensemblename)
@@ -8,51 +70,36 @@ function plotdata(ens::Ensemble{T};maxharm=30,fftwindow=hanning,kwargs...) where
 end
 
 
-function plotspectrum!(figure,data::Vector{T},freq,dt;maxharm=30,fftwindow=hanning,
-                        label="",title="",kwargs...) where {T<:Real}
-    pdg         = periodogram(data,nfft=8*length(data),fs=1/dt,window=fftwindow)
-    xmax        = minimum([maxharm,maximum(pdg.freq)/freq])
-    ydata       = pdg.power .* (pdg.freq .^ 2)
-    ydata       = ydata / maximum(ydata)
-    xdata       = 1/freq .* pdg.freq
-    cut_inds    = ydata .> floatmin(T)
-    if length(ydata[cut_inds]) < length(ydata)
-        println("Removing zeros/negatives in plotting spectrum of $title ($label)")
-    end
-    plot!(figure,
-        xdata[cut_inds], 
-        ydata[cut_inds],
-        yscale=:log10,
-        xlims=[0,xmax],
-        xticks=0:5:xmax,
-        xminorticks=0:xmax,
-        xminorgrid=true,
-        xgridalpha=0.3,
-        label=label,
-        title=title)
-
-    return nothing
-end
-
-
 function plotdata(ens::Ensemble{T},vel::Velocity{T};
         maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
 
         for (vsymb,vname) in zip([:vx,:vxintra,:vxinter],["vx","vxintra","vxinter"])
 
-            fig     = plot();
-            fftfig  = plot();
+            timeseries  = Vector{Vector{T}}(undef,0)
+            labels      = Vector{String}(undef,0)
+
             for sim in ens.simlist
                 p       = getparams(sim)
                 v       = filter(x -> x isa Velocity,sim.observables)[1]
                 data    = getproperty(v,vsymb)
-                plot!(fig,p.tsamples,data,label=sim.id)
 
-                plotspectrum!(fftfig,data,p.ν,p.dt,label=sim.id,title=vname,maxharm=maxharm,
+                push!(timeseries,data)
+                push!(labels,sim.id)
+                plottimeseries(ax,p.tsamples,data,label=sim.id)
+
+                plotspectra(fftax,data,p.ν,p.dt,label=sim.id,title=vname,maxharm=maxharm,
                                 fftwindow=fftwindow,kwargs...)
             end
-                savefig(fig,ens.plotpath*vname*".pdf")
-                savefig(fftfig,ens.plotpath*vname*"_spec.pdf")            
+            
+            figtime     = plottimeseries(timeseries,labels,p.tsamples,title=vname,kwargs...)
+            figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
+                                        maxharm=maxharm,
+                                        fftwindow=fftwindow,
+                                        title=vname,
+                                        kwargs...)
+
+            CairoMakie.save(ens.plotpath*vname*".pdf",figtime)
+            CairoMakie.save(ens.plotpath*vname*"_spec.pdf",figspectra)            
         end        
 end
 
@@ -60,19 +107,29 @@ end
 function plotdata(ens::Ensemble{T},occ::Occupation{T};
     maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
 
-    fig     = plot();
-    fftfig  = plot();
+    timeseries  = Vector{Vector{T}}(undef,0)
+    labels      = Vector{String}(undef,0)
+
     for sim in ens.simlist
         p       = getparams(sim)
         o       = filter(x -> x isa Occupation,sim.observables)[1]
         data    = o.cbocc
-        plot!(fig,p.tsamples,data,label=sim.id)
 
-        plotspectrum!(figure,data,p.ν,p.dt,label=sim.id,title="CB occupation",
-                        maxharm=maxharm,fftwindow=fftwindow,kwargs...)
+        push!(timeseries,data)
+        push!(labels,sim.id)
     end
-        savefig(fig,ens.plotpath*"cbocc.pdf")
-        savefig(fftfig,ens.plotpath*"cbocc_spec.pdf")
+
+    figtime     = plottimeseries(timeseries,labels,p.tsamples,
+                                title="CB occupation",
+                                kwargs...)
+    figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
+                                maxharm=maxharm,
+                                fftwindow=fftwindow,
+                                title="CB occupation",
+                                kwargs...)
+
+    CairoMakie.save(ens.plotpath*"cb_occ.pdf",figtime)
+    CairoMakie.save(ens.plotpath*"cb_occ_spec.pdf",figspectra)
 end
 
 function plotdata(sim::Simulation{T};fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
@@ -92,18 +149,23 @@ end
 function plotdata(sim::Simulation{T},vel::Velocity{T};
                 fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
 
-    p   = getparams(sim)
-    fig = plot(p.tsamples,[vel.vx vel.vxintra vel.vxinter],label=["vx" "vxintra" "vxinter"])
+    p           = getparams(sim)
+    timeseries  = [vel.vx,vel.vxintra,vel.vxinter]
+    labels      = ["vx", "vxintra", "vxinter"]
 
-    fftfig = plot();
-    periodograms = []
-    for (data,name) in zip([vel.vx,vel.vxintra,vel.vxinter],["vx", "vxintra", "vxinter"])
-        plotspectrum!(fftfig,data,p.ν,p.dt,label=name,title=name,
-                    maxharm=maxharm,fftwindow=fftwindow,kwargs...)
-    end
+    figtime     = plottimeseries(timeseries,labels,p.tsamples,
+                                title=sim.id,
+                                sidelabel=printparamsSI(sim),
+                                kwargs...)
+    figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
+                                maxharm=maxharm,
+                                fftwindow=fftwindow,
+                                title=sim.id,
+                                sidelabel=printparamsSI(sim),
+                                kwargs...)
 
-    savefig(fig,sim.plotpath*"vx.pdf")
-    savefig(fftfig,sim.plotpath*"vx_spec.pdf")
+    CairoMakie.save(sim.plotpath*"vx.pdf",figtime)
+    CairoMakie.save(sim.plotpath*"vx_spec.pdf",figspectra)
 
     return nothing
 end
@@ -112,14 +174,20 @@ end
 function plotdata(sim::Simulation{T},occ::Occupation{T};
                 fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
    
-    p       = getparams(sim)
-    fig     = plot(p.tsamples,occ.cbocc,label="CB occupation") 
-    fftfig  = plot();
-    plotspectrum!(fftfig,data,p.ν,p.dt,label="CB",title="CB occupation",
-                    maxharm=maxharm,fftwindow=fftwindow,kwargs...)
+    p           = getparams(sim)
+    figtime     = plottimeseries(timeseries,["CB occupation"],p.tsamples,
+                                title=sim.id,
+                                sidelabel=printparamsSI(sim),
+                                kwargs...)
+    figspectra  = plotspectra(timeseries,["CB occupation"],p.ν,p.dt,
+                                maxharm=maxharm,
+                                fftwindow=fftwindow,
+                                title=sim.id,
+                                sidelabel=printparamsSI(sim),
+                                kwargs...)
 
-    savefig(fig,sim.plotpath*"cbocc.pdf")
-    savefig(fftfig,sim.plotpath*"cbocc_spec.pdf")
+    CairoMakie.save(sim.plotpath*"cb_occ.pdf",figtime)
+    CairoMakie.save(sim.plotpath*"cb_occ_spec.pdf",figspectra)
 end
 
 
@@ -132,9 +200,11 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
     ay      = get_vecpoty(sim)
     ex      = get_efieldx(sim)
     ey      = get_efieldy(sim)
-    figa    = plot(ts, [ax.(ts) ay.(ts)],label=["Ax" "Ay"]);
-    savefig(figa,sim.plotpath*"/vecfield.pdf")
-    fige    = plot(ts, [ex.(ts) ey.(ts)],label=["Ax" "Ay"]);
-    savefig(fige,sim.plotpath*"/efield.pdf")
+    figa    = plottimeseries([ax.(ts),ay.(ts)],["Ax","Ay"],ts,
+                title=name,sidelabel=printparamsSI(sim))
+    fige    = plottimeseries([ex.(ts),ey.(ts)],["Ex","Ey"],ts,
+                title=name,sidelabel=printparamsSI(sim))
 
+    CairoMakie.save(sim.plotpath*"/vecfield.pdf",figa)
+    CairoMakie.save(sim.plotpath*"/efield.pdf",fige)
 end

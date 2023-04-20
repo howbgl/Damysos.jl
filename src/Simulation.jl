@@ -54,15 +54,11 @@ struct Simulation{T<:Real}
     function Simulation{T}(h,df,p,obs,us,d,id,dpath,ppath) where {T<:Real}
 
         if p isa NumericalParams1d{T} && d!=1
-            printstyled("warning: ",color = :red)
-            print("given dimensions ($d) not matching $p")
-            println("; setting dimensions to 1")
+            @warn "given dimensions ($d) not matching $p\nsetting dimensions to 1"
             new(h,df,p,obs,us,UInt8(1),id,dpath,ppath)
 
         elseif p isa NumericalParams2d{T} && d!=2
-            printstyled("warning: ",color = :red)
-            print("given dimensions ($d) not matching $p")
-            println("; setting dimensions to 1")
+            @warn "given dimensions ($d) not matching $p\nsetting dimensions to 2"
             new(h,df,p,obs,us,UInt8(2),id,dpath,ppath)
             
         else
@@ -110,8 +106,22 @@ function getshortname(sim::Simulation{T}) where {T<:Real}
 end
 
 function getparams(sim::Simulation{T}) where {T<:Real}
-    merge((bz=(-sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, 
-        sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω),),
+
+    if sim.dimensions==1
+        bztuple = (bz=(
+            -sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, 
+            sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω
+            ),)
+    elseif sim.dimensions==2
+        bztuple = (bz=(
+            -sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, 
+            sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω,
+            -sim.numericalparams.kymax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, 
+            sim.numericalparams.kymax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω
+            ),)
+    end
+
+    merge(bztuple,
         getparams(sim.hamiltonian),
         getparams(sim.drivingfield),
         getparams(sim.numericalparams),

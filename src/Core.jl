@@ -36,7 +36,7 @@ function run_simulation1d!(sim::Simulation{T},ky::T;
     prob           = ODEProblem(rhs!,u0,tspan)
     sol            = solve(prob;saveat=tsamples,reltol=rtol,abstol=atol,kwargs...)
     
-    sim.observables .= calc_obs(sim,sol)
+    sim.observables .= calc_obs_k1d(sim,sol,ky)
 
     if savedata == true
         Damysos.savedata(sim)
@@ -60,7 +60,7 @@ function run_simulation2d!(sim::Simulation{T};
 
     for i in 2:p.nky
         if mod(i,10)==0
-            println(100.0i/p.nky,"%")
+            @info 100.0i/p.nky,"%"
         end
         obs = run_simulation1d!(sim,p.kysamples[i];savedata=false,saveplots=false,kwargs...)
         
@@ -68,7 +68,7 @@ function run_simulation2d!(sim::Simulation{T};
             lasto = filter(x -> x isa typeof(o),last_obs)
             nexto = filter(x -> x isa typeof(o),obs)
             if length(lasto) != 1 || length(nexto) != 1
-                println("WARNING: length(lasto) != 1 || length(nexto) != 1")
+                @warn "length(lasto) != 1 || length(nexto) != 1"
             end
 
             integrate2d_obs!(sim,[lasto[1],nexto[1]],collect(p.kysamples[i-1:i]),total_obs) 
@@ -92,7 +92,7 @@ end
 
 function run_simulation!(sim::Simulation{T};kwargs...) where {T<:Real}
 
-    println("Starting $(getshortname(sim)) (id: $(sim.id))")
+    @info "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)
 
     if sim.dimensions==1
         obs = run_simulation1d!(sim,0.0;kwargs...)

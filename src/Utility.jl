@@ -40,7 +40,7 @@ end
 
 
 function maximum_k(df::DrivingField)
-    println("Warning: using fallback for maximum k value of DrivingField!")
+    @warn "using fallback for maximum k value of DrivingField!"
     return df.eE/df.ω
 end
 maximum_k(df::GaussianPulse) = df.eE/df.ω

@@ -18,7 +18,7 @@ function savedata(sim::Simulation{T}) where {T<:Real}
     end
 
     CSV.write(sim.datapath*"data.csv",dat)
-    println("Saved Simulation data at ",sim.datapath*"data.csv",)
+    @info "Saved Simulation data at "*sim.datapath*"data.csv"
 
     return nothing
 end
@@ -51,7 +51,7 @@ function savemetadata(sim::Simulation)
 
     filename = "simulation.meta"
     save(sim.datapath*filename,sim)
-    println("Simulation metadata saved at ",sim.datapath*filename)
+    @info "Simulation metadata saved at "*sim.datapath*filename
 end
 
 
@@ -59,7 +59,7 @@ function savemetadata(ens::Ensemble)
     
     filename =  "ensemble.meta"
     save(ens.datapath*filename,ens)
-    println("Ensemble metadata save at ",ens.datapath*filename)
+    @info "Ensemble metadata save at "*ens.datapath*filename
 end
 
 

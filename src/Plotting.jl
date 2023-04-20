@@ -49,7 +49,7 @@ function plotspectra(timeseries::Vector{Vector{T}},labels::Vector{String},freq,d
         xdata       = 1/freq .* pdg.freq
         cut_inds    = ydata .> floatmin(T)
         if length(ydata[cut_inds]) < length(ydata)
-            println("Removing zeros/negatives in plotting spectrum of $title ($label)")
+            @info "Removing zeros/negatives in plotting spectrum of $title ($label)"
         end
         lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label) 
     end
@@ -72,23 +72,20 @@ end
 
 function plotdata(ens::Ensemble{T},vel::Velocity{T};
         maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
-
+        
+        p       = getparams(ens[1])
+        
         for (vsymb,vname) in zip([:vx,:vxintra,:vxinter],["vx","vxintra","vxinter"])
 
             timeseries  = Vector{Vector{T}}(undef,0)
             labels      = Vector{String}(undef,0)
 
             for sim in ens.simlist
-                p       = getparams(sim)
                 v       = filter(x -> x isa Velocity,sim.observables)[1]
                 data    = getproperty(v,vsymb)
 
                 push!(timeseries,data)
                 push!(labels,sim.id)
-                plottimeseries(ax,p.tsamples,data,label=sim.id)
-
-                plotspectra(fftax,data,p.ν,p.dt,label=sim.id,title=vname,maxharm=maxharm,
-                                fftwindow=fftwindow,kwargs...)
             end
             
             figtime     = plottimeseries(timeseries,labels,p.tsamples,title=vname,kwargs...)
@@ -98,8 +95,8 @@ function plotdata(ens::Ensemble{T},vel::Velocity{T};
                                         title=vname,
                                         kwargs...)
 
-            CairoMakie.save(ens.plotpath*vname*".pdf",figtime)
-            CairoMakie.save(ens.plotpath*vname*"_spec.pdf",figspectra)            
+            CairoMakie.save(joinpath(ens.plotpath,vname*".pdf"),figtime)
+            CairoMakie.save(joinpath(ens.plotpath,vname*"_spec.pdf"),figspectra)            
         end        
 end
 
@@ -128,8 +125,8 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
                                 title="CB occupation",
                                 kwargs...)
 
-    CairoMakie.save(ens.plotpath*"cb_occ.pdf",figtime)
-    CairoMakie.save(ens.plotpath*"cb_occ_spec.pdf",figspectra)
+    CairoMakie.save(joinpath(ens.plotpath,"cb_occ.pdf"),figtime)
+    CairoMakie.save(joinpath(ens.plotpath,"cb_occ_spec.pdf"),figspectra)
 end
 
 function plotdata(sim::Simulation{T};fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
@@ -141,7 +138,7 @@ function plotdata(sim::Simulation{T};fftwindow=hanning,maxharm=30,kwargs...) whe
         plotdata(sim,obs;fftwindow=fftwindow,maxharm=maxharm,kwargs...)        
     end
 
-    println("Saved plots at ",sim.plotpath)
+    @info "Saved plots at "*sim.plotpath
     return nothing
 end
 

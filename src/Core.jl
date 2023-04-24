@@ -54,29 +54,22 @@ function run_simulation2d!(sim::Simulation{T};
                 savedata=true,saveplots=true,kwargs...) where {T<:Real}
 
     p         = getparams(sim)
-    total_obs = run_simulation1d!(sim,p.kysamples[1];
-                    savedata=false,saveplots=false,kwargs...)
+    total_obs = deepcopy(run_simulation1d!(sim,p.kysamples[1];
+                    savedata=false,saveplots=false,kwargs...))
     last_obs  = deepcopy(total_obs)
 
     for i in 2:p.nky
-        if mod(i,10)==0
-            @info 100.0i/p.nky,"%"
+        if mod(i,2)==0
+            @info "$(100.0i/p.nky)%"
         end
         obs = run_simulation1d!(sim,p.kysamples[i];savedata=false,saveplots=false,kwargs...)
         
-        for o in obs
-            lasto = filter(x -> x isa typeof(o),last_obs)
-            nexto = filter(x -> x isa typeof(o),obs)
-            if length(lasto) != 1 || length(nexto) != 1
-                @warn "length(lasto) != 1 || length(nexto) != 1"
-            end
-
-            integrate2d_obs!(sim,[lasto[1],nexto[1]],collect(p.kysamples[i-1:i]),total_obs) 
+        for (j,o) in enumerate(obs)
+            temp = integrate2d_obs!([last_obs[j],o],collect(p.kysamples[i-1:i]))
+            addto!(temp,total_obs[j])
         end
         last_obs = deepcopy(obs)
     end
-
-    sim.observables .= total_obs
 
     if savedata == true
         Damysos.savedata(sim)
@@ -99,7 +92,9 @@ function run_simulation!(sim::Simulation{T};kwargs...) where {T<:Real}
     elseif sim.dimensions==2
         obs = run_simulation2d!(sim;kwargs...)
     end
+
     savemetadata(sim)
+    
     return obs
 end
 
@@ -112,8 +107,13 @@ function run_simulation!(ens::Ensemble{T};savedata=true,saveplots=true,
 
     if ensembleparallel
         allobs = Folds.collect(
-            run_simulation!(s;savedata=savedata,saveplots=saveplots,kwargs...)
+            run_simulation!(s;savedata=savedata,saveplots=false,kwargs...)
             for s in ens.simlist)
+        # Run plotting sequentially
+        if saveplots
+            Damysos.plotdata.(ens.simlist;kwargs...)
+        end
+        
     else
         for i in eachindex(ens.simlist)
             obs = run_simulation!(ens.simlist[i];savedata=savedata,saveplots=saveplots,kwargs...)

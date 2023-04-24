@@ -1,6 +1,5 @@
 module Damysos
 
-
 using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie
 using DSP,DataFrames,Random,CSV,Formatting,Folds
 

@@ -31,6 +31,13 @@ function addproperobs!(dat::DataFrame,v::Velocity)
     dat.vx          = v.vx
     dat.vxintra     = v.vxintra
     dat.vxinter     = v.vxinter
+    # skip for 1d
+    if length(v.vy) == length(v.vx)
+        dat.vy          = v.vy
+        dat.vyintra     = v.vyintra
+        dat.vyinter     = v.vyinter
+    end
+    
 end
 
 function addproperobs!(dat::DataFrame,occ::Occupation)

@@ -61,9 +61,7 @@ function plotspectra(timeseries::Vector{Vector{T}},labels::Vector{String},freq,d
 end
 
 function plotdata(ens::Ensemble{T};maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
-    ensemblename = getname(ens)
-    ensurepath(ens.plotpath*ensemblename)
-
+    
     for obs in ens[1].observables
         plotdata(ens,obs;maxharm=maxharm,fftwindow=fftwindow,kwargs...)
     end
@@ -88,15 +86,24 @@ function plotdata(ens::Ensemble{T},vel::Velocity{T};
                 push!(labels,sim.id)
             end
             
-            figtime     = plottimeseries(timeseries,labels,p.tsamples,title=vname,kwargs...)
-            figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
-                                        maxharm=maxharm,
-                                        fftwindow=fftwindow,
-                                        title=vname,
-                                        kwargs...)
+            try
+                figtime     = plottimeseries(timeseries,labels,p.tsamples,
+                                            title=vname,
+                                            kwargs...)
+                figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
+                                            maxharm=maxharm,
+                                            fftwindow=fftwindow,
+                                            title=vname,
+                                            kwargs...)
+                
+                ensurepath(ens.plotpath)
+                CairoMakie.save(joinpath(ens.plotpath,vname*".pdf"),figtime)
+                CairoMakie.save(joinpath(ens.plotpath,vname*"_spec.pdf"),figspectra)
 
-            CairoMakie.save(joinpath(ens.plotpath,vname*".pdf"),figtime)
-            CairoMakie.save(joinpath(ens.plotpath,vname*"_spec.pdf"),figspectra)            
+                @info "Saved $(vname).pdf & $(vname).spec.pdf at "*ens.plotpath
+            catch e
+                @warn "In plotdata(ens::Ensemble{T},vel::Velocity{T};...)",e
+            end            
         end        
 end
 
@@ -116,29 +123,32 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
         push!(labels,sim.id)
     end
 
-    figtime     = plottimeseries(timeseries,labels,p.tsamples,
-                                title="CB occupation",
-                                kwargs...)
-    figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
-                                maxharm=maxharm,
-                                fftwindow=fftwindow,
-                                title="CB occupation",
-                                kwargs...)
+    try
+        figtime     = plottimeseries(timeseries,labels,p.tsamples,
+                                    title="CB occupation",
+                                    kwargs...)
+        figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
+                                    maxharm=maxharm,
+                                    fftwindow=fftwindow,
+                                    title="CB occupation",
+                                    kwargs...)
 
-    CairoMakie.save(joinpath(ens.plotpath,"cb_occ.pdf"),figtime)
-    CairoMakie.save(joinpath(ens.plotpath,"cb_occ_spec.pdf"),figspectra)
+        ensurepath(ens.plotpath)
+        CairoMakie.save(joinpath(ens.plotpath,"cb_occ.pdf"),figtime)
+        CairoMakie.save(joinpath(ens.plotpath,"cb_occ_spec.pdf"),figspectra)
+    catch e
+        @warn "In plotdata(ens::Ensemble{T},occ::Occupation{T};...)",e
+    end
 end
 
 function plotdata(sim::Simulation{T};fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
     
-    filename    = getname(sim)
-
     for obs in sim.observables
-        ensurepath(sim.plotpath)
         plotdata(sim,obs;fftwindow=fftwindow,maxharm=maxharm,kwargs...)        
     end
 
-    @info "Saved plots at "*sim.plotpath
+    plotfield(sim)
+
     return nothing
 end
 
@@ -150,19 +160,31 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
     timeseries  = [vel.vx,vel.vxintra,vel.vxinter]
     labels      = ["vx", "vxintra", "vxinter"]
 
-    figtime     = plottimeseries(timeseries,labels,p.tsamples,
-                                title=sim.id,
-                                sidelabel=printparamsSI(sim),
-                                kwargs...)
-    figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
-                                maxharm=maxharm,
-                                fftwindow=fftwindow,
-                                title=sim.id,
-                                sidelabel=printparamsSI(sim),
-                                kwargs...)
+    if sim.dimensions==2
+        append!(timeseries,[vel.vy,vel.vyintra,vel.vyinter])
+        append!(label,["vy","vyintra","vyinter"])
+    end
 
-    CairoMakie.save(sim.plotpath*"vx.pdf",figtime)
-    CairoMakie.save(sim.plotpath*"vx_spec.pdf",figspectra)
+    try
+        figtime     = plottimeseries(timeseries,labels,p.tsamples,
+                                    title=sim.id,
+                                    sidelabel=printparamsSI(sim),
+                                    kwargs...)
+        figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
+                                    maxharm=maxharm,
+                                    fftwindow=fftwindow,
+                                    title=sim.id,
+                                    sidelabel=printparamsSI(sim),
+                                    kwargs...)
+
+        ensurepath(sim.plotpath)
+        CairoMakie.save(sim.plotpath*"vx.pdf",figtime)
+        CairoMakie.save(sim.plotpath*"vx_spec.pdf",figspectra)
+
+        @info "Saved 'vx.pdf' & 'vx_spec.pdf' at "*sim.plotpath
+    catch e
+        @warn "In plotdata(sim::Simulation{T},vel::Velocity{T};...)",e
+    end
 
     return nothing
 end
@@ -172,19 +194,28 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
                 fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
    
     p           = getparams(sim)
-    figtime     = plottimeseries(timeseries,["CB occupation"],p.tsamples,
-                                title=sim.id,
-                                sidelabel=printparamsSI(sim),
-                                kwargs...)
-    figspectra  = plotspectra(timeseries,["CB occupation"],p.ν,p.dt,
-                                maxharm=maxharm,
-                                fftwindow=fftwindow,
-                                title=sim.id,
-                                sidelabel=printparamsSI(sim),
-                                kwargs...)
 
-    CairoMakie.save(sim.plotpath*"cb_occ.pdf",figtime)
-    CairoMakie.save(sim.plotpath*"cb_occ_spec.pdf",figspectra)
+    try
+        figtime     = plottimeseries(timeseries,["CB occupation"],p.tsamples,
+                title=sim.id,
+                sidelabel=printparamsSI(sim),
+                kwargs...)
+        figspectra  = plotspectra(timeseries,["CB occupation"],p.ν,p.dt,
+                maxharm=maxharm,
+                fftwindow=fftwindow,
+                title=sim.id,
+                sidelabel=printparamsSI(sim),
+                kwargs...)
+
+        ensurepath(sim.plotpath)
+        CairoMakie.save(sim.plotpath*"cb_occ.pdf",figtime)
+        CairoMakie.save(sim.plotpath*"cb_occ_spec.pdf",figspectra)
+
+        @info "Saved 'cb_occ.pdf' & 'cb_occ_spec.pdf' at "*sim.plotpath
+    catch e
+        @warn "In plotdata(sim::Simulation{T},occ::Occupation{T};...)",e
+    end
+    
 end
 
 
@@ -197,11 +228,20 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
     ay      = get_vecpoty(sim)
     ex      = get_efieldx(sim)
     ey      = get_efieldy(sim)
-    figa    = plottimeseries([ax.(ts),ay.(ts)],["Ax","Ay"],ts,
-                title=name,sidelabel=printparamsSI(sim))
-    fige    = plottimeseries([ex.(ts),ey.(ts)],["Ex","Ey"],ts,
-                title=name,sidelabel=printparamsSI(sim))
 
-    CairoMakie.save(sim.plotpath*"/vecfield.pdf",figa)
-    CairoMakie.save(sim.plotpath*"/efield.pdf",fige)
+
+    try
+        figa    = plottimeseries([ax.(ts),ay.(ts)],["Ax","Ay"],ts,
+                    title=name,sidelabel=printparamsSI(sim))
+        fige    = plottimeseries([ex.(ts),ey.(ts)],["Ex","Ey"],ts,
+                    title=name,sidelabel=printparamsSI(sim))
+
+        ensurepath(sim.plotpath)
+        CairoMakie.save(joinpath(sim.plotpath,"vecfield.pdf"),figa)
+        CairoMakie.save(joinpath(sim.plotpath,"efield.pdf"),fige)
+
+        @info "Saved 'vecfield.pdf' & 'efield.pdf' at "*sim.plotpath
+    catch e
+        @warn "In plotfield(sim::Simulation{T})",e
+    end
 end

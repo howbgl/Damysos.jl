@@ -18,6 +18,24 @@ getparams(v::Velocity{T}) where {T<:Real}    = getnames_obs(v)
 arekresolved(v::Velocity{T}) where {T<:Real} = [false,false,false,false,false,false]
 
 
+@inline function addto!(v::Velocity{T},vtotal::Velocity{T}) where {T<:Real}
+    vtotal.vx .= vtotal.vx .+ v.vx
+    vtotal.vy .= vtotal.vy .+ v.vy
+    vtotal.vxinter .= vtotal.vxinter .+ v.vxinter
+    vtotal.vyinter .= vtotal.vyinter .+ v.vyinter
+    vtotal.vxintra .= vtotal.vxintra .+ v.vxintra
+    vtotal.vyintra .= vtotal.vyintra .+ v.vyintra
+end
+
+@inline function normalize!(v::Velocity{T},norm::T) where {T<:Real}
+    v.vx ./= norm
+    v.vy ./= norm
+    v.vxinter ./= norm
+    v.vyinter ./= norm
+    v.vxintra ./= norm
+    v.vyintra ./= norm
+end
+
 function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
                     vxinter_k::Array{T},vxintra_k::Array{T},
                     vyinter_k::Array{T},vyintra_k::Array{T}) where {T<:Real}
@@ -79,8 +97,8 @@ function integrate1d_obs(sim::Simulation{T},v::Velocity{T},sol,ky::T,
     return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
 end
 
-function integrate2d_obs!(sim::Simulation{T},vels::Vector{Velocity{T}},
-    kysamples::Vector{T},total_obs::Vector{Observable{T}}) where {T<:Real}
+function integrate2d_obs!(vels::Vector{Velocity{T}},
+    kysamples::Vector{T}) where {T<:Real}
 
     vx      = trapz((:,hcat(kysamples)),hcat([v.vx for v in vels]...))
     vxintra = trapz((:,hcat(kysamples)),hcat([v.vxintra for v in vels]...))
@@ -89,14 +107,7 @@ function integrate2d_obs!(sim::Simulation{T},vels::Vector{Velocity{T}},
     vyintra = trapz((:,hcat(kysamples)),hcat([v.vyintra for v in vels]...))
     vyinter = trapz((:,hcat(kysamples)),hcat([v.vyinter for v in vels]...))
 
-    total_vel           = filter(x -> x isa Velocity,total_obs)[1]
-    total_vel.vx        .+= vx
-    total_vel.vxintra   .+= vxintra
-    total_vel.vxinter   .+= vxinter
-    total_vel.vy        .+= vy
-    total_vel.vyintra   .+= vyintra
-    total_vel.vyinter   .+= vyinter
-    return nothing
+    return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
 end
 
 
@@ -110,6 +121,14 @@ end
 getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc", "cbocck"]
 getparams(occ::Occupation{T}) where {T<:Real}    = getnames_obs(occ)
 arekresolved(occ::Occupation{T}) where {T<:Real} = [false, true]
+
+@inline function addto!(o::Occupation{T},ototal::Occupation{T}) where {T<:Real}
+    ototal.cbocc .= ototal.cbocc .+ o.cbocc
+end
+
+@inline function normalize!(o::Occupation{T},norm::T) where {T<:Real}
+    o.cbocc ./= norm
+end
 
 function calcobs_k1d!(sim::Simulation{T},occ::Occupation{T},sol,
                     occ_k::Array{T},occ_k_itp::Array{T}) where {T<:Real}
@@ -144,14 +163,11 @@ function integrate1d_obs(sim::Simulation{T},o::Occupation{T},sol,ky::T,
     return Occupation(occ)
 end
 
-function integrate2d_obs!(sim::Simulation{T},occs::Vector{Occupation{T}},
-    kysamples::Vector{T},total_obs::Vector{Observable{T}}) where {T<:Real}
+function integrate2d_obs!(occs::Vector{Occupation{T}},
+    kysamples::Vector{T}) where {T<:Real}
 
     cbocc  = trapz((:,hcat(kysamples)),hcat([o.cbocc for o in occs]...))
-
-    total_occ           = filter(x -> x isa Occupation,total_obs)[1]
-    total_vel.cbocc     .+= cbocc
-    return nothing
+    return Occupation(cbocc)
 end
 
 

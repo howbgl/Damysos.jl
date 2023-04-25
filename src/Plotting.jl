@@ -162,7 +162,7 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
 
     if sim.dimensions==2
         append!(timeseries,[vel.vy,vel.vyintra,vel.vyinter])
-        append!(label,["vy","vyintra","vyinter"])
+        append!(labels,["vy","vyintra","vyinter"])
     end
 
     try

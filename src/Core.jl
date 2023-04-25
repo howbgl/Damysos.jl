@@ -52,7 +52,7 @@ end
 
 function run_simulation2d!(sim::Simulation{T};
                 savedata=true,saveplots=true,kwargs...) where {T<:Real}
-
+    
     p         = getparams(sim)
     total_obs = deepcopy(run_simulation1d!(sim,p.kysamples[1];
                     savedata=false,saveplots=false,kwargs...))
@@ -71,6 +71,8 @@ function run_simulation2d!(sim::Simulation{T};
         last_obs = deepcopy(obs)
     end
 
+    sim.observables .= total_obs
+
     if savedata == true
         Damysos.savedata(sim)
     end
@@ -80,7 +82,7 @@ function run_simulation2d!(sim::Simulation{T};
         plotfield(sim)
     end
 
-    return total_obs
+    return sim.observables
 end
 
 function run_simulation!(sim::Simulation{T};kwargs...) where {T<:Real}

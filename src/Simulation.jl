@@ -107,24 +107,27 @@ end
 
 function getparams(sim::Simulation{T}) where {T<:Real}
 
+    numpars     = getparams(sim.numericalparams)
+    fieldpars   = getparams(sim.drivingfield)
+
     if sim.dimensions==1
         bztuple = (bz=(
-            -sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, 
-            sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω
+            -numpars.kxmax + 1.3*fieldpars.eE/fieldpars.ω, 
+            numpars.kxmax - 1.3*fieldpars.eE/fieldpars.ω
             ),)
     elseif sim.dimensions==2
         bztuple = (bz=(
-            -sim.numericalparams.kxmax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, 
-            sim.numericalparams.kxmax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω,
-            -sim.numericalparams.kymax + 1.3*sim.drivingfield.eE/sim.drivingfield.ω, 
-            sim.numericalparams.kymax - 1.3*sim.drivingfield.eE/sim.drivingfield.ω
+            -numpars.kxmax + 1.3*fieldpars.eE/fieldpars.ω, 
+            numpars.kxmax - 1.3*fieldpars.eE/fieldpars.ω,
+            -numpars.kymax + 1.3*fieldpars.eE/fieldpars.ω, 
+            numpars.kymax - 1.3*fieldpars.eE/fieldpars.ω
             ),)
     end
 
     merge(bztuple,
         getparams(sim.hamiltonian),
-        getparams(sim.drivingfield),
-        getparams(sim.numericalparams),
+        fieldpars,
+        numpars,
         getparams(sim.unitscaling))
 end
 

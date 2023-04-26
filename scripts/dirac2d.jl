@@ -1,6 +1,5 @@
 using Damysos,Unitful,LoggingExtras,Dates
 
-
 const vf        = u"4.3e5m/s"
 const freq      = u"12THz"
 const m         = u"40.0meV"
@@ -14,8 +13,9 @@ df      = GaussianPulse(us,σ,freq,emax)
 pars    = NumericalParams2d(0.01,0.2,5,1,0.2,-5df.σ)
 obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,2)
-ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(0.1,0.01,4))
+ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(0.01,0.004,4))
 
+@info "Logfile:$(joinpath("logs","dirac2d_$(ens.id).log"))"
 logger  = FileLogger(joinpath("logs","dirac2d_$(ens.id).log"),append=true)
 
 global_logger(logger)

@@ -8,7 +8,7 @@ export getϵ,getdx_cc,getdx_cv,getdx_vc,getdx_vv
 export getdipoles_x,getvels_x
 export getvx_cc,getvx_cv,getvx_vc,getvx_vv
 export DrivingField,GaussianPulse,get_efieldx,get_vecpotx
-export NumericalParameters,NumericalParams2d,NumericalParams1d
+export NumericalParameters,NumericalParams2d,NumericalParams1d,NumericalParams2dSlice
 export Simulation,Ensemble,getparams,parametersweep
 export Observable,Velocity,Occupation,Timesteps,getnames_obs
 export UnitScaling,semiclassical_interband_range,maximum_k

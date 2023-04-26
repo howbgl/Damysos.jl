@@ -17,6 +17,21 @@ function NumericalParams2d(dkx::Real,dky::Real,kxmax::Real,kymax::Real,dt::Real,
     return NumericalParams2d(promote(dkx,dky,kxmax,kymax,dt,t0)...)
 end
 
+
+struct NumericalParams2dSlice{T<:Real} <: NumericalParameters{T}
+    params::NumericalParams2d{T}
+    kyspan::Tuple{T,T}
+end
+
+function getparams(p::NumericalParams2dSlice{T}) where {T<:Real}
+    fullparams  = getparams(p.params)
+    kys_full    = collect(fullparams.kysamples)
+    kysamples   = kys_full[kys_full .>= p.kyspan[1] .&& kys_full .<= p.kyspan[2]]
+    nky         = length(kysamples)
+    return merge(fullparams,(nky=nky,kysamples=kysamples,))
+end
+
+
 function getparams(p::NumericalParams2d{T}) where {T<:Real} 
     return (
     dkx=p.dkx,

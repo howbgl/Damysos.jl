@@ -133,7 +133,7 @@ end
 function run_simulation!(ens::Ensemble{T};
                 savedata=true,
                 saveplots=true,
-                ensembleparallel=true,
+                ensembleparallel=false,
                 kyparallel=false,
                 makecombined_plots=true,
                 kwargs...) where {T<:Real}

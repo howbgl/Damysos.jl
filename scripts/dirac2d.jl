@@ -10,19 +10,19 @@ const σ         = u"200.0fs"
 
 us,h    = scalegapped_dirac(m,vf,t2)
 df      = GaussianPulse(us,σ,freq,emax)
-pars    = NumericalParams2d(0.01,0.2,5,1,0.2,-5df.σ)
+pars    = NumericalParams2d(0.01,0.01,5,1,0.2,-5df.σ)
 obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,2)
-ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(0.01,0.004,4))
+ens     = parametersweep(sim,sim.numericalparams,:kxmax,LinRange(5,7,3))
 
 @info "Logfile:$(joinpath("logs","dirac2d_$(ens.id).log"))"
-logger  = FileLogger(joinpath("logs","dirac2d_$(ens.id).log"),append=true)
+logger  = FileLogger(joinpath("logs","dirac2d_$(now()).log"),append=true)
 
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"
 
-results,time,rest... = @timed run_simulation!(ens)
+results,time,rest... = @timed run_simulation!(ens;kyparallel=true)
 
-@info "$(time/60.)min spent in run_simulation!(...)"
+@info "$(time/60.)min spent in run_simulation!(ens::Ensemble;...)"
 @debug rest
 @info "$(now()): calculation finished."

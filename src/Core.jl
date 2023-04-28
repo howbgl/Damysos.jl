@@ -67,12 +67,22 @@ function run_simulation2d!(sim::Simulation{T};
                                             saveplots=false,
                                             kyparallel=false,kwargs...) for s in sims)
         total_res   = deepcopy(res[1])
+        popfirst!(res) # do not add first entry twice!
         for r in res
             for (i,obs) in enumerate(r)
                 addto!(obs,total_res[i])
             end
         end
         sim.observables .= total_res
+
+        if savedata
+            Damysos.savedata(sim)
+        end
+        if saveplots
+            plotdata(sim,kwargs...)
+            plotfield(sim)
+        end
+
         return sim.observables
     end
     
@@ -183,20 +193,18 @@ function makekybatches(sim::Simulation{T},nbatches::U) where {T<:Real,U<:Integer
     end
 
     allkys      = p.kysamples
-    nper_batch  = cld(p.nky,nbatches)
+    nper_batch  = div(p.nky,nbatches)
     sims        = empty([sim])
 
     for i in 1:nbatches
-        lidx = 1+(i-1)*nper_batch
-        ridx = min(i*nper_batch+1,length(allkys))
-        @show lidx,ridx,length(allkys)
-        @show (allkys[lidx],allkys[ridx])
+        lidx = max(1,(i-1)*nper_batch)
+        ridx = min(i*nper_batch,length(allkys))
         params = NumericalParams2dSlice(sim.numericalparams,(allkys[lidx],allkys[ridx]))
         push!(sims,Simulation(
                             sim.hamiltonian,
                             sim.drivingfield,
-                            params
-                            ,sim.observables,
+                            params,
+                            deepcopy(sim.observables),
                             sim.unitscaling,
                             sim.dimensions,
                             sim.id,

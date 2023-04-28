@@ -1,24 +1,35 @@
 
 function ensurepath(path::String)
-    if !isdir(path)
-        mkpath(path)
+    try
+        if !isdir(path)
+            mkpath(path)
+        end
+    catch e
+        @warn "could not create $path" e
+        return false
     end
+    return true
 end
 
 
 function savedata(sim::Simulation{T}) where {T<:Real}
 
     dat         = DataFrame(t=getparams(sim).tsamples)
+    datapath    = sim.datapath
+
+    if !ensurepath(dirname(sim.datapath))
+        @info "Using working dir instead"
+        datapath = ""
+    end
     
-    ensurepath(dirname(sim.datapath))
 
     for o in sim.observables
         addproperobs!(dat,o)
         saveimproperobs(o)
     end
 
-    CSV.write(sim.datapath*"data.csv",dat)
-    @info "Saved Simulation data at "*sim.datapath*"data.csv"
+    CSV.write(joinpath(datapath,"data.csv"),dat)
+    @info "Saved Simulation data at "*datapath*"data.csv"
 
     return nothing
 end
@@ -71,11 +82,20 @@ end
 
 
 function save(filepath::String,object)
-    ensurepath(dirname(filepath))
-    touch(filepath)
-    file = open(filepath,"w")
-    write(file,"$object")
-    close(file)
+
+    if !ensurepath(dirname(filepath))
+        @info "Using working dir instead"
+        filepath = basename(filepath)
+    end
+    try
+        touch(filepath)
+        file = open(filepath,"w")
+        write(file,"$object")
+        close(file)
+    catch e
+        @warn "Could not save to $filepath ",e
+    end
+    
 end
 
 

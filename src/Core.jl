@@ -83,7 +83,7 @@ function run_simulation2d!(sim::Simulation{T};
             plotfield(sim)
         end
 
-        return sim.observables
+        return total_res
     end
     
     p         = getparams(sim)
@@ -115,7 +115,7 @@ function run_simulation2d!(sim::Simulation{T};
         plotfield(sim)
     end
 
-    return sim.observables
+    return total_obs
 end
 
 function run_simulation!(sim::Simulation{T};

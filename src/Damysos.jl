@@ -3,6 +3,7 @@ module Damysos
 using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie
 using DSP,DataFrames,Random,CSV,Formatting,Folds
 
+
 export Hamiltonian,GappedDirac,scalegapped_dirac
 export getϵ,getdx_cc,getdx_cv,getdx_vc,getdx_vv
 export getdipoles_x,getvels_x

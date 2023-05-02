@@ -1,6 +1,8 @@
 
 
-function plottimeseries(timeseries::Vector{Vector{T}},labels::Vector{String},tsamples;
+function plottimeseries(timeseries::Vector{Vector{T}},
+                        labels::Vector{String},
+                        tsamples::Vector{Vector{T}};
                         title="",
                         sidelabel="",
                         kwargs...) where {T<:Real}
@@ -8,9 +10,9 @@ function plottimeseries(timeseries::Vector{Vector{T}},labels::Vector{String},tsa
     f   = Figure()
     ax  = Axis(f[1,1],title=title,xlabel="t/tc")
 
-    for (data,label) in zip(timeseries,labels)
+    for (data,label,ts) in zip(timeseries,labels,tsamples)
         
-        lines!(ax,tsamples,data,label=label)
+        lines!(ax,ts,data,label=label)
     end
 
     axislegend(ax)
@@ -19,7 +21,10 @@ function plottimeseries(timeseries::Vector{Vector{T}},labels::Vector{String},tsa
     return f
 end
 
-function plotspectra(timeseries::Vector{Vector{T}},labels::Vector{String},freq,dt;
+function plotspectra(timeseries::Vector{Vector{T}},
+                    labels::Vector{String},
+                    frequencies::Vector{T},
+                    timesteps::Vector{T};
                     maxharm=30,
                     fftwindow=hanning,
                     title="",
@@ -38,7 +43,7 @@ function plotspectra(timeseries::Vector{Vector{T}},labels::Vector{String},freq,d
                 xticks=0:5:maxharm)
     xlims!(ax,[0,maxharm])
 
-    for (data,label) in zip(timeseries,labels)
+    for (data,label,dt,ν) in zip(timeseries,labels,timesteps,frequencies)
 
         pdg         = periodogram(data,
                                     nfft=8*length(data),
@@ -46,7 +51,7 @@ function plotspectra(timeseries::Vector{Vector{T}},labels::Vector{String},freq,d
                                     window=fftwindow)
         ydata       = pdg.power .* (pdg.freq .^ 2)
         ydata       = ydata / maximum(ydata)
-        xdata       = 1/freq .* pdg.freq
+        xdata       = 1/ν .* pdg.freq
         cut_inds    = ydata .> floatmin(T)
         if length(ydata[cut_inds]) < length(ydata)
             @info "Removing zeros/negatives in plotting spectrum of $title ($label)"
@@ -71,28 +76,36 @@ end
 function plotdata(ens::Ensemble{T},vel::Velocity{T};
         maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
         
-        p           = getparams(ens[1])
+        @info "new"
+        ens_params  = getparams(ens[1])
         plotpath    = ens.plotpath
 
         for (vsymb,vname) in zip([:vx,:vxintra,:vxinter,:vy,:vyintra,:vyinter],
                                 ["vx","vxintra","vxinter","vy","vyintra","vyinter"])
 
             timeseries  = Vector{Vector{T}}(undef,0)
+            tsamples    = Vector{Vector{T}}(undef,0)
+            timesteps   = Vector{T}(undef,0)
+            frequencies = Vector{T}(undef,0)
             labels      = Vector{String}(undef,0)
 
             for sim in ens.simlist
+                pars    = getparams(sim)
                 v       = filter(x -> x isa Velocity,sim.observables)[1]
                 data    = getproperty(v,vsymb)
 
                 push!(timeseries,data)
+                push!(tsamples,pars.tsamples)
+                push!(timesteps,pars.dt)
+                push!(frequencies,pars.ν)
                 push!(labels,sim.id)
             end
             
             try
-                figtime     = plottimeseries(timeseries,labels,p.tsamples,
+                figtime     = plottimeseries(timeseries,labels,tsamples,
                                             title=vname,
                                             kwargs...)
-                figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
+                figspectra  = plotspectra(timeseries,labels,frequencies,timesteps,
                                             maxharm=maxharm,
                                             fftwindow=fftwindow,
                                             title=vname,

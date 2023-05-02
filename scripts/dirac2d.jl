@@ -13,8 +13,8 @@ df      = GaussianPulse(us,σ,freq,emax)
 pars    = NumericalParams2d(0.1,0.1,5,2,0.2,-5df.σ)
 obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,2)
-ens     = parametersweep(sim,sim.numericalparams,:kxmax,[5.,6.])
-logger  = FileLogger(joinpath("logs","dirac2d_kxmax_$(now()).log"),append=true)
+ens     = parametersweep(sim,sim.numericalparams,:dt,[1.0,0.5,0.2,0.1])
+logger  = FileLogger(joinpath("logs","dirac2d_dt_$(now()).log"))
 
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"

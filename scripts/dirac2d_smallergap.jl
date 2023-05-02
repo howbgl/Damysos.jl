@@ -10,7 +10,7 @@ const σ         = u"200.0fs"
 
 us,h    = scalegapped_dirac(m,vf,t2)
 df      = GaussianPulse(us,σ,freq,emax)
-pars    = NumericalParams2d(0.01,0.2,5,1,0.2,-5df.σ)
+pars    = NumericalParams2d(0.01,0.2,5,0.2,0.2,-5df.σ)
 obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,2)
 ens     = parametersweep(sim,sim.numericalparams,:dkx,[0.05,0.01,0.005])

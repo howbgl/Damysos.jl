@@ -10,11 +10,11 @@ const σ         = u"200.0fs"
 
 us,h    = scalegapped_dirac(m,vf,t2)
 df      = GaussianPulse(us,σ,freq,emax)
-pars    = NumericalParams2d(0.1,0.1,5,2,0.2,-5df.σ)
+pars    = NumericalParams2d(0.1,0.1,5,2,0.5,-5df.σ)
 obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,2)
-ens     = parametersweep(sim,sim.numericalparams,:dt,[1.0,0.5,0.2,0.1])
-logger  = FileLogger(joinpath("logs","dirac2d_dt_$(now()).log"))
+ens     = parametersweep(sim,sim.numericalparams,:dkx,LinRange(0.01,0.004,4))
+logger  = FileLogger(joinpath("logs","dirac2d_dkx_$(now()).log"))
 
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"

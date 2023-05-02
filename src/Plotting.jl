@@ -75,9 +75,7 @@ end
 
 function plotdata(ens::Ensemble{T},vel::Velocity{T};
         maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
-        
-        @info "new"
-        ens_params  = getparams(ens[1])
+    
         plotpath    = ens.plotpath
 
         for (vsymb,vname) in zip([:vx,:vxintra,:vxinter,:vy,:vyintra,:vyinter],
@@ -182,24 +180,33 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
     plotpath    = sim.plotpath
 
     timeseriesx = [vel.vx,vel.vxintra,vel.vxinter]
+    tsamplesx   = collect.([p.tsamples,p.tsamples,p.tsamples])
+    timestepsx  = [p.dt,p.dt,p.dt]
+    frequenciesx = [p.ν,p.ν,p.ν]
     labelsx     = ["vx", "vxintra", "vxinter"]
 
     timeseries  = [timeseriesx]
+    tsamples    = [tsamplesx]
+    timesteps   = [timestepsx]
+    frequencies = [frequenciesx]
     labels      = [labelsx]
 
     if sim.dimensions==2
         push!(timeseries,[vel.vy,vel.vyintra,vel.vyinter])
+        push!(tsamples,tsamplesx)
+        push!(timesteps,timestepsx)
+        push!(frequencies,frequenciesx)
         push!(labels,["vy","vyintra","vyinter"])
     end
 
     try
-        for (ts,lab) in zip(timeseries,labels)
+        for (data,lab,ts,dt,ν) in zip(timeseries,labels,tsamples,timesteps,frequencies)
 
-            figtime     = plottimeseries(ts,lab,p.tsamples,
+            figtime     = plottimeseries(data,lab,ts,
                                     title=sim.id,
                                     sidelabel=printparamsSI(sim),
                                     kwargs...)
-            figspectra  = plotspectra(ts,lab,p.ν,p.dt,
+            figspectra  = plotspectra(data,lab,ν,dt,
                                         maxharm=maxharm,
                                         fftwindow=fftwindow,
                                         title=sim.id,
@@ -230,11 +237,11 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
     p           = getparams(sim)
     plotpath    = sim.plotpath
     try
-        figtime     = plottimeseries(timeseries,["CB occupation"],p.tsamples,
+        figtime     = plottimeseries([occ.cbocc],["CB occupation"],[p.tsamples],
                 title=sim.id,
                 sidelabel=printparamsSI(sim),
                 kwargs...)
-        figspectra  = plotspectra(timeseries,["CB occupation"],p.ν,p.dt,
+        figspectra  = plotspectra([occ.cbocc],["CB occupation"],[p.ν],[p.dt],
                 maxharm=maxharm,
                 fftwindow=fftwindow,
                 title=sim.id,
@@ -260,7 +267,7 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
 
     name    = getname(sim)
     p       = getparams(sim)
-    ts      = p.tsamples
+    ts      = collect(p.tsamples)
     ax      = get_vecpotx(sim)
     ay      = get_vecpoty(sim)
     ex      = get_efieldx(sim)
@@ -268,9 +275,9 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
 
     plotpath = sim.plotpath
     try
-        figa    = plottimeseries([ax.(ts),ay.(ts)],["Ax","Ay"],ts,
+        figa    = plottimeseries([ax.(ts),ay.(ts)],["Ax","Ay"],[ts,ts],
                     title=name,sidelabel=printparamsSI(sim))
-        fige    = plottimeseries([ex.(ts),ey.(ts)],["Ex","Ey"],ts,
+        fige    = plottimeseries([ex.(ts),ey.(ts)],["Ex","Ey"],[ts,ts],
                     title=name,sidelabel=printparamsSI(sim))
 
         if !ensurepath(plotpath)

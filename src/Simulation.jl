@@ -119,8 +119,8 @@ function getparams(sim::Simulation{T}) where {T<:Real}
         bztuple = (bz=(
             -numpars.kxmax + 1.3*fieldpars.eE/fieldpars.ω, 
             numpars.kxmax - 1.3*fieldpars.eE/fieldpars.ω,
-            -numpars.kymax + 1.3*fieldpars.eE/fieldpars.ω, 
-            numpars.kymax - 1.3*fieldpars.eE/fieldpars.ω
+            -numpars.kymax, 
+            numpars.kymax
             ),)
     end
 

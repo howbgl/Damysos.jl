@@ -40,32 +40,45 @@ function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
                     vxinter_k::Array{T},vxintra_k::Array{T},
                     vyinter_k::Array{T},vyintra_k::Array{T}) where {T<:Real}
 
+    @info "ky = $ky"
+
     p     = getparams(sim)
     kx    = p.kxsamples
     ax    = get_vecpotx(sim.drivingfield)
     ay    = get_vecpoty(sim.drivingfield)
     vx_cc = getvx_cc(sim.hamiltonian)
+    vx_vv = getvx_vv(sim.hamiltonian)
     vx_vc = getvx_vc(sim.hamiltonian)
     vy_cc = getvy_cc(sim.hamiltonian)
     vy_vc = getvy_vc(sim.hamiltonian)
+    vy_vv = getvy_vv(sim.hamiltonian)
 
     if sim.dimensions==1        
         for i in 1:length(sol.t)
-            vxinter_k[:,i] = real.((2 .* sol[1:p.nkx,i] .- 1) .* 
-                                vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vxintra_k[:,i] = 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
+            vxintra_k[:,i] = real.(
+                                sol[1:p.nkx,i] .* 
+                                vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
+                                (1 .- sol[1:p.nkx,i]) .*
+                                vx_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
+            vxinter_k[:,i] = 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
                                 sol[(p.nkx+1):end,i])
         end
     elseif sim.dimensions==2
         for i in 1:length(sol.t)
-            vxinter_k[:,i] = real.((2 .* sol[1:p.nkx,i] .- 1) .* 
-                                vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vxintra_k[:,i] = 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
+            vxintra_k[:,i] = real.(
+                                sol[1:p.nkx,i] .* 
+                                vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
+                                (1 .- sol[1:p.nkx,i]) .*
+                                vx_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
+            vxinter_k[:,i] = 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
                                 sol[(p.nkx+1):end,i])
-            vyinter_k[:,i] = real.((2 .* sol[1:p.nkx,i] .- 1) .* 
-                                vy_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vyintra_k[:,i] = 2 .* real.(vy_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
-                                sol[(p.nkx+1):end,i])       
+            vyintra_k[:,i] = real.(
+                                sol[1:p.nkx,i] .* 
+                                vy_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
+                                (1 .- sol[1:p.nkx,i]) .*
+                                vy_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
+            vyinter_k[:,i] = 2 .* real.(vy_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
+                                sol[(p.nkx+1):end,i])      
         end
     end
 end
@@ -182,19 +195,23 @@ function calc_obs_k1d(sim::Simulation{T},sol,ky::T) where {T<:Real}
     sig(x)         = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
     bzmask1d(kx)   = sig((kx-p.bz[1])/(2*p.dkx)) * sig((p.bz[2]-kx)/(2*p.dkx))
 
-    if sim.dimensions==1
-        
-        for i in 1:length(sol.t)
-            moving_bz[:,i] .= bzmask1d.(p.kxsamples .- ax(sol.t[i]))
-        end
-    elseif sim.dimensions==2
-        kxs = p.kxsamples
-        bzmask2d(kx,ky)= bzmask1d(kx)*sig((ky-p.bz[3])/(2*p.dky)) * sig((p.bz[4]-ky)/(2*p.dky))
-        for i in 1:length(sol.t)
-            moving_bz[:,i] .= bzmask2d.(kxs .- ax(sol.t[i]),ky - ay(sol.t[i]))
-        end
-
+    for i in 1:length(sol.t)
+        moving_bz[:,i] .= bzmask1d.(p.kxsamples .- ax(sol.t[i]))
     end
+
+    # if sim.dimensions==1
+        
+    #     for i in 1:length(sol.t)
+    #         moving_bz[:,i] .= bzmask1d.(p.kxsamples .- ax(sol.t[i]))
+    #     end
+    # elseif sim.dimensions==2
+    #     kxs = p.kxsamples
+    #     bzmask2d(kx,ky)= bzmask1d(kx)*sig((ky-p.bz[3])/(2*p.dky)) * sig((p.bz[4]-ky)/(2*p.dky))
+    #     for i in 1:length(sol.t)
+    #         moving_bz[:,i] .= bzmask2d.(kxs .- ax(sol.t[i]),ky - ay(sol.t[i]))
+    #     end
+
+    # end
 
     obs     = [integrate1d_obs(sim,o,sol,ky,moving_bz) for o in sim.observables]
     return obs

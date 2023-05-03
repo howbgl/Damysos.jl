@@ -62,20 +62,29 @@ function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
 
     if sim.dimensions==1        
         for i in 1:length(sol.t)
-            vxinter_k[:,i] = real.((2 .* sol[1:p.nkx,i] .- 1) .* 
-                                vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vxintra_k[:,i] = 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
+            vxintra_k[:,i] = real.(
+                                sol[1:p.nkx,i] .* 
+                                vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
+                                (1 .- sol[1:p.nkx,i]) .*
+                                vx_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
+            vxinter_k[:,i] = 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
                                 sol[(p.nkx+1):end,i])
         end
     elseif sim.dimensions==2
         for i in 1:length(sol.t)
-            vxinter_k[:,i] = real.((2 .* sol[1:p.nkx,i] .- 1) .* 
-                                vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vxintra_k[:,i] = 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
+            vxintra_k[:,i] = real.(
+                                sol[1:p.nkx,i] .* 
+                                vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
+                                (1 .- sol[1:p.nkx,i]) .*
+                                vx_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
+            vxinter_k[:,i] = 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
                                 sol[(p.nkx+1):end,i])
-            vyinter_k[:,i] = real.((2 .* sol[1:p.nkx,i] .- 1) .* 
-                                vy_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vyintra_k[:,i] = 2 .* real.(vy_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
+            vyintra_k[:,i] = real.(
+                                sol[1:p.nkx,i] .* 
+                                vy_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
+                                (1 .- sol[1:p.nkx,i]) .*
+                                vy_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
+            vyinter_k[:,i] = 2 .* real.(vy_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
                                 sol[(p.nkx+1):end,i])       
         end
     end

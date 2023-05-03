@@ -59,6 +59,8 @@ function run_simulation2d!(sim::Simulation{T};
                 kyparallel=false,
                 kwargs...) where {T<:Real}
 
+    @info "new"
+
     if kyparallel
         @info "Parallelizing over ky"
         sims        = makekybatches(sim,Threads.nthreads())
@@ -86,10 +88,10 @@ function run_simulation2d!(sim::Simulation{T};
         return total_res
     end
     
-    p         = getparams(sim)
-    total_obs = deepcopy(run_simulation1d!(sim,p.kysamples[1];
+    p           = getparams(sim)
+    last_obs    = deepcopy(run_simulation1d!(sim,p.kysamples[1];
                     savedata=false,saveplots=false,kwargs...))
-    last_obs  = deepcopy(total_obs)
+    total_obs   = zero.(last_obs)
 
     for i in 2:p.nky
         if mod(i,2)==0
@@ -97,9 +99,9 @@ function run_simulation2d!(sim::Simulation{T};
         end
         obs = run_simulation1d!(sim,p.kysamples[i];savedata=false,saveplots=false,kwargs...)
         
-        for (j,o) in enumerate(obs)
-            temp = integrate2d_obs!([last_obs[j],o],collect(p.kysamples[i-1:i]))
-            addto!(temp,total_obs[j])
+        for (o,last,tot) in zip(obs,last_obs,total_obs)
+            temp = integrate2d_obs!([last,o],collect(p.kysamples[i-1:i]))
+            addto!(temp,tot)
         end
         last_obs = deepcopy(obs)
     end
@@ -213,4 +215,69 @@ function makekybatches(sim::Simulation{T},nbatches::U) where {T<:Real,U<:Integer
     end
 
     return sims
+end
+
+export run_simulation2d_add!
+function run_simulation2d_add!(sim::Simulation{T};
+    savedata=true,
+    saveplots=true,
+    kyparallel=false,
+    kwargs...) where {T<:Real}
+
+    if kyparallel
+        @info "Parallelizing over ky"
+        sims        = makekybatches(sim,Threads.nthreads())
+        res         = Folds.collect(run_simulation2d!(s;
+                                            savedata=false,
+                                            saveplots=false,
+                                            kyparallel=false,kwargs...) for s in sims)
+        total_res   = deepcopy(res[1])
+        popfirst!(res) # do not add first entry twice!
+        for r in res
+            for (i,obs) in enumerate(r)
+                addto!(obs,total_res[i])
+            end
+        end
+        sim.observables .= total_res
+
+        if savedata
+            Damysos.savedata(sim)
+        end
+        if saveplots
+            plotdata(sim,kwargs...)
+            plotfield(sim)
+        end
+
+        return total_res
+    end
+
+    p         = getparams(sim)
+    total_obs = deepcopy(run_simulation1d!(sim,p.kysamples[1];
+            savedata=false,saveplots=false,kwargs...))
+    last_obs  = deepcopy(total_obs)
+
+    for i in 2:p.nky
+        if mod(i,2)==0
+            @info "$(100.0i/p.nky)%"
+        end
+        obs = run_simulation1d!(sim,p.kysamples[i];savedata=false,saveplots=false,kwargs...)
+
+        for (tot,o) in zip(total_obs,obs)
+            addto!(o,tot)
+        end
+        last_obs = deepcopy(obs)
+    end
+
+    sim.observables .= total_obs
+
+    if savedata == true
+        Damysos.savedata(sim)
+    end
+
+    if saveplots == true
+        Damysos.plotdata(sim)
+        plotfield(sim)
+    end
+
+    return total_obs
 end

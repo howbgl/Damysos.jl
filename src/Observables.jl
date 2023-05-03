@@ -36,6 +36,17 @@ end
     v.vyintra ./= norm
 end
 
+function zero(v::Velocity{T}) where {T<:Real}
+    
+    vxintra     = zero(v.vxintra)
+    vxinter     = zero(v.vxinter)
+    vx          = zero(v.vx)
+    vyintra     = zero(v.vyintra)
+    vyinter     = zero(v.vyinter)
+    vy          = zero(v.vy)
+    return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
+end
+
 function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
                     vxinter_k::Array{T},vxintra_k::Array{T},
                     vyinter_k::Array{T},vyintra_k::Array{T}) where {T<:Real}
@@ -128,6 +139,11 @@ end
 
 @inline function normalize!(o::Occupation{T},norm::T) where {T<:Real}
     o.cbocc ./= norm
+end
+
+function zero(o::Occupation{T}) where {T<:Real}
+    cbocc = zero(o.cbocc)
+    return Occupation(cbocc)
 end
 
 function calcobs_k1d!(sim::Simulation{T},occ::Occupation{T},sol,

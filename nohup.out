@@ -1,7 +1,0 @@
-ERROR: LoadError: MethodError: no method matching parametersweep(::Simulation{Float64}, ::NumericalParams2d{Float64}, ::Symbol, ::Vector{Int64})
-Closest candidates are:
-  parametersweep(::Simulation{T}, ::Damysos.SimulationComponent{T}, ::Symbol, !Matched::AbstractVector{T}) where T<:Real at /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:3
-Stacktrace:
- [1] top-level scope
-   @ /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/dirac2d.jl:16
-in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/dirac2d.jl:16

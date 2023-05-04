@@ -293,3 +293,27 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
         @warn "In plotfield(sim::Simulation{T})",e
     end
 end
+
+function plotbandstructure(sim::Simulation{T};plotkgrid=true) where {T<:Real}
+    
+    if sim.dimensions==2
+        return plotbandstructure2d(sim;plotkgrid=plotkgrid)
+    elseif sim.dimensions==1
+        return plotbandstructure1d(sim;plotkgrid=plotkgrid)
+    end
+end
+
+
+function plotbandstructure2d(sim::Simulation{T};plotkgrid=true) where {T<:Real}
+    
+    p       = getparams(sim)
+    kxs     = p.kxsamples
+    kys     = p.kysamples
+end
+
+
+function plotbandstructure1d(sim::Simulation{T};plotkgrid=true) where {T<:Real}
+    
+    p       = getparams(sim)
+    kxs     = p.kxsamples
+end

@@ -186,19 +186,23 @@ end
 
 
 function makekybatches(sim::Simulation{T},nbatches::U) where {T<:Real,U<:Integer}
-
+    
     p           = getparams(sim)
     if nbatches > p.nky/2
         nbatches = floor(U,p.nky/2)
     end
 
     allkys      = p.kysamples
-    nper_batch  = div(p.nky,nbatches)
+    nper_batch  = fld(p.nky,nbatches)
     sims        = empty([sim])
 
     for i in 1:nbatches
         lidx = max(1,(i-1)*nper_batch)
-        ridx = min(i*nper_batch,length(allkys))
+        if i==nbatches # In the last batch include all the rest
+            ridx = length(allkys)
+        else
+            ridx = i*nper_batch
+        end
         params = NumericalParams2dSlice(sim.numericalparams,(allkys[lidx],allkys[ridx]))
         push!(sims,Simulation(
                             sim.hamiltonian,

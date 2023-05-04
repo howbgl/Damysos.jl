@@ -121,7 +121,7 @@ function integrate1d_obs(sim::Simulation{T},v::Velocity{T},sol,ky::T,
     return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
 end
 
-function integrate2d_obs!(vels::Vector{Velocity{T}},
+function integrate2d_obs(vels::Vector{Velocity{T}},
     kysamples::Vector{T}) where {T<:Real}
 
     vx      = trapz((:,hcat(kysamples)),hcat([v.vx for v in vels]...))
@@ -192,7 +192,7 @@ function integrate1d_obs(sim::Simulation{T},o::Occupation{T},sol,ky::T,
     return Occupation(occ)
 end
 
-function integrate2d_obs!(occs::Vector{Occupation{T}},
+function integrate2d_obs(occs::Vector{Occupation{T}},
     kysamples::Vector{T}) where {T<:Real}
 
     cbocc  = trapz((:,hcat(kysamples)),hcat([o.cbocc for o in occs]...))

@@ -59,8 +59,6 @@ function run_simulation2d!(sim::Simulation{T};
                 kyparallel=false,
                 kwargs...) where {T<:Real}
 
-    @info "new"
-
     if kyparallel
         @info "Parallelizing over ky"
         sims        = makekybatches(sim,Threads.nthreads())
@@ -100,7 +98,7 @@ function run_simulation2d!(sim::Simulation{T};
         obs = run_simulation1d!(sim,p.kysamples[i];savedata=false,saveplots=false,kwargs...)
         
         for (o,last,tot) in zip(obs,last_obs,total_obs)
-            temp = integrate2d_obs!([last,o],collect(p.kysamples[i-1:i]))
+            temp = integrate2d_obs([last,o],collect(p.kysamples[i-1:i]))
             addto!(temp,tot)
         end
         last_obs = deepcopy(obs)

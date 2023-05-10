@@ -49,6 +49,8 @@ function getparams(p::NumericalParams2d{T}) where {T<:Real}
 end
 
 function printparamsSI(p::NumericalParams2d,us::UnitScaling;digits=3)
+
+    pnt     = getparams(p)
     kxmax   = wavenumberSI(p.kxmax,us)
     dkx     = wavenumberSI(p.dkx,us)
     nkx     = getparams(p).nkx
@@ -58,15 +60,19 @@ function printparamsSI(p::NumericalParams2d,us::UnitScaling;digits=3)
     t0      = timeSI(p.t0,us)
     dt      = timeSI(p.dt,us)
     nt      = getparams(p).nt
-    str = "kxmax  = $(round(typeof(kxmax),kxmax,sigdigits=digits))\n"
-    str *= "dkx  = $(round(typeof(dkx),dkx,sigdigits=digits))\n"
-    str *= "nkx  = $nkx\n"
-    str *= "kymax  = $(round(typeof(kymax),kymax,sigdigits=digits))\n"
-    str *= "dky  = $(round(typeof(dky),dky,sigdigits=digits))\n"
-    str *= "nky  = $nky\n"
-    str *= "t0 = $(round(typeof(t0),t0,sigdigits=digits))\n"
-    str *= "dt = $(round(typeof(dt),dt,sigdigits=digits))\n"
-    str *= "nt  = $nt\n"
+
+    symbols = [:kxmax,:dkx,:nkx,:kymax,:dky,:nky,:t0,:dt,:nt]
+    valuesSI = [kxmax,dkx,nkx,kymax,dky,nky,t0,dt,nt]
+    values  = [getproperty(pnt,s) for s in symbols]
+
+
+    str = ""
+
+    for (s,v,vsi) in zip(symbols,values,valuesSI)
+        valSI   = round(typeof(vsi),vsi,sigdigits=digits)
+        val     = round(v,sigdigits=digits)
+        str     *= "$s = $valSI ($val)\n"
+    end
     return str
 end
 

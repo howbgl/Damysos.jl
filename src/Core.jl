@@ -1,14 +1,14 @@
 
 function run_simulation1d!(sim::Simulation{T},ky::T;
-        rtol=1e-10,
-        atol=1e-10,
         savedata=true,
         saveplots=true,
         kwargs...) where {T<:Real}
 
+    @info "Working at atol=$atol & rtol=$rtol"
+
     p              = getparams(sim)
     
-    γ              = 1.0 / p.t2
+    γ              = oneunit(T) / p.t2
     nkx            = p.nkx
     kx_samples     = p.kxsamples
     tsamples       = p.tsamples
@@ -37,7 +37,7 @@ function run_simulation1d!(sim::Simulation{T},ky::T;
 
     u0             = zeros(T,2*nkx) .+ im .* zeros(T,2*nkx)
     prob           = ODEProblem(rhs!,u0,tspan)
-    sol            = solve(prob;saveat=tsamples,reltol=rtol,abstol=atol,kwargs...)
+    sol            = solve(prob;saveat=tsamples,reltol=p.rtol,abstol=p.atol,kwargs...)
     
     sim.observables .= calc_obs_k1d(sim,sol,ky)
 
@@ -127,7 +127,7 @@ function run_simulation!(sim::Simulation{T};
     @info "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)
 
     if sim.dimensions==1
-        obs = run_simulation1d!(sim,0.0;savedata=savedata,saveplots=saveplots,kwargs...)
+        obs = run_simulation1d!(sim,zero(T);savedata=savedata,saveplots=saveplots,kwargs...)
     elseif sim.dimensions==2
         obs = run_simulation2d!(sim;savedata=savedata,saveplots=saveplots,
                                 kyparallel=kyparallel,kwargs...)

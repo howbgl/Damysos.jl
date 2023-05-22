@@ -31,23 +31,21 @@ function parametersweep(sim::Simulation{T},comp::SimulationComponent{T},
         end
         name = name[1:end-1] # drop last underscore
 
+        new_h  = deepcopy(sim.hamiltonian)
+        new_df = deepcopy(sim.drivingfield)
+        new_p  = deepcopy(sim.numericalparams)
+
         if comp isa Hamiltonian{T}
             for (p,v) in zip(params,range[i])
-                new_h  = set(comp,PropertyLens(p),v)
-            end            
-            new_df = sim.drivingfield
-            new_p  = sim.numericalparams
-        elseif comp isa DrivingField{T}
-            new_h  = sim.hamiltonian
-            for (p,v) in zip(params,range[i])
-                new_df = set(comp,PropertyLens(p),v)
+                new_h  = set(new_h,PropertyLens(p),v)
             end
-            new_p  = sim.numericalparams
-        elseif comp isa NumericalParameters{T}
-            new_h  = sim.hamiltonian
-            new_df = sim.drivingfield
+        elseif comp isa DrivingField{T}
             for (p,v) in zip(params,range[i])
-                new_p  = set(comp,PropertyLens(p),v)
+                new_df = set(new_df,PropertyLens(p),v)
+            end
+        elseif comp isa NumericalParameters{T}
+            for (p,v) in zip(params,range[i])
+                new_p  = set(new_p,PropertyLens(p),v)
             end
         end
         sweeplist[i] = Simulation(new_h,new_df,new_p,deepcopy(sim.observables),

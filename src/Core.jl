@@ -4,11 +4,11 @@ function run_simulation1d!(sim::Simulation{T},ky::T;
         saveplots=true,
         kwargs...) where {T<:Real}
 
-    @info "Working at atol=$atol & rtol=$rtol"
-
     p              = getparams(sim)
-    
-    γ              = oneunit(T) / p.t2
+
+    γ1              = oneunit(T) / p.t2
+
+
     nkx            = p.nkx
     kx_samples     = p.kxsamples
     tsamples       = p.tsamples
@@ -21,7 +21,7 @@ function run_simulation1d!(sim::Simulation{T},ky::T;
     dcc,dcv,dvc,dvv          = getdipoles_x(sim.hamiltonian)
 
     rhs_cc(t,cv,kx,ky)     = 2.0 * f(t) * imag(cv * dvc(kx-a(t), ky))
-    rhs_cv(t,cc,cv,kx,ky)  = (-γ - 2.0im * ϵ(kx-a(t),ky)) * cv - 1.0im * f(t) * 
+    rhs_cv(t,cc,cv,kx,ky)  = (-γ1 - 2.0im * ϵ(kx-a(t),ky)) * cv - 1.0im * f(t) * 
                         (2.0 * dvv(kx-a(t),ky) * cv + dcv(kx-a(t),ky) * (2.0cc - 1.0))
 
 
@@ -79,7 +79,7 @@ function run_simulation2d!(sim::Simulation{T};
             Damysos.savedata(sim)
         end
         if saveplots
-            plotdata(sim,kwargs...)
+            plotdata(sim;kwargs...)
             plotfield(sim)
         end
 
@@ -125,7 +125,8 @@ function run_simulation!(sim::Simulation{T};
                     kwargs...) where {T<:Real}
 
     @info "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)
-
+    @info "Working at atol=$(getparams(sim).atol) & rtol=$(getparams(sim).rtol)"
+    
     if sim.dimensions==1
         obs = run_simulation1d!(sim,zero(T);savedata=savedata,saveplots=saveplots,kwargs...)
     elseif sim.dimensions==2

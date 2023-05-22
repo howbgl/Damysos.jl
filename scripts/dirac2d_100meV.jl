@@ -20,7 +20,9 @@ df      = GaussianPulse(us,σ,freq,emax)
 pars    = NumericalParams2d(0.005,0.01,4,0.1,2.0,-5df.σ)
 obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,2)
-ens     = parametersweep(sim,sim.numericalparams,:kymax,[1.0])
+ens     = parametersweep(sim,sim.numericalparams,
+                [:rtol,:atol],
+                [[1e-12,1e-12],[1e-13,1e-13],[1e-14,1e-14]])
 logger  = FileLogger(joinpath("logs","dirac2d_100meV_kymax_$(now()).log"))
 
 global_logger(logger)

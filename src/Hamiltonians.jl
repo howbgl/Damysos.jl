@@ -4,31 +4,39 @@ getshortname(h::Hamiltonian{T}) where {T<:Real} = split("_$h",'{')[1]
 
 struct GappedDirac{T<:Real} <: Hamiltonian{T}
     Δ::T
+    t1::T
     t2::T
-    GappedDirac{T}(Δ,t2) where {T<:Real} = new(Δ,t2) 
 end
-GappedDirac(Δ::T,t2::T) where {T<:Real}      = GappedDirac{T}(Δ,t2)
-GappedDirac(Δ::Real,t2::Real)                = GappedDirac(promote(Δ,t2)...)
+GappedDirac(Δ::Real,t1::Real,t2::Real)                = GappedDirac(promote(Δ,t1,t2)...)
 function GappedDirac(us::UnitScaling{T},mass::Unitful.Energy{T},
-    fermivelocity::Unitful.Velocity{T},dephasing::Unitful.Time{T}) where{T<:Real}
+        fermivelocity::Unitful.Velocity{T},dephasing1::Unitful.Time{T},
+        dephasing2::Unitful.Time{T}) where{T<:Real}
     p   = getparams(us)
     Δ   = uconvert(Unitful.NoUnits,mass*p.timescale/Unitful.ħ)
-    t2  = uconvert(Unitful.NoUnits,dephasing/p.timescale)
-    return GappedDirac(Δ,t2)
+    t1  = uconvert(Unitful.NoUnits,dephasing1/p.timescale)
+    t2  = uconvert(Unitful.NoUnits,dephasing2/p.timescale)
+    return GappedDirac(Δ,t1,t2)
+end
+function GappedDirac(us::UnitScaling{T},mass::Unitful.Energy{T},
+    fermivelocity::Unitful.Velocity{T},dephasing2::Unitful.Time{T}) where{T<:Real}
+    return GappedDirac(us,mass,fermivelocity,zero(T),dephasing2)
 end
 
 function scalegapped_dirac(mass::Unitful.Energy{T},fermivelocity::Unitful.Velocity{T},
-                    dephasing::Unitful.Time{T}) where{T<:Real}
+                    dephasing1::Unitful.Time{T},dephasing2::Unitful.Time{T}) where{T<:Real}
     tc = uconvert(u"fs",0.1*Unitful.ħ/mass)
     lc = uconvert(u"nm",fermivelocity*tc)
     us = UnitScaling(tc,lc)
-    return us,GappedDirac(us,mass,fermivelocity,dephasing)
+    return us,GappedDirac(us,mass,fermivelocity,dephasing1,dephasing2)
 end
 function scalegapped_dirac(umass,ufermivelocity,udephasingtime)
-    return scalegapped_dirac(promote(umass,ufermivelocity,udephasingtime)...)
+    return scalegapped_dirac(umass,ufermivelocity,Unitful.Quantity(Inf,u"s"),udephasingtime)
+end
+function scalegapped_dirac(umass,ufermivelocity,udephasingtime1,udephasingtime2)
+    return scalegapped_dirac(promote(umass,ufermivelocity,udephasingtime1,udephasingtime2)...)
 end
 
-getparams(h::GappedDirac{T}) where {T<:Real} = (Δ=h.Δ,t2=h.t2)
+getparams(h::GappedDirac{T}) where {T<:Real} = (Δ=h.Δ,t1=h.t1,t2=h.t2)
 
 getϵ(h::GappedDirac{T})     where {T<:Real}  = (kx,ky) -> sqrt(kx^2+ky^2+h.Δ^2)
 getdx_cc(h::GappedDirac{T}) where {T<:Real}  = (kx,ky) -> ky * (1.0 -h.Δ/sqrt(kx^2+ky^2+h.Δ^2)) / (2.0kx^2 + 2.0ky^2)

@@ -6,8 +6,8 @@ function run_simulation1d!(sim::Simulation{T},ky::T;
 
     p              = getparams(sim)
 
-    γ1              = oneunit(T) / p.t2
-
+    γ1              = oneunit(T) / p.t1
+    γ2              = oneunit(T) / p.t2
 
     nkx            = p.nkx
     kx_samples     = p.kxsamples
@@ -20,8 +20,8 @@ function run_simulation1d!(sim::Simulation{T},ky::T;
 
     dcc,dcv,dvc,dvv          = getdipoles_x(sim.hamiltonian)
 
-    rhs_cc(t,cv,kx,ky)     = 2.0 * f(t) * imag(cv * dvc(kx-a(t), ky))
-    rhs_cv(t,cc,cv,kx,ky)  = (-γ1 - 2.0im * ϵ(kx-a(t),ky)) * cv - 1.0im * f(t) * 
+    rhs_cc(t,cv,kx,ky)     = 2.0 * f(t) * imag(cv * dvc(kx-a(t), ky)) - γ1
+    rhs_cv(t,cc,cv,kx,ky)  = (-γ2 - 2.0im * ϵ(kx-a(t),ky)) * cv - 1.0im * f(t) * 
                         (2.0 * dvv(kx-a(t),ky) * cv + dcv(kx-a(t),ky) * (2.0cc - 1.0))
 
 

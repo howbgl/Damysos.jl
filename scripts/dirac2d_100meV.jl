@@ -22,8 +22,8 @@ obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,2)
 ens     = parametersweep(sim,sim.numericalparams,
                 [:rtol,:atol],
-                [[1e-12,1e-12],[1e-13,1e-13],[1e-14,1e-14]])
-logger  = FileLogger(joinpath("logs","dirac2d_100meV_kymax_$(now()).log"))
+                [[1e-8,1e-8],[1e-11,1e-11],[1e-15,1e-15]])
+logger  = FileLogger(joinpath("logs","dirac2d_100meV_tol_$(now()).log"))
 
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"

@@ -18,9 +18,9 @@ Base.setindex!(a::Ensemble,v,i::Int)    = (a.simlist[i] = v)
 Base.getindex(a::Ensemble,i::Int)       = a.simlist[i]
 function Base.show(io::IO,::MIME"text/plain",e::Ensemble{T}) where {T}
     print(io,"Ensemble{$T} of Simulations{$T}:\n")
-    println(io,"id = $(e.id)")
-    println(io,"datapath = $(e.datapath)")
-    println(io,"id = $(e.plotpath)")
+    println(io," id = $(e.id)")
+    println(io," datapath = $(e.datapath)")
+    println(io," plotpath = $(e.plotpath)\n")
     for i in 1:length(e.simlist)
         print(io,"  #$i\n","  ")
         Base.show(io,MIME"text/plain"(),e.simlist[i])

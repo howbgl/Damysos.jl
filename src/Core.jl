@@ -125,7 +125,6 @@ function run_simulation!(sim::Simulation{T};
                     kwargs...) where {T<:Real}
 
     @info "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)
-    @info "Working at atol=$(getparams(sim).atol) & rtol=$(getparams(sim).rtol)"
     
     if sim.dimensions==1
         obs = run_simulation1d!(sim,zero(T);savedata=savedata,saveplots=saveplots,kwargs...)

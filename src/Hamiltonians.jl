@@ -1,7 +1,4 @@
 
-
-getshortname(h::Hamiltonian{T}) where {T<:Real} = split("_$h",'{')[1]
-
 struct GappedDirac{T<:Real} <: Hamiltonian{T}
     Δ::T
     t1::T

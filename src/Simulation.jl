@@ -1,5 +1,5 @@
 
-struct UnitScaling{T<:Real}
+struct UnitScaling{T<:Real} <: SimulationComponent{T}
     timescale::T
     lengthscale::T
 end
@@ -93,9 +93,18 @@ function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
     print(io,"Simulation{$T} ($(s.dimensions)d) with components{$T}:\n")
     for n in fieldnames(Simulation{T})
         if !(n == :dimensions)
-            print(io,"  ")
-            Base.show(io,MIME"text/plain"(),getfield(s,n))
-            print(io,'\n')
+            if n == :observables
+                println(io,"  Observables")
+                str = ""
+                for o in getfield(s,n)
+                    str *= "    "*getshortname(o)*"\n"
+                end 
+                println(io,str)
+            else
+                print(io,"  ")
+                Base.show(io,MIME"text/plain"(),getfield(s,n))
+                print(io,'\n')
+            end
         end
     end
 end
@@ -136,11 +145,12 @@ arekresolved(sim::Simulation{T}) where {T<:Real} = vcat(arekresolved.(sim.observ
 getname(sim::Simulation{T}) where {T<:Real}      = getshortname(sim)*'_'*sim.id
 
 
-getshortname(obs::Observable{T}) where {T<:Real} = split("$obs",'{')[1]
+getshortname(obs::Observable)           = split("$obs",'{')[1]
+getshortname(c::SimulationComponent)    = split("$c",'{')[1]
 
 function Base.show(io::IO,::MIME"text/plain",c::SimulationComponent{T}) where {T}
-    pars = getparams(c)
-    print(io,split("$c",'{')[1],":  $pars")
+    println(io,getshortname(c))
+    print(io,c |> getparams |> stringexpand_nt |> prepend_spaces)
 end
 
 function printparamsSI(sim::Simulation)

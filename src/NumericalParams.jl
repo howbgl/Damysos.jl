@@ -1,4 +1,3 @@
-
 struct NumericalParams2d{T<:Real} <: NumericalParameters{T}
     dkx::T
     dky::T

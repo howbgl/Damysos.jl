@@ -6,6 +6,22 @@ function stringexpand_vector(v::AbstractVector)
     return str[1:end-1] # drop last underscore
 end
 
+function stringexpand_nt(nt::NamedTuple)
+    str = ""
+    for (k, v) in pairs(nt)
+        str *= "$k: $v\n"
+    end
+    return str
+end
+
+function prepend_spaces(str::AbstractString)
+    lines = split(str, '\n')
+    indented_lines = ["    $line" for line in lines]
+    indented_str = join(indented_lines, '\n')
+    return indented_str
+end
+
+
 droplast(path::AbstractString) = joinpath(splitpath(path)[1:end-1]...)
 
 function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol, 

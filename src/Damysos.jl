@@ -16,11 +16,11 @@ export savemetadata,save,load,savedata,loaddata
 export getvx_cc,getvx_cv,getvx_vc,getvx_vv
 export getϵ,getdx_cc,getdx_cv,getdx_vc,getdx_vv
 
+abstract type Observable{T} end
 abstract type SimulationComponent{T} end
 abstract type Hamiltonian{T}            <: SimulationComponent{T} end
 abstract type DrivingField{T}           <: SimulationComponent{T} end
 abstract type NumericalParameters{T}    <: SimulationComponent{T} end
-abstract type Observable{T}             <: SimulationComponent{T} end
 
 include("Simulation.jl")
 include("Ensemble.jl")

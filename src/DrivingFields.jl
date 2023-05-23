@@ -1,8 +1,5 @@
 
 gauss(t::T,σ::T) where {T<:Real} = exp(-t^2 / (2σ^2))
-
-getshortname(df::DrivingField{T}) where {T<:Real} = split("_$df",'{')[1]
-
 struct GaussianPulse{T<:Real} <: DrivingField{T}
     σ::T
     ω::T

@@ -57,9 +57,20 @@ getdipoles_x(h::GappedDirac{T}) where {T<:Real}  = (getdx_cc(h),getdx_cv(h),getd
 getvels_x(h::GappedDirac{T}) where {T<:Real}     = (getvx_cc(h),getvx_cv(h),getvx_vc(h),getvx_vv(h))  
 
 function printparamsSI(h::GappedDirac,us::UnitScaling;digits=3)
+
     Δ   = energySI(h.Δ,us)
+    t1  = timeSI(h.t1,us)
     t2  = timeSI(h.t2,us)
-    str = "Δ = $(round(typeof(Δ),Δ,sigdigits=digits))\n"
-    str *= "T₂ = $(round(typeof(t2),t2,sigdigits=digits))\n"
+
+    symbols     = [:Δ,:t1,:t2]
+    valuesSI    = [Δ,t1,t2]
+    values      = [getproperty(h,s) for s in symbols]
+    str         = ""
+
+    for (s,v,vsi) in zip(symbols,values,valuesSI)
+        valSI   = round(typeof(vsi),vsi,sigdigits=digits)
+        val     = round(v,sigdigits=digits)
+        str     *= "$s = $valSI ($val)\n"
+    end
     return str
 end

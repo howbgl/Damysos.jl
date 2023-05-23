@@ -47,13 +47,24 @@ end
 end
 
 function printparamsSI(df::GaussianPulse,us::UnitScaling;digits=3)
+
+    p       = getparams(df)
     σ       = timeSI(df.σ,us)
+    ω       = uconvert(u"fs^-1",frequencySI(df.ω,us))
     ν       = frequencySI(df.ω/2π,us)
-    field   = electricfieldSI(df.eE,us)
-    str = "σ  = $(round(typeof(σ),σ,sigdigits=digits))\n"
-    str *= "ν  = $(round(typeof(ν),ν,sigdigits=digits))\n"
-    str *= "E₀ = $(round(typeof(field),field,sigdigits=digits))\n"
-    str *= "φ = $(round(df.φ,sigdigits=digits))\n"
+    eE      = electricfieldSI(df.eE,us)
+    φ       = df.φ
+
+    symbols     = [:σ,:ω,:ν,:eE,:φ]
+    valuesSI    = [σ,ω,ν,eE,φ]
+    values      = [getproperty(p,s) for s in symbols]
+    str         = ""
+
+    for (s,v,vsi) in zip(symbols,values,valuesSI)
+        valSI   = round(typeof(vsi),vsi,sigdigits=digits)
+        val     = round(v,sigdigits=digits)
+        str     *= "$s = $valSI ($val)\n"
+    end
     return str
 end
 

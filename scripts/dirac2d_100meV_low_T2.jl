@@ -20,13 +20,13 @@ df      = GaussianPulse(us,σ,freq,emax)
 pars    = NumericalParams2d(0.005,0.01,4,1.0,2.0,-5df.σ)
 obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,2)
-logger  = FileLogger(joinpath("logs","dirac2d_100meV_tol_$(now()).log"))
+logger  = FileLogger(joinpath("logs","dirac2d_100meV_low_T2_$(now()).log"))
 
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"
 
 results,time,rest... = @timed run_simulation!(sim;kyparallel=true)
 
-@info "$(time/60.)min spent in run_simulation!(ens::Ensemble;...)"
+@info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest
 @info "$(now()): calculation finished."

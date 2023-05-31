@@ -49,9 +49,7 @@ end
 function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
                     vxinter_k::Array{T},vxintra_k::Array{T},
                     vyinter_k::Array{T},vyintra_k::Array{T}) where {T<:Real}
-
-    @info "ky = $ky"
-
+    
     p     = getparams(sim)
     kx    = p.kxsamples
     ax    = get_vecpotx(sim.drivingfield)

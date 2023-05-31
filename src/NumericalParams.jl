@@ -18,15 +18,15 @@ end
 
 struct NumericalParams2dSlice{T<:Real} <: NumericalParameters{T}
     params::NumericalParams2d{T}
-    kyspan::Tuple{T,T}
+    kxspan::Tuple{T,T}
 end
 
 function getparams(p::NumericalParams2dSlice{T}) where {T<:Real}
     fullparams  = getparams(p.params)
-    kys_full    = collect(fullparams.kysamples)
-    kysamples   = kys_full[kys_full .>= p.kyspan[1] .&& kys_full .<= p.kyspan[2]]
-    nky         = length(kysamples)
-    return merge(fullparams,(nky=nky,kysamples=kysamples,))
+    kxs_full    = collect(fullparams.kxsamples)
+    kxsamples   = kxs_full[kxs_full .>= p.kxspan[1] .&& kxs_full .<= p.kxspan[2]]
+    nkx         = length(kxsamples)
+    return merge(fullparams,(nkx=nkx,kxsamples=kxsamples,))
 end
 
 

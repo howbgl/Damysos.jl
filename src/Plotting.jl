@@ -10,9 +10,10 @@ function plottimeseries(timeseries::Vector{Vector{T}},
     f   = Figure()
     ax  = Axis(f[1,1],title=title,xlabel="t/tc")
 
-    for (data,label,ts) in zip(timeseries,labels,tsamples)
+    for (i,data,label,ts) in zip(1:length(timeseries),timeseries,labels,tsamples)
         
-        lines!(ax,ts,data,label=label)
+        lines!(ax,ts,data,label=label,colormap=:viridis,colorrange=(1,length(timeseries)),
+            color=i)
     end
 
     axislegend(ax)
@@ -43,7 +44,8 @@ function plotspectra(timeseries::Vector{Vector{T}},
                 xticks=0:5:maxharm)
     xlims!(ax,[0,maxharm])
 
-    for (data,label,dt,ν) in zip(timeseries,labels,timesteps,frequencies)
+    for (i,data,label,dt,ν) in zip(1:length(timeseries),timeseries,labels,timesteps,
+                                    frequencies)
 
         pdg         = periodogram(data,
                                     nfft=8*length(data),
@@ -56,7 +58,8 @@ function plotspectra(timeseries::Vector{Vector{T}},
         if length(ydata[cut_inds]) < length(ydata)
             @info "Removing zeros/negatives in plotting spectrum of $title ($label)"
         end
-        lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label) 
+        lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label,colormap=:viridis,
+            colorrange=(1,length(timeseries)),color=i) 
     end
 
     axislegend(ax)

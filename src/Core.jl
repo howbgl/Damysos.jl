@@ -134,8 +134,9 @@ function run_simulation!(sim::Simulation{T};
                     kxparallel=false,
                     kwargs...) where {T<:Real}
     
-    @info "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)
-    @info "new"
+    @info   "$(now())\nOn $(gethostname()):\n"*
+            "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)
+
     if sim.dimensions==1
         obs = run_simulation1d!(sim,zero(T);savedata=savedata,saveplots=saveplots,kwargs...)
     elseif sim.dimensions==2

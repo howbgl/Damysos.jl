@@ -28,7 +28,7 @@ logger  = FileLogger(joinpath("logs","dirac2d_100meV_tol_$(now()).log"))
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"
 
-results,time,rest... = @timed run_simulation!(ens;kyparallel=true)
+results,time,rest... = @timed run_simulation!(ens;kxparallel=true)
 
 @info "$(time/60.)min spent in run_simulation!(ens::Ensemble;...)"
 @debug rest

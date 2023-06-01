@@ -25,18 +25,18 @@ end
 droplast(path::AbstractString) = joinpath(splitpath(path)[1:end-1]...)
 
 function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol, 
-                        range::AbstractVector{T}) where {T<:Real}
+                        range::AbstractVector{T};id="") where {T<:Real}
 
-    return parametersweep(sim,comp,[param],[[r] for r in range])
+    return parametersweep(sim,comp,[param],[[r] for r in range];id=id)
 end
 
 function parametersweep(sim::Simulation{T},comp::SimulationComponent{T},
-    params::Vector{Symbol},range::Vector{Vector{T}}) where {T<:Real}
+    params::Vector{Symbol},range::Vector{Vector{T}};id="") where {T<:Real}
 
     hashstring   = sprintf1("%x",hash([sim,comp,params,range]))
     ensname      = "Ensemble[$(length(range))]{$T}($(sim.dimensions)d)" * 
             getshortname(sim.hamiltonian) * getshortname(sim.drivingfield) * "_" *
-            stringexpand_vector(params)*"_sweep_" * hashstring
+            id * "_" * stringexpand_vector(params)*"_sweep_" * hashstring
 
     sweeplist    = Vector{Simulation{T}}(undef,length(range))
     for i in eachindex(sweeplist)

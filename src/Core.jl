@@ -41,6 +41,8 @@ function run_simulation1d_serial!(sim::Simulation{T},ky::T;
     
     sim.observables .= calc_obs_k1d(sim,sol,ky)
 
+    normalize!.(sim.observables,(2π)^sim.dimensions)
+
     if savedata == true
         Damysos.savedata(sim)
     end

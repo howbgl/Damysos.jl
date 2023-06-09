@@ -1,10 +1,10 @@
-
 struct GappedDirac{T<:Real} <: Hamiltonian{T}
     Δ::T
     t1::T
     t2::T
 end
-GappedDirac(Δ::Real,t1::Real,t2::Real)                = GappedDirac(promote(Δ,t1,t2)...)
+GappedDirac(Δ::Real,t1::Real,t2::Real)      = GappedDirac(promote(Δ,t1,t2)...)
+GappedDirac(Δ::Real,t1::Real)               = GappedDirac(Δ,t1,Inf)
 function GappedDirac(us::UnitScaling{T},mass::Unitful.Energy{T},
         fermivelocity::Unitful.Velocity{T},dephasing1::Unitful.Time{T},
         dephasing2::Unitful.Time{T}) where{T<:Real}
@@ -62,7 +62,7 @@ function printparamsSI(h::GappedDirac,us::UnitScaling;digits=3)
     symbols     = [:Δ,:t1,:t2]
     valuesSI    = [Δ,t1,t2]
     values      = [getproperty(h,s) for s in symbols]
-    str         = ""
+    str         = "vF = $(velocitySI(1.0,us)) (1.0)\n"
 
     for (s,v,vsi) in zip(symbols,values,valuesSI)
         valSI   = round(typeof(vsi),vsi,sigdigits=digits)

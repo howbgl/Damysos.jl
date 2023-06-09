@@ -12,19 +12,22 @@ const σ         = u"100.0fs"
 
 # converged at
 # dt = 2.0
-# dkx = 0.005
+# dkx = 0.008
+# kxmax = 4.0
+# dky = 0.002
+
 
 us,h    = scalegapped_dirac(m,vf,t2)
 df      = GaussianPulse(us,σ,freq,emax)
-pars    = NumericalParams2d(0.05,0.1,5,0.5,2.0,-5df.σ)
+pars    = NumericalParams2d(0.008,0.002,4,2.0,2.0,-5df.σ)
 obs     = [Velocity(h)]
 sim     = Simulation(h,df,pars,obs,us,2)
 ensid   = "vanessa_100meV"
 ens     = parametersweep(sim,sim.numericalparams,
-                :dky,
-                LinRange(0.05,0.001,8),id=ensid)
-ensurepath(sim.plotpath)
-logger  = FileLogger(joinpath(ens.plotpath,"dirac2d_vanessa_dky_$(now()).log"))
+                :dt,
+                LinRange(2.0,0.2,6),id=ensid)
+ensurepath(ens.plotpath)
+logger  = FileLogger(joinpath(ens.plotpath,"dirac2d_vanessa_dt_$(now()).log"))
 
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"

@@ -77,7 +77,7 @@ end
 function Simulation(h::Hamiltonian{T},df::DrivingField{T},
     p::NumericalParameters{T},obs::Vector{O} where {O<:Observable{T}},
     us::UnitScaling{T},d::Integer,id) where {T<:Real} 
-    name = "Simulation{$T}($(d)d)" * getshortname(h) *  getshortname(df) * "_$id"
+    name = "Simulation{$T}($(d)d)" * getshortname(h) *"_"*  getshortname(df) * "_$id"
     return Simulation(h,df,p,obs,us,d,String(id),
                 "/home/how09898/phd/data/hhgjl/"*name*"/",
                 "/home/how09898/phd/plots/hhgjl/"*name*"/")
@@ -110,7 +110,7 @@ function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
 end
 
 function getshortname(sim::Simulation{T}) where {T<:Real}
-    return "Simulation{$T}($(sim.dimensions)d)" * getshortname(sim.hamiltonian) * 
+    return "Simulation{$T}($(sim.dimensions)d)" * getshortname(sim.hamiltonian) *"_"* 
             getshortname(sim.drivingfield)
 end
 

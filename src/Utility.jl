@@ -31,12 +31,19 @@ function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param:
 end
 
 function parametersweep(sim::Simulation{T},comp::SimulationComponent{T},
-    params::Vector{Symbol},range::Vector{Vector{T}};id="") where {T<:Real}
+    params::Vector{Symbol},range::Vector{Vector{T}};
+    id="",
+    plotpath="",
+    datapath="") where {T<:Real}
 
     hashstring   = sprintf1("%x",hash([sim,comp,params,range]))
-    ensname      = "Ensemble[$(length(range))]{$T}($(sim.dimensions)d)" * 
-            getshortname(sim.hamiltonian) * getshortname(sim.drivingfield) * "_" *
-            id * "_" * stringexpand_vector(params)*"_sweep_" * hashstring
+    plotpath     = plotpath == "" ? droplast(sim.plotpath) : plotpath
+    datapath     = datapath == "" ? droplast(sim.datapath) : datapath
+    ensname      = "Ensemble[$(length(range))]($(sim.dimensions)d)" 
+    ensname      *= getshortname(sim.hamiltonian) *"_"* getshortname(sim.drivingfield) * "_"
+    ensname      *= stringexpand_vector(params)*"_sweep_" * hashstring
+    id           = id == "" ? stringexpand_vector(params)*"_sweep_" * hashstring : id
+    
 
     sweeplist    = Vector{Simulation{T}}(undef,length(range))
     for i in eachindex(sweeplist)
@@ -66,14 +73,16 @@ function parametersweep(sim::Simulation{T},comp::SimulationComponent{T},
         end
         sweeplist[i] = Simulation(new_h,new_df,new_p,deepcopy(sim.observables),
                 sim.unitscaling,sim.dimensions,name,
-                joinpath(droplast(sim.datapath),ensname,name*"/"),
-                joinpath(droplast(sim.plotpath),ensname,name*"/"))
+                joinpath(datapath,ensname,name*"/"),
+                joinpath(plotpath,ensname,name*"/"))
     end
 
 
-    return Ensemble(sweeplist,stringexpand_vector(params)*"_sweep_"*hashstring,
-                joinpath(droplast(sim.datapath),ensname*"/"),
-                joinpath(droplast(sim.plotpath),ensname*"/"))
+    return Ensemble(
+                sweeplist,
+                id,
+                joinpath(datapath,ensname*"/"),
+                joinpath(plotpath,ensname*"/"))
 end
 
 function maximum_k(df::DrivingField)

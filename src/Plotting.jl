@@ -1,22 +1,29 @@
-
-
 function plottimeseries(timeseries::Vector{Vector{T}},
                         labels::Vector{String},
                         tsamples::Vector{Vector{T}};
                         title="",
                         sidelabel="",
+                        colors="categorical",
                         kwargs...) where {T<:Real}
 
     f   = Figure()
     ax  = Axis(f[1,1],title=title,xlabel="t/tc")
-
+    
     for (i,data,label,ts) in zip(1:length(timeseries),timeseries,labels,tsamples)
         
-        lines!(ax,ts,data,label=label,colormap=:viridis,colorrange=(1,length(timeseries)),
-            color=i)
+        if colors == "categorical"
+            lines!(ax,ts,data,label=label)
+        elseif colors == "continuous"
+            lines!(ax,ts,data,label=label,colormap=:viridis,
+                colorrange=(1,length(timeseries)),color=i)
+        else
+            @warn "Unknown kwarg colors = $colors, using default (categorical)"
+            lines!(ax,ts,data,label=label)
+        end
+        
     end
 
-    axislegend(ax)
+    axislegend(ax,position=:lb)
     Label(f[1,2],sidelabel,tellheight=false,justification = :left)
     
     return f
@@ -30,6 +37,7 @@ function plotspectra(timeseries::Vector{Vector{T}},
                     fftwindow=hanning,
                     title="",
                     sidelabel="",
+                    colors="categorical",
                     kwargs...) where {T<:Real}
 
     f   = Figure()
@@ -52,17 +60,26 @@ function plotspectra(timeseries::Vector{Vector{T}},
                                     fs=1/dt,
                                     window=fftwindow)
         ydata       = pdg.power .* (pdg.freq .^ 2)
-        ydata       = ydata / maximum(ydata)
+        # ydata       = ydata / maximum(ydata)
         xdata       = 1/ν .* pdg.freq
         cut_inds    = ydata .> floatmin(T)
         if length(ydata[cut_inds]) < length(ydata)
             @info "Removing zeros/negatives in plotting spectrum of $title ($label)"
         end
-        lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label,colormap=:viridis,
+
+        if colors == "categorical"
+            lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label) 
+        elseif colors == "continuous"
+            lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label,colormap=:viridis,
             colorrange=(1,length(timeseries)),color=i) 
+        else
+            @warn "Unknown kwarg colors = $colors, using default (categorical)"
+            lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label)
+        end
+        
     end
 
-    axislegend(ax)
+    axislegend(ax,position=:lb)
     Label(f[1,2],sidelabel,tellheight=false,justification = :left)
     
     return f
@@ -105,11 +122,13 @@ function plotdata(ens::Ensemble{T},vel::Velocity{T};
             try
                 figtime     = plottimeseries(timeseries,labels,tsamples,
                                             title=vname,
+                                            colors="continuous",
                                             kwargs...)
                 figspectra  = plotspectra(timeseries,labels,frequencies,timesteps,
                                             maxharm=maxharm,
                                             fftwindow=fftwindow,
                                             title=vname,
+                                            colors="continuous",
                                             kwargs...)
                 
                 if !ensurepath(plotpath)

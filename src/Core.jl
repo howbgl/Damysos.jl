@@ -20,14 +20,14 @@ function run_simulation1d_serial!(sim::Simulation{T},ky::T;
 
     dcc,dcv,dvc,dvv          = getdipoles_x(sim.hamiltonian)
 
-    rhs_cc(t,cv,kx,ky)     = 2.0 * f(t) * imag(cv * dvc(kx-a(t), ky)) - γ1
+    rhs_cc(t,cc,cv,kx,ky)  = 2.0 * f(t) * imag(cv * dvc(kx-a(t), ky)) + γ1*(oneunit(T)-cc)
     rhs_cv(t,cc,cv,kx,ky)  = (-γ2 - 2.0im * ϵ(kx-a(t),ky)) * cv - 1.0im * f(t) * 
                         ((dvv(kx-a(t),ky)-dcc(kx-a(t),ky)) * cv + dcv(kx-a(t),ky) * (2.0cc - 1.0))
 
 
     @inline function rhs!(du,u,p,t)
         @inbounds for i in 1:nkx
-            du[i] = rhs_cc(t,u[i+nkx],kx_samples[i],ky)
+            du[i] = rhs_cc(t,u[i],u[i+nkx],kx_samples[i],ky)
         end
     
         @inbounds for i in nkx+1:2nkx

@@ -19,7 +19,7 @@ const σ         = u"100.0fs"
 
 us,h    = scalegapped_dirac(m,vf,t2)
 df      = GaussianPulse(us,σ,freq,emax)
-pars    = NumericalParams2d(0.004,0.1,4,0.1,0.5,-5df.σ)
+pars    = NumericalParams2d(0.004,0.01,4,0.1,0.5,-5df.σ)
 obs     = [Velocity(h)]
 id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
@@ -27,10 +27,10 @@ dpath   = "/home/how09898/phd/data/hhgjl/dirac2d_100meV_100fs_8THz_0.3MVcm/"*nam
 ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_100meV_100fs_8THz_0.3MVcm/"*name
 sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 ens     = parametersweep(sim,sim.numericalparams,
-                :dky,
-                LinRange(0.08,0.01,5))
+                :kymax,
+                LinRange(0.1,0.5,6))
 ensurepath(ens.plotpath)
-logger  = FileLogger(joinpath(ens.plotpath,"dirac2d_100meV_dky_$(now()).log"))
+logger  = FileLogger(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))
 
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"

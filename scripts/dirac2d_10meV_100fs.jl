@@ -16,6 +16,7 @@ const σ         = u"100.0fs"
 # dkx = 0.002
 # kxmax = 10
 # dky = 0.02
+# kymax = 4.0 (only spectrum)
 
 us,h    = scalegapped_dirac(m,vf,t2)
 df      = GaussianPulse(us,σ,freq,emax)

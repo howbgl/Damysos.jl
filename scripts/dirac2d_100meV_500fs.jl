@@ -15,6 +15,12 @@ const σ         = u"500.0fs"
 # kxmax = 4.0
 # kymax = 1.0
 
+const dt      = 5.0
+const dkx     = 0.005
+const kxmax   = 0.5
+const dky     = 0.01
+const kymax   = 0.11
+
 us,h    = scalegapped_dirac(m,vf,t2)
 df      = GaussianPulse(us,σ,freq,emax)
 pars    = NumericalParams2d(0.005,0.01,4,0.1,2.0,-5df.σ)

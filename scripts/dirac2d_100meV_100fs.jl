@@ -15,7 +15,8 @@ const σ         = u"100.0fs"
 # dt = 0.5
 # dky = 0.01
 # dkx = 0.004
-# kxmax = 4.0
+# kxmax = 1.0
+# kymax = 1.5
 
 us,h    = scalegapped_dirac(m,vf,t2)
 df      = GaussianPulse(us,σ,freq,emax)
@@ -28,7 +29,7 @@ ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_100meV_100fs_8THz_0.3MVcm/"*na
 sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 ens     = parametersweep(sim,sim.numericalparams,
                 :kymax,
-                LinRange(0.1,0.5,6))
+                LinRange(0.4,1.0,8))
 ensurepath(ens.plotpath)
 logger  = FileLogger(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))
 

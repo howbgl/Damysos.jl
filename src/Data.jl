@@ -17,7 +17,7 @@ function savedata(sim::Simulation{T}) where {T<:Real}
     dat         = DataFrame(t=getparams(sim).tsamples)
     datapath    = sim.datapath
 
-    if !ensurepath(dirname(sim.datapath))
+    if !ensurepath(dirname(joinpath(datapath,"data.csv")))
         @info "Using working dir instead"
         datapath = ""
     end
@@ -29,13 +29,13 @@ function savedata(sim::Simulation{T}) where {T<:Real}
     end
 
     CSV.write(joinpath(datapath,"data.csv"),dat)
-    @info "Saved Simulation data at "*datapath*"data.csv"
+    @info "Saved Simulation data at "*joinpath(datapath,"data.csv")
 
     return nothing
 end
 
 function loaddata(sim::Simulation)
-    return DataFrame(CSV.File(sim.datapath*"data.csv"))
+    return DataFrame(CSV.File(joinpath(sim.datapath,"data.csv")))
 end
 
 function addproperobs!(dat::DataFrame,v::Velocity)

@@ -6,7 +6,7 @@ using DSP,DataFrames,Random,CSV,Formatting,Folds,Dates
 import Base.zero
 
 export Hamiltonian,GappedDirac,scalegapped_dirac
-export DrivingField,GaussianPulse,get_efieldx,get_vecpotx
+export DrivingField,GaussianPulse,get_efieldx,get_vecpotx,scaledriving_frequency
 export NumericalParameters,NumericalParams2d,NumericalParams1d,NumericalParams2dSlice
 export Simulation,Ensemble,getparams,parametersweep
 export Observable,Velocity,Occupation,Timesteps,getnames_obs

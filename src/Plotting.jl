@@ -239,8 +239,8 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
                 @info "Using working dir instead"
                 plotpath = ""
             end
-            CairoMakie.save(plotpath*"$(lab[1]).pdf",figtime)
-            CairoMakie.save(plotpath*"$(lab[1])_spec.pdf",figspectra)
+            CairoMakie.save(joinpath(plotpath,"$(lab[1]).pdf"),figtime)
+            CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.pdf"),figspectra)
 
             @info "Saved velocity timesieries at "*plotpath
         end
@@ -274,8 +274,8 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
             @info "Using working dir instead"
             plotpath = ""
         end
-        CairoMakie.save(plotpath*"cb_occ.pdf",figtime)
-        CairoMakie.save(plotpath*"cb_occ_spec.pdf",figspectra)
+        CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
+        CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
 
         @info "Saved 'cb_occ.pdf' & 'cb_occ_spec.pdf' at "*plotpath
     catch e

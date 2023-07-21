@@ -1,9 +1,13 @@
 function stringexpand_vector(v::AbstractVector)
     str = ""
-    for s in v
-        str *= "$(s)_"
+    for i in eachindex(v)
+        if i==length(v) # drop last underscore
+            str *= "$(v[i])"
+        else
+            str *= "$(v[i])_"
+        end
     end
-    return str[1:end-1] # drop last underscore
+    return str 
 end
 
 function stringexpand_nt(nt::NamedTuple)

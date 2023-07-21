@@ -153,9 +153,17 @@ function Base.show(io::IO,::MIME"text/plain",c::SimulationComponent{T}) where {T
     print(io,c |> getparams |> stringexpand_nt |> prepend_spaces)
 end
 
-function printparamsSI(sim::Simulation)
-    str = printparamsSI(sim.hamiltonian,sim.unitscaling)
-    str *= printparamsSI(sim.drivingfield,sim.unitscaling)
-    str *= printparamsSI(sim.numericalparams,sim.unitscaling)
+function printparamsSI(sim::Simulation;digits=3)
+
+    p   = getparams(sim)
+    γ   = round(p.Δ*p.ω / p.eE,sigdigits=digits)        # Keldysh parameter
+    M   = round(2*p.Δ / p.ω,sigdigits=digits)           # Multi-photon number
+    plz = round(exp(-π*p.Δ^2 / p.eE),sigdigits=digits)  # Maximal LZ tunnel prob
+
+    str = "γ = $γ\nM = $M\nplz = $plz\n"
+
+    str *= printparamsSI(sim.hamiltonian,sim.unitscaling;digits=digits)
+    str *= printparamsSI(sim.drivingfield,sim.unitscaling;digits=digits)
+    str *= printparamsSI(sim.numericalparams,sim.unitscaling;digits=digits)
     return str
 end

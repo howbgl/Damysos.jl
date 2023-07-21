@@ -1,5 +1,20 @@
 
 gauss(t::T,σ::T) where {T<:Real} = exp(-t^2 / (2σ^2))
+
+function scaledriving_frequency(ufrequency,ufermivelocity)
+    return scaledriving_frequency(promote(ufrequency,ufermivelocity)...)
+end
+
+function scaledriving_frequency(
+        frequency::Unitful.Frequency{T},
+        fermivelocity::Unitful.Velocity{T}) where{T<:Real}
+
+    tc = uconvert(u"fs",1/frequency)
+    lc = uconvert(u"nm",fermivelocity*tc)
+    return UnitScaling(tc,lc)
+end
+
+
 struct GaussianPulse{T<:Real} <: DrivingField{T}
     σ::T
     ω::T
@@ -24,7 +39,7 @@ function GaussianPulse(us::UnitScaling,
 end
 
 function getparams(df::GaussianPulse{T}) where {T<:Real}  
-    return (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE,φ=df.φ)
+    return (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE,φ=df.φ,ħω=df.ω)
 end
 
 @inline function get_efieldx(df::GaussianPulse{T}) where {T<:Real}
@@ -43,17 +58,18 @@ end
     return t -> sin(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
 end
 
-function printparamsSI(df::GaussianPulse,us::UnitScaling;digits=3)
+function printparamsSI(df::GaussianPulse,us::UnitScaling;digits=4)
 
     p       = getparams(df)
     σ       = timeSI(df.σ,us)
     ω       = uconvert(u"fs^-1",frequencySI(df.ω,us))
+    ħω      = uconvert(u"eV",energySI(df.ω,us))
     ν       = frequencySI(df.ω/2π,us)
     eE      = electricfieldSI(df.eE,us)
     φ       = df.φ
 
-    symbols     = [:σ,:ω,:ν,:eE,:φ]
-    valuesSI    = [σ,ω,ν,eE,φ]
+    symbols     = [:σ,:ω,:ν,:eE,:φ,:ħω]
+    valuesSI    = [σ,ω,ν,eE,φ,ħω]
     values      = [getproperty(p,s) for s in symbols]
     str         = ""
 

@@ -20,20 +20,24 @@ function GappedDirac(us::UnitScaling{T},mass::Unitful.Energy{T},
 end
 
 function scalegapped_dirac(mass::Unitful.Energy{T},fermivelocity::Unitful.Velocity{T},
-                    dephasing1::Unitful.Time{T},dephasing2::Unitful.Time{T}) where{T<:Real}
-    tc = uconvert(u"fs",0.1*Unitful.ħ/mass)
+                    dephasing1::Unitful.Time{T},dephasing2::Unitful.Time{T};
+                    tc_factor=0.1) where{T<:Real}
+    mul = convert(T,tc_factor)
+    tc = uconvert(u"fs",mul*Unitful.ħ/mass)
     lc = uconvert(u"nm",fermivelocity*tc)
     us = UnitScaling(tc,lc)
     return us,GappedDirac(us,mass,fermivelocity,dephasing1,dephasing2)
 end
-function scalegapped_dirac(umass,ufermivelocity,udephasingtime)
-    return scalegapped_dirac(umass,ufermivelocity,Unitful.Quantity(Inf,u"s"),udephasingtime)
+function scalegapped_dirac(umass,ufermivelocity,udephasingtime;tc_factor=0.1)
+    return scalegapped_dirac(umass,ufermivelocity,Unitful.Quantity(Inf,u"s"),udephasingtime,
+                            tc_factor=tc_factor)
 end
 function scalegapped_dirac(umass,ufermivelocity,udephasingtime1,udephasingtime2)
-    return scalegapped_dirac(promote(umass,ufermivelocity,udephasingtime1,udephasingtime2)...)
+    return scalegapped_dirac(promote(umass,ufermivelocity,udephasingtime1,udephasingtime2)...;
+                            tc_factor=tc_factor)
 end
 
-getparams(h::GappedDirac{T}) where {T<:Real} = (Δ=h.Δ,t1=h.t1,t2=h.t2)
+getparams(h::GappedDirac{T}) where {T<:Real} = (Δ=h.Δ,t1=h.t1,t2=h.t2,vF=oneunit(T))
 
 getϵ(h::GappedDirac{T})     where {T<:Real}  = (kx,ky) -> sqrt(kx^2+ky^2+h.Δ^2)
 getdx_cc(h::GappedDirac{T}) where {T<:Real}  = (kx,ky) -> ky * (1.0 -h.Δ/sqrt(kx^2+ky^2+h.Δ^2)) / (2.0kx^2 + 2.0ky^2)
@@ -55,14 +59,17 @@ getvels_x(h::GappedDirac{T}) where {T<:Real}     = (getvx_cc(h),getvx_cv(h),getv
 
 function printparamsSI(h::GappedDirac,us::UnitScaling;digits=3)
 
-    Δ   = energySI(h.Δ,us)
-    t1  = timeSI(h.t1,us)
-    t2  = timeSI(h.t2,us)
+    p   = getparams(h)
+    Δ   = energySI(p.Δ,us)
+    t1  = timeSI(p.t1,us)
+    t2  = timeSI(p.t2,us)
+    vF  = velocitySI(p.vF,us)
 
-    symbols     = [:Δ,:t1,:t2]
-    valuesSI    = [Δ,t1,t2]
-    values      = [getproperty(h,s) for s in symbols]
-    str         = "vF = $(velocitySI(1.0,us)) (1.0)\n"
+    symbols     = [:Δ,:t1,:t2,:vF]
+    valuesSI    = [Δ,t1,t2,vF]
+    values      = [getproperty(p,s) for s in symbols]
+
+    str = ""
 
     for (s,v,vsi) in zip(symbols,values,valuesSI)
         valSI   = round(typeof(vsi),vsi,sigdigits=digits)

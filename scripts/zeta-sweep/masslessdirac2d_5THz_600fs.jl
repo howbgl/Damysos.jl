@@ -15,13 +15,13 @@ const σ         = u"600.0fs"              # 3 Tcycle
 # converged at
 # dt = 0.001
 # dkx = 0.5
+# kxmax = 1500
 # dky = 
-# kxmax = 
 # kymax = 
 
 const dt      = 0.001
 const dkx     = 0.5
-const kxmax   = 1000.0
+const kxmax   = 1500.0
 const dky     = 100.0
 const kymax   = 500.0
 
@@ -38,8 +38,8 @@ ppath   = "/home/how09898/phd/plots/hhgjl/masslessdirac2d_5THz_600fs/"*name
 
 sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 ens     = parametersweep(sim,sim.numericalparams,
-                :kxmax,
-                LinRange(1000.0,1500,5))
+                :dky,
+                LinRange(10.0,1.0,10))
 
 ensurepath(ens.plotpath)
 logger  = FileLogger(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))

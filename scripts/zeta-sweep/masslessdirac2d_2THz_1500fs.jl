@@ -5,25 +5,25 @@ import Damysos.ensurepath
 
 const vf        = u"4.3e5m/s"
 const freq      = u"5THz"
-const m         = u"20.0meV"
-const emax      = u"0.1MV/cm"
-const tcycle    = uconvert(u"fs",1/freq) # 100 fs
-const t2        = tcycle / 4             # 25 fs
+const m         = u"1e-12meV"             # ≈ 0 meV
+const emax      = u"1.0MV/cm"
+const tcycle    = uconvert(u"fs",1/freq)
 const t1        = Inf*u"1s"
-const σ         = u"800.0fs"
+const t2        = u"100.0fs"               # Tcycle/2
+const σ         = u"600.0fs"              # 3 Tcycle
 
 # converged at
-# dt = 0.01
-# dkx = 0.002
-# dky = 
+# dt = 
+# dkx = 
 # kxmax = 
+# dky = 
 # kymax = 
 
-const dt      = 0.01
-const dkx     = 0.002
-const kxmax   = 100.0
-const dky     = 10.0
-const kymax   = 100.0
+const dt      = 0.001
+const dkx     = 0.5
+const kxmax   = 1500.0
+const dky     = 100.0
+const kymax   = 500.0
 
 us      = scaledriving_frequency(freq,vf)
 h       = GappedDirac(us,m,vf,t1,t2)
@@ -33,13 +33,13 @@ obs     = [Velocity(h)]
 
 id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
-dpath   = "/home/how09898/phd/data/hhgjl/dirac2d_5THz_20meV_800fs/"*name
-ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_5THz_20meV_800fs/"*name
+dpath   = "/home/how09898/phd/data/hhgjl/masslessdirac2d_5THz_600fs/"*name
+ppath   = "/home/how09898/phd/plots/hhgjl/masslessdirac2d_5THz_600fs/"*name
 
 sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 ens     = parametersweep(sim,sim.numericalparams,
-                :kxmax,
-                LinRange(100.0,150.0,5))
+                :dt,
+                LinRange(0.01,0.001,10))
 
 ensurepath(ens.plotpath)
 logger  = FileLogger(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))

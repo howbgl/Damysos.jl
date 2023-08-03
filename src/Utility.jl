@@ -28,6 +28,61 @@ end
 
 droplast(path::AbstractString) = joinpath(splitpath(path)[1:end-1]...)
 
+
+function try_execute_n_times(f::Function, n::Int, arg; wait_time::Real=10.0)
+
+    success = false
+    for i in 1:n
+        try
+            f(arg)
+            success = true
+            break  # Break out of the loop if successful attempt
+        catch e
+            @warn "Error caught on attempt $i: $e"
+        end
+        
+        if i < n && wait_time > 0
+            sleep(wait_time)
+        end
+    end
+    return success
+end
+
+function ensurepath(paths::Vector{String};n_tries::Int=3,wait_time::Real=10.0)
+
+    for path in paths
+        success = ensurepath(path;n_tries=n_tries,wait_time=wait_time)
+        if success
+            return (true,path)
+        end
+    end
+
+    @warn "None of the given paths could be created."
+    return (false,"")
+end
+
+function ensurepath(path::String;n_tries::Int=3,wait_time::Real=10.0)
+
+    @info "Attempting to create $path"
+    success     = false
+    if !isdir(path)
+        success = try_execute_n_times(mkpath,n_tries,path;wait_time=wait_time)
+    else
+        @info "$path already exists. Proceeding..."
+        return true
+    end
+
+    if success
+        @info "$path created. Proceeding..."
+        return true
+    else
+        @warn "Could not create $path"
+        return false
+    end
+end
+
+
+
 function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol, 
                         range::AbstractVector{T};id="") where {T<:Real}
 

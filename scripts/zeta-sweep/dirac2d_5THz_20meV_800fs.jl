@@ -16,12 +16,12 @@ const σ         = u"800.0fs"
 # dt = 0.001
 # dkx = 0.002
 # dky = 
-# kxmax = 
+# kxmax = 200.0
 # kymax = 
 
 const dt      = 0.01
-const dkx     = 0.002
-const kxmax   = 100.0
+const dkx     = 0.1
+const kxmax   = 200.0
 const dky     = 10.0
 const kymax   = 100.0
 
@@ -38,8 +38,8 @@ ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_5THz_20meV_800fs/"*name
 
 sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 ens     = parametersweep(sim,sim.numericalparams,
-                :kxmax,
-                LinRange(150.0,200.0,5))
+                :dkx,
+                LinRange(0.1,0.05,6))
 
 ensurepath(ens.plotpath)
 logger  = FileLogger(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))

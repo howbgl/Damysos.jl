@@ -39,7 +39,7 @@ ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_10THz_10meV_400fs/"*name
 sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 ens     = parametersweep(sim,sim.numericalparams,
                 :kymax,
-                LinRange(250.0,350.0,10))
+                LinRange(350.0,450.0,10))
 
 ensurepath(ens.plotpath)
 logger  = FileLogger(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))

@@ -139,6 +139,9 @@ function run_simulation!(sim::Simulation{T};
     @info   "$(now())\nOn $(gethostname()):\n"*
             "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)
 
+    ensurepath(sim.datapath)
+    ensurepath(sim.plotpath)
+
     if sim.dimensions==1
         obs = run_simulation1d!(sim,zero(T);savedata=savedata,saveplots=saveplots,kwargs...)
     elseif sim.dimensions==2
@@ -160,6 +163,9 @@ function run_simulation!(ens::Ensemble{T};
                 kxparallel=false,
                 makecombined_plots=true,
                 kwargs...) where {T<:Real}
+
+    ensurepath(ens.datapath)
+    ensurepath(ens.plotpath)
 
     allobs = []
 

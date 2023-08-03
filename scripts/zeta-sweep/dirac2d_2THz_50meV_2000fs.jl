@@ -13,8 +13,8 @@ const t1        = Inf*u"1s"
 const σ         = u"2000.0fs"
 
 # converged at
-# dt = 
-# dkx = 
+# dt = 0.001
+# dkx = 0.1
 # dky = 
 # kxmax = 
 # kymax = 
@@ -38,8 +38,8 @@ ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_2THz_50meV_2000fs/"*name
 
 sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 ens     = parametersweep(sim,sim.numericalparams,
-                :dt,
-                LinRange(0.001,0.0001,10))
+                :kxmax,
+                LinRange(500,600.0,10))
 
 ensurepath(ens.plotpath)
 logger  = FileLogger(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))

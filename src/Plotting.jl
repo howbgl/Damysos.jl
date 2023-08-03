@@ -131,14 +131,16 @@ function plotdata(ens::Ensemble{T},vel::Velocity{T};
                                             colors="continuous",
                                             kwargs...)
                 
-                if !ensurepath(plotpath)
-                    @info "Using working dir instead"
-                    plotpath = ""
-                end
-                CairoMakie.save(joinpath(plotpath,vname*".pdf"),figtime)
-                CairoMakie.save(joinpath(plotpath,vname*"_spec.pdf"),figspectra)
+                altpath             = joinpath(pwd(),basename(plotpath))
+                (success,plotpath)  = ensurepath([plotpath,altpath])
+                if success
+                    CairoMakie.save(joinpath(plotpath,vname*".pdf"),figtime)
+                    CairoMakie.save(joinpath(plotpath,vname*"_spec.pdf"),figspectra)
+                    @info "Saved $(vname).pdf & $(vname).spec.pdf at $(plotpath)"
+                else
+                    @warn "Could not save $(vname) plots."
+                end                
 
-                @info "Saved $(vname).pdf & $(vname).spec.pdf at "*plotpath
             catch e
                 @warn "In plotdata(ens::Ensemble{T},vel::Velocity{T};...)",e
             end            
@@ -172,12 +174,16 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
                                     title="CB occupation",
                                     kwargs...)
 
-        if !ensurepath(plotpath)
-            @info "Using working dir instead"
-            plotpath = ""
+        altpath             = joinpath(pwd(),basename(plotpath))
+        (success,plotpath)  = ensurepath([plotpath,altpath])
+        if success
+            CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
+            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
+            @info "Saved cb_occ.pdf.pdf & cb_occ_spec.pdf at $(plotpath)"
+        else
+            @warn "Could not save occupation plots."
         end
-        CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
-        CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
+
     catch e
         @warn "In plotdata(ens::Ensemble{T},occ::Occupation{T};...)",e
     end
@@ -235,14 +241,15 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
                                         sidelabel=printparamsSI(sim),
                                         kwargs...)
 
-            if !ensurepath(plotpath)
-                @info "Using working dir instead"
-                plotpath = ""
+            altpath             = joinpath(pwd(),basename(plotpath))
+            (success,plotpath)  = ensurepath([plotpath,altpath])
+            if success
+                CairoMakie.save(joinpath(plotpath,"$(lab[1]).pdf"),figtime)
+                CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.pdf"),figspectra)
+                @info "Saved $(lab[1]).pdf & $(lab[1]).spec.pdf at $(plotpath)"
+            else
+                @warn "Could not save $((lab[1])) plots."
             end
-            CairoMakie.save(joinpath(plotpath,"$(lab[1]).pdf"),figtime)
-            CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.pdf"),figspectra)
-
-            @info "Saved velocity timesieries at "*plotpath
         end
         
     catch e
@@ -270,14 +277,16 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
                 sidelabel=printparamsSI(sim),
                 kwargs...)
 
-        if !ensurepath(plotpath)
-            @info "Using working dir instead"
-            plotpath = ""
+        altpath             = joinpath(pwd(),basename(plotpath))
+        (success,plotpath)  = ensurepath([plotpath,altpath])
+        if success
+            CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
+            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
+            @info "Saved cb_occ.pdf & cb_occ_spec.spec.pdf at $(plotpath)"
+        else
+            @warn "Could not save occupation plots."
         end
-        CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
-        CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
 
-        @info "Saved 'cb_occ.pdf' & 'cb_occ_spec.pdf' at "*plotpath
     catch e
         @warn "In plotdata(sim::Simulation{T},occ::Occupation{T};...)",e
     end
@@ -302,15 +311,15 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
         fige    = plottimeseries([ex.(ts),ey.(ts)],["Ex","Ey"],[ts,ts],
                     title=name,sidelabel=printparamsSI(sim))
 
-        if !ensurepath(plotpath)
-            @info "Using working dir instead"
-            plotpath = ""
+        altpath             = joinpath(pwd(),basename(plotpath))
+        (success,plotpath)  = ensurepath([plotpath,altpath])
+        if success
+            CairoMakie.save(joinpath(plotpath,"vecfield.pdf"),figa)
+            CairoMakie.save(joinpath(plotpath,"efield.pdf"),fige)
+            @info "Saved vecfield.pdf & efield.spec.pdf at $(plotpath)"
+        else
+            @warn "Could not save driving field plots."
         end
-        
-        CairoMakie.save(joinpath(plotpath,"vecfield.pdf"),figa)
-        CairoMakie.save(joinpath(plotpath,"efield.pdf"),fige)
-
-        @info "Saved 'vecfield.pdf' & 'efield.pdf' at "*plotpath
     catch e
         @warn "In plotfield(sim::Simulation{T})",e
     end

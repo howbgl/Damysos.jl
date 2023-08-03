@@ -42,11 +42,15 @@ const ens     = parametersweep(sim,sim.numericalparams,
                 LinRange(0.1,0.05,6))
 
 ensurepath(ens.plotpath)
-const logger  = FileLogger(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))
+const info_filelogger  = FileLogger(joinpath(ens.plotpath,"kxpartest_$(now()).log"))
+const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
+const all_filelogger   = FileLogger(joinpath(ens.plotpath,"kxpartest_$(now())_debug.log"))
+const tee_logger       = TeeLogger(info_logger,all_filelogger)
 
-@info "Logging to $(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))"
+@info "Logging to $(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log")) " *
+      "and $(joinpath(ens.plotpath,getshortname(ens)*"_$(now())_debug.log"))"
 
-global_logger(logger)
+global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
 const results,time,rest... = @timed run_simulation!(ens;kxparallel=true)

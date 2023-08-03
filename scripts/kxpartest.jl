@@ -16,9 +16,14 @@ const pars    = NumericalParams2d(0.1,0.1,10,3,0.1,-5df.σ)
 const obs     = [Velocity(h)]
 const sim     = Simulation(h,df,pars,obs,us,2)
 ensurepath(sim.plotpath)
-const logger  = FileLogger(joinpath(sim.plotpath,"kxpartest_$(now()).log"))
 
-global_logger(logger)
+const info_filelogger  = FileLogger(joinpath(sim.plotpath,"kxpartest_$(now()).log"))
+const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
+const all_filelogger   = FileLogger(joinpath(sim.plotpath,"kxpartest_$(now())_debug.log"))
+const tee_logger       = TeeLogger(info_logger,all_filelogger)
+
+global_logger(tee_logger)
+
 @info "$(now())\nOn $(gethostname()):"
 
 const results,time,rest... = @timed run_simulation!(sim;kxparallel=true)

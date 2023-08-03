@@ -134,12 +134,12 @@ function plotdata(ens::Ensemble{T},vel::Velocity{T};
                 altpath             = joinpath(pwd(),basename(plotpath))
                 (success,plotpath)  = ensurepath([plotpath,altpath])
                 if success
-                    CairoMakie.save(joinpath(plotpath,vname*".pdf"),figtime)
-                    CairoMakie.save(joinpath(plotpath,vname*"_spec.pdf"),figspectra)
-                    @info "Saved $(vname).pdf & $(vname).spec.pdf at $(plotpath)"
+                    CairoMakie.save(joinpath(plotpath,vname*".svg"),figtime)
+                    CairoMakie.save(joinpath(plotpath,vname*"_spec.svg"),figspectra)
+                    @info "Saved $(vname).svg & $(vname).spec.svg at $(plotpath)"
                 else
                     @warn "Could not save $(vname) plots."
-                end                
+                end 
 
             catch e
                 @warn "In plotdata(ens::Ensemble{T},vel::Velocity{T};...)",e
@@ -177,9 +177,9 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
         altpath             = joinpath(pwd(),basename(plotpath))
         (success,plotpath)  = ensurepath([plotpath,altpath])
         if success
-            CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
-            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
-            @info "Saved cb_occ.pdf.pdf & cb_occ_spec.pdf at $(plotpath)"
+            CairoMakie.save(joinpath(plotpath,"cb_occ.svg"),figtime)
+            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.svg"),figspectra)
+            @info "Saved cb_occ.svg.svg & cb_occ_spec.svg at $(plotpath)"
         else
             @warn "Could not save occupation plots."
         end
@@ -244,9 +244,9 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
             altpath             = joinpath(pwd(),basename(plotpath))
             (success,plotpath)  = ensurepath([plotpath,altpath])
             if success
-                CairoMakie.save(joinpath(plotpath,"$(lab[1]).pdf"),figtime)
-                CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.pdf"),figspectra)
-                @info "Saved $(lab[1]).pdf & $(lab[1]).spec.pdf at $(plotpath)"
+                CairoMakie.save(joinpath(plotpath,"$(lab[1]).svg"),figtime)
+                CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.svg"),figspectra)
+                @info "Saved $(lab[1]).svg & $(lab[1]).spec.svg at $(plotpath)"
             else
                 @warn "Could not save $((lab[1])) plots."
             end
@@ -280,9 +280,9 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
         altpath             = joinpath(pwd(),basename(plotpath))
         (success,plotpath)  = ensurepath([plotpath,altpath])
         if success
-            CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
-            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
-            @info "Saved cb_occ.pdf & cb_occ_spec.spec.pdf at $(plotpath)"
+            CairoMakie.save(joinpath(plotpath,"cb_occ.svg"),figtime)
+            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.svg"),figspectra)
+            @info "Saved cb_occ.svg & cb_occ_spec.spec.svg at $(plotpath)"
         else
             @warn "Could not save occupation plots."
         end
@@ -314,9 +314,9 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
         altpath             = joinpath(pwd(),basename(plotpath))
         (success,plotpath)  = ensurepath([plotpath,altpath])
         if success
-            CairoMakie.save(joinpath(plotpath,"vecfield.pdf"),figa)
-            CairoMakie.save(joinpath(plotpath,"efield.pdf"),fige)
-            @info "Saved vecfield.pdf & efield.spec.pdf at $(plotpath)"
+            CairoMakie.save(joinpath(plotpath,"vecfield.svg"),figa)
+            CairoMakie.save(joinpath(plotpath,"efield.svg"),fige)
+            @info "Saved vecfield.svg & efield.spec.svg at $(plotpath)"
         else
             @warn "Could not save driving field plots."
         end

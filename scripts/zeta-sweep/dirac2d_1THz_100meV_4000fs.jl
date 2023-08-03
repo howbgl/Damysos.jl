@@ -25,31 +25,31 @@ const kxmax   = 1000.0
 const dky     = 1.0
 const kymax   = 400.0
 
-us      = scaledriving_frequency(freq,vf)
-h       = GappedDirac(us,m,vf,t1,t2)
-df      = GaussianPulse(us,σ,freq,emax)
-pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
-obs     = [Velocity(h)]
+const us      = scaledriving_frequency(freq,vf)
+const h       = GappedDirac(us,m,vf,t1,t2)
+const df      = GaussianPulse(us,σ,freq,emax)
+const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
+const obs     = [Velocity(h)]
 
-id      = sprintf1("%x",hash([h,df,pars,obs,us]))
-name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
-dpath   = "/home/how09898/phd/data/hhgjl/dirac2d_1THz_100meV_4000fs/"*name
-ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_1THz_100meV_4000fs/"*name
+const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
+const name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
+const dpath   = "/home/how09898/phd/data/hhgjl/dirac2d_1THz_100meV_4000fs/"*name
+const ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_1THz_100meV_4000fs/"*name
 
-sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-ens     = parametersweep(sim,sim.numericalparams,
+const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
+const ens     = parametersweep(sim,sim.numericalparams,
                 :dt,
                 LinRange(0.01,0.005,6))
 
 ensurepath(ens.plotpath)
-logger  = FileLogger(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))
+const logger  = FileLogger(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))
 
 @info "Logging to $(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log"))"
 
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"
 
-results,time,rest... = @timed run_simulation!(ens;kxparallel=true)
+const results,time,rest... = @timed run_simulation!(ens;kxparallel=true)
 
 @info "$(time/60.)min spent in run_simulation!(ens::Ensemble;...)"
 @debug rest

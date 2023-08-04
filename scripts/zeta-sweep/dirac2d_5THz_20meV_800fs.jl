@@ -15,7 +15,7 @@ const σ         = u"800.0fs"
 # converged at
 # dt = 0.001
 # dkx = 1.0
-# dky = 
+# dky = 1.0
 # kxmax = 175
 # kymax = 
 
@@ -37,7 +37,7 @@ const dpath   = "/home/how09898/phd/data/hhgjl/dirac2d_5THz_20meV_800fs/"*name
 const ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_5THz_20meV_800fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(1.0,0.1,10))
+const ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(10.0,1.0,10))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,"kxpartest_$(now()).log"))

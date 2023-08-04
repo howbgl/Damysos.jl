@@ -1,4 +1,26 @@
+"""
+    run_simulation1d_serial!(sim::Simulation{T}, ky::T;
+        savedata=true,
+        saveplots=true,
+        kwargs...)
 
+Run a serial (non-parallelized) 1D simulation for a given `sim` for the wavenumber `ky`.
+
+# Arguments
+- `sim::Simulation{T}`: The simulation object.
+- `ky::T`: The wavenumber in the y-direction.
+- `savedata::Bool`: Whether to save data (default is `true`).
+- `saveplots::Bool`: Whether to save plots (default is `true`).
+- `kwargs...`: Additional keyword arguments.
+
+# Returns
+The observables obtained from the simulation.
+
+# See also
+[`run_simulation2d!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation!`](@ref), 
+[`run_simulation!(ens::Ensemble{T})`](@ref)
+
+"""
 function run_simulation1d_serial!(sim::Simulation{T},ky::T;
         savedata=true,
         saveplots=true,
@@ -55,6 +77,31 @@ function run_simulation1d_serial!(sim::Simulation{T},ky::T;
     return sim.observables
 end
 
+
+"""
+    run_simulation2d!(sim::Simulation{T};
+        savedata=true,
+        saveplots=true,
+        kxparallel=false,
+        kwargs...)
+
+Run a 2D simulation for a given `sim`.
+
+# Arguments
+- `sim::Simulation{T}`: The simulation object.
+- `savedata::Bool`: Whether to save data (default is `true`).
+- `saveplots::Bool`: Whether to save plots (default is `true`).
+- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
+- `kwargs...`: Additional keyword arguments.
+
+# Returns
+The combined observables obtained from the simulation.
+
+# See also
+[`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation!`](@ref), 
+[`run_simulation!(ens::Ensemble{T})`](@ref)
+
+"""
 function run_simulation2d!(sim::Simulation{T};
                 savedata=true,
                 saveplots=true,
@@ -96,6 +143,31 @@ function run_simulation2d!(sim::Simulation{T};
 end
 
 
+"""
+    run_simulation1d!(sim::Simulation{T}, ky::T;
+        savedata=true,
+        saveplots=true,
+        kxparallel=false,
+        kwargs...)
+
+Run a 1D simulation for a given `sim` and wavenumber `ky`.
+
+# Arguments
+- `sim::Simulation{T}`: The simulation object.
+- `ky::T`: The wavenumber in the y-direction.
+- `savedata::Bool`: Whether to save data (default is `true`).
+- `saveplots::Bool`: Whether to save plots (default is `true`).
+- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
+- `kwargs...`: Additional keyword arguments.
+
+# Returns
+The observables obtained from the simulation.
+
+# See also
+[`run_simulation1d_serial!`](@ref), [`run_simulation2d!`](@ref), [`run_simulation!`](@ref), 
+[`run_simulation!(ens::Ensemble{T})`](@ref)
+
+"""
 function run_simulation1d!(sim::Simulation{T},ky::T;
                 savedata=true,
                 saveplots=true,
@@ -130,6 +202,31 @@ function run_simulation1d!(sim::Simulation{T},ky::T;
     end
 end
 
+
+"""
+    run_simulation!(sim::Simulation{T};
+        savedata=true,
+        saveplots=true,
+        kxparallel=false,
+        kwargs...)
+
+Run a simulation for a given `sim`.
+
+# Arguments
+- `sim::Simulation{T}`: The simulation object.
+- `savedata::Bool`: Whether to save data (default is `true`).
+- `saveplots::Bool`: Whether to save plots (default is `true`).
+- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
+- `kwargs...`: Additional keyword arguments.
+
+# Returns
+The observables obtained from the simulation.
+
+# See also
+[`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), 
+[`run_simulation2d!`](@ref), [`run_simulation!(ens::Ensemble{T})`](@ref)
+
+"""
 function run_simulation!(sim::Simulation{T};
                     savedata=true,
                     saveplots=true,
@@ -156,6 +253,35 @@ function run_simulation!(sim::Simulation{T};
     return obs
 end
 
+
+"""
+    run_simulation!(ens::Ensemble{T};
+        savedata=true,
+        saveplots=true,
+        ensembleparallel=false,
+        kxparallel=false,
+        makecombined_plots=true,
+        kwargs...)
+
+Run simulations for an ensemble of `sim` objects.
+
+# Arguments
+- `ens::Ensemble{T}`: The ensemble of simulation objects.
+- `savedata::Bool`: Whether to save data (default is `true`).
+- `saveplots::Bool`: Whether to save plots (default is `true`).
+- `ensembleparallel::Bool`: Whether to run ensemble simulations in parallel (default is `false`).
+- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
+- `makecombined_plots::Bool`: Whether to make combined plots (default is `true`).
+- `kwargs...`: Additional keyword arguments.
+
+# Returns
+An array of observables obtained from the simulations.
+
+# See also
+[`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), 
+[`run_simulation2d!`](@ref), [`run_simulation!`](@ref)
+
+"""
 function run_simulation!(ens::Ensemble{T};
                 savedata=true,
                 saveplots=true,
@@ -203,7 +329,24 @@ function run_simulation!(ens::Ensemble{T};
     return allobs
 end
 
+"""
+    makekxbatches(sim::Simulation{T}, nbatches::U) where {T<:Real, U<:Integer}
 
+Divide a 1D simulation into multiple batches along the kx direction.
+
+This function takes a 1D simulation and divides it into `nbatches` simulations, each covering a portion of the kx range. It is useful for parallelizing simulations along the kx axis.
+
+# Arguments
+- `sim::Simulation{T}`: The original 1D simulation object.
+- `nbatches::U`: The number of batches to divide the simulation into.
+
+# Returns
+An array of simulation objects representing the divided batches.
+
+# See also
+[`run_simulation!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation2d!`](@ref)
+
+"""
 function makekxbatches(sim::Simulation{T},nbatches::U) where {T<:Real,U<:Integer}
     
     p           = getparams(sim)

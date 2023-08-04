@@ -14,14 +14,14 @@ const σ         = u"800.0fs"
 
 # converged at
 # dt = 0.001
-# dkx = 0.002
+# dkx = 1.0
 # dky = 
-# kxmax = 200.0
+# kxmax = 175
 # kymax = 
 
 const dt      = 0.01
-const dkx     = 0.1
-const kxmax   = 200.0
+const dkx     = 1.0
+const kxmax   = 175.0
 const dky     = 10.0
 const kymax   = 100.0
 
@@ -32,20 +32,19 @@ const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
 const obs     = [Velocity(h)]
 
 const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
-const name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
+const name    = "Simulation{$(typeof(h.Δ))}(2d)"*getshortname(h)*"_"*getshortname(df)*"_$id"
 const dpath   = "/home/how09898/phd/data/hhgjl/dirac2d_5THz_20meV_800fs/"*name
 const ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_5THz_20meV_800fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,
-                :dkx,
-                LinRange(0.1,0.05,6))
+const ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(1.0,0.1,10))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,"kxpartest_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
 const all_filelogger   = FileLogger(joinpath(ens.plotpath,"kxpartest_$(now())_debug.log"))
-const tee_logger       = TeeLogger(info_logger,all_filelogger)
+const console_logger   = ConsoleLogger(stdout)
+const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
 
 @info "Logging to $(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log")) " *
       "and $(joinpath(ens.plotpath,getshortname(ens)*"_$(now())_debug.log"))"

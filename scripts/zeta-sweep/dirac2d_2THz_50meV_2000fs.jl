@@ -21,9 +21,9 @@ const σ         = u"2000.0fs"
 
 const dt      = 0.001
 const dkx     = 0.1
-const kxmax   = 400.0
-const dky     = 10.0
-const kymax   = 200.0
+const kxmax   = 200.0
+const dky     = 1.0
+const kymax   = 30.0
 
 const us      = scaledriving_frequency(freq,vf)
 const h       = GappedDirac(us,m,vf,t1,t2)
@@ -32,14 +32,12 @@ const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
 const obs     = [Velocity(h)]
 
 const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
-const name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
+const name    = "Simulation{$(typeof(h.Δ))}(2d)"*getshortname(h)*"_"*getshortname(df)*"_$id"
 const dpath   = "/home/how09898/phd/data/hhgjl/dirac2d_2THz_50meV_2000fs/"*name
 const ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_2THz_50meV_2000fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,
-                :kxmax,
-                LinRange(500,600.0,10))
+const ens     = parametersweep(sim,sim.numericalparams,:dkx,LinRange(10.0,1.0,10))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,"kxpartest_$(now()).log"))

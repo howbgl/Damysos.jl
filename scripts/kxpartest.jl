@@ -1,6 +1,7 @@
 using Damysos,Unitful,LoggingExtras,Dates
 
 import Damysos.ensurepath
+import Damysos.run_simulation1d_serial!
 
 const vf        = u"4.3e5m/s"
 const freq      = u"8THz"

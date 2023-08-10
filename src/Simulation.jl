@@ -158,9 +158,10 @@ function printparamsSI(sim::Simulation;digits=3)
     p   = getparams(sim)
     γ   = round(p.Δ*p.ω / p.eE,sigdigits=digits)        # Keldysh parameter
     M   = round(2*p.Δ / p.ω,sigdigits=digits)           # Multi-photon number
+    ζ   = round(M/γ,sigdigits=digits)                    # My dimless asymptotic ζ
     plz = round(exp(-π*p.Δ^2 / p.eE),sigdigits=digits)  # Maximal LZ tunnel prob
 
-    str = "γ = $γ\nM = $M\nplz = $plz\n"
+    str = "ζ = $ζ\nγ = $γ\nM = $M\nplz = $plz\n"
 
     str *= printparamsSI(sim.hamiltonian,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.drivingfield,sim.unitscaling;digits=digits)

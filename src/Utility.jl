@@ -1,3 +1,20 @@
+export find_files_with_name
+function find_files_with_name(root_dir::String, target_name::String)
+    file_paths = Vector{String}()
+    
+    for entry in readdir(root_dir)
+        full_path = joinpath(root_dir, entry)
+        if isfile(full_path) && occursin(target_name, entry)
+            push!(file_paths, full_path)
+        elseif isdir(full_path)
+            subfiles = find_files_with_name(full_path, target_name)
+            append!(file_paths, subfiles)
+        end
+    end
+    
+    return file_paths
+end
+
 function stringexpand_vector(v::AbstractVector)
     str = ""
     for i in eachindex(v)
@@ -47,6 +64,8 @@ function try_execute_n_times(f::Function, n::Int, arg; wait_time::Real=10.0)
     end
     return success
 end
+
+export ensurepath
 
 function ensurepath(paths::Vector{String};n_tries::Int=3,wait_time::Real=10.0)
 

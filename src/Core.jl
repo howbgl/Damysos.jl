@@ -17,8 +17,7 @@ Run a serial (non-parallelized) 1D simulation for a given `sim` for the wavenumb
 The observables obtained from the simulation.
 
 # See also
-[`run_simulation2d!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation!`](@ref), 
-[`run_simulation!(ens::Ensemble{T})`](@ref)
+[`run_simulation2d!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation!`](@ref)
 
 """
 function run_simulation1d_serial!(sim::Simulation{T},ky::T;
@@ -98,8 +97,7 @@ Run a 2D simulation for a given `sim`.
 The combined observables obtained from the simulation.
 
 # See also
-[`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation!`](@ref), 
-[`run_simulation!(ens::Ensemble{T})`](@ref)
+[`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation!`](@ref)
 
 """
 function run_simulation2d!(sim::Simulation{T};
@@ -164,8 +162,7 @@ Run a 1D simulation for a given `sim` and wavenumber `ky`.
 The observables obtained from the simulation.
 
 # See also
-[`run_simulation1d_serial!`](@ref), [`run_simulation2d!`](@ref), [`run_simulation!`](@ref), 
-[`run_simulation!(ens::Ensemble{T})`](@ref)
+[`run_simulation1d_serial!`](@ref), [`run_simulation2d!`](@ref), [`run_simulation!`](@ref)
 
 """
 function run_simulation1d!(sim::Simulation{T},ky::T;
@@ -196,6 +193,8 @@ function run_simulation1d!(sim::Simulation{T},ky::T;
             plotfield(sim)
         end
 
+        GC.gc()
+
         return total_res
     else
         return run_simulation1d_serial!(sim,ky;savedata=savedata,saveplots=saveplots,kwargs...)
@@ -224,7 +223,7 @@ The observables obtained from the simulation.
 
 # See also
 [`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), 
-[`run_simulation2d!`](@ref), [`run_simulation!(ens::Ensemble{T})`](@ref)
+[`run_simulation2d!`](@ref)
 
 """
 function run_simulation!(sim::Simulation{T};
@@ -279,7 +278,7 @@ An array of observables obtained from the simulations.
 
 # See also
 [`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), 
-[`run_simulation2d!`](@ref), [`run_simulation!`](@ref)
+[`run_simulation2d!`](@ref)
 
 """
 function run_simulation!(ens::Ensemble{T};

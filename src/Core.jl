@@ -1,27 +1,29 @@
 """
-    run_simulation1d_serial!(sim::Simulation{T}, ky::T;
+    run_simulation1d!(sim::Simulation{T}, ky::T;
         savedata=true,
         saveplots=true,
+        kxparallel=false,
         kwargs...)
 
-Run a serial (non-parallelized) 1D simulation for a given `sim` for the wavenumber `ky`.
+Run a 1D simulation for a given `sim` and wavenumber `ky`.
 
 # Arguments
 - `sim::Simulation{T}`: The simulation object.
 - `ky::T`: The wavenumber in the y-direction.
 - `savedata::Bool`: Whether to save data (default is `true`).
 - `saveplots::Bool`: Whether to save plots (default is `true`).
+- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
 - `kwargs...`: Additional keyword arguments.
 
 # Returns
 The observables obtained from the simulation.
 
 # See also
-[`run_simulation2d!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation!`](@ref), 
+[`run_simulation1d_serial!`](@ref), [`run_simulation2d!`](@ref), [`run_simulation!`](@ref), 
 [`run_simulation!(ens::Ensemble{T})`](@ref)
 
 """
-function run_simulation1d_serial!(sim::Simulation{T},ky::T;
+function run_simulation1d!(sim::Simulation{T},ky::T;
         savedata=true,
         saveplots=true,
         kwargs...) where {T<:Real}
@@ -110,7 +112,7 @@ function run_simulation2d!(sim::Simulation{T};
 
     p           = getparams(sim)
     last_obs    = run_simulation1d!(sim,p.kysamples[1];
-                    savedata=false,saveplots=false,kxparallel=kxparallel,kwargs...)
+                    savedata=false,saveplots=false,kwargs...)
     total_obs   = zero.(deepcopy(last_obs))
 
     for i in 2:p.nky
@@ -118,7 +120,7 @@ function run_simulation2d!(sim::Simulation{T};
             @info "$(100.0i/p.nky)%"
         end
         obs = run_simulation1d!(deepcopy(sim),p.kysamples[i];
-                savedata=false,saveplots=false,kxparallel=kxparallel,kwargs...)
+                savedata=false,saveplots=false,kwargs...)
         
         for (o,last,tot) in zip(obs,last_obs,total_obs)
             temp = integrate2d_obs([last,o],collect(p.kysamples[i-1:i]))
@@ -140,66 +142,6 @@ function run_simulation2d!(sim::Simulation{T};
 
     return total_obs
 
-end
-
-
-"""
-    run_simulation1d!(sim::Simulation{T}, ky::T;
-        savedata=true,
-        saveplots=true,
-        kxparallel=false,
-        kwargs...)
-
-Run a 1D simulation for a given `sim` and wavenumber `ky`.
-
-# Arguments
-- `sim::Simulation{T}`: The simulation object.
-- `ky::T`: The wavenumber in the y-direction.
-- `savedata::Bool`: Whether to save data (default is `true`).
-- `saveplots::Bool`: Whether to save plots (default is `true`).
-- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
-- `kwargs...`: Additional keyword arguments.
-
-# Returns
-The observables obtained from the simulation.
-
-# See also
-[`run_simulation1d_serial!`](@ref), [`run_simulation2d!`](@ref), [`run_simulation!`](@ref), 
-[`run_simulation!(ens::Ensemble{T})`](@ref)
-
-"""
-function run_simulation1d!(sim::Simulation{T},ky::T;
-                savedata=true,
-                saveplots=true,
-                kxparallel=false,
-                kwargs...) where {T<:Real}
-    if kxparallel
-        
-        sims        = makekxbatches(sim,Threads.nthreads())
-        res         = Folds.collect(run_simulation1d_serial!(s,ky;
-                                            savedata=false,
-                                            saveplots=false,kwargs...) for s in sims)
-        total_res   = deepcopy(res[1])
-        popfirst!(res) # do not add first entry twice!
-        for r in res
-            for (i,obs) in enumerate(r)
-                addto!(obs,total_res[i])
-            end
-        end
-        sim.observables .= total_res
-
-        if savedata
-            Damysos.savedata(sim)
-        end
-        if saveplots
-            plotdata(sim;kwargs...)
-            plotfield(sim)
-        end
-
-        return total_res
-    else
-        return run_simulation1d_serial!(sim,ky;savedata=savedata,saveplots=saveplots,kwargs...)
-    end
 end
 
 
@@ -239,12 +181,51 @@ function run_simulation!(sim::Simulation{T};
     ensurepath(sim.datapath)
     ensurepath(sim.plotpath)
 
-    if sim.dimensions==1
-        obs = run_simulation1d!(sim,zero(T);savedata=savedata,saveplots=saveplots,kwargs...)
-    elseif sim.dimensions==2
-        obs = run_simulation2d!(sim;savedata=savedata,saveplots=saveplots,
-                                kxparallel=kxparallel,kwargs...)
+    if kxparallel
+        
+        sims        = makekxbatches(sim,Threads.nthreads())
+        if sim.dimensions==1
+            res         = Folds.collect(run_simulation1d!(s,zero(T);
+                                            savedata=false,
+                                            saveplots=false,kwargs...) for s in sims)
+        else
+            res         = Folds.collect(run_simulation2d!(s;
+                                            savedata=false,
+                                            saveplots=false,
+                                            kxparallel=false,kwargs...) for s in sims)
+        end
+        
+        total_res   = deepcopy(res[1])
+        popfirst!(res) # do not add first entry twice!
+        for r in res
+            for (i,obs) in enumerate(r)
+                addto!(obs,total_res[i])
+            end
+        end
+        sim.observables .= total_res
+
+        if savedata
+            Damysos.savedata(sim)
+        end
+        if saveplots
+            plotdata(sim;kwargs...)
+            plotfield(sim)
+        end
+
+        return total_res
+    else
+        if sim.dimensions==1
+            return run_simulation1d!(sim,zero(T);
+                                            savedata=false,
+                                            saveplots=false,kwargs...)
+        else
+            return run_simulation2d!(sim;
+                                    savedata=false,
+                                    saveplots=false,
+                                    kxparallel=false,kwargs...)
+        end
     end
+
 
     if savedata
         savemetadata(sim)

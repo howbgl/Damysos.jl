@@ -14,7 +14,7 @@ const us,h    = scalegapped_dirac(m,vf,t2)
 const df      = GaussianPulse(us,σ,freq,emax)
 const pars    = NumericalParams2d(0.1,0.1,10,3,0.1,-5df.σ)
 const obs     = [Velocity(h)]
-const sim     = Simulation(h,df,pars,obs,us,2)
+const sim     = Simulation(h,df,pars,obs,us,2,"new_kxparallel")
 ensurepath(sim.plotpath)
 
 const info_filelogger  = FileLogger(joinpath(sim.plotpath,"kxpartest_$(now()).log"))

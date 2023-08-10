@@ -1,0 +1,4 @@
+nohup: Eingabe wird ignoriert
+[ Info: Attempting to create /home/how09898/phd/plots/hhgjl/benchmarks/dirac2d_10THz_10meV_400fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_51f552b67e5a9865
+[ Info: /home/how09898/phd/plots/hhgjl/benchmarks/dirac2d_10THz_10meV_400fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_51f552b67e5a9865 created. Proceeding...
+[ Info: Logging to /home/how09898/phd/plots/hhgjl/benchmarks/dirac2d_10THz_10meV_400fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_51f552b67e5a9865/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-08-09T15:34:34.682.log and /home/how09898/phd/plots/hhgjl/benchmarks/dirac2d_10THz_10meV_400fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_51f552b67e5a9865/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-08-09T15:34:34.682_debug.log

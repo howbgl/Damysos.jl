@@ -17,7 +17,7 @@ const σ         = u"800.0fs"
 # dkx = 0.5
 # dky = 1.0
 # kxmax = 175 
-# kymax = 
+# kymax = 100
 
 # converged for T2 = T/4 @
 # dt = 0.01
@@ -38,8 +38,8 @@ const df      = GaussianPulse(us,σ,freq,emax)
 const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
 const obs     = [Velocity(h)]
 
-const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
-# const id      = "converged"
+# const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
+const id      = "converged"
 const name    = "Simulation{$(typeof(h.Δ))}(2d)"*getshortname(h)*"_"*getshortname(df)*"_$id"
 const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/dirac2d_5THz_20meV_800fs/long_t2/"*name
 const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/dirac2d_5THz_20meV_800fs/long_t2/"*name
@@ -60,7 +60,7 @@ const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run_simulation!(ens;kxparallel=true)
+const results,time,rest... = @timed run_simulation!(sim;kxparallel=true)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

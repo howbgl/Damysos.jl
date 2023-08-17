@@ -14,9 +14,9 @@ const σ         = u"400.0fs"
 
 # converged at
 # dt = 0.01
-# dkx = 
-# kxmax = 
+# dkx = 1.0
 # dky = 
+# kxmax = 
 # kymax = 
 
 const dt      = 0.01
@@ -37,7 +37,7 @@ const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep-2/dirac2d_10THz_10meV_
 const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep-2/dirac2d_10THz_10meV_400fs_1MVcm/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:dkx,LinRange(1.0,0.1,10))
+const ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(1.0,0.1,10))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))

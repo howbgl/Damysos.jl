@@ -21,7 +21,7 @@ pages:
   stage: deploy
   script:
     - |
-      JULIA_DEBUG=Documenter julia --project=docs -e '
+      LANG=en_US julia --project=docs -e '
         using Pkg
         Pkg.develop(PackageSpec(path=pwd()))
         Pkg.instantiate()

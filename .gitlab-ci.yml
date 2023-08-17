@@ -25,6 +25,7 @@ pages:
         using Pkg
         Pkg.develop(PackageSpec(path=pwd()))
         Pkg.instantiate()
+        Pkg.precompile()
         using Documenter: doctest
         using Damysos
         doctest(Damysos)

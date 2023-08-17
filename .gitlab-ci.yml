@@ -21,11 +21,10 @@ pages:
   stage: deploy
   script:
     - |
-      julia --project=docs -e '
+      JULIA_DEBUG=Documenter julia --project=docs -e '
         using Pkg
         Pkg.develop(PackageSpec(path=pwd()))
         Pkg.instantiate()
-        Pkg.precompile()
         using Documenter: doctest
         using Damysos
         doctest(Damysos)

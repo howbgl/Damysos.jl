@@ -10,7 +10,7 @@ makedocs(;
     sitename="Damysos.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://how09898.gitlab.io/Damysos.jl",
+        # canonical="https://how09898.gitlab.io/Damysos.jl",
         edit_link="main",
         assets=String[],
     ),

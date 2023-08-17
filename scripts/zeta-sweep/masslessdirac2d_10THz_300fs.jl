@@ -33,8 +33,8 @@ const obs     = [Velocity(h)]
 
 const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 const name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
-const dpath   = "/home/how09898/phd/data/hhgjl/masslessdirac2d_10THz_300fs/"*name
-const ppath   = "/home/how09898/phd/plots/hhgjl/masslessdirac2d_10THz_300fs/"*name
+const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/masslessdirac2d_10THz_300fs/"*name
+const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/masslessdirac2d_10THz_300fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 const ens     = parametersweep(sim,sim.numericalparams,

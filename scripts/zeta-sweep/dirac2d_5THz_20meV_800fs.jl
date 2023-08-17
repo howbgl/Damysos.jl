@@ -13,7 +13,7 @@ const t1        = Inf*u"1s"
 const σ         = u"800.0fs"
 
 # converged at
-# dt = 0.001
+# dt = 0.01
 # dkx = 1.0
 # dky = 1.0
 # kxmax = 175
@@ -34,8 +34,8 @@ const obs     = [Velocity(h)]
 # const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 const id      = "converged"
 const name    = "Simulation{$(typeof(h.Δ))}(2d)"*getshortname(h)*"_"*getshortname(df)*"_$id"
-const dpath   = "/home/how09898/phd/data/hhgjl/dirac2d_5THz_20meV_800fs/"*name
-const ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_5THz_20meV_800fs/"*name
+const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/dirac2d_5THz_20meV_800fs/"*name
+const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/dirac2d_5THz_20meV_800fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(100.0,150,6))

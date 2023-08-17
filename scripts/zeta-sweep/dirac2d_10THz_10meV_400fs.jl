@@ -12,15 +12,15 @@ const t2        = tcycle / 4             # 25 fs
 const t1        = Inf*u"1s"
 const σ         = u"400.0fs"
 
-# converged at
+# converged @
 # dt = 0.01
 # dkx = 
-# kxmax = 
 # dky = 
+# kxmax = 
 # kymax = 
 
 const dt      = 0.01
-const dkx     = 1.0
+const dkx     = 0.1
 const kxmax   = 150.0
 const dky     = 1.0
 const kymax   = 200.0
@@ -33,13 +33,11 @@ const obs     = [Velocity(h)]
 
 const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 const name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
-const dpath   = "/home/how09898/phd/data/hhgjl/dirac2d_10THz_10meV_400fs/"*name
-const ppath   = "/home/how09898/phd/plots/hhgjl/dirac2d_10THz_10meV_400fs/"*name
+const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/dirac2d_10THz_10meV_400fs/"*name
+const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/dirac2d_10THz_10meV_400fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,
-                :dkx,
-                LinRange(1.0,0.1,10))
+const ens     = parametersweep(sim,sim.numericalparams,:dkx,LinRange(0.1,0.01,10))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))

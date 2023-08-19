@@ -5,3 +5,14 @@
 [ Info: Attempting to create /home/how09898/phd/plots/hhgjl/benchmarks/dirac2d_10THz_10meV_400fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_1881e3f617898d32
 [ Info: /home/how09898/phd/plots/hhgjl/benchmarks/dirac2d_10THz_10meV_400fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_1881e3f617898d32 created. Proceeding...
 [ Info: Logging to /home/how09898/phd/plots/hhgjl/benchmarks/dirac2d_10THz_10meV_400fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_1881e3f617898d32/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-08-10T11:55:55.153.log and /home/how09898/phd/plots/hhgjl/benchmarks/dirac2d_10THz_10meV_400fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_1881e3f617898d32/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-08-10T11:55:55.153_debug.log
+[ Info: Attempting to create /home/how09898/phd/plots/hhgjl/Simulation{Float64}(2d)GappedDirac_GaussianPulse_new_kxparallel/
+[ Info: /home/how09898/phd/plots/hhgjl/Simulation{Float64}(2d)GappedDirac_GaussianPulse_new_kxparallel/ already exists. Proceeding...
+ERROR: LoadError: UndefVarError: `ThreadsX` not defined
+Stacktrace:
+ [1] run_simulation!(sim::Simulation{Float64}; savedata::Bool, saveplots::Bool, kxparallel::Bool, kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+   @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:192
+ [2] top-level scope
+   @ ./timing.jl:501 [inlined]
+ [3] top-level scope
+   @ /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/scripts/kxpartest.jl:0
+in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/scripts/kxpartest.jl:29

@@ -32,28 +32,27 @@ const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
 const obs     = [Velocity(h)]
 
 # const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
-const id      = "converged"
-const name    = "Simulation{$(typeof(h.Δ))}(2d)"*getshortname(h)*"_"*getshortname(df)*"_$id"
-const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/dirac2d_5THz_20meV_800fs/"*name
-const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/dirac2d_5THz_20meV_800fs/"*name
+const id      = "ref"
+const name    = "Simulation{$(typeof(h.Δ))}(2d)reference"
+const dpath   = "test/reference"
+const ppath   = dpath
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(100.0,150,6))
 
-ensurepath(ens.plotpath)
-const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))
+ensurepath(sim.plotpath)
+const info_filelogger  = FileLogger(joinpath(sim.plotpath,sim.id*"_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
-const all_filelogger   = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now())_debug.log"))
+const all_filelogger   = FileLogger(joinpath(sim.plotpath,sim.id*"_$(now())_debug.log"))
 const console_logger   = ConsoleLogger(stdout)
 const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
 
-@info "Logging to $(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log")) " *
-      "and $(joinpath(ens.plotpath,getshortname(ens)*"_$(now())_debug.log"))"
+@info "Logging to $(joinpath(sim.plotpath,getshortname(sim)*"s(now()).log")) " *
+      "and $(joinpath(ens.plotpath,getshortname(sim)*"_$(now())_debug.log"))"
 
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run_simulation!(sim;kxparallel=true)
+const results,time,rest... = @timed run_simulation!(sim;kxparallel=true,saveplots=false)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

@@ -250,37 +250,19 @@ function zero(o::Occupation{T}) where {T<:Real}
     return Occupation(cbocc,buffer)
 end
 
-function calcobs_k1d!(sim::Simulation{T},occ::Occupation{T},sol,
-                    occ_k::Array{T},occ_k_itp::Array{T}) where {T<:Real}
-    p        = getparams(sim)
-    a        = get_vecpotx(sim.drivingfield)
-    
-    occ_k   .= real.(sol[1:p.nkx,:])
+function calcobs_k1d!(sim::Simulation{T},occ::Occupation{T},sol,ky::T) where {T<:Real}
 
-    for i in 1:length(sol.t)
-        kxt_range = LinRange(p.kxsamples[1]-a(sol.t[i]),p.kxsamples[end]-a(sol.t[i]), p.nkx)
-        itp       = interpolate((kxt_range,),real(sol[1:p.nkx,i]), Gridded(Linear()))
-        for j in 2:size(occ_k_itp)[1]-1
-            occ_k_itp[j,i] = itp(p.bz[1] + j*p.dkx)
-        end
-   end
 end
 
 function integrate1d_obs!(sim::Simulation{T},o::Occupation{T},sol,ky::T,ky_index::Integer,
                     moving_bz::Array{T,N}) where {T<:Real,N}
 
     p           = getparams(sim)
-    nkx_bz      = Int(cld(2*p.bz[2],p.dkx))
-
-    occ_k_itp   = zeros(T,nkx_bz,length(sol.t))
-    occ_k       = zeros(T,p.nkx,length(sol.t))
-    occ         = zeros(T,length(sol.t))
+    kxs         = collect(p.kxsamples)
     
-    calcobs_k1d!(sim,o,sol,occ_k,occ_k_itp)
+    calcobs_k1d!(sim,o,sol,ky)
 
-    occ         = trapz((p.kxsamples,:),occ_k .* moving_bz)
-
-    return Occupation(occ)
+    o.buffer[ky_index,:] .= trapz(kxs,sol[1:p.nkx,:] .* moving_bz)
 end
 
 function integrate2d_obs!(s::Simulation{T},occ::Occupation{T}) where {T<:Real}

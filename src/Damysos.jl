@@ -11,7 +11,7 @@ export NumericalParameters,NumericalParams2d,NumericalParams1d,NumericalParams2d
 export Simulation,Ensemble,getparams,parametersweep
 export Observable,Velocity,Occupation,Timesteps,getnames_obs
 export UnitScaling,semiclassical_interband_range,maximum_k
-export run_simulation!,run_simulation1d!,run_simulation2d!
+export run_simulation!,solve_eom,run_simulation2d!,run_simulation1d!
 export savemetadata,save,load,savedata,loaddata
 export getvx_cc,getvx_cv,getvx_vc,getvx_vv
 export getϵ,getdx_cc,getdx_cv,getdx_vc,getdx_vv

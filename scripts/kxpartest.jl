@@ -14,7 +14,7 @@ const σ         = u"500.0fs"
 const us,h    = scalegapped_dirac(m,vf,t2)
 const df      = GaussianPulse(us,σ,freq,emax)
 const pars    = NumericalParams2d(0.1,0.1,10,3,0.1,-5df.σ)
-const obs     = [Velocity(h)]
+const obs     = [Velocity(pars)]
 const sim     = Simulation(h,df,pars,obs,us,2)
 ensurepath(sim.plotpath)
 

@@ -1,29 +1,27 @@
 """
-    run_simulation1d_serial!(sim::Simulation{T}, ky::T;
-        savedata=true,
-        saveplots=true,
-        kwargs...)
+solve_eom(sim::Simulation{T}, ky::T,ky_index::Integer;kwargs...)
 
-Run a serial (non-parallelized) 1D simulation for a given `sim` for the wavenumber `ky`.
+Solve EOM of a 1D slice simulation for a given `sim` and wavenumber `ky`.
 
 # Arguments
 - `sim::Simulation{T}`: The simulation object.
 - `ky::T`: The wavenumber in the y-direction.
+- `ky_index::Integer`: The index of the wavenumber in the y-direction.
 - `savedata::Bool`: Whether to save data (default is `true`).
 - `saveplots::Bool`: Whether to save plots (default is `true`).
+- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
 - `kwargs...`: Additional keyword arguments.
 
 # Returns
 The observables obtained from the simulation.
 
 # See also
-[`run_simulation2d!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation!`](@ref)
+[`run_simulation1d!`](@ref), [`run_simulation2d!`](@ref), [`run_simulation!`](@ref), 
+[`run_simulation!(ens::Ensemble{T})`](@ref)
 
 """
-function run_simulation1d_serial!(sim::Simulation{T},ky::T;
-        savedata=true,
-        saveplots=true,
-        kwargs...) where {T<:Real}
+function solve_eom(sim::Simulation{T},ky::T,ky_index::Integer;
+    kwargs...) where {T<:Real}
 
     p              = getparams(sim)
 
@@ -60,21 +58,62 @@ function run_simulation1d_serial!(sim::Simulation{T},ky::T;
     prob           = ODEProblem(rhs!,u0,tspan)
     sol            = solve(prob;saveat=tsamples,reltol=p.rtol,abstol=p.atol,kwargs...)
     
-    sim.observables .= calc_obs_k1d(sim,sol,ky)
+    return sol
+end
 
+"""
+run_simulation1d!(sim::Simulation{T}, ky::T,ky_index::Integer;
+        savedata=true,
+        saveplots=true,
+        kxparallel=false,
+        kwargs...)
+
+Run a 1D simulation for a given `sim` and wavenumber `ky`.
+
+# Arguments
+- `sim::Simulation{T}`: The simulation object.
+- `ky::T`: The wavenumber in the y-direction.
+- `ky_index::Integer`: The index of the wavenumber in the y-direction.
+- `savedata::Bool`: Whether to save data (default is `true`).
+- `saveplots::Bool`: Whether to save plots (default is `true`).
+- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
+- `kwargs...`: Additional keyword arguments.
+
+# Returns
+The observables obtained from the simulation.
+
+# See also
+[`run_simulation1d_serial!`](@ref), [`run_simulation2d!`](@ref), [`run_simulation!`](@ref), 
+[`run_simulation!(ens::Ensemble{T})`](@ref)
+
+"""
+function run_simulation1d!(sim::Simulation{T},ky::T,ky_index::Integer;
+        savedata=true,
+        saveplots=true,
+        kwargs...) where {T<:Real}
+
+    p              = getparams(sim)
+    
+    sol = solve_eom(sim,ky,ky_index;kwargs...)
+    
+    
+    calc_obs_k1d!(sim,sol,ky,ky_index)
+    finalize_obs!(sim)
     normalize!.(sim.observables,(2π)^sim.dimensions)
 
-    if savedata == true
+    if savedata
         Damysos.savedata(sim)
+        savemetadata(sim)
     end
 
-    if saveplots == true
+    if saveplots
         Damysos.plotdata(sim)
         plotfield(sim)
     end
 
     return sim.observables
 end
+
 
 
 """
@@ -97,108 +136,39 @@ Run a 2D simulation for a given `sim`.
 The combined observables obtained from the simulation.
 
 # See also
-[`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation!`](@ref)
+[`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation!`](@ref), 
+[`run_simulation!(ens::Ensemble{T})`](@ref)
 
 """
 function run_simulation2d!(sim::Simulation{T};
                 savedata=true,
                 saveplots=true,
-                kxparallel=false,
+                kyparallel=false,
                 kwargs...) where {T<:Real}
 
-    p           = getparams(sim)
-    last_obs    = run_simulation1d!(sim,p.kysamples[1];
-                    savedata=false,saveplots=false,kxparallel=kxparallel,kwargs...)
-    total_obs   = zero.(deepcopy(last_obs))
-
-    for i in 2:p.nky
+    p = getparams(sim)
+    
+    for i in 1:p.nky
         if mod(i,2)==0
             @info "$(100.0i/p.nky)%"
         end
-        obs = run_simulation1d!(deepcopy(sim),p.kysamples[i];
-                savedata=false,saveplots=false,kxparallel=kxparallel,kwargs...)
-        
-        for (o,last,tot) in zip(obs,last_obs,total_obs)
-            temp = integrate2d_obs([last,o],collect(p.kysamples[i-1:i]))
-            addto!(temp,tot)
-        end
-        last_obs = deepcopy(obs)
+        run_simulation1d!(sim,p.kysamples[i],i;savedata=false,saveplots=false,kwargs...)
     end
 
-    sim.observables .= total_obs
+    integrate2d_obs!(sim)
 
-    if savedata == true
+    if savedata
         Damysos.savedata(sim)
+        savemetadata(sim)
     end
 
-    if saveplots == true
+    if saveplots
         Damysos.plotdata(sim)
         plotfield(sim)
     end
 
     return total_obs
 
-end
-
-
-"""
-    run_simulation1d!(sim::Simulation{T}, ky::T;
-        savedata=true,
-        saveplots=true,
-        kxparallel=false,
-        kwargs...)
-
-Run a 1D simulation for a given `sim` and wavenumber `ky`.
-
-# Arguments
-- `sim::Simulation{T}`: The simulation object.
-- `ky::T`: The wavenumber in the y-direction.
-- `savedata::Bool`: Whether to save data (default is `true`).
-- `saveplots::Bool`: Whether to save plots (default is `true`).
-- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
-- `kwargs...`: Additional keyword arguments.
-
-# Returns
-The observables obtained from the simulation.
-
-# See also
-[`run_simulation1d_serial!`](@ref), [`run_simulation2d!`](@ref), [`run_simulation!`](@ref)
-
-"""
-function run_simulation1d!(sim::Simulation{T},ky::T;
-                savedata=true,
-                saveplots=true,
-                kxparallel=false,
-                kwargs...) where {T<:Real}
-    if kxparallel
-        
-        sims        = makekxbatches(sim,Threads.nthreads())
-        res         = Folds.collect(run_simulation1d_serial!(s,ky;
-                                            savedata=false,
-                                            saveplots=false,kwargs...) for s in sims)
-        total_res   = deepcopy(res[1])
-        popfirst!(res) # do not add first entry twice!
-        for r in res
-            for (i,obs) in enumerate(r)
-                addto!(obs,total_res[i])
-            end
-        end
-        sim.observables .= total_res
-
-        if savedata
-            Damysos.savedata(sim)
-        end
-        if saveplots
-            plotdata(sim;kwargs...)
-            plotfield(sim)
-        end
-
-        GC.gc()
-
-        return total_res
-    else
-        return run_simulation1d_serial!(sim,ky;savedata=savedata,saveplots=saveplots,kwargs...)
-    end
 end
 
 
@@ -223,13 +193,14 @@ The observables obtained from the simulation.
 
 # See also
 [`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), 
-[`run_simulation2d!`](@ref)
+[`run_simulation2d!`](@ref), [`run_simulation!(ens::Ensemble{T})`](@ref)
 
 """
 function run_simulation!(sim::Simulation{T};
                     savedata=true,
                     saveplots=true,
                     kxparallel=false,
+                    kx_workers=128,
                     kwargs...) where {T<:Real}
     
     @info   "$(now())\nOn $(gethostname()):\n"*
@@ -238,12 +209,55 @@ function run_simulation!(sim::Simulation{T};
     ensurepath(sim.datapath)
     ensurepath(sim.plotpath)
 
-    if sim.dimensions==1
-        obs = run_simulation1d!(sim,zero(T);savedata=savedata,saveplots=saveplots,kwargs...)
-    elseif sim.dimensions==2
-        obs = run_simulation2d!(sim;savedata=savedata,saveplots=saveplots,
-                                kxparallel=kxparallel,kwargs...)
+    resize_obs!(sim)
+    zero.(sim.observables)
+
+    @info "floop"
+    if kxparallel
+        sims        = makekxbatches(sim,minimum([kx_workers,Threads.nthreads()]))
+        @info "using $(length(sims)) tasks"
+        res = Vector{Vector{Observable{T}}}(undef,length(sims))
+        if sim.dimensions==1
+              res = Folds.collect(solve_eom(s,zero(T);
+                                                    savedata=false,
+                                                    saveplots=false,kwargs...) for s in sims)
+        else
+            res = Folds.collect(run_simulation2d!(s;savedata=false,
+                                                    saveplots=false,
+                                                    kxparallel=false,kwargs...) for s in sims)
+        end
+        
+        total_res   = deepcopy(res[1])
+        popfirst!(res) # do not add first entry twice!
+        for r in res
+            for (i,obs) in enumerate(r)
+                addto!(obs,total_res[i])
+            end
+        end
+        sim.observables .= total_res
+
+        if savedata
+            Damysos.savedata(sim)
+        end
+        if saveplots
+            plotdata(sim;kwargs...)
+            plotfield(sim)
+        end
+
+        return total_res
+    else
+        if sim.dimensions==1
+            return solve_eom(sim,zero(T);
+                                            savedata=false,
+                                            saveplots=false,kwargs...)
+        else
+            return run_simulation2d!(sim;
+                                    savedata=false,
+                                    saveplots=false,
+                                    kxparallel=false,kwargs...)
+        end
     end
+
 
     if savedata
         savemetadata(sim)
@@ -278,7 +292,7 @@ An array of observables obtained from the simulations.
 
 # See also
 [`run_simulation1d_serial!`](@ref), [`run_simulation1d!`](@ref), 
-[`run_simulation2d!`](@ref)
+[`run_simulation2d!`](@ref), [`run_simulation!`](@ref)
 
 """
 function run_simulation!(ens::Ensemble{T};
@@ -295,9 +309,6 @@ function run_simulation!(ens::Ensemble{T};
     allobs = []
 
     if ensembleparallel
-        if kxparallel
-            @warn "ensembleparallel & kxparallel = true\nCannot do both: just do ensemble"
-        end
         allobs = Folds.collect(
             run_simulation!(s;savedata=savedata,saveplots=false,kxparallel=false,kwargs...)
             for s in ens.simlist)
@@ -365,7 +376,7 @@ function makekxbatches(sim::Simulation{T},nbatches::U) where {T<:Real,U<:Integer
             ridx = i*nper_batch
         end
         params = NumericalParams2dSlice(sim.numericalparams,(allkxs[lidx],allkxs[ridx]))
-        push!(sims,Simulation(
+        s      = Simulation(
                             sim.hamiltonian,
                             sim.drivingfield,
                             params,
@@ -374,48 +385,23 @@ function makekxbatches(sim::Simulation{T},nbatches::U) where {T<:Real,U<:Integer
                             sim.dimensions,
                             sim.id,
                             sim.datapath,
-                            sim.plotpath))
+                            sim.plotpath)
+        resize_obs!(s)
+        push!(sims,s)
     end
 
     return sims
 end
 
-export run_simulation2d_add!
-function run_simulation2d_add!(sim::Simulation{T};
+export run_simulation2d_new!
+function run_simulation2d_new!(sim::Simulation{T};
     savedata=true,
     saveplots=true,
     kxparallel=false,
     kwargs...) where {T<:Real}
 
-    if kxparallel
-        @info "Parallelizing over kx"
-        sims        = makekxbatches(sim,Threads.nthreads())
-        res         = Folds.collect(run_simulation2d!(s;
-                                            savedata=false,
-                                            saveplots=false,
-                                            kxparallel=false,kwargs...) for s in sims)
-        total_res   = deepcopy(res[1])
-        popfirst!(res) # do not add first entry twice!
-        for r in res
-            for (i,obs) in enumerate(r)
-                addto!(obs,total_res[i])
-            end
-        end
-        sim.observables .= total_res
-
-        if savedata
-            Damysos.savedata(sim)
-        end
-        if saveplots
-            plotdata(sim,kwargs...)
-            plotfield(sim)
-        end
-
-        return total_res
-    end
-
     p         = getparams(sim)
-    total_obs = deepcopy(run_simulation1d!(sim,p.kysamples[1];
+    total_obs = deepcopy(solve_eom(sim,p.kysamples[1];
             savedata=false,saveplots=false,kwargs...))
     last_obs  = deepcopy(total_obs)
 
@@ -423,7 +409,7 @@ function run_simulation2d_add!(sim::Simulation{T};
         if mod(i,2)==0
             @info "$(100.0i/p.nky)%"
         end
-        obs = run_simulation1d!(sim,p.kysamples[i];savedata=false,saveplots=false,kwargs...)
+        obs = solve_eom(sim,p.kysamples[i];savedata=false,saveplots=false,kwargs...)
 
         for (tot,o) in zip(total_obs,obs)
             addto!(o,tot)

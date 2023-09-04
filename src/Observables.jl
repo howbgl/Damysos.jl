@@ -80,7 +80,7 @@ function init(v::Velocity{T},p::NumericalParameters{T})  where {T<:Real}
     return Velocity(p)
 end
 
-function deletebuffer(v::Velocity{T}) where {T<:Real}
+function deletebuffer!(v::Velocity{T}) where {T<:Real}
     empty!(v.buffer)
 end
 
@@ -254,7 +254,7 @@ function init(o::Occupation{T},p::NumericalParameters{T}) where {T<:Real}
     return Occupation(p)
 end
 
-function deletebuffer(o::Occupation{T}) where {T<:Real}
+function deletebuffer!(o::Occupation{T}) where {T<:Real}
     empty!(o.buffer)
 end
 

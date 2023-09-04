@@ -24,6 +24,25 @@ function Velocity(h::Hamiltonian{T}) where {T<:Real}
                     Matrix{T}(undef,0,0),
                     Array{T}(undef,0,0,0))
 end
+# for backwards compatibility:
+function Velocity{T}(vx,vxintra,vxinter,vy,vyintra,vyinter) where {T<:Real}
+    return Velocity(promote(vx,vxintra,vxinter,vy,vyintra,vyinter)...)
+end
+# for backwards compatibility:
+function Velocity(vx::Vector{T},vxintra::Vector{T},vxinter::Vector{T},
+                    vy::Vector{T},vyintra::Vector{T},vyinter::Vector{T}) where {T<:Real}
+    return Velocity(vx,
+                    vxintra,
+                    vxinter,
+                    vy,
+                    vyintra,
+                    vyinter,
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0),
+                    Array{T}(undef,0,0,0))
+end
 
 function Velocity(p::NumericalParameters{T}) where {T<:Real}
 
@@ -65,7 +84,7 @@ getnames_obs(v::Velocity{T}) where {T<:Real} = ["vx","vxintra","vxinter","vy","v
                                                 "vyinter"]
                                                 
 getparams(v::Velocity{T}) where {T<:Real}    = getnames_obs(v)
-
+getshortname(v::Velocity{T}) where {T<:Real} = "Velocity"
 arekresolved(v::Velocity{T}) where {T<:Real} = [false,false,false,false,false,false]
 
 @inline function addto!(vtotal::Velocity{T},v::Velocity{T}) where {T<:Real}
@@ -189,7 +208,7 @@ function integrate1d_obs!(sim::Simulation{T},v::Velocity{T},sol,ky::T,ky_index::
     v.buffer[i,:,4] .= v.buffer[i,:,5] .+ v.buffer[i,:,6]
 end
 
-function finalize_obs!(s::Simulation{T},v::Velocity{T}) where {T<:Real}
+function finalize_obs1d!(s::Simulation{T},v::Velocity{T}) where {T<:Real}
     
     v.vx        .= v.buffer[1,:,1]
     v.vxintra   .= v.buffer[1,:,2]
@@ -200,13 +219,13 @@ function finalize_obs!(s::Simulation{T},v::Velocity{T}) where {T<:Real}
 end
 
 function integrate2d_obs!(s::Simulation{T},v::Velocity{T}) where {T<:Real}
-
+    
     kys         = collect(getparams(s).kysamples)
-    v.vxintra   .= trapz(kys,v.buffer[:,:,2])
-    v.vxinter   .= trapz(kys,v.buffer[:,:,3])
+    v.vxintra   .= trapz(kys,v.buffer[:,:,2],Val(1))
+    v.vxinter   .= trapz(kys,v.buffer[:,:,3],Val(1))
     v.vx        .= v.vxinter .+ v.vxintra
-    v.vyintra   .= trapz(kys,v.buffer[:,:,5])
-    v.vyinter   .= trapz(kys,v.buffer[:,:,6])
+    v.vyintra   .= trapz(kys,v.buffer[:,:,5],Val(1))
+    v.vyinter   .= trapz(kys,v.buffer[:,:,6],Val(1))
     v.vy        .= v.vyinter .+ v.vyintra
     return v
 end
@@ -234,6 +253,7 @@ end
 
 getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc"]
 getparams(occ::Occupation{T}) where {T<:Real}    = getnames_obs(occ)
+getshortname(occ::Occupation{T}) where {T<:Real} = "Occupation"
 arekresolved(occ::Occupation{T}) where {T<:Real} = [false, true]
 
 @inline function addto!(o::Occupation{T},ototal::Occupation{T}) where {T<:Real}
@@ -266,12 +286,11 @@ function integrate1d_obs!(sim::Simulation{T},o::Occupation{T},sol,ky::T,ky_index
 end
 
 function integrate2d_obs!(s::Simulation{T},occ::Occupation{T}) where {T<:Real}
-
-    cbocc  = trapz((:,hcat(kysamples)),hcat([o.cbocc for o in occs]...))
-    return Occupation(cbocc)
+    kys     = getparams(s).kysamples
+    cbocc  = trapz(kys,o.buffer,Val(1))
 end
 
-function finalize_obs!(s::Simulation{T},o::Occupation{T}) where {T<:Real}
+function finalize_obs1d!(s::Simulation{T},o::Occupation{T}) where {T<:Real}
     
 end
 
@@ -308,9 +327,9 @@ function calc_obs_k1d!(sim::Simulation{T},sol,ky::T,ky_index::Integer) where {T<
     end
 end
 
-function finalize_obs!(s::Simulation{T}) where {T<:Real}
+function finalize_obs1d!(s::Simulation{T}) where {T<:Real}
     for o in s.observables
-        finalize_obs!(s,o)
+        finalize_obs1d!(s,o)
     end
 end
 
@@ -318,4 +337,8 @@ function integrate2d_obs!(s::Simulation)
     for o in s.observables
         integrate2d_obs!(s,o)
     end
+end
+
+function resize_obs!(s::Simulation)
+    s.observables .= [resize(o,s.numericalparams) for o in s.observables]
 end

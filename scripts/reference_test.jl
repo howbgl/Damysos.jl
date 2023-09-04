@@ -32,9 +32,9 @@ const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
 const obs     = [Velocity(pars)]
 
 # const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
-const id      = "ref"
-const name    = "Simulation{$(typeof(h.Δ))}(2d)reference"
-const dpath   = "test/reference"
+const id      = "reftest"
+const name    = "Simulation{$(typeof(h.Δ))}(2d)reference_test"
+const dpath   = "test/reference/test"
 const ppath   = dpath
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)

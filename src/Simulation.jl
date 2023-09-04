@@ -91,22 +91,20 @@ end
 
 function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
     print(io,"Simulation{$T} ($(s.dimensions)d) with components{$T}:\n")
-    for n in fieldnames(Simulation{T})
-        if !(n == :dimensions)
-            if n == :observables
-                println(io,"  Observables")
-                str = ""
-                for o in getfield(s,n)
-                    str *= "    "*getshortname(o)*"\n"
-                end 
-                println(io,str)
-            else
-                print(io,"  ")
-                Base.show(io,MIME"text/plain"(),getfield(s,n))
-                print(io,'\n')
-            end
-        end
+    for n in [:hamiltonian,:drivingfield,:numericalparams,:unitscaling]
+        print(io,"  ")
+        Base.show(io,MIME"text/plain"(),getfield(s,n))
+        print(io,'\n')
     end
+    println(io,"  Observables")
+    str = ""
+    for o in s.observables
+        str *= "    "*getshortname(o)*"\n"
+    end
+    str *= "\n"
+    str *= prepend_spaces(
+        stringexpand_nt((id=s.id,datapath=s.datapath,plotpath=s.plotpath)),2)
+    println(io,str)
 end
 
 function getshortname(sim::Simulation{T}) where {T<:Real}
@@ -144,9 +142,7 @@ getnames_obs(sim::Simulation{T}) where {T<:Real} = vcat(getnames_obs.(sim.observ
 arekresolved(sim::Simulation{T}) where {T<:Real} = vcat(arekresolved.(sim.observables)...)
 getname(sim::Simulation{T}) where {T<:Real}      = getshortname(sim)*'_'*sim.id
 
-
-getshortname(obs::Observable)           = split("$obs",'{')[1]
-getshortname(c::SimulationComponent)    = split("$c",'{')[1]
+getshortname(c::SimulationComponent)    = split("$(typeof(c))",'{')[1]
 
 function Base.show(io::IO,::MIME"text/plain",c::SimulationComponent{T}) where {T}
     println(io,getshortname(c))

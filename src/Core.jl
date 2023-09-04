@@ -63,7 +63,7 @@ export run_simulation1d!
 run_simulation1d!(sim::Simulation{T}, ky::T,ky_index::Integer;
         savedata=true,
         saveplots=true,
-        kxparallel=false,
+        kyparallel=false,
         kwargs...)
 
 Run a 1D simulation for a given `sim` and wavenumber `ky`.
@@ -74,7 +74,7 @@ Run a 1D simulation for a given `sim` and wavenumber `ky`.
 - `ky_index::Integer`: The index of the wavenumber in the y-direction.
 - `savedata::Bool`: Whether to save data (default is `true`).
 - `saveplots::Bool`: Whether to save plots (default is `true`).
-- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
+- `kyparallel::Bool`: Whether to run ky-parallel simulations (default is `false`).
 - `kwargs...`: Additional keyword arguments.
 
 # See also
@@ -94,7 +94,7 @@ export run_simulation!
     run_simulation!(sim::Simulation{T};
         savedata=true,
         saveplots=true,
-        kxparallel=false,
+        kyparallel=false,
         kwargs...)
 
 Run a simulation for a given `sim`.
@@ -126,7 +126,7 @@ function run_simulation!(sim::Simulation{T};
     ensurepath(sim.datapath)
     ensurepath(sim.plotpath)
 
-    resize_obs!(sim)
+    init_obs!(sim)
     zero.(sim.observables)
 
     if sim.dimensions==1
@@ -167,7 +167,7 @@ Run simulations for an ensemble of `sim` objects.
 - `savedata::Bool`: Whether to save data (default is `true`).
 - `saveplots::Bool`: Whether to save plots (default is `true`).
 - `ensembleparallel::Bool`: Whether to run ensemble simulations in parallel (default is `false`).
-- `kyparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
+- `kyparallel::Bool`: Whether to run ky-parallel simulations (default is `false`).
 - `makecombined_plots::Bool`: Whether to make combined plots (default is `true`).
 - `kwargs...`: Additional keyword arguments.
 
@@ -183,7 +183,7 @@ function run_simulation!(ens::Ensemble{T};
                 savedata=true,
                 saveplots=true,
                 ensembleparallel=false,
-                kxparallel=false,
+                kyparallel=false,
                 makecombined_plots=true,
                 kwargs...) where {T<:Real}
 
@@ -194,7 +194,7 @@ function run_simulation!(ens::Ensemble{T};
 
     if ensembleparallel
         allobs = Folds.collect(
-            run_simulation!(s;savedata=savedata,saveplots=false,kxparallel=false,kwargs...)
+            run_simulation!(s;savedata=savedata,saveplots=false,kyparallel=false,kwargs...)
             for s in ens.simlist)
         # Run plotting sequentially
         if saveplots
@@ -206,7 +206,7 @@ function run_simulation!(ens::Ensemble{T};
             obs = run_simulation!(ens.simlist[i];
                         savedata=savedata,
                         saveplots=saveplots,
-                        kxparallel=kxparallel,
+                        kyparallel=kyparallel,
                         kwargs...)
             push!(allobs,obs)
         end
@@ -228,7 +228,7 @@ export run_simulation2d!
     run_simulation2d!(sim::Simulation{T};
         savedata=true,
         saveplots=true,
-        kxparallel=false,
+        kyparallel=false,
         kwargs...)
 
 Run a 2D simulation for a given `sim`.
@@ -237,7 +237,7 @@ Run a 2D simulation for a given `sim`.
 - `sim::Simulation{T}`: The simulation object.
 - `savedata::Bool`: Whether to save data (default is `true`).
 - `saveplots::Bool`: Whether to save plots (default is `true`).
-- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
+- `kyparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
 - `kwargs...`: Additional keyword arguments.
 
 # See also
@@ -246,7 +246,7 @@ Run a 2D simulation for a given `sim`.
 
 """
 function run_simulation2d!(sim::Simulation{T};
-    kxparallel=false,
+    kyparallel=false,
     kwargs...) where {T<:Real}
 
     p = getparams(sim)

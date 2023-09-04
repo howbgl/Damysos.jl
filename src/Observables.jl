@@ -76,8 +76,12 @@ function Velocity(p::NumericalParameters{T}) where {T<:Real}
                     buffer)
 end
 
-function resize(v::Velocity{T},p::NumericalParameters{T})  where {T<:Real}
+function init(v::Velocity{T},p::NumericalParameters{T})  where {T<:Real}
     return Velocity(p)
+end
+
+function deletebuffer(v::Velocity{T}) where {T<:Real}
+    empty!(v.buffer)
 end
 
 getnames_obs(v::Velocity{T}) where {T<:Real} = ["vx","vxintra","vxinter","vy","vyintra",
@@ -196,7 +200,6 @@ function integrate1d_obs!(sim::Simulation{T},v::Velocity{T},sol,ky::T,ky_index::
 
     kxs = getparams(sim).kxsamples
     i   = ky_index
-    zero!(v)
     
     calcobs_k1d!(sim,v,sol,ky)
     
@@ -247,8 +250,12 @@ function Occupation(p::NumericalParameters{T}) where {T<:Real}
     return Occupation(cbocc,buffer)
 end
 
-function resize(o::Occupation{T},p::NumericalParameters{T}) where {T<:Real}
+function init(o::Occupation{T},p::NumericalParameters{T}) where {T<:Real}
     return Occupation(p)
+end
+
+function deletebuffer(o::Occupation{T}) where {T<:Real}
+    empty!(o.buffer)
 end
 
 getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc"]
@@ -337,8 +344,9 @@ function integrate2d_obs!(s::Simulation)
     for o in s.observables
         integrate2d_obs!(s,o)
     end
+    deletebuffer!.(s.observables)
 end
 
-function resize_obs!(s::Simulation)
-    s.observables .= [resize(o,s.numericalparams) for o in s.observables]
+function init_obs!(s::Simulation)
+    s.observables .= [init(o,s.numericalparams) for o in s.observables]
 end

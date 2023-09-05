@@ -1,0 +1,240 @@
+┌ Info: 2023-09-04T22:51:28.338
+│ On pc1012251314:
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/scripts/reference_test.jl:53
+┌ Info: 2023-09-04T22:51:33.767
+│ On pc1012251314:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: reftest)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.203 Å^-1 (175.0)
+│ dkx = 0.00116 Å^-1 (1.0)
+│ nkx = 350.0 (350.0)
+│ kymax = 0.116 Å^-1 (100.0)
+│ dky = 0.00116 Å^-1 (1.0)
+│ nky = 200.0 (200.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:123
+┌ Info: Attempting to create test/reference/test
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Utility.jl:85
+┌ Info: test/reference/test already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Utility.jl:90
+┌ Info: Attempting to create test/reference/test
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Utility.jl:85
+┌ Info: test/reference/test already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Utility.jl:90
+┌ Info: 1.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 2.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 3.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 4.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 5.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 6.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 7.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 8.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 9.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 10.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 11.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 12.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 13.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 14.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 15.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 16.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 17.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 18.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 19.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 20.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 21.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 22.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 23.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 24.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 25.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 26.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 27.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 28.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 29.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 30.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 31.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 32.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 33.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 34.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 35.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 36.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 37.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 38.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 39.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 41.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 42.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 43.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 44.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 45.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 46.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 47.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 48.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 49.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 50.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 51.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 52.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 53.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 54.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 55.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 56.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 57.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 58.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 59.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 60.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 61.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 62.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 63.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 64.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 65.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 66.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 67.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 68.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 69.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 70.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 71.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 72.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 73.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 74.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 75.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 76.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 77.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 78.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 79.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 81.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 82.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 83.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 84.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 85.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 86.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 87.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 88.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 89.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 90.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 91.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 92.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 93.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 94.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 95.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 96.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 97.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 98.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 99.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258
+┌ Info: 100.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/dev_damysos/src/Core.jl:258

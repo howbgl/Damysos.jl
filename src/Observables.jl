@@ -24,11 +24,9 @@ function Velocity(h::Hamiltonian{T}) where {T<:Real}
                     Matrix{T}(undef,0,0),
                     Array{T}(undef,0,0,0))
 end
-# for backwards compatibility:
 function Velocity{T}(vx,vxintra,vxinter,vy,vyintra,vyinter) where {T<:Real}
     return Velocity(promote(vx,vxintra,vxinter,vy,vyintra,vyinter)...)
 end
-# for backwards compatibility:
 function Velocity(vx::Vector{T},vxintra::Vector{T},vxinter::Vector{T},
                     vy::Vector{T},vyintra::Vector{T},vyinter::Vector{T}) where {T<:Real}
     return Velocity(vx,
@@ -80,8 +78,8 @@ function init(v::Velocity{T},p::NumericalParameters{T})  where {T<:Real}
     return Velocity(p)
 end
 
-function deletebuffer!(v::Velocity{T}) where {T<:Real}
-    empty!(v.buffer)
+function deletebuffer(v::Velocity{T}) where {T<:Real}
+    return Velocity(v.vx,v.vxintra,v.vxinter,v.vy,v.vyintra,v.vyinter)
 end
 
 getnames_obs(v::Velocity{T}) where {T<:Real} = ["vx","vxintra","vxinter","vy","vyintra",
@@ -249,13 +247,16 @@ function Occupation(p::NumericalParameters{T}) where {T<:Real}
     buffer  = zeros(T,nky,nt)
     return Occupation(cbocc,buffer)
 end
+function Occupation(cbocc::Vector{T}) where {T<:Real}
+    return Occupation(cbocc,Matrix{T}(undef,0,0))
+end
 
 function init(o::Occupation{T},p::NumericalParameters{T}) where {T<:Real}
     return Occupation(p)
 end
 
-function deletebuffer!(o::Occupation{T}) where {T<:Real}
-    empty!(o.buffer)
+function deletebuffer(o::Occupation{T}) where {T<:Real}
+    return Occupation(o.cbocc)
 end
 
 getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc"]
@@ -344,7 +345,6 @@ function integrate2d_obs!(s::Simulation)
     for o in s.observables
         integrate2d_obs!(s,o)
     end
-    deletebuffer!.(s.observables)
 end
 
 function init_obs!(s::Simulation)

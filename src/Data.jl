@@ -55,6 +55,8 @@ end
 
 function savemetadata(sim::Simulation)
 
+    sim.observables     .= deletebuffer.(sim.observables)
+
     filename            = "simulation.meta"
     altpath             = joinpath(pwd(),basename(sim.datapath))
     (success,datapath)  = ensurepath([sim.datapath,altpath])
@@ -70,6 +72,10 @@ end
 
 
 function savemetadata(ens::Ensemble)
+    
+    for sim in ens
+        sim.observables .= deletebuffer.(sim.observables)
+    end
     
     filename            =  "ensemble.meta"
     altpath             = joinpath(pwd(),basename(ens.datapath))

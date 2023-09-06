@@ -1,0 +1,51 @@
+┌ Info: 2023-09-06T18:25:12.532
+│ On pc1011600226:
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/bigref.jl:53
+┌ Info: 2023-09-06T18:25:21.784
+│ On pc1011600226:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 2.03 Å^-1 (1750.0)
+│ dkx = 0.00116 Å^-1 (1.0)
+│ nkx = 3500.0 (3500.0)
+│ kymax = 0.116 Å^-1 (100.0)
+│ dky = 0.00116 Å^-1 (1.0)
+│ nky = 200.0 (200.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 0.2 fs (0.001)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 40000.0 (40000.0)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:182
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:66
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:66
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
+┌ Info: pmap
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:191
+┌ Warning: Unrecognized keyword arguments found. Future versions will error.
+│ The only allowed keyword arguments to `solve` are:
+│ (:dense, :saveat, :save_idxs, :tstops, :tspan, :d_discontinuities, :save_everystep, :save_on, :save_start, :save_end, :initialize_save, :adaptive, :abstol, :reltol, :dt, :dtmax, :dtmin, :force_dtmin, :internalnorm, :controller, :gamma, :beta1, :beta2, :qmax, :qmin, :qsteady_min, :qsteady_max, :qoldinit, :failfactor, :calck, :alias_u0, :maxiters, :callback, :isoutofdomain, :unstable_check, :verbose, :merge_callbacks, :progress, :progress_steps, :progress_name, :progress_message, :timeseries_errors, :dense_errors, :weak_timeseries_errors, :weak_dense_errors, :wrap, :calculate_error, :initializealg, :alg, :save_noise, :delta, :seed, :alg_hints, :kwargshandle, :trajectories, :batch_size, :sensealg, :advance_to_tstop, :stop_at_next_tstop, :default_set, :second_time, :prob_choice, :alias_jump, :alias_noise, :batch)
+│ 
+│ See https://diffeq.sciml.ai/stable/basics/common_solver_opts/ for more details.
+│ 
+│ Set kwargshandle=KeywordArgError for an error message.
+│ Set kwargshandle=KeywordArgSilent to ignore this message.
+└ @ DiffEqBase /home/how09898/.julia/packages/DiffEqBase/DEv7n/src/solve.jl:1015

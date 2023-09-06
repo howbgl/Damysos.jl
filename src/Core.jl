@@ -1,3 +1,4 @@
+
 """
     run_simulation1d!(sim::Simulation{T}, ky::T;
         savedata=true,
@@ -127,6 +128,8 @@ function run_simulation2d!(sim::Simulation{T};
             addto!(temp,tot)
         end
         last_obs = deepcopy(obs)
+
+        GC.gc()
     end
 
     sim.observables .= total_obs
@@ -173,6 +176,7 @@ function run_simulation!(sim::Simulation{T};
                     savedata=true,
                     saveplots=true,
                     kxparallel=false,
+                    kx_workers=128,
                     kwargs...) where {T<:Real}
     
     @info   "$(now())\nOn $(gethostname()):\n"*
@@ -181,18 +185,22 @@ function run_simulation!(sim::Simulation{T};
     ensurepath(sim.datapath)
     ensurepath(sim.plotpath)
 
+    resize_obs!(sim)
+    zero.(sim.observables)
+
+    @info "pmap"
     if kxparallel
-        
-        sims        = makekxbatches(sim,Threads.nthreads())
+        sims        = makekxbatches(sim,minimum([kx_workers,Distributed.nprocs()]))
+        @info "using $(length(sims)) tasks"
+        res = Vector{Vector{Observable{T}}}(undef,length(sims))
         if sim.dimensions==1
-            res         = Folds.collect(run_simulation1d!(s,zero(T);
-                                            savedata=false,
-                                            saveplots=false,kwargs...) for s in sims)
+              res = pmap(s -> run_simulation1d!(s,zero(T);
+                                                    savedata=false,
+                                                    saveplots=false,kwargs...),sims)
         else
-            res         = Folds.collect(run_simulation2d!(s;
-                                            savedata=false,
-                                            saveplots=false,
-                                            kxparallel=false,kwargs...) for s in sims)
+            res = pmap(s -> run_simulation2d!(s;savedata=false,
+                                                    saveplots=false,
+                                                    kxparallel=false,kwargs...),sims)
         end
         
         total_res   = deepcopy(res[1])
@@ -277,10 +285,7 @@ function run_simulation!(ens::Ensemble{T};
     allobs = []
 
     if ensembleparallel
-        if kxparallel
-            @warn "ensembleparallel & kxparallel = true\nCannot do both: just do ensemble"
-        end
-        allobs = Folds.collect(
+        allobs = collect(
             run_simulation!(s;savedata=savedata,saveplots=false,kxparallel=false,kwargs...)
             for s in ens.simlist)
         # Run plotting sequentially
@@ -347,7 +352,7 @@ function makekxbatches(sim::Simulation{T},nbatches::U) where {T<:Real,U<:Integer
             ridx = i*nper_batch
         end
         params = NumericalParams2dSlice(sim.numericalparams,(allkxs[lidx],allkxs[ridx]))
-        push!(sims,Simulation(
+        s      = Simulation(
                             sim.hamiltonian,
                             sim.drivingfield,
                             params,
@@ -356,45 +361,20 @@ function makekxbatches(sim::Simulation{T},nbatches::U) where {T<:Real,U<:Integer
                             sim.dimensions,
                             sim.id,
                             sim.datapath,
-                            sim.plotpath))
+                            sim.plotpath)
+        resize_obs!(s)
+        push!(sims,s)
     end
 
     return sims
 end
 
-export run_simulation2d_add!
-function run_simulation2d_add!(sim::Simulation{T};
+export run_simulation2d_new!
+function run_simulation2d_new!(sim::Simulation{T};
     savedata=true,
     saveplots=true,
     kxparallel=false,
     kwargs...) where {T<:Real}
-
-    if kxparallel
-        @info "Parallelizing over kx"
-        sims        = makekxbatches(sim,Threads.nthreads())
-        res         = Folds.collect(run_simulation2d!(s;
-                                            savedata=false,
-                                            saveplots=false,
-                                            kxparallel=false,kwargs...) for s in sims)
-        total_res   = deepcopy(res[1])
-        popfirst!(res) # do not add first entry twice!
-        for r in res
-            for (i,obs) in enumerate(r)
-                addto!(obs,total_res[i])
-            end
-        end
-        sim.observables .= total_res
-
-        if savedata
-            Damysos.savedata(sim)
-        end
-        if saveplots
-            plotdata(sim,kwargs...)
-            plotfield(sim)
-        end
-
-        return total_res
-    end
 
     p         = getparams(sim)
     total_obs = deepcopy(run_simulation1d!(sim,p.kysamples[1];

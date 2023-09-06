@@ -144,6 +144,11 @@ function parametersweep(sim::Simulation{T},comp::SimulationComponent{T},
                 joinpath(plotpath,ensname*"/"))
 end
 
+function resize_obs!(sim::Simulation{T}) where {T<:Real}
+
+    sim.observables .= [resize(o,sim.numericalparams) for o in sim.observables]
+end
+
 function maximum_k(df::DrivingField)
     @warn "using fallback for maximum k value of DrivingField!"
     return df.eE/df.ω

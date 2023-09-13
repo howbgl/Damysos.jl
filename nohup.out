@@ -1,180 +1,128 @@
-ERROR: LoadError: syntax: invalid iteration specification
-Stacktrace:
- [1] top-level scope
-   @ /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Core.jl:204
- [2] include(mod::Module, _path::String)
-   @ Base ./Base.jl:457
- [3] include(x::String)
-   @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Damysos.jl:1
- [4] top-level scope
-   @ /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Damysos.jl:33
- [5] include
-   @ ./Base.jl:457 [inlined]
- [6] include_package_for_output(pkg::Base.PkgId, input::String, depot_path::Vector{String}, dl_load_path::Vector{String}, load_path::Vector{String}, concrete_deps::Vector{Pair{Base.PkgId, UInt128}}, source::String)
-   @ Base ./loading.jl:2049
- [7] top-level scope
-   @ stdin:3
-in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Core.jl:204
-in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Damysos.jl:1
-in expression starting at stdin:3
-ERROR: LoadError: Failed to precompile Damysos [fd5f980c-983e-4c87-a5d0-4feb611f7d72] to "/home/how09898/.julia/compiled/v1.9/Damysos/jl_LpWcyE".
-Stacktrace:
- [1] error(s::String)
-   @ Base ./error.jl:35
- [2] compilecache(pkg::Base.PkgId, path::String, internal_stderr::IO, internal_stdout::IO, keep_loaded_modules::Bool)
-   @ Base ./loading.jl:2300
- [3] compilecache
-   @ ./loading.jl:2167 [inlined]
- [4] _require(pkg::Base.PkgId, env::String)
-   @ Base ./loading.jl:1805
- [5] _require_prelocked(uuidkey::Base.PkgId, env::String)
-   @ Base ./loading.jl:1660
- [6] macro expansion
-   @ ./loading.jl:1648 [inlined]
- [7] macro expansion
-   @ ./lock.jl:267 [inlined]
- [8] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:1611
-in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/scripts/kxpartest.jl:1
-ERROR: LoadError: syntax: invalid iteration specification
-Stacktrace:
- [1] top-level scope
-   @ /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Core.jl:204
- [2] include(mod::Module, _path::String)
-   @ Base ./Base.jl:457
- [3] include(x::String)
-   @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Damysos.jl:1
- [4] top-level scope
-   @ /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Damysos.jl:33
- [5] include
-   @ ./Base.jl:457 [inlined]
- [6] include_package_for_output(pkg::Base.PkgId, input::String, depot_path::Vector{String}, dl_load_path::Vector{String}, load_path::Vector{String}, concrete_deps::Vector{Pair{Base.PkgId, UInt128}}, source::String)
-   @ Base ./loading.jl:2049
- [7] top-level scope
-   @ stdin:3
-in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Core.jl:204
-in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Damysos.jl:1
-in expression starting at stdin:3
-ERROR: LoadError: Failed to precompile Damysos [fd5f980c-983e-4c87-a5d0-4feb611f7d72] to "/home/how09898/.julia/compiled/v1.9/Damysos/jl_05BM7v".
-Stacktrace:
- [1] error(s::String)
-   @ Base ./error.jl:35
- [2] compilecache(pkg::Base.PkgId, path::String, internal_stderr::IO, internal_stdout::IO, keep_loaded_modules::Bool)
-   @ Base ./loading.jl:2300
- [3] compilecache
-   @ ./loading.jl:2167 [inlined]
- [4] _require(pkg::Base.PkgId, env::String)
-   @ Base ./loading.jl:1805
- [5] _require_prelocked(uuidkey::Base.PkgId, env::String)
-   @ Base ./loading.jl:1660
- [6] macro expansion
-   @ ./loading.jl:1648 [inlined]
- [7] macro expansion
-   @ ./lock.jl:267 [inlined]
- [8] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:1611
-in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/scripts/kxpartest.jl:1
-ERROR: julia: -p,--procs=<n> must be an integer >= 1
-[ Info: Attempting to create /home/how09898/phd/plots/hhgjl/Simulation{Float64}(2d)GappedDirac_GaussianPulse_new_kxparallel/
-[ Info: /home/how09898/phd/plots/hhgjl/Simulation{Float64}(2d)GappedDirac_GaussianPulse_new_kxparallel/ already exists. Proceeding...
-ERROR: LoadError: On worker 3:
-peer 8 didn't connect to 3 within 59.999979972839355 seconds
-Stacktrace:
-  [1] error
-    @ ./error.jl:35
-  [2] wait_for_conn
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/cluster.jl:196
-  [3] check_worker_state
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/cluster.jl:170
-  [4] send_msg_
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/messages.jl:172
-  [5] send_msg
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/messages.jl:122 [inlined]
-  [6] #remotecall_fetch#159
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/remotecall.jl:460
-  [7] remotecall_fetch
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/remotecall.jl:454
-  [8] #remotecall_fetch#162
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/remotecall.jl:492 [inlined]
-  [9] remotecall_fetch
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/remotecall.jl:492 [inlined]
- [10] call_on_owner
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/remotecall.jl:565 [inlined]
- [11] fetch
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/remotecall.jl:619
- [12] iterate
-    @ ./generator.jl:47 [inlined]
- [13] _collect
-    @ ./array.jl:802
- [14] collect_similar
-    @ ./array.jl:711 [inlined]
- [15] map
-    @ ./abstractarray.jl:3261 [inlined]
- [16] #220
-    @ ~/.julia/packages/Transducers/xbs8O/src/dreduce.jl:91
- [17] #invokelatest#2
-    @ ./essentials.jl:816
- [18] invokelatest
-    @ ./essentials.jl:813
- [19] #110
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/process_messages.jl:285
- [20] run_work_thunk
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/process_messages.jl:70
- [21] macro expansion
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/process_messages.jl:285 [inlined]
- [22] #109
-    @ ./task.jl:514
-Stacktrace:
-  [1] remotecall_fetch(f::Function, w::Distributed.Worker, args::Vector{Future}; kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
-    @ Distributed /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/remotecall.jl:465
-  [2] remotecall_fetch(f::Function, w::Distributed.Worker, args::Vector{Future})
-    @ Distributed /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/remotecall.jl:454
-  [3] #remotecall_fetch#162
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/remotecall.jl:492 [inlined]
-  [4] remotecall_fetch(f::Function, id::Int64, args::Vector{Future})
-    @ Distributed /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/remotecall.jl:492
-  [5] remotecall_pool(rc_f::Function, f::Function, pool::WorkerPool, args::Vector{Future}; kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
-    @ Distributed /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/workerpool.jl:126
-  [6] remotecall_pool
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/workerpool.jl:123 [inlined]
-  [7] #remotecall_fetch#200
-    @ /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/workerpool.jl:232 [inlined]
-  [8] remotecall_fetch(f::Function, pool::WorkerPool, args::Vector{Future})
-    @ Distributed /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.2+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/workerpool.jl:232
-  [9] dtransduce(xform::Transducers.Composition{Transducers.Map{Damysos.var"#89#94"{Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}}}}, Transducers.Map{Type{BangBang.NoBang.SingletonVector}}}, step::Function, init::BangBang.NoBang.Empty{Vector}, coll0::Vector{Simulation{Float64}}; simd::Val{false}, basesize::Nothing, threads_basesize::Nothing, pool::WorkerPool, _remote_reduce::Function)
-    @ Transducers ~/.julia/packages/Transducers/xbs8O/src/dreduce.jl:90
- [10] dtransduce(xform::Transducers.Composition{Transducers.Map{Damysos.var"#89#94"{Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}}}}, Transducers.Map{Type{BangBang.NoBang.SingletonVector}}}, step::Function, init::BangBang.NoBang.Empty{Vector}, coll0::Vector{Simulation{Float64}})
-    @ Transducers ~/.julia/packages/Transducers/xbs8O/src/dreduce.jl:50
- [11] foldxd(step::Function, xform::Transducers.Composition{Transducers.Map{Damysos.var"#89#94"{Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}}}}, Transducers.Map{Type{BangBang.NoBang.SingletonVector}}}, itr::Vector{Simulation{Float64}}; init::BangBang.NoBang.Empty{Vector}, kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
-    @ Transducers ~/.julia/packages/Transducers/xbs8O/src/dreduce.jl:40
- [12] foldxd
-    @ ~/.julia/packages/Transducers/xbs8O/src/dreduce.jl:40 [inlined]
- [13] #dcopy#223
-    @ ~/.julia/packages/Transducers/xbs8O/src/dreduce.jl:129 [inlined]
- [14] dcopy
-    @ ~/.julia/packages/Transducers/xbs8O/src/dreduce.jl:129 [inlined]
- [15] #dcollect#227
-    @ ~/.julia/packages/Transducers/xbs8O/src/dreduce.jl:162 [inlined]
- [16] dcollect
-    @ ~/.julia/packages/Transducers/xbs8O/src/dreduce.jl:162 [inlined]
- [17] collect(itr::Base.Generator{Vector{Simulation{Float64}}, Damysos.var"#89#94"{Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}}}}, ex::Transducers.DistributedEx{NamedTuple{(), Tuple{}}})
-    @ Folds.Implementations ~/.julia/packages/Folds/ZayPF/src/collect.jl:14
- [18] run_simulation!(sim::Simulation{Float64}; savedata::Bool, saveplots::Bool, kxparallel::Bool, kx_workers::Int64, kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
-    @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/src/Core.jl:202
- [19] top-level scope
-    @ ./timing.jl:501 [inlined]
- [20] top-level scope
-    @ /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/scripts/kxpartest.jl:0
-in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/scripts/kxpartest.jl:29
-      From worker 8:	[ Info: 3.3333333333333335%
-      From worker 8:	[ Info: 6.666666666666667%
-ERROR: LoadError: ArgumentError: Package Damysos not found in current path.
-- Run `import Pkg; Pkg.add("Damysos")` to install the Damysos package.
-Stacktrace:
- [1] macro expansion
-   @ ./loading.jl:1630 [inlined]
- [2] macro expansion
-   @ ./lock.jl:267 [inlined]
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:1611
-in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/obsmem_damysos/scripts/bench1.jl:1
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+┌ Error: Exception while generating log record in module Main at /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:49
+│   exception =
+│    UndefVarError: `ens` not defined
+│    Stacktrace:
+│     [1] top-level scope
+│       @ logging.jl:360
+│     [2] include(mod::Module, _path::String)
+│       @ Base ./Base.jl:457
+│     [3] exec_options(opts::Base.JLOptions)
+│       @ Base ./client.jl:307
+│     [4] _start()
+│       @ Base ./client.jl:522
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:49
+┌ Info: 2023-09-09T20:05:24.954
+└ On pc1011600137:
+┌ Info: 2023-09-09T20:05:31.921
+│ On pc1011600137:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.203 Å^-1 (175.0)
+│ dkx = 0.00116 Å^-1 (1.0)
+│ nkx = 350.0 (350.0)
+│ kymax = 0.116 Å^-1 (100.0)
+│ dky = 0.00116 Å^-1 (1.0)
+│ nky = 200.0 (200.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+└ nt = 4000.0 (4000.0)
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+[ Info: pmap
+[ Info: using 68 batches for 17 workers
+      From worker 2:	[ Info: Batch completed.
+      From worker 15:	[ Info: Batch completed.
+      From worker 10:	[ Info: Batch completed.
+      From worker 16:	[ Info: Batch completed.
+      From worker 14:	[ Info: Batch completed.
+      From worker 12:	[ Info: Batch completed.
+      From worker 7:	[ Info: Batch completed.
+      From worker 6:	[ Info: Batch completed.
+      From worker 3:	[ Info: Batch completed.
+      From worker 9:	[ Info: Batch completed.
+      From worker 8:	[ Info: Batch completed.
+      From worker 13:	[ Info: Batch completed.
+      From worker 11:	[ Info: Batch completed.
+      From worker 17:	[ Info: Batch completed.
+      From worker 4:	[ Info: Batch completed.
+      From worker 5:	[ Info: Batch completed.
+      From worker 2:	[ Info: Batch completed.
+      From worker 16:	[ Info: Batch completed.
+      From worker 10:	[ Info: Batch completed.
+      From worker 15:	[ Info: Batch completed.
+      From worker 4:	[ Info: Batch completed.
+      From worker 5:	[ Info: Batch completed.
+      From worker 14:	[ Info: Batch completed.
+      From worker 12:	[ Info: Batch completed.
+      From worker 7:	[ Info: Batch completed.
+      From worker 6:	[ Info: Batch completed.
+      From worker 17:	[ Info: Batch completed.
+      From worker 3:	[ Info: Batch completed.
+      From worker 13:	[ Info: Batch completed.
+      From worker 11:	[ Info: Batch completed.
+      From worker 9:	[ Info: Batch completed.
+      From worker 8:	[ Info: Batch completed.
+      From worker 2:	[ Info: Batch completed.
+      From worker 4:	[ Info: Batch completed.
+      From worker 10:	[ Info: Batch completed.
+      From worker 15:	[ Info: Batch completed.
+      From worker 16:	[ Info: Batch completed.
+      From worker 5:	[ Info: Batch completed.
+      From worker 14:	[ Info: Batch completed.
+      From worker 12:	[ Info: Batch completed.
+      From worker 7:	[ Info: Batch completed.
+      From worker 6:	[ Info: Batch completed.
+      From worker 17:	[ Info: Batch completed.
+      From worker 3:	[ Info: Batch completed.
+      From worker 11:	[ Info: Batch completed.
+      From worker 13:	[ Info: Batch completed.
+      From worker 8:	[ Info: Batch completed.
+      From worker 9:	[ Info: Batch completed.
+      From worker 2:	[ Info: Batch completed.
+      From worker 4:	[ Info: Batch completed.
+      From worker 10:	[ Info: Batch completed.
+      From worker 15:	[ Info: Batch completed.
+      From worker 16:	[ Info: Batch completed.
+      From worker 5:	[ Info: Batch completed.
+      From worker 14:	[ Info: Batch completed.
+      From worker 12:	[ Info: Batch completed.
+      From worker 7:	[ Info: Batch completed.
+      From worker 6:	[ Info: Batch completed.
+      From worker 17:	[ Info: Batch completed.
+      From worker 3:	[ Info: Batch completed.
+      From worker 11:	[ Info: Batch completed.
+      From worker 8:	[ Info: Batch completed.
+      From worker 13:	[ Info: Batch completed.
+      From worker 9:	[ Info: Batch completed.
+      From worker 2:	[ Info: Batch completed.
+      From worker 10:	[ Info: Batch completed.
+      From worker 4:	[ Info: Batch completed.
+      From worker 15:	[ Info: Batch completed.
+[ Info: All batches finished, summing up...
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+[ Info: Saved Simulation data at test/reference/data.csv
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+[ Info: Simulation metadata saved at test/referencesimulation.meta
+[ Info: 10.4995084745min spent in run_simulation!(...)
+[ Info: 2023-09-09T20:15:55.569: calculation finished.

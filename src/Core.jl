@@ -1,43 +1,40 @@
 
 export solve_pre!
-function solve_pre!(prob,tsamples,kx,ky,u;kwargs...)
+function solve_pre!(eomintegrator,tsamples,kx,ky,sol;kwargs...)
 
-    itgr = init(remake(prob;p=[kx,ky]);kwargs...)
+    reinit!(eomintegrator)
+    eomintegrator.p = [kx,ky]
 
     i = 1
     nt = length(tsamples)
     while i<=nt
-        i=copysol!(i,itgr.t,tsamples,nt,itgr,u)
-        step!(itgr)
+        i=copysol!(i,eomintegrator.t,tsamples,nt,eomintegrator,sol)
+        step!(eomintegrator)
     end 
 end
 
 export copysol!
-function copysol!(i,t,ts,nt,itgr,u)
+function copysol!(i,t,ts,nt,itgr,sol)
     while i<=nt && ts[i]<t
-        #@info "copysol i:",i
+        # @info "copysol i:",i
         #@info size(itgr(ts[i]))
-        u[:,i] .= itgr(ts[i])
+        sol[:,i] .= itgr(ts[i])
         i+=1
     end
     return i
 end
 
-function solve_eom(
-        prob::ODEProblem{Vector{Complex{T}}},
+function solve_eom!(
+        eomintegrator,
         ts::AbstractVector{T},
         kxs::AbstractVector{T},
-        ky::T;
+        ky::T,
+        sol;
         kwargs...) where {T<:Real}
 
-
-    sol = zeros(Complex{T},2*length(kxs),length(ts))
-    
     for i in eachindex(kxs)
-        solve_pre!(prob,ts,kxs[i],ky,@view sol[2i-1:2i,:];kwargs...)
+        solve_pre!(eomintegrator,ts,kxs[i],ky,@view sol[2i-1:2i,:];kwargs...)
     end
-
-    return sol
 end
 
 """
@@ -125,37 +122,43 @@ function run_simulation2d!(sim::Simulation{T};kwargs...) where {T<:Real}
     tsamples       = p.tsamples
     tspan          = (tsamples[1],tsamples[end])
     
-    sim.observables .= [resize(o,sim.numericalparams) for o in sim.observables]
- 
+    
     u0          = zeros(Complex{T},2)
     rhs!        = getrhs(sim)
     prob        = ODEProblem(rhs!,u0,tspan,[0.0,0.0])
-    sol         = solve_eom(prob,tsamples,kxs,p.kysamples[1];abstol=p.atol,reltol=p.rtol)
+    itgr        = init(prob;abstol=p.atol,reltol=p.rtol)
+    sol         = zeros(Complex{T},2*p.nkx,p.nt)
+    moving_bz   = get_movingbz(sim.drivingfield,p)
 
-    last_obs    = calc_obs_k1d(sim,sol,p.kysamples[1])
-    total_obs   = zero.(deepcopy(sim.observables))
+    sim.observables     .= [resize(o,sim.numericalparams) for o in sim.observables]
+    last_obs            = deepcopy(sim.observables)
+    next_obs            = deepcopy(last_obs)
+    buff_obs            = deepcopy(next_obs)
+    
+    solve_eom!(itgr,tsamples,kxs,p.kysamples[1],sol;abstol=p.atol,reltol=p.rtol)
+
+    calc_allobs_1d!(sim,last_obs,sol,p,p.kysamples[1],moving_bz)
 
     for i in 2:p.nky
-        
-        sol = solve_eom(prob,tsamples,kxs,p.kysamples[1];abstol=p.atol,reltol=p.rtol)
-        obs = calc_obs_k1d(sim,sol,p.kysamples[i])
+        solve_eom!(itgr,tsamples,kxs,p.kysamples[i],sol;
+                        abstol=p.atol,reltol=p.rtol)
+        calc_allobs_1d!(sim,next_obs,sol,p,p.kysamples[i],moving_bz)
 
-        for (o,last,tot) in zip(obs,last_obs,total_obs)
-            temp = integrate2d_obs([last,o],collect(p.kysamples[i-1:i]))
-            addto!(temp,tot)
+        for (o,last,buff,tot) in zip(next_obs,last_obs,buff_obs,sim.observables)
+            integrate2d_obs!([last,o],buff,collect(p.kysamples[i-1:i]))
+            addto!(tot,buff)
+            Damysos.copyto!(last,o)
         end
-        last_obs = deepcopy(obs)
 
-        if mod(i,10)==0
-            GC.gc()
-        end
+        # if mod(i,10)==0
+        #     GC.gc()
+        # end
     end
 
-    sim.observables .= total_obs
     normalize!.(sim.observables,(2π)^sim.dimensions)
     @info "Batch completed."
 
-    return total_obs
+    return sim.observables
 end
 
 

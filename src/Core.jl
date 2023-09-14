@@ -134,29 +134,25 @@ function run_simulation2d!(sim::Simulation{T};kwargs...) where {T<:Real}
     last_obs            = deepcopy(sim.observables)
     next_obs            = deepcopy(last_obs)
     buff_obs            = deepcopy(next_obs)
+    observable_funcs    = [get_funcs(o,sim) for o in sim.observables]
     
     solve_eom!(itgr,tsamples,kxs,p.kysamples[1],sol;abstol=p.atol,reltol=p.rtol)
-
-    calc_allobs_1d!(sim,last_obs,sol,p,p.kysamples[1],moving_bz)
+    calc_allobs_1d!(sim,last_obs,sol,p,p.kysamples[1],moving_bz,observable_funcs)
 
     for i in 2:p.nky
         solve_eom!(itgr,tsamples,kxs,p.kysamples[i],sol;
                         abstol=p.atol,reltol=p.rtol)
-        calc_allobs_1d!(sim,next_obs,sol,p,p.kysamples[i],moving_bz)
+        calc_allobs_1d!(sim,next_obs,sol,p,p.kysamples[i],moving_bz,observable_funcs)
 
         for (o,last,buff,tot) in zip(next_obs,last_obs,buff_obs,sim.observables)
             integrate2d_obs!([last,o],buff,collect(p.kysamples[i-1:i]))
             addto!(tot,buff)
             Damysos.copyto!(last,o)
         end
-
-        # if mod(i,10)==0
-        #     GC.gc()
-        # end
     end
 
     normalize!.(sim.observables,(2π)^sim.dimensions)
-    @info "Batch completed."
+    @debug "Batch completed."
 
     return sim.observables
 end
@@ -204,14 +200,14 @@ function run_simulation!(sim::Simulation{T};
 
     @info "pmap"
     sims        = makekxbatches(sim,nbatches)
-    @info "using $nbatches batches for $(Distributed.nprocs()) workers"
+    @info "using $nbatches batches for $(Distributed.nprocs()-1) workers"
     res = Vector{Vector{Observable{T}}}(undef,length(sims))
     if sim.dimensions==1
-        res = pmap(s -> run_simulation1d!(s;savedata=false,
+        res = @showprogress pmap(s -> run_simulation1d!(s;savedata=false,
                                             saveplots=false,
                                             kwargs...),sims)
     else
-        res = pmap(s -> run_simulation2d!(s;kwargs...),sims)
+        res = @showprogress pmap(s -> run_simulation2d!(s;kwargs...),sims)
     end
     @info "All batches finished, summing up..."
     

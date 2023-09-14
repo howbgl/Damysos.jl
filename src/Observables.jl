@@ -132,21 +132,20 @@ function zero!(v::Velocity{T}) where {T<:Real}
     v.vyinter_k .= zero(T)
 end
 
-function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T) where {T<:Real}
+function calcobs_k1d!(
+    sim::Simulation{T},
+    v::Velocity{T},
+    sol,
+    ky::T,
+    p::NamedTuple,
+    obs_funcs) where {T<:Real}
+
+    vx_cc,vx_cv,vx_vc,vx_vv,vy_cc,vy_cv,vy_vc,vy_vv,ax,ay,fx,fy = obs_funcs
     
-    p     = getparams(sim)
     kxs   = p.kxsamples
     ts    = p.tsamples
-    ax    = get_vecpotx(sim.drivingfield)
-    ay    = get_vecpoty(sim.drivingfield)
     kxt   = zeros(T,p.nkx)
     kyt   = ky
-    vx_cc = getvx_cc(sim.hamiltonian)
-    vx_vv = getvx_vv(sim.hamiltonian)
-    vx_vc = getvx_vc(sim.hamiltonian)
-    vy_cc = getvy_cc(sim.hamiltonian)
-    vy_vc = getvy_vc(sim.hamiltonian)
-    vy_vv = getvy_vv(sim.hamiltonian)
 
     for i in eachindex(ts)
         kxt                 .= kxs .- ax(ts[i])
@@ -173,9 +172,10 @@ function integrate1d_obs!(
     sol,
     p::NamedTuple,
     ky::T,
-    moving_bz::Array{T}) where {T<:Real}
+    moving_bz::Array{T},
+    obs_funcs::Tuple) where {T<:Real}
     
-    calcobs_k1d!(sim,v,sol,ky)
+    calcobs_k1d!(sim,v,sol,ky,p,obs_funcs)
 
     v.vxintra .= trapz((p.kxsamples,:),v.vxintra_k .* moving_bz)
     v.vxinter .= trapz((p.kxsamples,:),v.vxinter_k .* moving_bz)    
@@ -196,6 +196,15 @@ function integrate2d_obs!(vels::Vector{Velocity{T}},
     vdest.vyintra   .= trapz((:,hcat(kysamples)),hcat([v.vyintra for v in vels]...))
     vdest.vyinter   .= trapz((:,hcat(kysamples)),hcat([v.vyinter for v in vels]...))
 end
+
+function get_funcs(v::Velocity{T},sim::Simulation{T}) where {T<:Real}
+    
+    funcs = let h = sim.hamiltonian, df=sim.drivingfield
+        (getvels_x(h)...,getvels_y(h)...,getfields(df)...)
+    end
+    return funcs
+end
+
 
 
 struct Occupation{T<:Real} <: Observable{T}
@@ -255,7 +264,8 @@ function integrate1d_obs!(
     sol,
     p::NamedTuple,
     ky::T,
-    moving_bz::Array{T}) where {T<:Real}
+    moving_bz::Array{T},
+    obs_funcs::Tuple) where {T<:Real}
 
     @warn "Occupation not implemented yet"
 
@@ -267,6 +277,11 @@ function integrate2d_obs!(occs::Vector{Occupation{T}},
     kysamples::Vector{T}) where {T<:Real}
 
     odest.cbocc = trapz((:,hcat(kysamples)),hcat([o.cbocc for o in occs]...))
+end
+
+function get_funcs(o::Occupation{T},sim::Simulation{T}) where {T<:Real}
+    
+    return (nothing,)
 end
 
 function get_movingbz(
@@ -307,9 +322,10 @@ function calc_allobs_1d!(
     sol,
     p::NamedTuple,
     ky::T,
-    moving_bz::Matrix{T}) where {T<:Real}
+    moving_bz::Matrix{T},
+    obs_funcs::Vector) where {T<:Real}
     
-    for o in observables
-        integrate1d_obs!(sim,o,sol,p,ky,moving_bz)
+    for (o,funcs) in zip(observables,obs_funcs)
+        integrate1d_obs!(sim,o,sol,p,ky,moving_bz,funcs)
     end
 end

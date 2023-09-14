@@ -58,6 +58,10 @@ end
     return t -> sin(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
 end
 
+function getfields(df::GaussianPulse)
+    return (get_vecpotx(df),get_vecpoty(df),get_efieldx(df),get_efieldy(df))
+end
+
 function printparamsSI(df::GaussianPulse,us::UnitScaling;digits=4)
 
     p       = getparams(df)

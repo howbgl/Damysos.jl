@@ -1,8 +1,8 @@
-┌ Info: 2023-09-14T11:34:47.138
-│ On pc1011600226:
+┌ Info: 2023-09-14T11:56:30.775
+│ On pc1011600137:
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:53
-┌ Info: 2023-09-14T11:34:54.132
-│ On pc1011600226:
+┌ Info: 2023-09-14T11:56:37.640
+│ On pc1011600137:
 │ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
 │ ζ = 13.2
 │ γ = 0.146
@@ -40,7 +40,7 @@
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
 ┌ Info: pmap
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:205
-┌ Info: using 64 batches for 16 workers
+┌ Info: using 68 batches for 17 workers
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:207
 ┌ Info: All batches finished, summing up...
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:216
@@ -92,7 +92,7 @@
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
 ┌ Info: Saved vecfield.svg & efield.spec.svg at test/reference
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:319
-┌ Info: 22.090846841566666min spent in run_simulation!(...)
+┌ Info: 16.330668106833333min spent in run_simulation!(...)
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:57
-┌ Info: 2023-09-14T11:56:53.231: calculation finished.
+┌ Info: 2023-09-14T12:12:51.278: calculation finished.
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:59

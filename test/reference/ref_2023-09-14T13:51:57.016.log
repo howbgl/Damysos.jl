@@ -1,8 +1,8 @@
-┌ Info: 2023-09-14T11:34:47.138
-│ On pc1011600226:
+┌ Info: 2023-09-14T13:51:57.230
+│ On pc1011600218:
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:53
-┌ Info: 2023-09-14T11:34:54.132
-│ On pc1011600226:
+┌ Info: 2023-09-14T13:52:04.162
+│ On pc1011600218:
 │ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
 │ ζ = 13.2
 │ γ = 0.146
@@ -92,7 +92,7 @@
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
 ┌ Info: Saved vecfield.svg & efield.spec.svg at test/reference
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:319
-┌ Info: 22.090846841566666min spent in run_simulation!(...)
+┌ Info: 22.0593430028min spent in run_simulation!(...)
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:57
-┌ Info: 2023-09-14T11:56:53.231: calculation finished.
+┌ Info: 2023-09-14T14:14:01.430: calculation finished.
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:59

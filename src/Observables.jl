@@ -140,7 +140,7 @@ function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T) where {T<:Rea
     ax    = get_vecpotx(sim.drivingfield)
     ay    = get_vecpoty(sim.drivingfield)
     kxt   = zeros(T,p.nkx)
-    kyt   = zeros(T,p.nkx)
+    kyt   = ky
     vx_cc = getvx_cc(sim.hamiltonian)
     vx_vv = getvx_vv(sim.hamiltonian)
     vx_vc = getvx_vc(sim.hamiltonian)
@@ -150,7 +150,7 @@ function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T) where {T<:Rea
 
     for i in eachindex(ts)
         kxt                 .= kxs .- ax(ts[i])
-        kyt                 .= ky .- ay(ts[i])
+        kyt                 = ky - ay(ts[i])
         v.vxintra_k[:,i]    .= real.(sol[1:2:end,i] .* vx_cc.(kxt,kyt) .+
                             (1 .- sol[1:2:end,i]) .*vx_vv.(kxt,kyt))
         v.vxinter_k[:,i]    .= 2 .* real.(vx_vc.(kxt,kyt) .* sol[2:2:end,i])
@@ -159,7 +159,7 @@ function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T) where {T<:Rea
     if sim.dimensions==2
         for i in eachindex(ts)
             kxt               .= kxs .- ax(ts[i])
-            kyt               .= ky .- ay(ts[i])
+            kyt               = ky - ay(ts[i])
             v.vyintra_k[:,i]  .= real.(sol[1:2:end,i] .* vy_cc.(kxt,kyt) .+
                                 (1 .- sol[1:2:end,i]) .*vy_vv.(kxt,kyt))
             v.vyinter_k[:,i]  .= 2 .* real.(vy_vc.(kxt,kyt) .* sol[2:2:end,i])   
@@ -216,8 +216,8 @@ getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc", "cbocck"]
 getparams(occ::Occupation{T}) where {T<:Real}    = getnames_obs(occ)
 arekresolved(occ::Occupation{T}) where {T<:Real} = [false, true]
 
-@inline function addto!(o::Occupation{T},ototal::Occupation{T}) where {T<:Real}
-    ototal.cbocc .= ototal.cbocc .+ o.cbocc
+@inline function addto!(odest::Occupation{T},osrc::Occupation{T}) where {T<:Real}
+    odest.cbocc .= odest.cbocc .+ osrc.cbocc
 end
 
 @inline function copyto!(odest::Occupation,osrc::Occupation)

@@ -218,8 +218,8 @@ function run_simulation!(sim::Simulation{T};
     total_res   = deepcopy(res[1])
     popfirst!(res) # do not add first entry twice!
     for r in res
-        for (i,obs) in enumerate(r)
-            addto!(obs,total_res[i])
+        for (obs,tot_obs) in zip(r,total_res)
+            addto!(tot_obs,obs)
         end
     end
     sim.observables .= total_res

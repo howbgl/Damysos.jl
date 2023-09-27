@@ -37,14 +37,12 @@ const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/masslessdirac2d_10THz_
 const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/masslessdirac2d_10THz_300fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,
-                :dt,
-                LinRange(0.005,0.003,3))
+const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(100.0,120.0,2))
 
 ensurepath(ens.plotpath)
-const info_filelogger  = FileLogger(joinpath(ens.plotpath,"kxpartest_$(now()).log"))
+const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
-const all_filelogger   = FileLogger(joinpath(ens.plotpath,"kxpartest_$(now())_debug.log"))
+const all_filelogger   = FileLogger(joinpath(ens.plotpath,ens.id*"$(now())_debug.log"))
 const tee_logger       = TeeLogger(info_logger,all_filelogger)
 
 @info "Logging to $(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log")) " *

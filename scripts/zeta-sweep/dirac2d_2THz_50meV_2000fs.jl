@@ -15,15 +15,15 @@ const σ         = u"2000.0fs"
 # converged at
 # dt = 0.001
 # dkx = 0.1
-# dky = 
+# dky = 1.0
 # kxmax = 
 # kymax = 
 
 const dt      = 0.001
 const dkx     = 0.1
-const kxmax   = 400.0
+const kxmax   = 200.0
 const dky     = 1.0
-const kymax   = 100.0
+const kymax   = 50.0
 
 const us      = scaledriving_frequency(freq,vf)
 const h       = GappedDirac(us,m,vf,t1,t2)
@@ -37,7 +37,7 @@ const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/dirac2d_2THz_50meV_200
 const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/dirac2d_2THz_50meV_2000fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(1.0,0.1,10))
+const ens     = parametersweep(sim,sim.numericalparams,:kxmax,LinRange(200.0,250.0,6))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))

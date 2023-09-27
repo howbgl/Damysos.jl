@@ -21,7 +21,7 @@ const σ         = u"800.0fs"
 
 const dt      = 0.01
 const dkx     = 1.0
-const kxmax   = 175.0
+const kxmax   = 1750.0
 const dky     = 1.0
 const kymax   = 100.0
 
@@ -52,7 +52,7 @@ const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run_simulation!(sim;kxparallel=true,saveplots=true)
+const results,time,rese... = @timed run_simulation!(sim;kxparallel=true,saveplots=false)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

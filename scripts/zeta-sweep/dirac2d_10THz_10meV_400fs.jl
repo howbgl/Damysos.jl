@@ -14,15 +14,15 @@ const σ         = u"400.0fs"
 
 # converged @
 # dt = 0.01
-# dkx = 
-# dky = 
-# kxmax = 
-# kymax = 
+# dkx = 0.1
+# dky = 0.8
+# kxmax = 200.0 (only noise below 1e-15changes)
+# kymax = 200.0 (only noise below 1e-15changes)
 
 const dt      = 0.01
 const dkx     = 0.1
 const kxmax   = 150.0
-const dky     = 1.0
+const dky     = 0.8
 const kymax   = 200.0
 
 const us      = scaledriving_frequency(freq,vf)
@@ -31,13 +31,14 @@ const df      = GaussianPulse(us,σ,freq,emax)
 const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
 const obs     = [Velocity(h)]
 
-const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
+const id      = "converged"
+# const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 const name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
 const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/dirac2d_10THz_10meV_400fs/"*name
 const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/dirac2d_10THz_10meV_400fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:dkx,LinRange(0.1,0.01,10))
+const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(200.0,200.0,1))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))
@@ -51,7 +52,7 @@ const tee_logger       = TeeLogger(info_logger,all_filelogger)
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run_simulation!(ens;kxparallel=true)
+const results,time,rest... = @timed run_simulation!(sim;kxparallel=true)
 
 @info "$(time/60.)min spent in run_simulation!(ens::Ensemble;...)"
 @debug rest

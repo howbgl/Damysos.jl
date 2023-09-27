@@ -104,11 +104,16 @@ function run_simulation2d!(sim::Simulation{T};
                 savedata=true,
                 saveplots=true,
                 kxparallel=false,
+                nbatches=4*Threads.nthreads(),
                 kwargs...) where {T<:Real}
 
     p           = getparams(sim)
     last_obs    = run_simulation1d!(sim,p.kysamples[1];
-                    savedata=false,saveplots=false,kxparallel=kxparallel,kwargs...)
+                    savedata=false,
+                    saveplots=false,
+                    kxparallel=kxparallel,
+                    nbatches=nbatches,
+                    kwargs...)
     total_obs   = zero.(deepcopy(last_obs))
 
     for i in 2:p.nky
@@ -116,7 +121,11 @@ function run_simulation2d!(sim::Simulation{T};
             @info "$(100.0i/p.nky)%"
         end
         obs = run_simulation1d!(deepcopy(sim),p.kysamples[i];
-                savedata=false,saveplots=false,kxparallel=kxparallel,kwargs...)
+                savedata=false,
+                saveplots=false,
+                kxparallel=kxparallel,
+                nbatches=nbatches,
+                kwargs...)
         
         for (o,last,tot) in zip(obs,last_obs,total_obs)
             temp = integrate2d_obs([last,o],collect(p.kysamples[i-1:i]))
@@ -168,11 +177,12 @@ The observables obtained from the simulation.
 function run_simulation1d!(sim::Simulation{T},ky::T;
                 savedata=true,
                 saveplots=true,
+                nbatches=4*Threads.nthreads(),
                 kxparallel=false,
                 kwargs...) where {T<:Real}
     if kxparallel
         
-        sims        = makekxbatches(sim,Threads.nthreads())
+        sims        = makekxbatches(sim,nbatches)
         res         = Folds.collect(run_simulation1d_serial!(s,ky;
                                             savedata=false,
                                             saveplots=false,kwargs...) for s in sims)
@@ -229,6 +239,7 @@ The observables obtained from the simulation.
 function run_simulation!(sim::Simulation{T};
                     savedata=true,
                     saveplots=true,
+                    nbatches=4*Threads.nthreads(),
                     kxparallel=false,
                     kwargs...) where {T<:Real}
     
@@ -239,9 +250,9 @@ function run_simulation!(sim::Simulation{T};
     ensurepath(sim.plotpath)
 
     if sim.dimensions==1
-        obs = run_simulation1d!(sim,zero(T);savedata=savedata,saveplots=saveplots,kwargs...)
+        obs = run_simulation1d!(sim,zero(T);savedata=savedata,saveplots=saveplots,nbatches=nbatches,kwargs...)
     elseif sim.dimensions==2
-        obs = run_simulation2d!(sim;savedata=savedata,saveplots=saveplots,
+        obs = run_simulation2d!(sim;savedata=savedata,saveplots=saveplots,nbatches=nbatches,
                                 kxparallel=kxparallel,kwargs...)
     end
 

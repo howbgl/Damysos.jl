@@ -17,7 +17,7 @@ const σ         = u"400.0fs"
 # dkx = 1.0
 # dky = 1.0
 # kxmax = 1000.0
-# kymax = 150.0 (slight artefacts in vxinter(t))
+# kymax = 
 
 const dt      = 0.01
 const dkx     = 1.0
@@ -31,28 +31,29 @@ const df      = GaussianPulse(us,σ,freq,emax)
 const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
 const obs     = [Velocity(h)]
 
-const id      = "converged"
-# const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
-const name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
-const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep-2/dirac2d_10THz_10meV_400fs_1MVcm/"*name
-const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep-2/dirac2d_10THz_10meV_400fs_1MVcm/"*name
+const id      = "ref2"
+const name    = "Simulation{$(typeof(h.Δ))}(2d)reference2"
+const dpath   = "test/reference/2"
+const ppath   = dpath
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(100.0,150.0,6))
 
-ensurepath(ens.plotpath)
-const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))
+ensurepath(sim.plotpath)
+const info_filelogger  = FileLogger(joinpath(sim.plotpath,sim.id*"_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
-const all_filelogger   = FileLogger(joinpath(ens.plotpath,ens.id*"$(now())_debug.log"))
-const tee_logger       = TeeLogger(info_logger,all_filelogger)
+const all_filelogger   = FileLogger(joinpath(sim.plotpath,sim.id*"_$(now())_debug.log"))
+const console_logger   = ConsoleLogger(stdout)
+const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
 
-@info "Logging to $(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log")) " *
-      "and $(joinpath(ens.plotpath,getshortname(ens)*"_$(now())_debug.log"))"
+@info "Logging to $(joinpath(sim.plotpath,getshortname(sim)*"s(now()).log")) " *
+      "and $(joinpath(sim.plotpath,getshortname(sim)*"_$(now())_debug.log"))"
 
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run_simulation!(sim;kxparallel=true)
+const results,time,rest... = @timed run_simulation!(sim;
+                                          kxparallel=true,
+                                          saveplots=true)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

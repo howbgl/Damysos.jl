@@ -6,7 +6,7 @@ import Damysos.ensurepath
 const vf        = u"4.3e5m/s"
 const freq      = u"2THz"
 const m         = u"50.0meV"
-const emax      = u"0.1MV/cm"
+const emax      = u"1.0MV/cm"
 const tcycle    = uconvert(u"fs",1/freq) # 100 fs
 const t2        = tcycle / 4             # 25 fs
 const t1        = Inf*u"1s"
@@ -19,9 +19,9 @@ const σ         = u"2000.0fs"
 # dky = 
 # kymax = 
 
-const dt      = 0.001
+const dt      = 0.01
 const dkx     = 0.1
-const kxmax   = 400.0
+const kxmax   = 100.0
 const dky     = 1.0
 const kymax   = 100.0
 
@@ -37,7 +37,7 @@ const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep-2/dirac2d_2THz_50meV_2
 const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep-2/dirac2d_2THz_50meV_2000fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:dkx,LinRange(0.1,0.01,10))
+const ens     = parametersweep(sim,sim.numericalparams,:dt,LinRange(0.1,0.01,10))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))

@@ -4,26 +4,26 @@ import Damysos.getshortname
 import Damysos.ensurepath
 
 const vf        = u"4.3e5m/s"
-const freq      = u"10THz"
-const m         = u"10.0meV"
-const emax      = u"1.0MV/cm"
+const freq      = u"5THz"
+const m         = u"20.0meV"
+const emax      = u"0.1MV/cm"
 const tcycle    = uconvert(u"fs",1/freq) # 100 fs
 const t2        = tcycle / 4             # 25 fs
 const t1        = Inf*u"1s"
-const σ         = u"400.0fs"
+const σ         = u"800.0fs"
 
-# converged at
+# converged @
 # dt = 0.01
-# dkx = 1.0
+# dkx = 0.1
 # dky = 1.0
-# kxmax = 1000.0
-# kymax = 150.0 (slight artefacts in vxinter(t))
+# kxmax = 180
+# kymax = 50
 
 const dt      = 0.01
-const dkx     = 1.0
-const kxmax   = 1000.0
-const dky     = 1.0
-const kymax   = 100.0
+const dkx     = 0.1
+const dky     = 0.8
+const kxmax   = 180.0
+const kymax   = 50.0
 
 const us      = scaledriving_frequency(freq,vf)
 const h       = GappedDirac(us,m,vf,t1,t2)
@@ -34,11 +34,11 @@ const obs     = [Velocity(h)]
 const id      = "converged"
 # const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 const name    = "Simulation{$(typeof(h.Δ))}(2d)" * getshortname(h)*"_"*getshortname(df) * "_$id"
-const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep-2/dirac2d_10THz_10meV_400fs_1MVcm/"*name
-const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep-2/dirac2d_10THz_10meV_400fs_1MVcm/"*name
+const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/dirac2d_5THz_20meV_800fs/"*name
+const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/dirac2d_5THz_20meV_800fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(100.0,150.0,6))
+const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(50.0,100.0,10))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))

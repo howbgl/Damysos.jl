@@ -35,9 +35,9 @@ function stringexpand_nt(nt::NamedTuple)
     return str
 end
 
-function prepend_spaces(str::AbstractString)
+function prepend_spaces(str::AbstractString,n_spaces::Int64=4)
     lines = split(str, '\n')
-    indented_lines = ["    $line" for line in lines]
+    indented_lines = [repeat(" ",n_spaces)*"$line" for line in lines]
     indented_str = join(indented_lines, '\n')
     return indented_str
 end

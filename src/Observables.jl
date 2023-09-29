@@ -1,3 +1,7 @@
+sig(x)         = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
+bzmask1d(kx)   = sig((kx-p.bz[1])/(2*p.dkx)) * sig((p.bz[2]-kx)/(2*p.dkx))
+    
+
 struct Velocity{T<:Real} <: Observable{T}
     vx::Vector{T}
     vxintra::Vector{T}
@@ -5,10 +9,55 @@ struct Velocity{T<:Real} <: Observable{T}
     vy::Vector{T}
     vyintra::Vector{T}
     vyinter::Vector{T}
+    vxintra_k::Matrix{T}
+    vxinter_k::Matrix{T}
+    vyintra_k::Matrix{T}
+    vyinter_k::Matrix{T}
 end
 function Velocity(h::Hamiltonian{T}) where {T<:Real}
-    return Velocity(Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0),
-                    Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0))
+    return Velocity(Vector{T}(undef,0),
+                    Vector{T}(undef,0),
+                    Vector{T}(undef,0),
+                    Vector{T}(undef,0),
+                    Vector{T}(undef,0),
+                    Vector{T}(undef,0),
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0))
+end
+
+function Velocity(p::NumericalParameters{T}) where {T<:Real}
+
+    params      = getparams(p)
+    nkx         = params.nkx
+    nt          = params.nt
+
+    vxintra_k   = zeros(T,nkx,nt)
+    vxinter_k   = zeros(T,nkx,nt)
+    vxintra     = zeros(T,nt)
+    vxinter     = zeros(T,nt)
+    vx          = zeros(T,nt)
+    vyintra_k   = zeros(T,nkx,nt)
+    vyinter_k   = zeros(T,nkx,nt)
+    vyintra     = zeros(T,nt)
+    vyinter     = zeros(T,nt)
+    vy          = zeros(T,nt)
+
+    return Velocity(vx,
+                    vxintra,
+                    vxinter,
+                    vy,
+                    vyintra,
+                    vyinter,
+                    vxintra_k,
+                    vxinter_k,
+                    vyintra_k,
+                    vyinter_k)
+end
+
+function resize(v::Velocity{T},p::NumericalParameters{T})  where {T<:Real}
+    return Velocity(p)
 end
 
 getnames_obs(v::Velocity{T}) where {T<:Real} = ["vx","vxintra","vxinter","vy","vyintra",
@@ -16,14 +65,14 @@ getnames_obs(v::Velocity{T}) where {T<:Real} = ["vx","vxintra","vxinter","vy","v
 getparams(v::Velocity{T}) where {T<:Real}    = getnames_obs(v)
 arekresolved(v::Velocity{T}) where {T<:Real} = [false,false,false,false,false,false]
 
+@inline function addto!(vtotal::Velocity{T},v::Velocity{T}) where {T<:Real}
 
-@inline function addto!(v::Velocity{T},vtotal::Velocity{T}) where {T<:Real}
-    vtotal.vx .= vtotal.vx .+ v.vx
-    vtotal.vy .= vtotal.vy .+ v.vy
-    vtotal.vxinter .= vtotal.vxinter .+ v.vxinter
-    vtotal.vyinter .= vtotal.vyinter .+ v.vyinter
-    vtotal.vxintra .= vtotal.vxintra .+ v.vxintra
-    vtotal.vyintra .= vtotal.vyintra .+ v.vyintra
+    v.vx        .= v.vx .+ vtotal.vx
+    v.vy        .= v.vy .+ vtotal.vy
+    v.vxinter   .= v.vxinter .+ vtotal.vxinter
+    v.vyinter   .= v.vyinter .+ vtotal.vyinter
+    v.vxintra   .= v.vxintra .+ vtotal.vxintra
+    v.vyintra   .= v.vyintra .+ vtotal.vyintra
 end
 
 @inline function normalize!(v::Velocity{T},norm::T) where {T<:Real}
@@ -43,7 +92,55 @@ function zero(v::Velocity{T}) where {T<:Real}
     vyintra     = zero(v.vyintra)
     vyinter     = zero(v.vyinter)
     vy          = zero(v.vy)
-    return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
+    vxintra_k   = zero(v.vxintra_k)
+    vxinter_k   = zero(v.vxinter_k)
+    vyintra_k   = zero(v.vyintra_k)
+    vyinter_k   = zero(v.vyinter_k)
+
+    return Velocity(vx,
+                    vxintra,
+                    vxinter,
+                    vy,
+                    vyintra,
+                    vyinter,
+                    vxintra_k,
+                    vxinter_k,
+                    vyintra_k,
+                    vyinter_k)
+end
+
+function zero!(v::Velocity{T}) where {T<:Real}
+    
+    v.vx        .= zero(T)
+    v.vxintra   .= zero(T)
+    v.vxinter   .= zero(T)
+    v.vy        .= zero(T)
+    v.vyintra   .= zero(T)
+    v.vyinter   .= zero(T)
+    v.vxintra_k .= zero(T)
+    v.vxinter_k .= zero(T)
+    v.vyintra_k .= zero(T)
+    v.vyinter_k .= zero(T)
+end
+
+function calc_obs_mode!(v::Velocity{T},
+    h::Hamiltonian{T},
+    sol::Matrix{Complex{T}},
+    kxt::Vector{T},
+    ky::T,
+    kx_index::Integer) where {T<:Real}
+
+    vx_cc = getvx_cc(h)
+    vx_vv = getvx_vv(h)
+    vx_vc = getvx_vc(h)
+    vy_cc = getvy_cc(h)
+    vy_vc = getvy_vc(h)
+    vy_vv = getvy_vv(h)
+
+    v.vxintra_k[kx_index,:] .= real.(sol[1,:] .* vx_cc.(kxt,ky) .+ (1 .- sol[1,:]) .* vx_vv.(kxt,ky))
+    v.vxinter_k[kx_index,:] .= 2.0 .* real.(vx_vc.(kxt,ky) .* sol[2,:])
+    v.vyintra_k[kx_index,:] .= real.(sol[1,:] .* vy_cc.(kxt,ky) .+ (1 .- sol[1,:]) .* vy_vv.(kxt,ky))
+    v.vyinter_k[kx_index,:] .= 2.0 .* real.(vy_vc.(kxt,ky) .* sol[2,:])
 end
 
 function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
@@ -91,44 +188,31 @@ function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
     end
 end
 
-function integrate1d_obs(sim::Simulation{T},v::Velocity{T},sol,ky::T,
-                    moving_bz::Array{T}) where {T<:Real}
+function integrate1d_obs!(v::Velocity{T},kxsamples::AbstractVector{T},moving_bz::Array{T}) where {T<:Real}
 
-    p           = getparams(sim)
-    vxintra_k   = zeros(T,p.nkx,length(sol.t))
-    vxinter_k   = zeros(T,p.nkx,length(sol.t))
-    vxintra     = zeros(T,length(sol.t))
-    vxinter     = zeros(T,length(sol.t))
-    vx          = zeros(T,length(sol.t))
-    vyintra_k   = zeros(T,p.nkx,length(sol.t))
-    vyinter_k   = zeros(T,p.nkx,length(sol.t))
-    vyintra     = zeros(T,length(sol.t))
-    vyinter     = zeros(T,length(sol.t))
-    vy          = zeros(T,length(sol.t))
+    @floop for i in axes(moving_bz,2)
+        v.vxintra[i] = trapz(kxsamples,v.vxintra_k[:,i] .* moving_bz[:,i])
+        v.vxinter[i] = trapz(kxsamples,v.vxinter_k[:,i] .* moving_bz[:,i])    
+        v.vyintra[i] = trapz(kxsamples,v.vyintra_k[:,i] .* moving_bz[:,i])
+        v.vyinter[i] = trapz(kxsamples,v.vyinter_k[:,i] .* moving_bz[:,i])
+        v.vx[i]      = v.vxinter[i] + v.vxintra[i]
+        v.vy[i]      = v.vyinter[i] + v.vyintra[i]
+    end
     
-    calcobs_k1d!(sim,v,sol,ky,vxinter_k,vxintra_k,vyinter_k,vyintra_k)
-
-    vxintra = trapz((p.kxsamples,:),vxintra_k .* moving_bz)
-    vxinter = trapz((p.kxsamples,:),vxinter_k .* moving_bz)    
-    vyintra = trapz((p.kxsamples,:),vyintra_k .* moving_bz)
-    vyinter = trapz((p.kxsamples,:),vyinter_k .* moving_bz)
-    @. vx   = vxinter + vxintra
-    @. vy   = vyinter + vyintra
-
-    return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
 end
 
 function integrate2d_obs(vels::Vector{Velocity{T}},
     kysamples::Vector{T}) where {T<:Real}
 
-    vx      = trapz((:,hcat(kysamples)),hcat([v.vx for v in vels]...))
-    vxintra = trapz((:,hcat(kysamples)),hcat([v.vxintra for v in vels]...))
-    vxinter = trapz((:,hcat(kysamples)),hcat([v.vxinter for v in vels]...))
-    vy      = trapz((:,hcat(kysamples)),hcat([v.vy for v in vels]...))
-    vyintra = trapz((:,hcat(kysamples)),hcat([v.vyintra for v in vels]...))
-    vyinter = trapz((:,hcat(kysamples)),hcat([v.vyinter for v in vels]...))
+    v           = zero(vels[1])
+    v.vx        .= trapz((:,hcat(kysamples)),hcat([v.vx for v in vels]...))
+    v.vxintra   .= trapz((:,hcat(kysamples)),hcat([v.vxintra for v in vels]...))
+    v.vxinter   .= trapz((:,hcat(kysamples)),hcat([v.vxinter for v in vels]...))
+    v.vy        .= trapz((:,hcat(kysamples)),hcat([v.vy for v in vels]...))
+    v.vyintra   .= trapz((:,hcat(kysamples)),hcat([v.vyintra for v in vels]...))
+    v.vyinter   .= trapz((:,hcat(kysamples)),hcat([v.vyinter for v in vels]...))
 
-    return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
+    return v
 end
 
 
@@ -137,6 +221,13 @@ struct Occupation{T<:Real} <: Observable{T}
 end
 function Occupation(h::Hamiltonian{T}) where {T<:Real}
     return Occupation(Vector{T}(undef,0))
+end
+function Occupation(p::NumericalParameters{T}) where {T<:Real}
+    return Occupation(zeros(T,getparams(p).nt))
+end
+
+function resize(o::Occupation{T},p::NumericalParameters{T}) where {T<:Real}
+    return Occupation(p)
 end
 
 getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc", "cbocck"]
@@ -172,7 +263,7 @@ function calcobs_k1d!(sim::Simulation{T},occ::Occupation{T},sol,
    end
 end
 
-function integrate1d_obs(sim::Simulation{T},o::Occupation{T},sol,ky::T,
+function integrate1d_obs!(sim::Simulation{T},o::Occupation{T},sol,ky::T,
                     moving_bz::Array{T}) where {T<:Real}
 
     p           = getparams(sim)
@@ -194,38 +285,4 @@ function integrate2d_obs(occs::Vector{Occupation{T}},
 
     cbocc  = trapz((:,hcat(kysamples)),hcat([o.cbocc for o in occs]...))
     return Occupation(cbocc)
-end
-
-
-
-function calc_obs_k1d(sim::Simulation{T},sol,ky::T) where {T<:Real}
-
-    p              = getparams(sim)
-    ax             = get_vecpotx(sim.drivingfield)
-    ay             = get_vecpoty(sim.drivingfield)
-    moving_bz      = zeros(T,p.nkx,length(sol.t))
-
-    sig(x)         = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
-    bzmask1d(kx)   = sig((kx-p.bz[1])/(2*p.dkx)) * sig((p.bz[2]-kx)/(2*p.dkx))
-
-    for i in 1:length(sol.t)
-        moving_bz[:,i] .= bzmask1d.(p.kxsamples .- ax(sol.t[i]))
-    end
-
-    # if sim.dimensions==1
-        
-    #     for i in 1:length(sol.t)
-    #         moving_bz[:,i] .= bzmask1d.(p.kxsamples .- ax(sol.t[i]))
-    #     end
-    # elseif sim.dimensions==2
-    #     kxs = p.kxsamples
-    #     bzmask2d(kx,ky)= bzmask1d(kx)*sig((ky-p.bz[3])/(2*p.dky)) * sig((p.bz[4]-ky)/(2*p.dky))
-    #     for i in 1:length(sol.t)
-    #         moving_bz[:,i] .= bzmask2d.(kxs .- ax(sol.t[i]),ky - ay(sol.t[i]))
-    #     end
-
-    # end
-
-    obs     = [integrate1d_obs(sim,o,sol,ky,moving_bz) for o in sim.observables]
-    return obs
 end

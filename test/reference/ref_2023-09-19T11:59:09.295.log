@@ -1,0 +1,352 @@
+┌ Info: 2023-09-19T11:59:09.506
+│ On pc1011602660:
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:53
+┌ Info: 2023-09-19T11:59:21.233
+│ On pc1011602660:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.203 Å^-1 (175.0)
+│ dkx = 0.00116 Å^-1 (1.0)
+│ nkx = 350.0 (350.0)
+│ kymax = 0.116 Å^-1 (100.0)
+│ dky = 0.00116 Å^-1 (1.0)
+│ nky = 200.0 (200.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:213
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:66
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:66
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
+┌ Info: using 64 batches for 16 workers (threaded)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:152
+┌ Info: 0.10038667698128365
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 4.001632966648831e-6
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 11.10558465712225
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 14.567167265155424
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 6.264391285547777
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 19.420227307812326
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -13.22271294401747
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 21.965770236849114
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.641983743865545
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.64830692701831
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -3.790952774940999
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -0.6638610065597637
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -3.1205606151221776e-5
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.646391797223906
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.648321117602443
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -1.3955769248794106e-9
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.470260589571716
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 1.2079431106384644
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 5.4799834862752195e-5
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.01537570293418584
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.010734017679541042
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.01851631654906695
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.9422603291492146
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.9779980376711049
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.8287764139067916
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.00381027730056538
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.10179768356235949
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.02894886542886395
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.3012671233418334
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 1.136955706647244
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.03690114167952152
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.0683522770710575
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.7789433260244673
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.009185087175458956
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 13.75895447682016
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 10.164342501157783
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 18.41222998972961
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 4.8017480270882045
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -14.577311408980309
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.64777866056528
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.63084698677333
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 21.537419517849276
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -7.104486368835809
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 8.383603192987428
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.0005030298720517843
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.5854199539637396
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.9382245489233982
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 1.217412729332044
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.943854706883705
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.07333213317453004
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.0348824134741661
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.517767482670497
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.0907097871051727
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.7138619660072038
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: -0.0566460247754382
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -2.553015744023445e-6
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.648304922823574
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.647965601348076
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -1.1405360021161907e-10
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.64688463816181
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 9.055256378165883
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 16.85719625028805
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 2.755352119403763
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -15.730131245916864
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: -9.62242891440054
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 21.01794392727114
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.645858866734173
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 22.51143093988902
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 19.391345784663663
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.0019653013911247134
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.727453306699319
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.01599817673581338
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.005477898960204031
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.030450501985418054
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.010373621827595056
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.009500998278739627
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.01776480829660003
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 1.036173265473616
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.05718619777291937
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.3094150705788318
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 1.211408699673848
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.8795963541688729
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.04272798282890538
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 0.1261260354375844
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 12.93122527555609
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.6736827167856713
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 15.418741647835649
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.9114967604658052
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 7.734306431347536
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 1.0142965187960395
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 20.29758097531404
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.8939879716071352
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: -0.030719348022905477
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 1.1595666270346887
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 22.646096619252738
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.053368776318089665
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: -11.604614591903918
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.16692681405882845
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: -5.6244289662563824
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.04542870881138131
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 22.275143685674916
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.18645039225957166
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: -0.004655708016508127
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.02553700017643277
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 22.647815633023363
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.01175215777371515
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 22.648313634739107
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.02067972564596328
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: -2.0880350254810048e-7
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.013915640400083432
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: -9.319102046928142e-12
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.00837638427889045
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 22.647032274615857
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.006862147401082817
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 12.094244911493464
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.6488200962675211
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 22.648186639505205
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.01339472897393589
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: -0.00038128560296289563
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.021635884199152026
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 22.648374025100782
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.024348763896159437
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: -1.707262854242084e-8
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.012177696896480466
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: 22.6471886587692
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.008071348614173291
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: -8.284519860738439e-13
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:135
+┌ Info: 0.01806936513365392
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:136
+┌ Info: All batches finished, summing up...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Core.jl:171
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:66
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
+┌ Info: Saved Simulation data at test/reference/data.csv
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Data.jl:17
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:66
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
+┌ Info: Simulation metadata saved at test/referencesimulation.meta
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Data.jl:63
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vx)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vxintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vxinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:67
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:66
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
+┌ Info: Saved vx.svg & vx.spec.svg at test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:249
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vy)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vyintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vyinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:67
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:66
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
+┌ Info: Saved vy.svg & vy.spec.svg at test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:249
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:66
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
+┌ Info: Saved vecfield.svg & efield.spec.svg at test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:319
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:66
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Utility.jl:71
+┌ Info: Saved vecfield.svg & efield.spec.svg at test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/pmap/src/Plotting.jl:319
+┌ Info: 48.24161815923333min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:60
+┌ Info: 2023-09-19T12:47:24.641: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/pmap/scripts/reference.jl:62

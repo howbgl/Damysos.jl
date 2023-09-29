@@ -1,3 +1,7 @@
+import Base.empty,Base.zero
+
+export Observable,Velocity,Occupation,getnames_obs,zero!,resize
+
 struct Velocity{T<:Real} <: Observable{T}
     vx::Vector{T}
     vxintra::Vector{T}
@@ -10,6 +14,19 @@ struct Velocity{T<:Real} <: Observable{T}
     vyintra_k::Matrix{T}
     vyinter_k::Matrix{T}
 end
+function Velocity(::Velocity{T}) where {T<:Real}
+    return Velocity(Vector{T}(undef,0),
+                    Vector{T}(undef,0),
+                    Vector{T}(undef,0),
+                    Vector{T}(undef,0),
+                    Vector{T}(undef,0),
+                    Vector{T}(undef,0),
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0))
+end
+# backwards compatibility
 function Velocity(h::Hamiltonian{T}) where {T<:Real}
     return Velocity(Vector{T}(undef,0),
                     Vector{T}(undef,0),
@@ -54,6 +71,10 @@ end
 
 function resize(v::Velocity{T},p::NumericalParameters{T})  where {T<:Real}
     return Velocity(p)
+end
+
+function empty(v::Velocity) 
+    return Velocity(v)
 end
 
 getnames_obs(v::Velocity{T}) where {T<:Real} = ["vx","vxintra","vxinter","vy","vyintra",
@@ -147,7 +168,7 @@ function calcobs_k1d!(
     kxt   = zeros(T,p.nkx)
     kyt   = ky
 
-    for i in eachindex(ts)
+    @inbounds for i in eachindex(ts)
         kxt                 .= kxs .- ax(ts[i])
         kyt                 = ky - ay(ts[i])
         v.vxintra_k[:,i]    .= real.(sol[1:2:end,i] .* vx_cc.(kxt,kyt) .+
@@ -156,7 +177,7 @@ function calcobs_k1d!(
     end
 
     if sim.dimensions==2
-        for i in eachindex(ts)
+        @inbounds for i in eachindex(ts)
             kxt               .= kxs .- ax(ts[i])
             kyt               = ky - ay(ts[i])
             v.vyintra_k[:,i]  .= real.(sol[1:2:end,i] .* vy_cc.(kxt,kyt) .+
@@ -197,6 +218,18 @@ function integrate2d_obs!(vels::Vector{Velocity{T}},
     vdest.vyinter   .= trapz((:,hcat(kysamples)),hcat([v.vyinter for v in vels]...))
 end
 
+function integrate2d_obs_add!(vels::Vector{Velocity{T}},
+    vdest::Velocity{T},
+    kysamples::Vector{T}) where {T<:Real}
+    
+    vdest.vx        .+= trapz((:,hcat(kysamples)),hcat([v.vx for v in vels]...))
+    vdest.vxintra   .+= trapz((:,hcat(kysamples)),hcat([v.vxintra for v in vels]...))
+    vdest.vxinter   .+= trapz((:,hcat(kysamples)),hcat([v.vxinter for v in vels]...))
+    vdest.vy        .+= trapz((:,hcat(kysamples)),hcat([v.vy for v in vels]...))
+    vdest.vyintra   .+= trapz((:,hcat(kysamples)),hcat([v.vyintra for v in vels]...))
+    vdest.vyinter   .+= trapz((:,hcat(kysamples)),hcat([v.vyinter for v in vels]...))
+end
+
 function get_funcs(v::Velocity{T},sim::Simulation{T}) where {T<:Real}
     
     funcs = let h = sim.hamiltonian, df=sim.drivingfield
@@ -210,6 +243,10 @@ end
 struct Occupation{T<:Real} <: Observable{T}
     cbocc::Vector{T}
 end
+function Occupation(::Occupation{T}) where {T<:Real}
+    return Occupation(Vector{T}(undef,0))
+end
+# backwards compatibility
 function Occupation(h::Hamiltonian{T}) where {T<:Real}
     return Occupation(Vector{T}(undef,0))
 end
@@ -219,6 +256,10 @@ end
 
 function resize(o::Occupation{T},p::NumericalParameters{T}) where {T<:Real}
     return Occupation(p)
+end
+
+function empty(o::Occupation)
+    return Occupation(o)
 end
 
 getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc", "cbocck"]
@@ -276,8 +317,16 @@ function integrate2d_obs!(occs::Vector{Occupation{T}},
     odest::Occupation{T},
     kysamples::Vector{T}) where {T<:Real}
 
-    odest.cbocc = trapz((:,hcat(kysamples)),hcat([o.cbocc for o in occs]...))
+    odest.cbocc .= trapz((:,hcat(kysamples)),hcat([o.cbocc for o in occs]...))
 end
+
+function integrate2d_obs_add!(occs::Vector{Occupation{T}},
+    odest::Occupation{T},
+    kysamples::Vector{T}) where {T<:Real}
+
+    odest.cbocc .+= trapz((:,hcat(kysamples)),hcat([o.cbocc for o in occs]...))
+end
+
 
 function get_funcs(o::Occupation{T},sim::Simulation{T}) where {T<:Real}
     

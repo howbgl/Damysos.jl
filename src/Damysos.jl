@@ -1,15 +1,12 @@
 module Damysos
 
 using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie
-using DSP,DataFrames,Random,CSV,Formatting,Distributed,Dates,ProgressMeter
-
-import Base.zero
+using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,Dates,ProgressMeter
 
 export Hamiltonian,GappedDirac,scalegapped_dirac
 export DrivingField,GaussianPulse,get_efieldx,get_vecpotx,scaledriving_frequency
 export NumericalParameters,NumericalParams2d,NumericalParams1d,NumericalParams2dSlice
 export Simulation,Ensemble,getparams,parametersweep
-export Observable,Velocity,Occupation,Timesteps,getnames_obs
 export UnitScaling,semiclassical_interband_range,maximum_k
 export run_simulation!,run_simulation1d!,run_simulation2d!
 export savemetadata,save,load,savedata,loaddata

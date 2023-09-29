@@ -22,7 +22,7 @@ const σ         = u"800.0fs"
 const dt      = 0.001
 const dkx     = 1.0
 const dky     = 2.0
-const kxmax   = 2000.0
+const kxmax   = 1500.0
 const kymax   = 200.0
 
 const us      = scaledriving_frequency(freq,vf)
@@ -38,7 +38,7 @@ const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep-2/dirac2d_5THz_20meV_8
 const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep-2/dirac2d_5THz_20meV_800fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:kxmax,LinRange(1500.0,2000.0,6))
+const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(200.0,250.0,6))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))

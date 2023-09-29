@@ -93,58 +93,62 @@ function plotdata(ens::Ensemble{T};maxharm=30,fftwindow=hanning,kwargs...) where
 end
 
 
-function plotdata(ens::Ensemble{T},vel::Velocity{T};
-        maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
+function plotdata(
+    ens::Ensemble{T},
+    vel::Velocity{T};
+    maxharm=30,
+    fftwindow=hanning,
+    kwargs...) where {T<:Real}
     
-        plotpath    = ens.plotpath
+    plotpath    = ens.plotpath
 
-        for (vsymb,vname) in zip([:vx,:vxintra,:vxinter,:vy,:vyintra,:vyinter],
-                                ["vx","vxintra","vxinter","vy","vyintra","vyinter"])
+    for (vsymb,vname) in zip([:vx,:vxintra,:vxinter,:vy,:vyintra,:vyinter],
+                            ["vx","vxintra","vxinter","vy","vyintra","vyinter"])
 
-            timeseries  = Vector{Vector{T}}(undef,0)
-            tsamples    = Vector{Vector{T}}(undef,0)
-            timesteps   = Vector{T}(undef,0)
-            frequencies = Vector{T}(undef,0)
-            labels      = Vector{String}(undef,0)
+        timeseries  = Vector{Vector{T}}(undef,0)
+        tsamples    = Vector{Vector{T}}(undef,0)
+        timesteps   = Vector{T}(undef,0)
+        frequencies = Vector{T}(undef,0)
+        labels      = Vector{String}(undef,0)
 
-            for sim in ens.simlist
-                pars    = getparams(sim)
-                v       = filter(x -> x isa Velocity,sim.observables)[1]
-                data    = getproperty(v,vsymb)
+        for sim in ens.simlist
+            pars    = getparams(sim)
+            v       = filter(x -> x isa Velocity,sim.observables)[1]
+            data    = getproperty(v,vsymb)
 
-                push!(timeseries,data)
-                push!(tsamples,pars.tsamples)
-                push!(timesteps,pars.dt)
-                push!(frequencies,pars.ν)
-                push!(labels,sim.id)
-            end
+            push!(timeseries,data)
+            push!(tsamples,pars.tsamples)
+            push!(timesteps,pars.dt)
+            push!(frequencies,pars.ν)
+            push!(labels,sim.id)
+        end
+        
+        try
+            figtime     = plottimeseries(timeseries,labels,tsamples,
+                                        title=vname * " (" * ens.id * ")",
+                                        colors="continuous",
+                                        kwargs...)
+            figspectra  = plotspectra(timeseries,labels,frequencies,timesteps,
+                                        maxharm=maxharm,
+                                        fftwindow=fftwindow,
+                                        title=vname * " (" * ens.id * ")",
+                                        colors="continuous",
+                                        kwargs...)
             
-            try
-                figtime     = plottimeseries(timeseries,labels,tsamples,
-                                            title=vname,
-                                            colors="continuous",
-                                            kwargs...)
-                figspectra  = plotspectra(timeseries,labels,frequencies,timesteps,
-                                            maxharm=maxharm,
-                                            fftwindow=fftwindow,
-                                            title=vname,
-                                            colors="continuous",
-                                            kwargs...)
-                
-                altpath             = joinpath(pwd(),basename(plotpath))
-                (success,plotpath)  = ensurepath([plotpath,altpath])
-                if success
-                    CairoMakie.save(joinpath(plotpath,vname*".pdf"),figtime)
-                    CairoMakie.save(joinpath(plotpath,vname*"_spec.pdf"),figspectra)
-                    @info "Saved $(vname).pdf & $(vname).spec.pdf at $(plotpath)"
-                else
-                    @warn "Could not save $(vname) plots."
-                end 
+            altpath             = joinpath(pwd(),basename(plotpath))
+            (success,plotpath)  = ensurepath([plotpath,altpath])
+            if success
+                CairoMakie.save(joinpath(plotpath,vname*".pdf"),figtime)
+                CairoMakie.save(joinpath(plotpath,vname*"_spec.pdf"),figspectra)
+                @info "Saved $(vname).pdf & $(vname).spec.pdf at $(plotpath)"
+            else
+                @warn "Could not save $(vname) plots."
+            end 
 
-            catch e
-                @warn "In plotdata(ens::Ensemble{T},vel::Velocity{T};...)",e
-            end            
-        end        
+        catch e
+            @warn "In plotdata(ens::Ensemble{T},vel::Velocity{T};...)",e
+        end            
+    end        
 end
 
 
@@ -166,12 +170,12 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
 
     try
         figtime     = plottimeseries(timeseries,labels,p.tsamples,
-                                    title="CB occupation",
+                                    title="CB occupation" * "(" * ens.id * ")",
                                     kwargs...)
         figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
                                     maxharm=maxharm,
                                     fftwindow=fftwindow,
-                                    title="CB occupation",
+                                    title="CB occupation" * "(" * ens.id * ")",
                                     kwargs...)
 
         altpath             = joinpath(pwd(),basename(plotpath))

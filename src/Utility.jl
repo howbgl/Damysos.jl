@@ -45,6 +45,22 @@ end
 
 droplast(path::AbstractString) = joinpath(splitpath(path)[1:end-1]...)
 
+export random_word
+function random_word()::String
+    lines = readlines("words.txt")
+    
+    # Check if the file is empty
+    if isempty(lines)
+        return ""
+    end
+    
+    random_index = rand(1:length(lines))
+    # Remove spaces from the selected line using a regular expression
+    selected_line = replace(lines[random_index], r"\s+" => "")
+    
+    return selected_line
+end
+
 
 function try_execute_n_times(f::Function, n::Int, arg; wait_time::Real=10.0)
 
@@ -105,22 +121,25 @@ end
 function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol, 
                         range::AbstractVector{T};id="") where {T<:Real}
 
-    return parametersweep(sim,comp,[param],[[r] for r in range];id=id)
+    return parametersweep(sim,comp,[param],[(r,) for r in range];id=id)
 end
 
-function parametersweep(sim::Simulation{T},comp::SimulationComponent{T},
-    params::Vector{Symbol},range::Vector{Vector{T}};
+function parametersweep(
+    sim::Simulation{T},
+    comp::SimulationComponent{T},
+    params::Vector{Symbol},
+    range::Vector{Tuple{Vararg{T, N}}};
     id="",
     plotpath="",
-    datapath="") where {T<:Real}
+    datapath="") where {T<:Real,N}
 
-    hashstring   = sprintf1("%x",hash([sim,comp,params,range]))
+    random_name  = "$(today())_" * random_word()
     plotpath     = plotpath == "" ? droplast(sim.plotpath) : plotpath
     datapath     = datapath == "" ? droplast(sim.datapath) : datapath
     ensname      = "Ensemble[$(length(range))]($(sim.dimensions)d)" 
     ensname      *= getshortname(sim.hamiltonian) *"_"* getshortname(sim.drivingfield) * "_"
-    ensname      *= stringexpand_vector(params)*"_sweep_" * hashstring
-    id           = id == "" ? stringexpand_vector(params)*"_sweep_" * hashstring : id
+    ensname      *= stringexpand_vector(params)*"_sweep_" * random_name
+    id           = id == "" ? stringexpand_vector(params)*"_sweep_" * random_name : id
     
 
     sweeplist    = Vector{Simulation{T}}(undef,length(range))

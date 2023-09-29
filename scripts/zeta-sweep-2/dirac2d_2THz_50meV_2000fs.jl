@@ -21,7 +21,7 @@ const σ         = u"2000.0fs"
 
 const dt      = 0.01
 const dkx     = 0.1
-const kxmax   = 100.0
+const kxmax   = 400.0
 const dky     = 1.0
 const kymax   = 100.0
 
@@ -38,7 +38,7 @@ const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep-2/dirac2d_2THz_50meV_
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 const ens     = parametersweep(sim,sim.numericalparams,
-                  [:rtol,:atol],[[10.0^(-i) for i in 5:10],[10.0^(-i) for i in 5:10]])
+                  [:rtol,:atol],[(10.0^(-i),10.0^(-i)) for i in 5:10])
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))

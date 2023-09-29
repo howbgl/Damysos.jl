@@ -3,7 +3,7 @@ module Damysos
 using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie
 using DSP,DataFrames,Random,CSV,Formatting,Folds,Dates
 
-import Base.zero
+import Base.zero,Base.setindex,Base.getindex,Base.length
 
 export Hamiltonian,GappedDirac,scalegapped_dirac
 export DrivingField,GaussianPulse,get_efieldx,get_vecpotx,scaledriving_frequency

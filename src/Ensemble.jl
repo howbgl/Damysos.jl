@@ -16,16 +16,13 @@ Ensemble(sl::Vector{Simulation{T}}) where {T<:Real}         = Ensemble(sl,randst
 Base.size(a::Ensemble)                  = (size(a.simlist))
 Base.setindex!(a::Ensemble,v,i::Int)    = (a.simlist[i] = v)
 Base.getindex(a::Ensemble,i::Int)       = a.simlist[i]
+Base.length(a::Ensemble)                = length(a.simlist)
+
 function Base.show(io::IO,::MIME"text/plain",e::Ensemble{T}) where {T}
-    print(io,"Ensemble{$T} of Simulations{$T}:\n")
-    println(io," id = $(e.id)")
-    println(io," datapath = $(e.datapath)")
-    println(io," plotpath = $(e.plotpath)\n")
-    for i in 1:length(e.simlist)
-        print(io,"  #$i\n","  ")
-        Base.show(io,MIME"text/plain"(),e.simlist[i])
-        print(io,"\n")
-    end
+    println(io,"Ensemble{$T} of $(length(e)) Simulations{$T}:")
+    println(io," id: $(e.id)")
+    println(io," datapath: $(e.datapath)")
+    println(io," plotpath: $(e.plotpath)")
 end
 
 function getshortname(ens::Ensemble{T}) where {T<:Real}
@@ -33,4 +30,4 @@ function getshortname(ens::Ensemble{T}) where {T<:Real}
             getshortname(ens[1].hamiltonian) * getshortname(ens[1].drivingfield)
 end
 
-getname(ens::Ensemble{T}) where {T<:Real} = getshortname(ens) * ens.id
+getname(ens::Ensemble) = getshortname(ens) * ens.id

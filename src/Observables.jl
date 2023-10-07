@@ -14,6 +14,7 @@ struct Velocity{T<:Real} <: Observable{T}
     vyintra_k::Matrix{T}
     vyinter_k::Matrix{T}
 end
+
 function Velocity(::Velocity{T}) where {T<:Real}
     return Velocity(Vector{T}(undef,0),
                     Vector{T}(undef,0),
@@ -26,6 +27,26 @@ function Velocity(::Velocity{T}) where {T<:Real}
                     Matrix{T}(undef,0,0),
                     Matrix{T}(undef,0,0))
 end
+
+function Velocity(
+        vx::Vector{T},
+        vxintra::Vector{T},
+        vxinter::Vector{T},
+        vy::Vector{T},
+        vyintra::Vector{T},
+        vyinter::Vector{T}) where {T<:Real}
+    return Velocity(vx,
+                    vxintra,
+                    vxinter,
+                    vy,
+                    vyintra,
+                    vyinter,
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0),
+                    Matrix{T}(undef,0,0))
+end
+
 # backwards compatibility
 function Velocity(h::Hamiltonian{T}) where {T<:Real}
     return Velocity(Vector{T}(undef,0),
@@ -154,57 +175,66 @@ function zero!(v::Velocity{T}) where {T<:Real}
 end
 
 function calcobs_k1d!(
-    sim::Simulation{T},
     v::Velocity{T},
     sol,
+    kxsamples::AbstractVector{T},
+    tsamples::AbstractVector{T},
     ky::T,
-    p::NamedTuple,
     obs_funcs) where {T<:Real}
 
     vx_cc,vx_cv,vx_vc,vx_vv,vy_cc,vy_cv,vy_vc,vy_vv,ax,ay,fx,fy = obs_funcs
     
-    kxs   = p.kxsamples
-    ts    = p.tsamples
-    kxt   = zeros(T,p.nkx)
-    kyt   = ky
+    kxs   = kxsamples
+    ts    = tsamples
+    kxt   = zeros(T,length(kxs))
 
     @inbounds for i in eachindex(ts)
         kxt                 .= kxs .- ax(ts[i])
-        kyt                 = ky - ay(ts[i])
-        v.vxintra_k[:,i]    .= real.(sol[1:2:end,i] .* vx_cc.(kxt,kyt) .+
-                            (1 .- sol[1:2:end,i]) .*vx_vv.(kxt,kyt))
-        v.vxinter_k[:,i]    .= 2 .* real.(vx_vc.(kxt,kyt) .* sol[2:2:end,i])
-    end
-
-    if sim.dimensions==2
-        @inbounds for i in eachindex(ts)
-            kxt               .= kxs .- ax(ts[i])
-            kyt               = ky - ay(ts[i])
-            v.vyintra_k[:,i]  .= real.(sol[1:2:end,i] .* vy_cc.(kxt,kyt) .+
-                                (1 .- sol[1:2:end,i]) .*vy_vv.(kxt,kyt))
-            v.vyinter_k[:,i]  .= 2 .* real.(vy_vc.(kxt,kyt) .* sol[2:2:end,i])   
-        end
+        v.vxintra_k[:,i]    .= real.(sol[1:2:end,i] .* vx_cc.(kxt,ky) .+
+                            (1 .- sol[1:2:end,i]) .*vx_vv.(kxt,ky))
+        v.vxinter_k[:,i]    .= 2 .* real.(vx_vc.(kxt,ky) .* sol[2:2:end,i])
+        v.vyintra_k[:,i]  .= real.(sol[1:2:end,i] .* vy_cc.(kxt,ky) .+
+                            (1 .- sol[1:2:end,i]) .*vy_vv.(kxt,ky))
+        v.vyinter_k[:,i]  .= 2 .* real.(vy_vc.(kxt,ky) .* sol[2:2:end,i])   
     end
 end
 
-function integrate1d_obs!(
-    sim::Simulation{T},
+
+function integrate1d_obs(
     v::Velocity{T},
     sol,
-    p::NamedTuple,
+    kxsamples::AbstractVector{T},
+    tsamples::AbstractVector{T},
     ky::T,
-    moving_bz::Array{T},
-    obs_funcs::Tuple) where {T<:Real}
-    
-    calcobs_k1d!(sim,v,sol,ky,p,obs_funcs)
+    moving_bz::Matrix{T},
+    obs_funcs) where {T<:Real}
 
-    v.vxintra .= trapz((p.kxsamples,:),v.vxintra_k .* moving_bz)
-    v.vxinter .= trapz((p.kxsamples,:),v.vxinter_k .* moving_bz)    
-    v.vyintra .= trapz((p.kxsamples,:),v.vyintra_k .* moving_bz)
-    v.vyinter .= trapz((p.kxsamples,:),v.vyinter_k .* moving_bz)
+    vresult = zero(v)
+    integrate1d_obs!(vresult,sol,kxsamples,tsamples,ky,moving_bz,obs_funcs)
+    return vresult
+end
+
+
+
+function integrate1d_obs!(
+    v::Velocity{T},
+    sol,
+    kxsamples::AbstractVector{T},
+    tsamples::AbstractVector{T},
+    ky::T,
+    moving_bz::Matrix{T},
+    obs_funcs) where {T<:Real}
+    
+    calcobs_k1d!(v,sol,kxsamples,tsamples,ky,obs_funcs)
+
+    v.vxintra .= trapz((kxsamples,:),v.vxintra_k .* moving_bz)
+    v.vxinter .= trapz((kxsamples,:),v.vxinter_k .* moving_bz)    
+    v.vyintra .= trapz((kxsamples,:),v.vyintra_k .* moving_bz)
+    v.vyinter .= trapz((kxsamples,:),v.vyinter_k .* moving_bz)
     @. v.vx   = v.vxinter + v.vxintra
     @. v.vy   = v.vyinter + v.vyintra
 end
+
 
 function integrate2d_obs!(vels::Vector{Velocity{T}},
     vdest::Velocity{T},
@@ -283,8 +313,7 @@ function zero(o::Occupation{T}) where {T<:Real}
     return Occupation(cbocc)
 end
 
-function calcobs_k1d!(sim::Simulation{T},occ::Occupation{T},sol,
-                    occ_k::Array{T},occ_k_itp::Array{T}) where {T<:Real}
+function calcobs_k1d!(occ::Occupation{T},sol,occ_k::Array{T},occ_k_itp::Array{T}) where {T<:Real}
 #     p        = getparams(sim)
 #     a        = get_vecpotx(sim.drivingfield)
     
@@ -299,8 +328,21 @@ function calcobs_k1d!(sim::Simulation{T},occ::Occupation{T},sol,
 #    end
 end
 
+function integrate1d_obs(
+    o::Occupation{T},
+    sol,
+    p::NamedTuple,
+    ky::T,
+    moving_bz::Array{T},
+    obs_funcs::Tuple) where {T<:Real}
+
+    oresult = zero(o)
+    integrate1d_obs!(oresult,sol,p,ky,moving_bz,obs_funcs)
+    return oresult
+end
+
+
 function integrate1d_obs!(
-    sim::Simulation{T},
     o::Occupation{T},
     sol,
     p::NamedTuple,
@@ -365,16 +407,39 @@ function get_movingbz(
     return moving_bz
 end
 
-function calc_allobs_1d!(
-    sim::Simulation{T},
-    observables::Vector{Observable{T}},
-    sol,
-    p::NamedTuple,
-    ky::T,
+function calcobs_kybatch!(
+    solutions::Vector{Matrix{Complex{T}}},
+    obs_dest::Vector{Observable{T}},
+    kxsamples::AbstractVector{T},
+    kysamples::AbstractVector{T},
+    tsamples::AbstractVector{T},
     moving_bz::Matrix{T},
     obs_funcs::Vector) where {T<:Real}
     
-    for (o,funcs) in zip(observables,obs_funcs)
-        integrate1d_obs!(sim,o,sol,p,ky,moving_bz,funcs)
+    observables_batch = pmap(
+        (u,ky) -> calc_allobs_1d!(obs_dest,u,kxsamples,ky,tsamples,moving_bz,obs_funcs),
+        solutions,
+        kysamples)
+
+    for (i,o) in enumerate(obs_dest) 
+        integrate2d_obs_add!([obs[i] for obs in observables_batch],o,kysamples)
     end
+end
+
+function calc_allobs_1d!(
+    observables::Vector{Observable{T}},
+    sol::Matrix{Complex{T}},
+    kxsamples::AbstractVector{T},
+    ky::T,
+    tsamples::AbstractVector{T},
+    moving_bz::Matrix{T},
+    obs_funcs::Vector) where {T<:Real}
+
+    res = Vector{Observable{T}}(undef,0)
+    
+    for (o,funcs) in zip(observables,obs_funcs)
+        push!(res,integrate1d_obs(o,sol,kxsamples,tsamples,ky,moving_bz,funcs))
+    end
+
+    return res
 end

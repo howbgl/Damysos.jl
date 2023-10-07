@@ -27,13 +27,17 @@ function solve_eom!(
         eomintegrator,
         ts::AbstractVector{T},
         kxs::AbstractVector{T},
-        ky::T,
-        sol;
+        ky::T;
         kwargs...) where {T<:Real}
+
+    sol = zeros(Complex{T},2*length(kxs),length(ts))
 
     @inbounds for i in eachindex(kxs)
         solve_pre!(eomintegrator,ts,kxs[i],ky,@view sol[2i-1:2i,:];kwargs...)
     end
+
+    GC.gc()
+    return sol
 end
 
 """
@@ -54,6 +58,19 @@ end
 function run_simulation1d!(sim::Simulation{T};kwargs...) where {T<:Real}
     @warn "1d not implemented yet!"
 end
+
+function solveky_batch(
+    eomintegrator,
+    kxsamples::AbstractVector{T},
+    kysamples::AbstractVector{T},
+    tsamples::AbstractVector{T},
+    kwargs...) where {T<:Real}
+    
+    solutions = pmap(ky -> solve_eom!(deepcopy(eomintegrator),tsamples,kxsamples,ky),kysamples)
+
+    return solutions
+end
+
 
 function getrhs(sim::Simulation{T}) where {T<:Real}
     
@@ -95,83 +112,45 @@ end
     [`run_simulation!`](@ref), [`run_simulation1d!`](@ref)
 
 """
-function run_simulation2d!(sim::Simulation{T};kwargs...) where {T<:Real}
+function run_simulation2d!(sim::Simulation{T};
+    kyparallel=true,
+    threaded=false,
+    maxparallel_ky=64,
+    kwargs...) where {T<:Real}
 
     p              = getparams(sim)
-    kxs            = p.kxsamples
+    kxsamples      = p.kxsamples
     tsamples       = p.tsamples
     tspan          = (tsamples[1],tsamples[end])
-    
     
     u0          = zeros(Complex{T},2)
     rhs!        = getrhs(sim)
     prob        = ODEProblem(rhs!,u0,tspan,zeros(T,2))
     itgr        = init(prob;abstol=p.atol,reltol=p.rtol)
-    sol         = zeros(Complex{T},2*p.nkx,p.nt)
     moving_bz   = get_movingbz(sim.drivingfield,p)
 
     sim.observables     .= [resize(o,sim.numericalparams) for o in sim.observables]
-    last_obs            = deepcopy(sim.observables)
-    next_obs            = deepcopy(last_obs)
+    kybatches           = pad_kybatches(subdivide_vector(p.kysamples,maxparallel_ky))
     observable_funcs    = [get_funcs(o,sim) for o in sim.observables]
-    
-    solve_eom!(itgr,tsamples,kxs,p.kysamples[1],sol;abstol=p.atol,reltol=p.rtol)
-    calc_allobs_1d!(sim,last_obs,sol,p,p.kysamples[1],moving_bz,observable_funcs)
 
-    @inbounds for i in 2:p.nky
-        solve_eom!(itgr,tsamples,kxs,p.kysamples[i],sol;
-                        abstol=p.atol,reltol=p.rtol)
-        calc_allobs_1d!(sim,next_obs,sol,p,p.kysamples[i],moving_bz,observable_funcs)
+    @info kybatches
 
-        for (o,last,tot) in zip(next_obs,last_obs,sim.observables)
-            integrate2d_obs_add!([last,o],tot,collect(p.kysamples[i-1:i]))
-            Damysos.copyto!(last,o)
-        end
+    for batch in kybatches
+        sols = solveky_batch(itgr,kxsamples,batch,tsamples)
+        calcobs_kybatch!(
+            sols,
+            sim.observables,
+            kxsamples,
+            batch,
+            tsamples,
+            moving_bz,
+            observable_funcs)
+        GC.gc()
+        @info "Batch finished"
     end
-
-    normalize!.(sim.observables,(2π)^sim.dimensions)
-    @debug "Batch completed."
-    GC.gc()
 
     return sim.observables
 end
-
-function run_simulation_parallel!(sim::Simulation{T};
-    threaded=false,
-    nbatches=4*Distributed.nprocs(),
-    kwargs...) where {T<:Real}
-
-    sims        = makekxbatches(sim,nbatches)
-    obs_batches = Vector{Vector{Observable{T}}}(undef,nbatches)
-
-    if threaded
-        @info "using $nbatches batches for $(Threads.nthreads()) workers (threaded)"
-        if sim.dimensions==1
-            obs_batches = Folds.map(s -> run_simulation1d!(s;savedata=false,
-                                                saveplots=false,
-                                                kwargs...),sims)
-        else
-            obs_batches = Folds.map(s -> run_simulation2d!(s;kwargs...),sims)
-        end
-    else
-        @info "using $nbatches batches for $(Distributed.nprocs()-1) workers (distributed)"
-        if sim.dimensions==1
-            obs_batches = @showprogress pmap(s -> run_simulation1d!(s;savedata=false,
-                                                saveplots=false,
-                                                kwargs...),sims)
-        else
-            obs_batches = @showprogress pmap(s -> run_simulation2d!(s;kwargs...),sims)
-        end
-    end
-
-    @info "All batches finished, summing up..."
-    for obs in obs_batches
-        for (o,otot) in zip(obs,sim.observables)
-            addto!(otot,o)
-        end
-    end
-end
-
 
 """
         run_simulation!(sim::Simulation{T};
@@ -201,9 +180,9 @@ end
 function run_simulation!(sim::Simulation{T};
     savedata=true,
     saveplots=true,
-    kxparallel=true,
+    kyparallel=true,
     threaded=false,
-    nbatches=4*(Distributed.nprocs()>Threads.nthreads() ? Distributed.nprocs() : Threads.nthreads()),
+    maxparallel_ky=64,
     kwargs...) where {T<:Real}
     
     @info   "$(now())\nOn $(gethostname()):\n"*
@@ -215,15 +194,17 @@ function run_simulation!(sim::Simulation{T};
     resize_obs!(sim)
     zero.(sim.observables)
 
-    if kxparallel
-        run_simulation_parallel!(sim;nbatches=nbatches,threaded=threaded)
+    if sim.dimensions==1
+        run_simulation1d!(sim;kwargs...)
     else
-        if sim.dimensions==1
-            run_simulation1d!(sim;kwargs...)
-        else
-            run_simulation2d!(sim;kwargs...)
-        end
+        run_simulation2d!(sim;
+            kyparallel=kyparallel,
+            threaded=threaded,
+            maxparallel_ky=maxparallel_ky,
+            kwargs...)
     end
+
+    normalize!.(sim.observables,(2π)^sim.dimensions)
 
     if savedata
         Damysos.savedata(sim)
@@ -310,54 +291,3 @@ function run_simulation!(ens::Ensemble{T};
     return allobs
 end
 
-"""
-        makekxbatches(sim::Simulation{T}, nbatches::U) where {T<:Real, U<:Integer}
-
-    Divide a simulation into multiple batches along the kx direction.
-
-    This function is automatically called by [`run_simulation!`](@ref). 
-    It takes a simulation and divides it into `nbatches` simulations, 
-    each covering a portion of the kx range. It is useful for parallelizing simulations 
-    along the kx axis.
-
-    # Returns
-    An array of simulation objects representing the divided batches.
-
-    # See also
-    [`run_simulation!`](@ref), [`run_simulation1d!`](@ref), [`run_simulation2d!`](@ref)
-
-"""
-function makekxbatches(sim::Simulation{T},nbatches::U) where {T<:Real,U<:Integer}
-    
-    p           = getparams(sim)
-    if nbatches > p.nkx/2
-        nbatches = floor(U,p.nkx/2)
-    end
-
-    allkxs      = p.kxsamples
-    nper_batch  = fld(p.nkx,nbatches)
-    sims        = empty([sim])
-
-    for i in 1:nbatches
-        lidx = max(1,(i-1)*nper_batch)
-        if i==nbatches # In the last batch include all the rest
-            ridx = length(allkxs)
-        else
-            ridx = i*nper_batch
-        end
-        params = NumericalParams2dSlice(deepcopy(sim.numericalparams),(allkxs[lidx],allkxs[ridx]))
-        s      = Simulation(
-                            deepcopy(sim.hamiltonian),
-                            deepcopy(sim.drivingfield),
-                            deepcopy(params),
-                            convert(Vector{Observable{T}},empty.(sim.observables)),
-                            deepcopy(sim.unitscaling),
-                            deepcopy(sim.dimensions),
-                            deepcopy(sim.id),
-                            deepcopy(sim.datapath),
-                            deepcopy(sim.plotpath))
-        push!(sims,s)
-    end
-
-    return sims
-end

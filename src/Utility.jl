@@ -1,3 +1,30 @@
+function subdivide_vector(vec::AbstractVector{T},basesize::U) where {T<:Real,U}
+    
+    batches = Vector{Vector{T}}(undef,0)
+
+    i = 1
+    j = minimum([basesize,length(vec)])
+    n = length(vec)
+    while i <= n
+        push!(batches,collect(vec[i:minimum((j,n))]))
+        i += basesize
+        j += basesize
+    end
+
+    return batches
+end
+
+function pad_kybatches(kybatches::AbstractVector{V}) where {V<:AbstractVector}
+    pad_kybatches!(kybatches)
+    return kybatches
+end
+
+function pad_kybatches!(kybatches::Vector{V}) where {V<:AbstractVector}
+    for i in 2:length(kybatches)
+        push!(kybatches[i-1],kybatches[i][1])
+    end
+end
+
 function stringexpand_vector(v::AbstractVector)
     str = ""
     for i in eachindex(v)

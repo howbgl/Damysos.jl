@@ -137,7 +137,8 @@ function getparams(sim::Simulation{T}) where {T<:Real}
         getparams(sim.hamiltonian),
         fieldpars,
         numpars,
-        getparams(sim.unitscaling))
+        getparams(sim.unitscaling),
+        (dimensions=sim.dimensions,))
 end
 
 getnames_obs(sim::Simulation{T}) where {T<:Real} = vcat(getnames_obs.(sim.observables)...)

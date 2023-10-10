@@ -59,16 +59,30 @@ function run_simulation1d!(sim::Simulation{T};kwargs...) where {T<:Real}
     @warn "1d not implemented yet!"
 end
 
-function solveky_batch(
+function run_simulation_kxline!(
     eomintegrator,
     kxsamples::AbstractVector{T},
-    kysamples::AbstractVector{T},
+    ky::T,
     tsamples::AbstractVector{T},
+    moving_bz::Matrix{T},
+    observables::Vector{Observable{T}},
+    observable_funcs;    
     kwargs...) where {T<:Real}
-    
-    solutions = pmap(ky -> solve_eom!(deepcopy(eomintegrator),tsamples,kxsamples,ky),kysamples)
 
-    return solutions
+    observables_buffer  = deepcopy(observables) # contains result for last kx for trapz 
+    sol                 = zeros(Complex{T},2,length(tsamples))
+    for (i,kx) in enumerate(kxsamples)
+        solve_pre!(eomintegrator,tsamples,kx,ky,sol;kwargs...)
+        for (o,obuff,funcs) in zip(observables,observables_buffer,observable_funcs)
+            calc_obs_mode!(o,sol,tsamples,kx,ky,funcs)
+            if i>1
+                integrate_obs!([obuff,o],o,[kx,kxsamples[i-1]])
+            end
+            copyto!(obuff,o)
+        end
+    end
+    
+    return observables  
 end
 
 
@@ -133,19 +147,23 @@ function run_simulation2d!(sim::Simulation{T};
     kybatches           = pad_kybatches(subdivide_vector(p.kysamples,maxparallel_ky))
     observable_funcs    = [get_funcs(o,sim) for o in sim.observables]
 
-    @info kybatches
+    @info "Using $(Distributed.nprocs()) workers for $maxparallel_ky batches"
 
     for batch in kybatches
-        sols = solveky_batch(itgr,kxsamples,batch,tsamples)
-        calcobs_kybatch!(
-            sols,
-            sim.observables,
-            kxsamples,
-            batch,
-            tsamples,
-            moving_bz,
-            observable_funcs)
-        GC.gc()
+        observables_buffer = pmap(
+            ky -> run_simulation_kxline!(
+                itgr,
+                kxsamples,
+                ky,
+                tsamples,
+                moving_bz,
+                sim.observables,
+                observable_funcs),
+            batch)
+        for (i,o) in enumerate(sim.observables)
+            integrate_obs_add!([ob[i] for ob in observables_buffer],o,batch)
+        end
+        @everywhere GC.gc()
         @info "Batch finished"
     end
 

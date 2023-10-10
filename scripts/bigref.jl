@@ -32,9 +32,9 @@ const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
 const obs     = [Velocity(h)]
 
 # const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
-const id      = "ref"
+const id      = "bigref"
 const name    = "Simulation{$(typeof(h.Δ))}(2d)reference"
-const dpath   = "test/reference"
+const dpath   = "test/reference/big"
 const ppath   = dpath
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
@@ -53,9 +53,9 @@ global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
 const results,time,rest... = @timed run_simulation!(sim;
-                                                kxparallel=true,
-                                                saveplots=false,
-                                                threaded=false)
+                                    kxparallel=true,
+                                    saveplots=false,
+                                    maxparallel_ky=32)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

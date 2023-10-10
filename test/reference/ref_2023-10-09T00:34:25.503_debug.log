@@ -1,8 +1,8 @@
-┌ Info: 2023-10-07T17:15:12.703
-│ On pc1011600412:
+┌ Info: 2023-10-09T00:34:25.741
+│ On pc1011600420:
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/scripts/reference.jl:53
-┌ Info: 2023-10-07T17:15:21.324
-│ On pc1011600412:
+┌ Info: 2023-10-09T00:34:34.267
+│ On pc1011600420:
 │ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
 │ ζ = 13.2
 │ γ = 0.146
@@ -29,7 +29,7 @@
 │ rtol = 1.0e-12 (1.0e-12)
 │ atol = 1.0e-12 (1.0e-12)
 │ nt = 4000.0 (4000.0)
-└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:188
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:206
 ┌ Info: Attempting to create test/reference
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:93
 ┌ Info: test/reference already exists. Proceeding...
@@ -38,16 +38,16 @@
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:93
 ┌ Info: test/reference already exists. Proceeding...
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:98
-┌ Info: [[-100.0, -98.99497487437186, -97.98994974874371, -96.98492462311556, -95.97989949748744, -94.9748743718593, -93.96984924623116, -92.96482412060301, -91.95979899497488, -90.95477386934674, -89.9497487437186, -88.94472361809045, -87.93969849246231, -86.93467336683418, -85.92964824120604, -84.92462311557789, -83.91959798994975, -82.91457286432163, -81.90954773869348, -80.90452261306532, -79.89949748743719, -78.89447236180905, -77.8894472361809, -76.88442211055276, -75.87939698492463, -74.87437185929649, -73.86934673366835, -72.8643216080402, -71.85929648241206, -70.85427135678393, -69.84924623115579, -68.84422110552764, -67.8391959798995, -66.83417085427135, -65.82914572864323, -64.82412060301507, -63.81909547738694, -62.8140703517588, -61.809045226130664, -60.80402010050252, -59.79899497487438, -58.79396984924624, -57.7889447236181, -56.78391959798995, -55.77889447236181, -54.773869346733676, -53.76884422110554, -52.76381909547739, -51.75879396984926, -50.75376884422111, -49.748743718592976, -48.74371859296483, -47.738693467336695, -46.73366834170855, -45.728643216080414, -44.72361809045227, -43.71859296482413, -42.71356783919599, -41.70854271356785, -40.70351758793971, -39.69849246231157, -38.693467336683426, -37.68844221105529, -36.683417085427145, -35.67839195979899], [-35.67839195979899, -34.67336683417084, -33.668341708542705, -32.66331658291456, -31.658291457286428, -30.653266331658287, -29.648241206030146, -28.643216080402002, -27.63819095477386, -26.633165829145725, -25.628140703517584, -24.623115577889443, -23.618090452261303, -22.613065326633162, -21.60804020100502, -20.60301507537688, -19.59798994974874, -18.592964824120603, -17.58793969849246, -16.58291457286432, -15.57788944723618, -14.57286432160804, -13.567839195979897, -12.562814070351754, -11.557788944723617, -10.552763819095478, -9.547738693467338, -8.542713567839193, -7.537688442211055, -6.5326633165829175, -5.527638190954775, -4.5226130653266345, -3.517587939698492, -2.5125628140703498, -1.5075376884422127, -0.5025125628140703, 0.5025125628140685, 1.507537688442211, 2.5125628140703498, 3.5175879396984904, 4.522613065326627, 5.527638190954773, 6.53266331658291, 7.537688442211053, 8.54271356783919, 9.547738693467336, 10.552763819095473, 11.557788944723614, 12.562814070351752, 13.567839195979897, 14.572864321608034, 15.577889447236176, 16.582914572864315, 17.58793969849246, 18.592964824120592, 19.597989949748737, 20.603015075376874, 21.60804020100502, 22.613065326633155, 23.6180904522613, 24.623115577889436, 25.628140703517584, 26.633165829145717, 27.63819095477386, 28.643216080402006], [28.643216080402006, 29.648241206030146, 30.653266331658287, 31.658291457286424, 32.66331658291457, 33.66834170854271, 34.67336683417085, 35.67839195979899, 36.68341708542713, 37.688442211055275, 38.69346733668341, 39.69849246231155, 40.70351758793969, 41.70854271356784, 42.713567839195974, 43.71859296482411, 44.723618090452256, 45.7286432160804, 46.73366834170854, 47.738693467336674, 48.743718592964825, 49.74874371859296, 50.7537688442211, 51.75879396984924, 52.76381909547739, 53.768844221105525, 54.77386934673366, 55.778894472361806, 56.78391959798994, 57.78894472361809, 58.793969849246224, 59.79899497487437, 60.804020100502505, 61.80904522613066, 62.814070351758794, 63.81909547738694, 64.82412060301507, 65.82914572864321, 66.83417085427135, 67.8391959798995, 68.84422110552764, 69.84924623115577, 70.85427135678391, 71.85929648241206, 72.8643216080402, 73.86934673366834, 74.87437185929649, 75.87939698492463, 76.88442211055276, 77.8894472361809, 78.89447236180905, 79.89949748743719, 80.90452261306532, 81.90954773869346, 82.91457286432161, 83.91959798994975, 84.92462311557789, 85.92964824120602, 86.93467336683418, 87.93969849246231, 88.94472361809045, 89.94974874371859, 90.95477386934674, 91.95979899497488, 92.964824120603], [92.964824120603, 93.96984924623115, 94.97487437185929, 95.97989949748742, 96.98492462311557, 97.98994974874371, 98.99497487437185, 100.0]]
-└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:136
+┌ Info: Using 17 workers for 64 batches
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:150
 ┌ Info: Batch finished
-└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:149
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:167
 ┌ Info: Batch finished
-└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:149
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:167
 ┌ Info: Batch finished
-└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:149
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:167
 ┌ Info: Batch finished
-└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:149
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:167
 ┌ Info: Attempting to create test/reference
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:93
 ┌ Info: test/reference already exists. Proceeding...
@@ -82,60 +82,32 @@
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:93
 ┌ Info: test/reference already exists. Proceeding...
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:98
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
 ┌ Info: Saved vy.svg & vy.spec.svg at test/reference
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Plotting.jl:249
 ┌ Info: Attempting to create test/reference
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:93
 ┌ Info: test/reference already exists. Proceeding...
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:98
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
 ┌ Info: Saved vecfield.svg & efield.spec.svg at test/reference
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Plotting.jl:319
 ┌ Info: Attempting to create test/reference
@@ -162,82 +134,110 @@
 └ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
 ┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
 └ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
-┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
-└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
 ┌ Info: Saved vecfield.svg & efield.spec.svg at test/reference
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Plotting.jl:319
-┌ Info: 12.003524484416666min spent in run_simulation!(...)
+┌ Info: 11.133564804099999min spent in run_simulation!(...)
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/scripts/reference.jl:57
-┌ Debug: (bytes = 25936320433, gctime = 5.175750646, gcstats = Base.GC_Diff(25936320433, 2620, 95, 85848023, 21346, 3285, 5175750646, 46, 4))
+┌ Debug: (bytes = 4283306364, gctime = 5.901272757, gcstats = Base.GC_Diff(4283306364, 1566, 20, 46823073, 20764, 2318, 5901272757, 64, 4))
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/scripts/reference.jl:58
-┌ Info: 2023-10-07T17:27:13.557: calculation finished.
+┌ Info: 2023-10-09T00:45:34.360: calculation finished.
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/scripts/reference.jl:59
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
 ┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
 └ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
 ┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}

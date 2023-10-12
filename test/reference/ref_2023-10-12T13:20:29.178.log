@@ -1,0 +1,2182 @@
+┌ Info: 2023-10-12T13:20:29.419
+│ On pc1011600218:
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/reference.jl:53
+┌ Info: 2023-10-12T13:20:38.219
+│ On pc1011600218:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.203 Å^-1 (175.0)
+│ dkx = 0.00116 Å^-1 (1.0)
+│ nkx = 350.0 (350.0)
+│ kymax = 0.116 Å^-1 (100.0)
+│ dky = 0.00116 Å^-1 (1.0)
+│ nky = 200.0 (200.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:196
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Utility.jl:93
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Utility.jl:98
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Utility.jl:93
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Utility.jl:98
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 12.307692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 15.384615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 18.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 21.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 24.615384615384617%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 27.692307692307693%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 30.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 33.84615384615385%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 36.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 40.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 43.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 70.76923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 46.15384615384615%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 73.84615384615384%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 49.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 76.92307692307692%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 52.30769230769231%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 80.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 95.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 55.38461538461539%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 83.07692307692308%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 98.46153846153847%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 58.46153846153846%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 86.15384615384616%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 3.076923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 61.53846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 89.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 6.153846153846154%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 92.3076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 64.61538461538461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 67.6923076923077%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147
+┌ Info: 9.23076923076923%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147

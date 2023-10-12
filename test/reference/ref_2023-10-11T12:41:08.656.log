@@ -1,0 +1,58 @@
+┌ Info: 2023-10-11T12:41:08.896
+│ On pc1011600218:
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/scripts/reference.jl:53
+┌ Info: 2023-10-11T12:41:17.578
+│ On pc1011600218:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.203 Å^-1 (175.0)
+│ dkx = 0.00116 Å^-1 (1.0)
+│ nkx = 350.0 (350.0)
+│ kymax = 0.116 Å^-1 (100.0)
+│ dky = 0.00116 Å^-1 (1.0)
+│ nky = 200.0 (200.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:227
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:93
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:98
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:93
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Utility.jl:98
+┌ Info: Using 1 workers for 64 batches
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kypmap/src/Core.jl:150
+┌ Warning: dt(4.1690417442087376e-5) <= dtmin(3.552713678800501e-15) at t=-19.97909418600053, and step error estimate = 7.106161762510422e-18. Aborting. There is either an error in your model specification or the true solution is unstable.
+└ @ SciMLBase /home/how09898/.julia/packages/SciMLBase/szsYq/src/integrator_interface.jl:599
+┌ Warning: dt(4.1690417442087376e-5) <= dtmin(3.552713678800501e-15) at t=-19.979135876417974, and step error estimate = 7.106161762510422e-18. Aborting. There is either an error in your model specification or the true solution is unstable.
+└ @ SciMLBase /home/how09898/.julia/packages/SciMLBase/szsYq/src/integrator_interface.jl:599
+┌ Warning: dt(4.1690417442087376e-5) <= dtmin(3.552713678800501e-15) at t=-19.97909418600053, and step error estimate = 7.106161762510422e-18. Aborting. There is either an error in your model specification or the true solution is unstable.
+└ @ SciMLBase /home/how09898/.julia/packages/SciMLBase/szsYq/src/integrator_interface.jl:599
+┌ Warning: dt(4.1690417442087376e-5) <= dtmin(3.552713678800501e-15) at t=-19.979135876417974, and step error estimate = 7.955559121732592e-20. Aborting. There is either an error in your model specification or the true solution is unstable.
+└ @ SciMLBase /home/how09898/.julia/packages/SciMLBase/szsYq/src/integrator_interface.jl:599
+┌ Warning: dt(1.4354942884434942e-7) <= dtmin(3.552713678800501e-15) at t=-19.96901550519188, and step error estimate = 7.106161762510422e-18. Aborting. There is either an error in your model specification or the true solution is unstable.
+└ @ SciMLBase /home/how09898/.julia/packages/SciMLBase/szsYq/src/integrator_interface.jl:599
+┌ Warning: dt(1.4354942884434942e-7) <= dtmin(3.552713678800501e-15) at t=-19.96901550519188, and step error estimate = 4.537361302650671e-14. Aborting. There is either an error in your model specification or the true solution is unstable.
+└ @ SciMLBase /home/how09898/.julia/packages/SciMLBase/szsYq/src/integrator_interface.jl:599
+┌ Warning: dt(7.298236527160383e-8) <= dtmin(3.552713678800501e-15) at t=-19.96901550519188, and step error estimate = 4.537361302650671e-14. Aborting. There is either an error in your model specification or the true solution is unstable.
+└ @ SciMLBase /home/how09898/.julia/packages/SciMLBase/szsYq/src/integrator_interface.jl:599
+┌ Warning: dt(7.48814543998537e-8) <= dtmin(3.552713678800501e-15) at t=-19.96901550519188, and step error estimate = 1.3072324318732277e-7. Aborting. There is either an error in your model specification or the true solution is unstable.
+└ @ SciMLBase /home/how09898/.julia/packages/SciMLBase/szsYq/src/integrator_interface.jl:599

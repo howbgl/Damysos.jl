@@ -29,19 +29,19 @@ const us      = scaledriving_frequency(freq,vf)
 const h       = GappedDirac(us,m,vf,t1,t2)
 const df      = GaussianPulse(us,σ,freq,emax)
 const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
-const obs     = [Velocity(pars)]
+const obs     = [Velocity(h)]
 
 const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 const name    = "Simulation{$(typeof(h.Δ))}(2d)"*getshortname(h)*"_"*getshortname(df)*"_$id"
-const dpath   = "/home/how09898/phd/data/hhgjl/benchmarks/dirac2d_10THz_10meV_400fs/"*name
-const ppath   = "/home/how09898/phd/plots/hhgjl/benchmarks/dirac2d_10THz_10meV_400fs/"*name
+const dpath   = "scripts/benchmarks/dirac2d_10THz_10meV_400fs/"*name
+const ppath   = "scripts/benchmarks/dirac2d_10THz_10meV_400fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 
 ensurepath(sim.plotpath)
-const info_filelogger  = FileLogger(joinpath(sim.plotpath,"benchmark_new_$(now()).log"))
+const info_filelogger  = FileLogger(joinpath(sim.plotpath,"benchmark_old_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
-const all_filelogger   = FileLogger(joinpath(sim.plotpath,"benchmark_new_$(now())_debug.log"))
+const all_filelogger   = FileLogger(joinpath(sim.plotpath,"benchmark_old_$(now())_debug.log"))
 const tee_logger       = TeeLogger(info_logger,all_filelogger)
 
 @info "Logging to $(joinpath(sim.plotpath,getshortname(sim)*"_$(now()).log")) " *
@@ -50,8 +50,7 @@ const tee_logger       = TeeLogger(info_logger,all_filelogger)
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed
-run_simulation!(sim;kxparallel=true,kx_workers=128)
+const results,time,rest... = @timed run_simulation!(sim;kxparallel=true,threaded=false)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

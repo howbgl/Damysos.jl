@@ -1,45 +1,3 @@
-
-export solve_pre!
-function solve_pre!(eomintegrator,tsamples,kx,ky,sol;kwargs...)
-
-    reinit!(eomintegrator)
-    eomintegrator.p = [kx,ky]
-
-    i = 1
-    nt = length(tsamples)
-    while i<=nt
-        i=copysol!(i,eomintegrator.t,tsamples,nt,eomintegrator,sol)
-        step!(eomintegrator)
-    end 
-end
-
-export copysol!
-function copysol!(i,t,ts,nt,itgr,sol)
-    @inbounds while i<=nt && ts[i]<t
-        @inbounds sol[:,i] .= itgr(ts[i])
-        i+=1
-    end
-    return i
-end
-
-export solve_eom!
-function solve_eom!(
-        eomintegrator,
-        ts::AbstractVector{T},
-        kxs::AbstractVector{T},
-        ky::T;
-        kwargs...) where {T<:Real}
-
-    sol = zeros(Complex{T},2*length(kxs),length(ts))
-
-    @inbounds for i in eachindex(kxs)
-        solve_pre!(eomintegrator,ts,kxs[i],ky,@view sol[2i-1:2i,:];kwargs...)
-    end
-
-    GC.gc()
-    return sol
-end
-
 """
         run_simulation1d!(sim::Simulation{T};kwargs...)
 
@@ -55,34 +13,46 @@ end
     [`run_simulation!`](@ref), [`run_simulation2d!`](@ref)
 
 """
-function run_simulation1d!(sim::Simulation{T};kwargs...) where {T<:Real}
-    @warn "1d not implemented yet!"
-end
+function run_simulation1d!(sim::Simulation{T},ky::T;kwargs...) where {T<:Real}
 
-function run_simulation_kxline!(
-    eomintegrator,
-    kxsamples::AbstractVector{T},
-    ky::T,
-    tsamples::AbstractVector{T},
-    moving_bz::Matrix{T},
-    observables::Vector{Observable{T}},
-    observable_funcs;    
-    kwargs...) where {T<:Real}
+    p              = getparams(sim)
 
-    observables_buffer  = deepcopy(observables) # contains result for last kx for trapz 
-    sol                 = zeros(Complex{T},2,length(tsamples))
-    for (i,kx) in enumerate(kxsamples)
-        solve_pre!(eomintegrator,tsamples,kx,ky,sol;kwargs...)
-        for (o,obuff,funcs) in zip(observables,observables_buffer,observable_funcs)
-            calc_obs_mode!(o,sol,tsamples,kx,ky,funcs)
-            if i>1
-                integrate_obs!([obuff,o],o,[kx,kxsamples[i-1]])
-            end
-            copyto!(obuff,o)
+    γ1              = oneunit(T) / p.t1
+    γ2              = oneunit(T) / p.t2
+
+    nkx            = p.nkx
+    kx_samples     = p.kxsamples
+    tsamples       = p.tsamples
+    tspan          = (tsamples[1],tsamples[end])
+    
+    a              = get_vecpotx(sim.drivingfield)
+    f              = get_efieldx(sim.drivingfield)
+    ϵ              = getϵ(sim.hamiltonian)
+
+    dcc,dcv,dvc,dvv          = getdipoles_x(sim.hamiltonian)
+
+    rhs_cc(t,cc,cv,kx,ky)  = 2.0 * f(t) * imag(cv * dvc(kx-a(t), ky)) + γ1*(oneunit(T)-cc)
+    rhs_cv(t,cc,cv,kx,ky)  = (-γ2 - 2.0im * ϵ(kx-a(t),ky)) * cv - 1.0im * f(t) * 
+                        ((dvv(kx-a(t),ky)-dcc(kx-a(t),ky)) * cv + dcv(kx-a(t),ky) * (2.0cc - 1.0))
+
+
+    @inline function rhs!(du,u,p,t)
+        @inbounds for i in 1:nkx
+            du[i] = rhs_cc(t,u[i],u[i+nkx],kx_samples[i],ky)
+        end
+    
+        @inbounds for i in nkx+1:2nkx
+            du[i] = rhs_cv(t,u[i-nkx],u[i],kx_samples[i-nkx],ky)
         end
     end
+
+    u0             = zeros(T,2*nkx) .+ im .* zeros(T,2*nkx)
+    prob           = ODEProblem(rhs!,u0,tspan)
+    sol            = solve(prob;saveat=tsamples,reltol=p.rtol,abstol=p.atol,kwargs...)
     
-    return observables  
+    sim.observables .= calc_obs_k1d(sim,sol,ky)
+    
+    return sim.observables  
 end
 
 
@@ -128,43 +98,50 @@ end
 """
 function run_simulation2d!(sim::Simulation{T};
     kyparallel=true,
-    threaded=false,
-    maxparallel_ky=64,
+    maxparallel_ky=32,
+    threaded=true,
     kwargs...) where {T<:Real}
 
-    p              = getparams(sim)
-    kxsamples      = p.kxsamples
-    tsamples       = p.tsamples
-    tspan          = (tsamples[1],tsamples[end])
-    
-    u0          = zeros(Complex{T},2)
-    rhs!        = getrhs(sim)
-    prob        = ODEProblem(rhs!,u0,tspan,zeros(T,2))
-    itgr        = init(prob;abstol=p.atol,reltol=p.rtol)
-    moving_bz   = get_movingbz(sim.drivingfield,p)
+    if !kyparallel
+        return run_simulation2d!(sim;maxparallel_ky=1,threaded=threaded,kwargs...)
+    end
 
-    sim.observables     .= [resize(o,sim.numericalparams) for o in sim.observables]
+    p                   = getparams(sim)
     kybatches           = pad_kybatches(subdivide_vector(p.kysamples,maxparallel_ky))
-    observable_funcs    = [get_funcs(o,sim) for o in sim.observables]
 
-    @info "Using $(Distributed.nprocs()) workers for $maxparallel_ky batches"
+    for kybatch in kybatches
+        observables_buffer = run_simulation2d_pbatch!(deepcopy(sim),kybatch;
+            threaded=threaded,kwargs...)
 
-    for batch in kybatches
-        observables_buffer = pmap(
-            ky -> run_simulation_kxline!(
-                itgr,
-                kxsamples,
-                ky,
-                tsamples,
-                moving_bz,
-                sim.observables,
-                observable_funcs),
-            batch)
-        for (i,o) in enumerate(sim.observables)
-            integrate_obs_add!([ob[i] for ob in observables_buffer],o,batch)
+        for (o,otot) in zip(observables_buffer,sim.observables)
+            addto!(o,otot)
         end
-        @everywhere GC.gc()
+        GC.gc()
+        
         @info "Batch finished"
+    end
+
+    return sim.observables
+end
+
+function run_simulation2d_pbatch!(
+    sim::Simulation{T},
+    kysamples::AbstractVector{T};
+    threaded=true,
+    kwargs...) where {T<:Real}
+
+    if threaded
+        obs     = Folds.map(
+            ky -> run_simulation1d!(deepcopy(sim),ky;kwargs...),
+            kysamples)
+    else
+        obs     = pmap(
+            ky -> run_simulation1d!(sim,ky;kwargs...),
+            kysamples)
+    end
+
+    for (i,otot) in enumerate(sim.observables)
+        integrate2d_obs!([o[i] for o in obs],otot,collect(kysamples))
     end
 
     return sim.observables
@@ -213,7 +190,7 @@ function run_simulation!(sim::Simulation{T};
     zero.(sim.observables)
 
     if sim.dimensions==1
-        run_simulation1d!(sim;kwargs...)
+        run_simulation1d!(sim,zero(T);kwargs...)
     else
         run_simulation2d!(sim;
             kyparallel=kyparallel,

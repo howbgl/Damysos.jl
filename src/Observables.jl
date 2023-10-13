@@ -105,59 +105,57 @@ function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
 
     if sim.dimensions==1        
         for i in 1:length(sol.t)
-            vxintra_k[:,i] = real.(
+            vxintra_k[:,i] .= real.(
                                 sol[1:p.nkx,i] .* 
                                 vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
                                 (1 .- sol[1:p.nkx,i]) .*
                                 vx_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vxinter_k[:,i] = 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
+            vxinter_k[:,i] .= 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
                                 sol[(p.nkx+1):end,i])
         end
     elseif sim.dimensions==2
         for i in 1:length(sol.t)
-            vxintra_k[:,i] = real.(
+            vxintra_k[:,i] .= real.(
                                 sol[1:p.nkx,i] .* 
                                 vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
                                 (1 .- sol[1:p.nkx,i]) .*
                                 vx_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vxinter_k[:,i] = 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
+            vxinter_k[:,i] .= 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
                                 sol[(p.nkx+1):end,i])
-            vyintra_k[:,i] = real.(
+            vyintra_k[:,i] .= real.(
                                 sol[1:p.nkx,i] .* 
                                 vy_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
                                 (1 .- sol[1:p.nkx,i]) .*
                                 vy_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vyinter_k[:,i] = 2 .* real.(vy_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
+            vyinter_k[:,i] .= 2 .* real.(vy_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
                                 sol[(p.nkx+1):end,i])       
         end
     end
 end
 
-function integrate1d_obs(sim::Simulation{T},v::Velocity{T},sol,ky::T,
-                    moving_bz::Array{T}) where {T<:Real}
+function integrate1d_obs!(
+    sim::Simulation{T},
+    v::Velocity{T},
+    sol,
+    ky::T,
+    moving_bz::Array{T}) where {T<:Real}
 
     p           = getparams(sim)
-    vxintra_k   = zeros(T,p.nkx,length(sol.t))
-    vxinter_k   = zeros(T,p.nkx,length(sol.t))
-    vxintra     = zeros(T,length(sol.t))
-    vxinter     = zeros(T,length(sol.t))
-    vx          = zeros(T,length(sol.t))
-    vyintra_k   = zeros(T,p.nkx,length(sol.t))
-    vyinter_k   = zeros(T,p.nkx,length(sol.t))
-    vyintra     = zeros(T,length(sol.t))
-    vyinter     = zeros(T,length(sol.t))
-    vy          = zeros(T,length(sol.t))
+    vxintra_k   = zeros(T,p.nkx,p.nt)
+    vxinter_k   = zeros(T,p.nkx,p.nt)
+    vyintra_k   = zeros(T,p.nkx,p.nt)
+    vyinter_k   = zeros(T,p.nkx,p.nt)
     
     calcobs_k1d!(sim,v,sol,ky,vxinter_k,vxintra_k,vyinter_k,vyintra_k)
 
-    vxintra = trapz((p.kxsamples,:),vxintra_k .* moving_bz)
-    vxinter = trapz((p.kxsamples,:),vxinter_k .* moving_bz)    
-    vyintra = trapz((p.kxsamples,:),vyintra_k .* moving_bz)
-    vyinter = trapz((p.kxsamples,:),vyinter_k .* moving_bz)
-    @. vx   = vxinter + vxintra
-    @. vy   = vyinter + vyintra
+    v.vxintra .= trapz((p.kxsamples,:),vxintra_k .* moving_bz)
+    v.vxinter .= trapz((p.kxsamples,:),vxinter_k .* moving_bz)    
+    v.vyintra .= trapz((p.kxsamples,:),vyintra_k .* moving_bz)
+    v.vyinter .= trapz((p.kxsamples,:),vyinter_k .* moving_bz)
+    @. v.vx   = v.vxinter + v.vxintra
+    @. v.vy   = v.vyinter + v.vyintra
 
-    return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
+    return v
 end
 
 function integrate2d_obs(
@@ -244,7 +242,7 @@ function calcobs_k1d!(sim::Simulation{T},occ::Occupation{T},sol,
    end
 end
 
-function integrate1d_obs(sim::Simulation{T},o::Occupation{T},sol,ky::T,
+function integrate1d_obs!(sim::Simulation{T},o::Occupation{T},sol,ky::T,
                     moving_bz::Array{T}) where {T<:Real}
 
     p           = getparams(sim)
@@ -280,7 +278,7 @@ function calc_obs_k1d(sim::Simulation{T},sol,ky::T) where {T<:Real}
     sig(x)         = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
     bzmask1d(kx)   = sig((kx-p.bz[1])/(2*p.dkx)) * sig((p.bz[2]-kx)/(2*p.dkx))
 
-    for i in 1:length(sol.t)
+    for i in 1:p.nt
         moving_bz[:,i] .= bzmask1d.(p.kxsamples .- ax(sol.t[i]))
     end
 
@@ -298,6 +296,6 @@ function calc_obs_k1d(sim::Simulation{T},sol,ky::T) where {T<:Real}
 
     # end
 
-    obs     = [integrate1d_obs(sim,o,sol,ky,moving_bz) for o in sim.observables]
+    obs     = [integrate1d_obs!(sim,o,sol,ky,moving_bz) for o in sim.observables]
     return obs
 end

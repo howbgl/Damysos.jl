@@ -1,0 +1,324 @@
+ERROR: julia: -t,--threads=<n>[,auto|<m>]; n must be an integer >= 1
+
+[1919214] signal (2): Unterbrechung
+in expression starting at none:0
+
+[1919214] signal (6.-6): Abgebrochen
+in expression starting at none:0
+
+[1919246] signal (2): Unterbrechung
+in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/reference.jl:55
+pthread_cond_wait at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:883
+jl_safepoint_wait_gc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/safepoint.c:171
+jl_set_gc_and_wait at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_internal.h:952 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:353 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:340
+_IO_funlockfile at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+jl_gc_state_set at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:349 [inlined]
+maybe_collect at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:342 [inlined]
+jl_gc_pool_alloc_inner at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1450 [inlined]
+ijl_gc_pool_alloc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1501
+unknown function (ip: (nil))
+pthread_cond_wait at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:883
+jl_safepoint_wait_gc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/safepoint.c:171
+jl_set_gc_and_wait at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_internal.h:952 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:353 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:340
+_IO_funlockfile at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+jl_gc_state_set at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:349 [inlined]
+maybe_collect at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:342 [inlined]
+jl_gc_pool_alloc_inner at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1450 [inlined]
+ijl_gc_pool_alloc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1501
+unknown function (ip: (nil))
+pthread_cond_wait at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:883
+jl_safepoint_wait_gc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/safepoint.c:171
+jl_set_gc_and_wait at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_internal.h:952 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:353 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:340
+_IO_funlockfile at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+jl_gc_state_set at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:349 [inlined]
+maybe_collect at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:342 [inlined]
+jl_gc_big_alloc_inner at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1154 [inlined]
+jl_gc_big_alloc_noinline at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1193 [inlined]
+jl_gc_alloc_ at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_internal.h:465 [inlined]
+jl_gc_alloc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:3760
+unknown function (ip: (nil))
+sweep_big_list at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1224
+sweep_big at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1247 [inlined]
+gc_sweep_other at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1737 [inlined]
+_jl_gc_collect at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:3544
+ijl_gc_collect at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:3713
+maybe_collect at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1083 [inlined]
+jl_gc_pool_alloc_inner at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1450 [inlined]
+ijl_gc_pool_alloc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1501
+jfptr_Colon_24690.clone_1 at /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.3+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+integrate1d_obs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Observables.jl:175
+#78 at ./none:0
+unknown function (ip: 0x7f98dc0eafcb)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+iterate at ./generator.jl:47 [inlined]
+collect at ./array.jl:782
+calc_obs_k1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Observables.jl:310
+unknown function (ip: 0x7f98dc0e8b45)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#96 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:57
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:20 [inlined]
+#105 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7f98dc0a535f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+pthread_cond_wait at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:883
+jl_safepoint_wait_gc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/safepoint.c:171
+jl_set_gc_and_wait at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_internal.h:952 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:353 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:340
+_IO_funlockfile at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+jl_gc_state_set at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:349 [inlined]
+maybe_collect at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:342 [inlined]
+jl_gc_pool_alloc_inner at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1450 [inlined]
+ijl_gc_pool_alloc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1501
+unknown function (ip: (nil))
+pthread_cond_wait at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:883
+jl_safepoint_wait_gc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/safepoint.c:171
+jl_set_gc_and_wait at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_internal.h:952 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:353 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:340
+_IO_funlockfile at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+jl_gc_state_set at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:349 [inlined]
+maybe_collect at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:342 [inlined]
+jl_gc_pool_alloc_inner at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1450 [inlined]
+ijl_gc_pool_alloc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1501
+unknown function (ip: (nil))
+pthread_cond_wait at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:883
+jl_safepoint_wait_gc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/safepoint.c:171
+jl_set_gc_and_wait at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_internal.h:952 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:353 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:340
+_IO_funlockfile at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+jl_gc_state_set at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:349 [inlined]
+maybe_collect at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:342 [inlined]
+jl_gc_pool_alloc_inner at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1450 [inlined]
+ijl_gc_pool_alloc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1501
+unknown function (ip: (nil))
+pthread_cond_wait at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:883
+jl_safepoint_wait_gc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/safepoint.c:171
+jl_set_gc_and_wait at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_internal.h:952 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:353 [inlined]
+segv_handler at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/signals-unix.c:340
+_IO_funlockfile at /lib/x86_64-linux-gnu/libpthread.so.0 (unknown line)
+jl_gc_state_set at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:349 [inlined]
+maybe_collect at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia_threads.h:342 [inlined]
+jl_gc_pool_alloc_inner at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1450 [inlined]
+ijl_gc_pool_alloc at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gc.c:1501
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7f98dc0ac0e4)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/McEqc/src/utils.jl:475 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7f98dc0b75d5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/McEqc/src/scimlfunctions.jl:2394 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/yppG9/src/perform_step/verner_rk_perform_step.jl:358
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/yppG9/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/yppG9/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/yppG9/src/solve.jl:528
+unknown function (ip: 0x7f98dc0e7a2f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/yppG9/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/yppG9/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:571 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:537 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:1033
+solve_up at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:1006 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:943
+solve at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:933
+unknown function (ip: 0x7f98dc0b8c8d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/Tu7HS/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/Tu7HS/src/default_solve.jl:1 [inlined]
+#__solve#63 at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:1314 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:1307 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:571 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:537 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:1037
+solve_up at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:1006 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:943
+unknown function (ip: 0x7f98dc0af2b7)
+solve at /home/how09898/.julia/packages/DiffEqBase/xSmHR/src/solve.jl:933
+unknown function (ip: 0x7f98dc0ab126)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#96 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:55
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:20 [inlined]
+#105 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:147 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_transduce_assoc_nocomplete at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:138 [inlined]
+#transduce_assoc#177 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:108
+transduce_assoc at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:84 [inlined]
+#foldxt#185 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:242
+foldxt at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:242 [inlined]
+#_tcopy#192 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355 [inlined]
+_tcopy at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:352 [inlined]
+#tcopy#190 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:350 [inlined]
+tcopy at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:350 [inlined]
+#tcollect#200 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:430 [inlined]
+tcollect at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:430 [inlined]
+collect at /home/how09898/.julia/packages/Folds/ZayPF/src/collect.jl:12
+#map#50 at /home/how09898/.julia/packages/Folds/ZayPF/src/collect.jl:83 [inlined]
+map at /home/how09898/.julia/packages/Folds/ZayPF/src/collect.jl:83 [inlined]
+#run_simulation2d_pbatch!#104 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:146
+run_simulation2d_pbatch! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:138
+unknown function (ip: 0x7f98dc0a52d2)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation2d!#103 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:124
+run_simulation2d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:103 [inlined]
+#run_simulation!#111 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:207
+run_simulation! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:187
+unknown function (ip: 0x7f98dc092fa6)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+top-level scope at ./timing.jl:501 [inlined]
+top-level scope at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/reference.jl:0
+jl_toplevel_eval_flex at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/toplevel.c:903
+jl_toplevel_eval_flex at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/toplevel.c:856
+ijl_toplevel_eval_in at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/toplevel.c:971
+eval at ./boot.jl:370 [inlined]
+include_string at ./loading.jl:1903
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+_include at ./loading.jl:1963
+include at ./Base.jl:457
+jfptr_include_35036.clone_1 at /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.3+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+exec_options at ./client.jl:307
+_start at ./client.jl:522
+jfptr__start_40034.clone_1 at /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.3+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+true_main at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/jlapi.c:573
+jl_repl_entrypoint at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/jlapi.c:717
+main at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/cli/loader_exe.c:59
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8)
+unknown function (ip: (nil))
+Allocations: 91025714 (Pool: 86746295; Big: 4279419); GC: 95
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+[ Info: Logging to test/reference/Simulation{Float64}(2d)GappedDirac_GaussianPulses(now()).log and test/reference/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-10-13T13:36:30.380_debug.log
+┌ Info: 2023-10-13T13:36:30.481
+└ On pc1011605953:
+┌ Info: 2023-10-13T13:36:38.680
+│ On pc1011605953:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.203 Å^-1 (175.0)
+│ dkx = 0.00116 Å^-1 (1.0)
+│ nkx = 350.0 (350.0)
+│ kymax = 0.116 Å^-1 (100.0)
+│ dky = 0.00116 Å^-1 (1.0)
+│ nky = 200.0 (200.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+└ nt = 4000.0 (4000.0)
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+┌ Info: Starting parallel execution 
+└ Processing 32 ky-values simultaneously
+[ Info: Batch: [-100.0, -98.99497487437186, -97.98994974874373, -96.98492462311557, -95.97989949748744, -94.9748743718593, -93.96984924623115, -92.96482412060301, -91.95979899497486, -90.95477386934672, -89.9497487437186, -88.94472361809045, -87.9396984924623, -86.93467336683416, -85.92964824120602, -84.92462311557787, -83.91959798994975, -82.9145728643216, -81.90954773869345, -80.90452261306532, -79.89949748743717, -78.89447236180904, -77.88944723618089, -76.88442211055275, -75.87939698492461, -74.87437185929647, -73.86934673366832, -72.86432160804019, -71.85929648241205, -70.8542713567839, -69.84924623115576, -68.84422110552762, -67.8391959798995]
+Error: Maybe we should never reach this?

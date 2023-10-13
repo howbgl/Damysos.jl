@@ -88,12 +88,23 @@ function zero(v::Velocity{T}) where {T<:Real}
     return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
 end
 
+@inline function vintra(kx::T,ky::T,ρcc::Complex{T},vcc,vvv) where {T<:Real}
+    return vintra(kx,ky,real(ρcc),vcc,vvv)
+end
+@inline function vintra(kx::T,ky::T,ρcc::T,vcc,vvv) where {T<:Real}
+    return vcc(kx,ky)*ρcc + vvv(kx,ky)*(oneunit(T)-ρcc)
+end
+
+@inline function vinter(kx::T,ky::T,ρcv::Complex{T},vvc) where {T<:Real}
+    return 2 * real(vvc(kx,ky) * ρcv)
+end
+
 function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
-                    vxinter_k::Array{T},vxintra_k::Array{T},
-                    vyinter_k::Array{T},vyintra_k::Array{T}) where {T<:Real}
+                    vxinter_k::Vector{T},vxintra_k::Vector{T},
+                    vyinter_k::Vector{T},vyintra_k::Vector{T}) where {T<:Real}
     
     p     = getparams(sim)
-    kx    = p.kxsamples
+    kxt   = zeros(T,p.nkx)
     ax    = get_vecpotx(sim.drivingfield)
     ay    = get_vecpoty(sim.drivingfield)
     vx_cc = getvx_cc(sim.hamiltonian)
@@ -102,6 +113,10 @@ function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
     vy_cc = getvy_cc(sim.hamiltonian)
     vy_vc = getvy_vc(sim.hamiltonian)
     vy_vv = getvy_vv(sim.hamiltonian)
+
+    for (i,t) in enumerate(p.tsamples)
+        kxt     .= p.kxsamples .- ax(t) 
+    end
 
     if sim.dimensions==1        
         for i in 1:length(sol.t)
@@ -140,18 +155,25 @@ function integrate1d_obs!(
     ky::T,
     moving_bz::Array{T}) where {T<:Real}
 
-    p           = getparams(sim)
-    vxintra_k   = zeros(T,p.nkx,p.nt)
-    vxinter_k   = zeros(T,p.nkx,p.nt)
-    vyintra_k   = zeros(T,p.nkx,p.nt)
-    vyinter_k   = zeros(T,p.nkx,p.nt)
-    
-    calcobs_k1d!(sim,v,sol,ky,vxinter_k,vxintra_k,vyinter_k,vyintra_k)
+    p     = getparams(sim)
+    kxt   = zeros(T,p.nkx)
+    ax    = get_vecpotx(sim.drivingfield)
+    ay    = get_vecpoty(sim.drivingfield)
+    vx_cc = getvx_cc(sim.hamiltonian)
+    vx_vv = getvx_vv(sim.hamiltonian)
+    vx_vc = getvx_vc(sim.hamiltonian)
+    vy_cc = getvy_cc(sim.hamiltonian)
+    vy_vc = getvy_vc(sim.hamiltonian)
+    vy_vv = getvy_vv(sim.hamiltonian)
 
-    v.vxintra .= trapz((p.kxsamples,:),vxintra_k .* moving_bz)
-    v.vxinter .= trapz((p.kxsamples,:),vxinter_k .* moving_bz)    
-    v.vyintra .= trapz((p.kxsamples,:),vyintra_k .* moving_bz)
-    v.vyinter .= trapz((p.kxsamples,:),vyinter_k .* moving_bz)
+    for (i,t) in enumerate(p.tsamples)
+        kxt             .= p.kxsamples .- ax(t)
+        v.vxintra[i]    = trapz(p.kxsamples,moving_bz[:,i] .* vintra.(kxt,ky,sol[1:p.nkx,i],vx_cc,vx_vv))
+        v.vxinter[i]    = trapz(p.kxsamples,moving_bz[:,i] .* vinter.(kxt,ky,sol[p.nkx+1:2p.nkx,i],vx_vc))
+        v.vyintra[i]    = trapz(p.kxsamples,moving_bz[:,i] .* vintra.(kxt,ky,sol[1:p.nkx,i],vy_cc,vy_vv))
+        v.vyinter[i]    = trapz(p.kxsamples,moving_bz[:,i] .* vinter.(kxt,ky,sol[p.nkx+1:2p.nkx,i],vy_vc))
+    end
+
     @. v.vx   = v.vxinter + v.vxintra
     @. v.vy   = v.vyinter + v.vyintra
 
@@ -266,36 +288,22 @@ function integrate2d_obs(occs::Vector{Occupation{T}},
     return Occupation(cbocc)
 end
 
-
-
-function calc_obs_k1d(sim::Simulation{T},sol,ky::T) where {T<:Real}
-
+function getmovingbz(sim::Simulation{T}) where {T<:Real}
     p              = getparams(sim)
     ax             = get_vecpotx(sim.drivingfield)
     ay             = get_vecpoty(sim.drivingfield)
-    moving_bz      = zeros(T,p.nkx,length(sol.t))
+    moving_bz      = zeros(T,p.nkx,p.nt)
 
     sig(x)         = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
     bzmask1d(kx)   = sig((kx-p.bz[1])/(2*p.dkx)) * sig((p.bz[2]-kx)/(2*p.dkx))
 
     for i in 1:p.nt
-        moving_bz[:,i] .= bzmask1d.(p.kxsamples .- ax(sol.t[i]))
+        moving_bz[:,i] .= bzmask1d.(p.kxsamples .- ax(p.tsamples[i]))
     end
+    return moving_bz
+end
 
-    # if sim.dimensions==1
-        
-    #     for i in 1:length(sol.t)
-    #         moving_bz[:,i] .= bzmask1d.(p.kxsamples .- ax(sol.t[i]))
-    #     end
-    # elseif sim.dimensions==2
-    #     kxs = p.kxsamples
-    #     bzmask2d(kx,ky)= bzmask1d(kx)*sig((ky-p.bz[3])/(2*p.dky)) * sig((p.bz[4]-ky)/(2*p.dky))
-    #     for i in 1:length(sol.t)
-    #         moving_bz[:,i] .= bzmask2d.(kxs .- ax(sol.t[i]),ky - ay(sol.t[i]))
-    #     end
+function calc_obs_k1d!(sim::Simulation{T},sol,ky::T,moving_bz::Matrix{T}) where {T<:Real}
 
-    # end
-
-    obs     = [integrate1d_obs!(sim,o,sol,ky,moving_bz) for o in sim.observables]
-    return obs
+    return [integrate1d_obs!(sim,o,sol,ky,moving_bz) for o in sim.observables]
 end

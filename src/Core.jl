@@ -13,7 +13,11 @@
     [`run_simulation!`](@ref), [`run_simulation2d!`](@ref)
 
 """
-function run_simulation1d!(sim::Simulation{T},ky::T;kwargs...) where {T<:Real}
+function run_simulation1d!(sim::Simulation{T},ky::T=zero(T);kwargs...) where {T<:Real}
+    return run_simulation1d!(sim,ky,getmovingbz(sim);kwargs...)    
+end
+
+function run_simulation1d!(sim::Simulation{T},ky::T,moving_bz;kwargs...) where {T<:Real}
 
     p              = getparams(sim)
 
@@ -48,9 +52,9 @@ function run_simulation1d!(sim::Simulation{T},ky::T;kwargs...) where {T<:Real}
 
     u0             = zeros(T,2*nkx) .+ im .* zeros(T,2*nkx)
     prob           = ODEProblem(rhs!,u0,tspan)
-    sol            = solve(prob;saveat=tsamples,reltol=p.rtol,abstol=p.atol,kwargs...)
+    sol            = solve(prob;saveat=p.tsamples,reltol=p.rtol,abstol=p.atol,kwargs...)
     
-    sim.observables .= calc_obs_k1d(sim,sol,ky)
+    sim.observables .= calc_obs_k1d!(sim,sol,ky,moving_bz)
     
     return sim.observables  
 end
@@ -103,13 +107,19 @@ function run_simulation2d!(sim::Simulation{T};
     kwargs...) where {T<:Real}
 
     if !kyparallel
+        @info "Starting serial execution"
         return run_simulation2d!(sim;maxparallel_ky=1,threaded=threaded,kwargs...)
     end
 
     p                   = getparams(sim)
-    kybatches           = pad_kybatches(subdivide_vector(p.kysamples,maxparallel_ky))
+    kybatches           = pad_kybatches!(subdivide_vector(p.kysamples,maxparallel_ky))
+
+    if maxparallel_ky > 1
+        @info "Starting parallel execution \nProcessing $maxparallel_ky ky-values simultaneously"
+    end
 
     for kybatch in kybatches
+        @info "Batch: $kybatch"
         observables_buffer = run_simulation2d_pbatch!(deepcopy(sim),kybatch;
             threaded=threaded,kwargs...)
 
@@ -177,7 +187,7 @@ function run_simulation!(sim::Simulation{T};
     saveplots=true,
     kyparallel=true,
     threaded=false,
-    maxparallel_ky=64,
+    maxparallel_ky=32,
     kwargs...) where {T<:Real}
     
     @info   "$(now())\nOn $(gethostname()):\n"*
@@ -190,7 +200,7 @@ function run_simulation!(sim::Simulation{T};
     zero.(sim.observables)
 
     if sim.dimensions==1
-        run_simulation1d!(sim,zero(T);kwargs...)
+        run_simulation1d!(sim;kwargs...)
     else
         run_simulation2d!(sim;
             kyparallel=kyparallel,

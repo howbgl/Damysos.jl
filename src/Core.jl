@@ -25,9 +25,7 @@ function runkxbatch!(
     prob           = ODEProblem(rhs!,u0,tspan)
     sol            = solve(prob;saveat=p.tsamples,reltol=p.rtol,abstol=p.atol,kwargs...)
 
-    for o in sim.observables
-        integrate_obskxbatch!(sim,o,sol,kxsamples,ky,moving_bz)
-    end
+    integrateobs_kxbatch_add!(sim,sol,kxsamples,ky,moving_bz)
 end
 
 
@@ -168,15 +166,14 @@ function run_kybatch!(
         obs = Folds.map(
             ky -> run_simulation1d!(deepcopy(sim),ky;kwargs...),
             kysamples)
+        integrateobs_threaded!(obs,sim.observables,kysamples)
     else
         obs = pmap(
             ky -> run_simulation1d!(sim,ky;kwargs...),
             kysamples)
+        integrateobs!(obs,sim.observables,kysamples)
     end
 
-    for (i,otot) in enumerate(sim.observables)
-        integrateobs!([o[i] for o in obs],otot,collect(kysamples))
-    end
 
     return sim.observables
 end

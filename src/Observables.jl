@@ -101,56 +101,7 @@ end
     return 2 * real(vvc(kx,ky) * ρcv)
 end
 
-function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
-                    vxinter_k::Vector{T},vxintra_k::Vector{T},
-                    vyinter_k::Vector{T},vyintra_k::Vector{T}) where {T<:Real}
-    
-    p     = getparams(sim)
-    kxt   = zeros(T,p.nkx)
-    ax    = get_vecpotx(sim.drivingfield)
-    ay    = get_vecpoty(sim.drivingfield)
-    vx_cc = getvx_cc(sim.hamiltonian)
-    vx_vv = getvx_vv(sim.hamiltonian)
-    vx_vc = getvx_vc(sim.hamiltonian)
-    vy_cc = getvy_cc(sim.hamiltonian)
-    vy_vc = getvy_vc(sim.hamiltonian)
-    vy_vv = getvy_vv(sim.hamiltonian)
-
-    for (i,t) in enumerate(p.tsamples)
-        kxt     .= p.kxsamples .- ax(t) 
-    end
-
-    if sim.dimensions==1        
-        for i in 1:length(sol.t)
-            vxintra_k[:,i] .= real.(
-                                sol[1:p.nkx,i] .* 
-                                vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
-                                (1 .- sol[1:p.nkx,i]) .*
-                                vx_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vxinter_k[:,i] .= 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
-                                sol[(p.nkx+1):end,i])
-        end
-    elseif sim.dimensions==2
-        for i in 1:length(sol.t)
-            vxintra_k[:,i] .= real.(
-                                sol[1:p.nkx,i] .* 
-                                vx_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
-                                (1 .- sol[1:p.nkx,i]) .*
-                                vx_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vxinter_k[:,i] .= 2 .* real.(vx_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
-                                sol[(p.nkx+1):end,i])
-            vyintra_k[:,i] .= real.(
-                                sol[1:p.nkx,i] .* 
-                                vy_cc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .+
-                                (1 .- sol[1:p.nkx,i]) .*
-                                vy_vv.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])))
-            vyinter_k[:,i] .= 2 .* real.(vy_vc.(kx .- ax(sol.t[i]),ky - ay(sol.t[i])) .* 
-                                sol[(p.nkx+1):end,i])       
-        end
-    end
-end
-
-function integrate_obskxbatch!(
+function integrateobs_kxbatch_add!(
     sim::Simulation{T},
     v::Velocity{T},
     sol,
@@ -180,7 +131,7 @@ function integrate_obskxbatch!(
     return v
 end
 
-function integrate1d_obs!(
+function integrateobs_kxbatch!(
     sim::Simulation{T},
     v::Velocity{T},
     sol,
@@ -240,10 +191,10 @@ function integrateobs_threaded!(
     vertices::Vector{T}) where {T<:Real}
 
     @floop ThreadedEx() for i in 1:length(vdest.vx)
-        vdest.vxintra[i] = trapz(vertices,[v.vxintra for v in vels])
-        vdest.vxinter[i] = trapz(vertices,[v.vxinter for v in vels])
-        vdest.vyintra[i] = trapz(vertices,[v.vyintra for v in vels])
-        vdest.vyinter[i] = trapz(vertices,[v.vyinter for v in vels])
+        vdest.vxintra[i] = trapz(vertices,[v.vxintra[i] for v in vels])
+        vdest.vxinter[i] = trapz(vertices,[v.vxinter[i] for v in vels])
+        vdest.vyintra[i] = trapz(vertices,[v.vyintra[i] for v in vels])
+        vdest.vyinter[i] = trapz(vertices,[v.vyinter[i] for v in vels])
     end
 
     @. vdest.vx   = vdest.vxintra + vdest.vxinter
@@ -289,23 +240,7 @@ function zero(o::Occupation{T}) where {T<:Real}
     return Occupation(cbocc)
 end
 
-function calcobs_k1d!(sim::Simulation{T},occ::Occupation{T},sol,
-                    occ_k::Array{T},occ_k_itp::Array{T}) where {T<:Real}
-    p        = getparams(sim)
-    a        = get_vecpotx(sim.drivingfield)
-    
-    occ_k   .= real.(sol[1:p.nkx,:])
-
-    for i in 1:length(sol.t)
-        kxt_range = LinRange(p.kxsamples[1]-a(sol.t[i]),p.kxsamples[end]-a(sol.t[i]), p.nkx)
-        itp       = interpolate((kxt_range,),real(sol[1:p.nkx,i]), Gridded(Linear()))
-        for j in 2:size(occ_k_itp)[1]-1
-            occ_k_itp[j,i] = itp(p.bz[1] + j*p.dkx)
-        end
-   end
-end
-
-function integrate1d_obs!(sim::Simulation{T},o::Occupation{T},sol,ky::T,
+function integrateobs_kxbatch!(sim::Simulation{T},o::Occupation{T},sol,ky::T,
                     moving_bz::Array{T}) where {T<:Real}
 
     p           = getparams(sim)
@@ -350,7 +285,39 @@ function getmovingbz(sim::Simulation{T},kxsamples::AbstractVector{T}) where {T<:
     return moving_bz    
 end
 
+function integrateobs!(
+    observables::Vector{Vector{Observable{T}}},
+    observables_dest::Vector{Observable{T}},
+    vertices::AbstractVector{T}) where {T<:Real}
+
+    for (i,odest) in enumerate(observables_dest) 
+        integrateobs!([o[i] for o in observables],odest,collect(vertices))
+    end    
+end
+
+function integrateobs_threaded!(
+    observables::Vector{Vector{Observable{T}}},
+    observables_dest::Vector{Observable{T}},
+    vertices::AbstractVector{T}) where {T<:Real}
+
+    for (i,odest) in enumerate(observables_dest) 
+        integrateobs_threaded!([o[i] for o in observables],odest,collect(vertices))
+    end    
+end
+
+function integrateobs_kxbatch_add!(
+    sim::Simulation{T},
+    sol,
+    kxsamples::AbstractVector{T},
+    ky::T,
+    moving_bz::AbstractMatrix{T}) where {T<:Real}
+
+    for o in sim.observables 
+        integrateobs_kxbatch_add!(sim,o,sol,kxsamples,ky,moving_bz)
+    end        
+end
+
 function calc_obs_k1d!(sim::Simulation{T},sol,ky::T,moving_bz::Matrix{T}) where {T<:Real}
 
-    return [integrate1d_obs!(sim,o,sol,ky,moving_bz) for o in sim.observables]
+    return [integrateobs_kxbatch!(sim,o,sol,ky,moving_bz) for o in sim.observables]
 end

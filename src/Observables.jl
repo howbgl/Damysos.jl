@@ -2,6 +2,8 @@ import Base.empty,Base.zero
 
 export Observable,Velocity,Occupation,getnames_obs,zero!,resize
 
+sig(x)         = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
+
 struct Velocity{T<:Real} <: Observable{T}
     vx::Vector{T}
     vxintra::Vector{T}
@@ -148,6 +150,36 @@ function calcobs_k1d!(sim::Simulation{T},v::Velocity{T},sol,ky::T,
     end
 end
 
+function integrate_obskxbatch!(
+    sim::Simulation{T},
+    v::Velocity{T},
+    sol,
+    kxsamples::AbstractVector{T},
+    ky::T,
+    moving_bz::AbstractMatrix{T}) where {T<:Real}
+
+    p     = getparams(sim)
+    nkx   = length(kxsamples)
+    kxt   = zeros(T,nkx)
+    ax    = get_vecpotx(sim.drivingfield)
+    ay    = get_vecpoty(sim.drivingfield)
+    vx_cc = getvx_cc(sim.hamiltonian)
+    vx_vv = getvx_vv(sim.hamiltonian)
+    vx_vc = getvx_vc(sim.hamiltonian)
+    vy_cc = getvy_cc(sim.hamiltonian)
+    vy_vc = getvy_vc(sim.hamiltonian)
+    vy_vv = getvy_vv(sim.hamiltonian)
+
+    for (i,t) in enumerate(p.tsamples)
+        kxt             .= kxsamples .- ax(t)
+        v.vxintra[i]    += trapz(kxsamples,moving_bz[:,i] .* vintra.(kxt,ky,sol[1:nkx,i],vx_cc,vx_vv))
+        v.vxinter[i]    += trapz(kxsamples,moving_bz[:,i] .* vinter.(kxt,ky,sol[nkx+1:2nkx,i],vx_vc))
+        v.vyintra[i]    += trapz(kxsamples,moving_bz[:,i] .* vintra.(kxt,ky,sol[1:nkx,i],vy_cc,vy_vv))
+        v.vyinter[i]    += trapz(kxsamples,moving_bz[:,i] .* vinter.(kxt,ky,sol[nkx+1:2nkx,i],vy_vc))
+    end
+    return v
+end
+
 function integrate1d_obs!(
     sim::Simulation{T},
     v::Velocity{T},
@@ -180,34 +212,43 @@ function integrate1d_obs!(
     return v
 end
 
-function integrate2d_obs(
+function integrateobs(
     vels::Vector{Velocity{T}},
-    kysamples::Vector{T}) where {T<:Real}
+    vertices::Vector{T}) where {T<:Real}
 
-    vx      = trapz((:,hcat(kysamples)),hcat([v.vx for v in vels]...))
-    vxintra = trapz((:,hcat(kysamples)),hcat([v.vxintra for v in vels]...))
-    vxinter = trapz((:,hcat(kysamples)),hcat([v.vxinter for v in vels]...))
-    vy      = trapz((:,hcat(kysamples)),hcat([v.vy for v in vels]...))
-    vyintra = trapz((:,hcat(kysamples)),hcat([v.vyintra for v in vels]...))
-    vyinter = trapz((:,hcat(kysamples)),hcat([v.vyinter for v in vels]...))
-
-    return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
+    vdest = zero(vels[1])
+    return integrateobs!(vels,vdest,vertices)
 end
 
-function integrate2d_obs!(
+function integrateobs!(
     vels::Vector{Velocity{T}},
     vdest::Velocity{T},
-    kysamples::Vector{T}) where {T<:Real}
+    vertices::Vector{T}) where {T<:Real}
 
-    vdest.vx      .= trapz((:,hcat(kysamples)),hcat([v.vx for v in vels]...))
-    vdest.vxintra .= trapz((:,hcat(kysamples)),hcat([v.vxintra for v in vels]...))
-    vdest.vxinter .= trapz((:,hcat(kysamples)),hcat([v.vxinter for v in vels]...))
-    vdest.vy      .= trapz((:,hcat(kysamples)),hcat([v.vy for v in vels]...))
-    vdest.vyintra .= trapz((:,hcat(kysamples)),hcat([v.vyintra for v in vels]...))
-    vdest.vyinter .= trapz((:,hcat(kysamples)),hcat([v.vyinter for v in vels]...))
+    vdest.vxintra .= trapz((:,hcat(vertices)),hcat([v.vxintra for v in vels]...))
+    vdest.vxinter .= trapz((:,hcat(vertices)),hcat([v.vxinter for v in vels]...))
+    vdest.vyintra .= trapz((:,hcat(vertices)),hcat([v.vyintra for v in vels]...))
+    vdest.vyinter .= trapz((:,hcat(vertices)),hcat([v.vyinter for v in vels]...))
+
+    @. vdest.vx   = vdest.vxintra + vdest.vxinter
+    @. vdest.vy   = vdest.vyintra + vdest.vyinter
 end
 
+function integrateobs_threaded!(
+    vels::Vector{Velocity{T}},
+    vdest::Velocity{T},
+    vertices::Vector{T}) where {T<:Real}
 
+    @floop ThreadedEx() for i in 1:length(vdest.vx)
+        vdest.vxintra[i] = trapz(vertices,[v.vxintra for v in vels])
+        vdest.vxinter[i] = trapz(vertices,[v.vxinter for v in vels])
+        vdest.vyintra[i] = trapz(vertices,[v.vyintra for v in vels])
+        vdest.vyinter[i] = trapz(vertices,[v.vyinter for v in vels])
+    end
+
+    @. vdest.vx   = vdest.vxintra + vdest.vxinter
+    @. vdest.vy   = vdest.vyintra + vdest.vyinter    
+end
 
 struct Occupation{T<:Real} <: Observable{T}
     cbocc::Vector{T}
@@ -281,26 +322,32 @@ function integrate1d_obs!(sim::Simulation{T},o::Occupation{T},sol,ky::T,
     return Occupation(occ)
 end
 
-function integrate2d_obs(occs::Vector{Occupation{T}},
-    kysamples::Vector{T}) where {T<:Real}
+function integrateobs(
+    occs::Vector{Occupation{T}},
+    vertices::Vector{T}) where {T<:Real}
 
-    cbocc  = trapz((:,hcat(kysamples)),hcat([o.cbocc for o in occs]...))
+    cbocc  = trapz((:,hcat(vertices)),hcat([o.cbocc for o in occs]...))
     return Occupation(cbocc)
 end
 
+
 function getmovingbz(sim::Simulation{T}) where {T<:Real}
     p              = getparams(sim)
+    return getmovingbz(sim,p.kxsamples)
+end
+
+function getmovingbz(sim::Simulation{T},kxsamples::AbstractVector{T}) where {T<:Real}
+    p              = getparams(sim)
+    nkx            = length(kxsamples)
     ax             = get_vecpotx(sim.drivingfield)
     ay             = get_vecpoty(sim.drivingfield)
-    moving_bz      = zeros(T,p.nkx,p.nt)
-
-    sig(x)         = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
+    moving_bz      = zeros(T,nkx,p.nt)
     bzmask1d(kx)   = sig((kx-p.bz[1])/(2*p.dkx)) * sig((p.bz[2]-kx)/(2*p.dkx))
 
     for i in 1:p.nt
-        moving_bz[:,i] .= bzmask1d.(p.kxsamples .- ax(p.tsamples[i]))
+        moving_bz[:,i] .= bzmask1d.(kxsamples .- ax(p.tsamples[i]))
     end
-    return moving_bz
+    return moving_bz    
 end
 
 function calc_obs_k1d!(sim::Simulation{T},sol,ky::T,moving_bz::Matrix{T}) where {T<:Real}

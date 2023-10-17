@@ -1,3 +1,37 @@
+function runkxbatch!(
+    sim::Simulation{T},
+    kxsamples::AbstractVector{T},
+    ky::T,
+    moving_bz::AbstractMatrix{T},
+    rhs_cc,
+    rhs_cv;
+    kwargs...) where {T<:Real}
+
+    p   = getparams(sim)
+    nkx = length(kxsamples)
+    
+    @inline function rhs!(du,u,p,t)
+        @inbounds for i in 1:nkx
+            du[i] = rhs_cc(t,u[i],u[i+nkx],kxsamples[i],ky)
+        end
+        
+        @inbounds for i in nkx+1:2nkx
+            du[i] = rhs_cv(t,u[i-nkx],u[i],kxsamples[i-nkx],ky)
+        end
+    end
+    
+    u0             = zeros(T,2*nkx) .+ im .* zeros(T,2*nkx)
+    tspan          = (p.tsamples[1],p.tsamples[end])
+    prob           = ODEProblem(rhs!,u0,tspan)
+    sol            = solve(prob;saveat=p.tsamples,reltol=p.rtol,abstol=p.atol,kwargs...)
+
+    for o in sim.observables
+        integrate_obskxbatch!(sim,o,sol,kxsamples,ky,moving_bz)
+    end
+end
+
+
+
 """
         run_simulation1d!(sim::Simulation{T};kwargs...)
 
@@ -13,52 +47,31 @@
     [`run_simulation!`](@ref), [`run_simulation2d!`](@ref)
 
 """
-function run_simulation1d!(sim::Simulation{T},ky::T=zero(T);kwargs...) where {T<:Real}
-    return run_simulation1d!(sim,ky,getmovingbz(sim);kwargs...)    
-end
+function run_simulation1d!(
+    sim::Simulation{T},
+    ky::T=zero(T);
+    kxbatch_basesize=512,
+    kwargs...) where {T<:Real}
 
-function run_simulation1d!(sim::Simulation{T},ky::T,moving_bz;kwargs...) where {T<:Real}
-
-    p              = getparams(sim)
-
-    γ1              = oneunit(T) / p.t1
-    γ2              = oneunit(T) / p.t2
-
-    nkx            = p.nkx
-    kx_samples     = p.kxsamples
-    tsamples       = p.tsamples
-    tspan          = (tsamples[1],tsamples[end])
-    
-    a              = get_vecpotx(sim.drivingfield)
-    f              = get_efieldx(sim.drivingfield)
-    ϵ              = getϵ(sim.hamiltonian)
-
-    dcc,dcv,dvc,dvv          = getdipoles_x(sim.hamiltonian)
+    p                   = getparams(sim)
+    kxbatches           = padvecto_overlap!(subdivide_vector(p.kxsamples,kxbatch_basesize))
+    γ1                  = oneunit(T) / p.t1
+    γ2                  = oneunit(T) / p.t2    
+    a                   = get_vecpotx(sim.drivingfield)
+    f                   = get_efieldx(sim.drivingfield)
+    ϵ                   = getϵ(sim.hamiltonian)
+    dcc,dcv,dvc,dvv     = getdipoles_x(sim.hamiltonian)
 
     rhs_cc(t,cc,cv,kx,ky)  = 2.0 * f(t) * imag(cv * dvc(kx-a(t), ky)) + γ1*(oneunit(T)-cc)
     rhs_cv(t,cc,cv,kx,ky)  = (-γ2 - 2.0im * ϵ(kx-a(t),ky)) * cv - 1.0im * f(t) * 
                         ((dvv(kx-a(t),ky)-dcc(kx-a(t),ky)) * cv + dcv(kx-a(t),ky) * (2.0cc - 1.0))
 
-
-    @inline function rhs!(du,u,p,t)
-        @inbounds for i in 1:nkx
-            du[i] = rhs_cc(t,u[i],u[i+nkx],kx_samples[i],ky)
-        end
-    
-        @inbounds for i in nkx+1:2nkx
-            du[i] = rhs_cv(t,u[i-nkx],u[i],kx_samples[i-nkx],ky)
-        end
+    for kxs in kxbatches
+        runkxbatch!(sim,kxs,ky,getmovingbz(sim,kxs),rhs_cc,rhs_cv;kwargs...)
     end
 
-    u0             = zeros(T,2*nkx) .+ im .* zeros(T,2*nkx)
-    prob           = ODEProblem(rhs!,u0,tspan)
-    sol            = solve(prob;saveat=p.tsamples,reltol=p.rtol,abstol=p.atol,kwargs...)
-    
-    sim.observables .= calc_obs_k1d!(sim,sol,ky,moving_bz)
-    
-    return sim.observables  
+    return sim.observables    
 end
-
 
 function getrhs(sim::Simulation{T}) where {T<:Real}
     
@@ -102,56 +115,67 @@ end
 """
 function run_simulation2d!(sim::Simulation{T};
     kyparallel=true,
-    maxparallel_ky=32,
+    maxparallel_ky=64,
+    kxbatch_basesize=512,
     threaded=true,
     kwargs...) where {T<:Real}
 
     if !kyparallel
         @info "Starting serial execution"
-        return run_simulation2d!(sim;maxparallel_ky=1,threaded=threaded,kwargs...)
+        return run_simulation2d!(sim;
+            kxbatch_basesize=kxbatch_basesize,
+            maxparallel_ky=1,
+            threaded=threaded,
+            kwargs...)
     end
 
     p                   = getparams(sim)
-    kybatches           = pad_kybatches!(subdivide_vector(p.kysamples,maxparallel_ky))
+    kybatches           = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
+    observables_total   = deepcopy(sim.observables)
 
     if maxparallel_ky > 1
-        @info "Starting parallel execution \nProcessing $maxparallel_ky ky-values simultaneously"
+        @info "Starting parallel execution \n"*
+        "Processing $maxparallel_ky ky-values simultaneously"
     end
 
     for kybatch in kybatches
-        @info "Batch: $kybatch"
-        observables_buffer = run_simulation2d_pbatch!(deepcopy(sim),kybatch;
-            threaded=threaded,kwargs...)
+        observables_buffer = run_kybatch!(sim,kybatch;
+            kxbatch_basesize=kxbatch_basesize,
+            threaded=threaded,
+            kwargs...)
 
-        for (o,otot) in zip(observables_buffer,sim.observables)
+        for (o,otot) in zip(observables_buffer,observables_total)
             addto!(o,otot)
         end
-        GC.gc()
+
+        resize_obs!(sim)
         
+        GC.gc()
         @info "Batch finished"
     end
 
+    sim.observables .= observables_total
     return sim.observables
 end
 
-function run_simulation2d_pbatch!(
+function run_kybatch!(
     sim::Simulation{T},
     kysamples::AbstractVector{T};
     threaded=true,
     kwargs...) where {T<:Real}
 
     if threaded
-        obs     = Folds.map(
+        obs = Folds.map(
             ky -> run_simulation1d!(deepcopy(sim),ky;kwargs...),
             kysamples)
     else
-        obs     = pmap(
+        obs = pmap(
             ky -> run_simulation1d!(sim,ky;kwargs...),
             kysamples)
     end
 
     for (i,otot) in enumerate(sim.observables)
-        integrate2d_obs!([o[i] for o in obs],otot,collect(kysamples))
+        integrateobs!([o[i] for o in obs],otot,collect(kysamples))
     end
 
     return sim.observables
@@ -187,7 +211,8 @@ function run_simulation!(sim::Simulation{T};
     saveplots=true,
     kyparallel=true,
     threaded=false,
-    maxparallel_ky=32,
+    maxparallel_ky=64,
+    kxbatch_basesize=512,
     kwargs...) where {T<:Real}
     
     @info   "$(now())\nOn $(gethostname()):\n"*
@@ -206,6 +231,7 @@ function run_simulation!(sim::Simulation{T};
             kyparallel=kyparallel,
             threaded=threaded,
             maxparallel_ky=maxparallel_ky,
+            kxbatch_basesize=kxbatch_basesize,
             kwargs...)
     end
 

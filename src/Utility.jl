@@ -1,27 +1,27 @@
-function subdivide_vector(vec::AbstractVector{T},basesize::U) where {T<:Real,U}
-    
-    batches = Vector{Vector{T}}(undef,0)
+function subdivide_vector(vec::AbstractVector{T}, basesize::U) where {T<:Real,U}
 
-    i = 1
-    j = minimum([basesize,length(vec)])
-    n = length(vec)
-    while i <= n
-        push!(batches,collect(vec[i:minimum((j,n))]))
-        i += basesize
-        j += basesize
+    batches = Vector{Vector{T}}(undef, 0)
+    buffer  = Vector{T}(undef,0)
+
+    for (i,el) in enumerate(vec)
+        push!(buffer,el)
+        if length(buffer)==basesize || i==length(vec)
+            push!(batches,deepcopy(buffer))
+            buffer  = Vector{T}(undef,0)
+        end
     end
 
     return batches
 end
 
-function pad_kybatches(kybatches::AbstractVector{V}) where {V<:AbstractVector}
-    pad_kybatches!(deepcopy(kybatches))
+function padvecto_overlap(kybatches::AbstractVector{V}) where {V<:AbstractVector}
+    padvecto_overlap!(deepcopy(kybatches))
     return kybatches
 end
 
-function pad_kybatches!(kybatches::Vector{V}) where {V<:AbstractVector}
+function padvecto_overlap!(kybatches::Vector{V}) where {V<:AbstractVector}
     for i in 2:length(kybatches)
-        push!(kybatches[i-1],kybatches[i][1])
+        push!(kybatches[i-1], kybatches[i][1])
     end
     return kybatches
 end
@@ -29,13 +29,13 @@ end
 function stringexpand_vector(v::AbstractVector)
     str = ""
     for i in eachindex(v)
-        if i==length(v) # drop last underscore
+        if i == length(v) # drop last underscore
             str *= "$(v[i])"
         else
             str *= "$(v[i])_"
         end
     end
-    return str 
+    return str
 end
 
 function stringexpand_nt(nt::NamedTuple)
@@ -68,7 +68,7 @@ function try_execute_n_times(f::Function, n::Int, arg; wait_time::Real=10.0)
         catch e
             @warn "Error caught on attempt $i: $e"
         end
-        
+
         if i < n && wait_time > 0
             sleep(wait_time)
         end
@@ -76,25 +76,25 @@ function try_execute_n_times(f::Function, n::Int, arg; wait_time::Real=10.0)
     return success
 end
 
-function ensurepath(paths::Vector{String};n_tries::Int=3,wait_time::Real=10.0)
+function ensurepath(paths::Vector{String}; n_tries::Int=3, wait_time::Real=10.0)
 
     for path in paths
-        success = ensurepath(path;n_tries=n_tries,wait_time=wait_time)
+        success = ensurepath(path; n_tries=n_tries, wait_time=wait_time)
         if success
-            return (true,path)
+            return (true, path)
         end
     end
 
     @warn "None of the given paths could be created."
-    return (false,"")
+    return (false, "")
 end
 
-function ensurepath(path::String;n_tries::Int=3,wait_time::Real=10.0)
+function ensurepath(path::String; n_tries::Int=3, wait_time::Real=10.0)
 
     @info "Attempting to create $path"
-    success     = false
+    success = false
     if !isdir(path)
-        success = try_execute_n_times(mkpath,n_tries,path;wait_time=wait_time)
+        success = try_execute_n_times(mkpath, n_tries, path; wait_time=wait_time)
     else
         @info "$path already exists. Proceeding..."
         return true
@@ -111,85 +111,85 @@ end
 
 
 
-function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol, 
-                        range::AbstractVector{T};id="") where {T<:Real}
+function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol,
+    range::AbstractVector{T}; id="") where {T<:Real}
 
-    return parametersweep(sim,comp,[param],[[r] for r in range];id=id)
+    return parametersweep(sim, comp, [param], [[r] for r in range]; id=id)
 end
 
-function parametersweep(sim::Simulation{T},comp::SimulationComponent{T},
-    params::Vector{Symbol},range::Vector{Vector{T}};
+function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T},
+    params::Vector{Symbol}, range::Vector{Vector{T}};
     id="",
     plotpath="",
     datapath="") where {T<:Real}
 
-    hashstring   = sprintf1("%x",hash([sim,comp,params,range]))
-    plotpath     = plotpath == "" ? droplast(sim.plotpath) : plotpath
-    datapath     = datapath == "" ? droplast(sim.datapath) : datapath
-    ensname      = "Ensemble[$(length(range))]($(sim.dimensions)d)" 
-    ensname      *= getshortname(sim.hamiltonian) *"_"* getshortname(sim.drivingfield) * "_"
-    ensname      *= stringexpand_vector(params)*"_sweep_" * hashstring
-    id           = id == "" ? stringexpand_vector(params)*"_sweep_" * hashstring : id
-    
+    hashstring = sprintf1("%x", hash([sim, comp, params, range]))
+    plotpath = plotpath == "" ? droplast(sim.plotpath) : plotpath
+    datapath = datapath == "" ? droplast(sim.datapath) : datapath
+    ensname = "Ensemble[$(length(range))]($(sim.dimensions)d)"
+    ensname *= getshortname(sim.hamiltonian) * "_" * getshortname(sim.drivingfield) * "_"
+    ensname *= stringexpand_vector(params) * "_sweep_" * hashstring
+    id = id == "" ? stringexpand_vector(params) * "_sweep_" * hashstring : id
 
-    sweeplist    = Vector{Simulation{T}}(undef,length(range))
+
+    sweeplist = Vector{Simulation{T}}(undef, length(range))
     for i in eachindex(sweeplist)
 
         name = ""
-        for (p,v) in zip(params,range[i])
+        for (p, v) in zip(params, range[i])
             name *= "$p=$(v)_"
         end
         name = name[1:end-1] # drop last underscore
 
-        new_h  = deepcopy(sim.hamiltonian)
+        new_h = deepcopy(sim.hamiltonian)
         new_df = deepcopy(sim.drivingfield)
-        new_p  = deepcopy(sim.numericalparams)
+        new_p = deepcopy(sim.numericalparams)
 
         if comp isa Hamiltonian{T}
-            for (p,v) in zip(params,range[i])
-                new_h  = set(new_h,PropertyLens(p),v)
+            for (p, v) in zip(params, range[i])
+                new_h = set(new_h, PropertyLens(p), v)
             end
         elseif comp isa DrivingField{T}
-            for (p,v) in zip(params,range[i])
-                new_df = set(new_df,PropertyLens(p),v)
+            for (p, v) in zip(params, range[i])
+                new_df = set(new_df, PropertyLens(p), v)
             end
         elseif comp isa NumericalParameters{T}
-            for (p,v) in zip(params,range[i])
-                new_p  = set(new_p,PropertyLens(p),v)
+            for (p, v) in zip(params, range[i])
+                new_p = set(new_p, PropertyLens(p), v)
             end
         end
-        sweeplist[i] = Simulation(new_h,new_df,new_p,deepcopy(sim.observables),
-                sim.unitscaling,sim.dimensions,name,
-                joinpath(datapath,ensname,name*"/"),
-                joinpath(plotpath,ensname,name*"/"))
+        sweeplist[i] = Simulation(new_h, new_df, new_p, deepcopy(sim.observables),
+            sim.unitscaling, sim.dimensions, name,
+            joinpath(datapath, ensname, name * "/"),
+            joinpath(plotpath, ensname, name * "/"))
     end
 
 
     return Ensemble(
-                sweeplist,
-                id,
-                joinpath(datapath,ensname*"/"),
-                joinpath(plotpath,ensname*"/"))
+        sweeplist,
+        id,
+        joinpath(datapath, ensname * "/"),
+        joinpath(plotpath, ensname * "/"))
 end
 
 function resize_obs!(sim::Simulation{T}) where {T<:Real}
 
-    sim.observables .= [resize(o,sim.numericalparams) for o in sim.observables]
+    sim.observables .= [resize(o, sim.numericalparams) for o in sim.observables]
 end
 
 function maximum_k(df::DrivingField)
     @warn "using fallback for maximum k value of DrivingField!"
-    return df.eE/df.ω
+    return df.eE / df.ω
 end
-maximum_k(df::GaussianPulse) = df.eE/df.ω
+maximum_k(df::GaussianPulse) = df.eE / df.ω
 
-function semiclassical_interband_range(h::GappedDirac,df::DrivingField)
-    ϵ        = getϵ(h)
-    ωmin     = 2.0*ϵ(0.0,0.0)
-    kmax     = maximum_k(df)
-    ωmax     = 2.0*ϵ(kmax,0.0)
-    min_harm = ωmin/df.ω
-    max_harm = ωmax/df.ω
-    println("Approximate range of semiclassical interband: ",min_harm," to ",
-            max_harm," (harmonic number)")
+function semiclassical_interband_range(h::GappedDirac, df::DrivingField)
+    ϵ = getϵ(h)
+    ωmin = 2.0 * ϵ(0.0, 0.0)
+    kmax = maximum_k(df)
+    ωmax = 2.0 * ϵ(kmax, 0.0)
+    min_harm = ωmin / df.ω
+    max_harm = ωmax / df.ω
+    println("Approximate range of semiclassical interband: ", min_harm, " to ",
+        max_harm, " (harmonic number)")
 end

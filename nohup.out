@@ -554,3 +554,9 @@ length(kxbatches) = 1
 [ Info: Saved vecfield.svg & efield.spec.svg at test/reference
 [ Info: 6.763461750316667min spent in run_simulation!(...)
 [ Info: 2023-10-17T00:47:32.735: calculation finished.
+[ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+[ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
+[ Info: Logging to scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-10-17T14:14:40.854.log and scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-10-17T14:14:40.854_debug.log
+[ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+[ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
+[ Info: Logging to scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-10-17T16:31:24.346.log and scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-10-17T16:31:24.346_debug.log

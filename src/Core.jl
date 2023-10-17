@@ -111,7 +111,8 @@ end
     [`run_simulation!`](@ref), [`run_simulation1d!`](@ref)
 
 """
-function run_simulation2d!(sim::Simulation{T};
+function run_simulation2d!(
+    sim::Simulation{T};
     kyparallel=true,
     maxparallel_ky=64,
     kxbatch_basesize=512,
@@ -133,8 +134,10 @@ function run_simulation2d!(sim::Simulation{T};
 
     if maxparallel_ky > 1
         @info "Starting parallel execution \n"*
-        "Processing $maxparallel_ky ky-values simultaneously"
+        "Size of ky-batches: $maxparallel_ky"
     end
+
+    @info "Size of kx-batches: $kxbatch_basesize"
 
     for kybatch in kybatches
         observables_buffer = run_kybatch!(sim,kybatch;
@@ -160,16 +163,25 @@ function run_kybatch!(
     sim::Simulation{T},
     kysamples::AbstractVector{T};
     threaded=true,
+    kxbatch_basesize=512,
     kwargs...) where {T<:Real}
 
     if threaded
         obs = Folds.map(
-            ky -> run_simulation1d!(deepcopy(sim),ky;kwargs...),
+            ky -> run_simulation1d!(
+                deepcopy(sim),
+                ky;
+                kxbatch_basesize=kxbatch_basesize,
+                kwargs...),
             kysamples)
         integrateobs_threaded!(obs,sim.observables,kysamples)
     else
         obs = pmap(
-            ky -> run_simulation1d!(sim,ky;kwargs...),
+            ky -> run_simulation1d!(
+                sim,
+                ky;
+                kxbatch_basesize=kxbatch_basesize,
+                kwargs...),
             kysamples)
         integrateobs!(obs,sim.observables,kysamples)
     end
@@ -203,7 +215,8 @@ end
     [`run_simulation1d!`](@ref), [`run_simulation2d!`](@ref)
 
 """
-function run_simulation!(sim::Simulation{T};
+function run_simulation!(
+    sim::Simulation{T};
     savedata=true,
     saveplots=true,
     kyparallel=true,
@@ -213,7 +226,10 @@ function run_simulation!(sim::Simulation{T};
     kwargs...) where {T<:Real}
     
     @info   "$(now())\nOn $(gethostname()):\n"*
-            "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)
+            "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)*
+            "# threads: $(Threads.nthreads())\n"*
+            "# processes: $(Distributed.nprocs())"
+
 
     ensurepath(sim.datapath)
     ensurepath(sim.plotpath)

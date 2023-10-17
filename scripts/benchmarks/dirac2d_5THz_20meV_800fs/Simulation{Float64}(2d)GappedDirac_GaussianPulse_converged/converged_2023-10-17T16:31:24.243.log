@@ -1,8 +1,8 @@
-┌ Info: 2023-10-17T13:57:46.822
-│ On pc1011602660:
+┌ Info: 2023-10-17T16:31:24.427
+│ On pc1011600137:
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:51
-┌ Info: 2023-10-17T13:57:55.427
-│ On pc1011602660:
+┌ Info: 2023-10-17T16:31:32.825
+│ On pc1011600137:
 │ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: converged)
 │ ζ = 13.2
 │ γ = 0.146
@@ -29,7 +29,7 @@
 │ rtol = 1.0e-12 (1.0e-12)
 │ atol = 1.0e-12 (1.0e-12)
 │ nt = 4000.0 (4000.0)
-└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:215
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:226
 ┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Utility.jl:94
 ┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
@@ -39,12 +39,16 @@
 ┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Utility.jl:99
 ┌ Info: Starting parallel execution 
-│ Processing 64 ky-values simultaneously
-└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:135
+│ Processing 32 ky-values simultaneously
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136
 ┌ Info: Batch finished
-└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:152
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:153
 ┌ Info: Batch finished
-└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:152
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:153
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:153
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:153
 ┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Utility.jl:94
 ┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
@@ -93,7 +97,7 @@
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Utility.jl:99
 ┌ Info: Saved vecfield.svg & efield.spec.svg at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Plotting.jl:319
-┌ Info: 54.750936237266664min spent in run_simulation!(...)
-└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:55
-┌ Info: 2023-10-17T14:52:32.427: calculation finished.
-└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:57
+┌ Info: 36.792875398633335min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:59
+┌ Info: 2023-10-17T17:08:12.534: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:61

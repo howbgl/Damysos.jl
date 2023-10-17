@@ -52,7 +52,9 @@ const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run_simulation!(sim;threaded=true)
+const results,time,rest... = @timed run_simulation!(sim;
+      threaded=false,
+      kxbatch_basesize=128)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

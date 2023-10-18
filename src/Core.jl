@@ -71,30 +71,6 @@ function run_simulation1d!(
     return sim.observables    
 end
 
-function getrhs(sim::Simulation{T}) where {T<:Real}
-    
-    a,f,ϵ = let h=sim.hamiltonian,df=sim.drivingfield
-        (get_vecpotx(df),get_efieldx(df),getϵ(h))
-    end
-    dcc,dcv,dvc,dvv = let h=sim.hamiltonian
-        getdipoles_x(h)
-    end
-    γ1,γ2 = let p = getparams(sim)
-        (1/p.t1,1/p.t2)
-    end
-
-    rhs_cc(t,cc,cv,kx,ky)  = 2.0 * f(t) * imag(cv * dvc(kx-a(t), ky)) + γ1*(oneunit(T)-cc)
-    rhs_cv(t,cc,cv,kx,ky)  = (-γ2 - 2.0im * ϵ(kx-a(t),ky)) * cv - 1.0im * f(t) * 
-                        ((dvv(kx-a(t),ky)-dcc(kx-a(t),ky)) * cv + dcv(kx-a(t),ky) * (2.0cc - 1.0))
-
-
-    @inline function rhs!(du,u,p,t)
-            du[1] = rhs_cc(t,u[1],u[2],p[1],p[2])
-            du[2] = rhs_cv(t,u[1],u[2],p[1],p[2])
-    end
-
-    return rhs!
-end
 
 """
         run_simulation2d!(sim::Simulation{T};kwargs...)
@@ -151,7 +127,7 @@ function run_simulation2d!(
 
         resize_obs!(sim)
         
-        GC.gc()
+        @everywhere GC.gc()
         @info "Batch finished"
     end
 
@@ -321,6 +297,8 @@ function run_simulation!(ens::Ensemble{T};
                         kxparallel=kxparallel,
                         kwargs...)
             push!(allobs,obs)
+
+            @everywhere GC.gc
         end
     end
 

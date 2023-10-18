@@ -39,18 +39,23 @@ const ppath   = "scripts/benchmarks/dirac2d_10THz_10meV_400fs/"*name
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 
 ensurepath(sim.plotpath)
-const info_filelogger  = FileLogger(joinpath(sim.plotpath,"benchmark_old_$(now()).log"))
+const info_filelogger  = FileLogger(joinpath(sim.plotpath,"bigref_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
-const all_filelogger   = FileLogger(joinpath(sim.plotpath,"benchmark_old_$(now())_debug.log"))
-const tee_logger       = TeeLogger(info_logger,all_filelogger)
+const all_filelogger   = FileLogger(joinpath(sim.plotpath,"bigref_$(now())_debug.log"))
+const console_logger   = ConsoleLogger(stdout)
+const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
 
-@info "Logging to $(joinpath(sim.plotpath,getshortname(sim)*"_$(now()).log")) " *
+@info "Logging to $(joinpath(sim.plotpath,getshortname(sim)*"s(now()).log")) " *
       "and $(joinpath(sim.plotpath,getshortname(sim)*"_$(now())_debug.log"))"
 
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run_simulation!(sim;kxparallel=true,threaded=false)
+const results,time,rest... = @timed run_simulation!(sim;
+      kyparallel=true,
+      threaded=false,
+      kxbatch_basesize=128,
+      maxparallel_ky=64)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

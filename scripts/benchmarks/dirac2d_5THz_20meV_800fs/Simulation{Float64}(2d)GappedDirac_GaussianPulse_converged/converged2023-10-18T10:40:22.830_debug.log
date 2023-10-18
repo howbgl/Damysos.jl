@@ -1,7 +1,7 @@
-┌ Info: 2023-10-17T17:11:50.963
+┌ Info: 2023-10-18T10:40:22.987
 │ On pc1011900173:
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:51
-┌ Info: 2023-10-17T17:11:58.110
+┌ Info: 2023-10-18T10:40:30.349
 │ On pc1011900173:
 │ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: converged)
 │ ζ = 13.2
@@ -29,6 +29,8 @@
 │ rtol = 1.0e-12 (1.0e-12)
 │ atol = 1.0e-12 (1.0e-12)
 │ nt = 4000.0 (4000.0)
+│ # threads: 1
+│ # processes: 33
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:228
 ┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Utility.jl:94
@@ -39,7 +41,7 @@
 ┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Utility.jl:99
 ┌ Info: Starting parallel execution 
-│ Size of ky-batches: 126
+│ Size of ky-batches: 128
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136
 ┌ Info: Size of kx-batches: 128
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:140
@@ -133,11 +135,11 @@
 └ @ Makie /home/how09898/.julia/packages/Makie/NrrbP/src/scenes.jl:484
 ┌ Info: Saved vecfield.svg & efield.spec.svg at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
 └ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Plotting.jl:319
-┌ Info: 262.41027837375003min spent in run_simulation!(...)
+┌ Info: 13.52555934575min spent in run_simulation!(...)
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:59
-┌ Debug: (bytes = 945771116063, gctime = 143.068653675, gcstats = Base.GC_Diff(945771116063, 12070, 35, 1797871505, 151295409, 12236, 143068653675, 766, 1))
+┌ Debug: (bytes = 4574496633, gctime = 2.750897955, gcstats = Base.GC_Diff(4574496633, 1082, 22, 47263711, 20107, 1498, 2750897955, 65, 1))
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:60
-┌ Info: 2023-10-17T21:34:16.069: calculation finished.
+┌ Info: 2023-10-18T10:53:54.987: calculation finished.
 └ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:61
 ┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.SVG}
 └ @ Makie /home/how09898/.julia/packages/Makie/NrrbP/src/scenes.jl:484

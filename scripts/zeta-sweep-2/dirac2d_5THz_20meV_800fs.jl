@@ -16,8 +16,8 @@ const σ         = u"800.0fs"
 # dt = 0.001
 # dkx = 1.0
 # dky = 2.0
-# kxmax = 
-# kymax = 
+# kxmax = 1500
+# kymax = 200
 
 const dt      = 0.001
 const dkx     = 1.0

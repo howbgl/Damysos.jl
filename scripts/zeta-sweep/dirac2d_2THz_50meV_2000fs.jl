@@ -37,7 +37,7 @@ const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/dirac2d_2THz_50meV_200
 const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/dirac2d_2THz_50meV_2000fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:kxmax,LinRange(400.0,450.0,6))
+const ens     = parametersweep(sim,sim.numericalparams,:kxmax,LinRange(450.0,550.0,10))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))

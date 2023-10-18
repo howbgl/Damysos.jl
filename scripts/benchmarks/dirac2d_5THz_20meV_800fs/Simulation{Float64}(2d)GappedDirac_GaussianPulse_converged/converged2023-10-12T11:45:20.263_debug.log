@@ -1,0 +1,396 @@
+┌ Info: 2023-10-12T11:45:20.408
+│ On pc1011600137:
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:51
+┌ Info: 2023-10-12T11:45:29.268
+│ On pc1011600137:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: converged)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.209 Å^-1 (180.0)
+│ dkx = 0.000116 Å^-1 (0.1)
+│ nkx = 3600.0 (3600.0)
+│ kymax = 0.0581 Å^-1 (50.0)
+│ dky = 0.00093 Å^-1 (0.8)
+│ nky = 126.0 (126.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:246
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:101
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:106
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:101
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:106
+┌ Info: 1.5873015873015872%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 3.1746031746031744%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 4.761904761904762%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 6.349206349206349%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 7.936507936507937%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 9.523809523809524%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 11.11111111111111%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 12.698412698412698%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 14.285714285714286%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 15.873015873015873%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 17.46031746031746%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 19.047619047619047%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 20.634920634920636%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 22.22222222222222%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 23.80952380952381%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 25.396825396825395%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 26.984126984126984%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 28.571428571428573%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 30.158730158730158%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 31.746031746031747%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 33.333333333333336%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 34.92063492063492%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 36.507936507936506%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 38.095238095238095%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 39.682539682539684%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 41.26984126984127%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 42.857142857142854%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 44.44444444444444%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 46.03174603174603%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 47.61904761904762%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 49.20634920634921%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 50.79365079365079%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 52.38095238095238%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 53.96825396825397%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 55.55555555555556%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 57.142857142857146%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 58.73015873015873%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 60.317460317460316%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 61.904761904761905%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 63.492063492063494%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 65.07936507936508%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 66.66666666666667%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 68.25396825396825%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 69.84126984126983%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 71.42857142857143%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 73.01587301587301%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 74.60317460317461%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 76.19047619047619%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 77.77777777777777%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 79.36507936507937%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 80.95238095238095%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 82.53968253968254%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 84.12698412698413%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 85.71428571428571%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 87.3015873015873%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 88.88888888888889%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 90.47619047619048%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 92.06349206349206%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 93.65079365079364%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 95.23809523809524%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 96.82539682539682%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 98.41269841269842%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: 100.0%
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:121
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:101
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:106
+┌ Info: Saved Simulation data at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged/data.csv
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:17
+┌ Info: Removing zeros/negatives in plotting spectrum of converged (vx)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of converged (vxintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of converged (vxinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:101
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:106
+┌ Info: Saved vx.pdf & vx.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Removing zeros/negatives in plotting spectrum of converged (vy)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of converged (vyintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of converged (vyinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:101
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:106
+┌ Info: Saved vy.pdf & vy.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:101
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:106
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:101
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:106
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:101
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:106
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Info: Simulation metadata saved at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_convergedsimulation.meta
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:63
+┌ Info: 31.6608936525min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:55
+┌ Debug: (bytes = 1694927907709, gctime = 350.363434379, gcstats = Base.GC_Diff(1694927907709, 253724, 20, 6740587300, 779638, 254040, 350363434379, 7354, 126))
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:56
+┌ Info: 2023-10-12T12:17:00.590: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/dirac2d_5THz_20meV_800fs.jl:57
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467
+┌ Debug: Deleting scenes not implemented for backend: CairoMakie.Screen{CairoMakie.PDF}
+└ @ Makie /home/how09898/.julia/packages/Makie/DekzU/src/scenes.jl:467

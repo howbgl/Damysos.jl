@@ -3,6 +3,7 @@ using Damysos,Unitful,LoggingExtras,Dates,Formatting
 import Damysos.getshortname
 import Damysos.ensurepath
 
+
 const vf        = u"4.3e5m/s"
 const freq      = u"5THz"
 const m         = u"20.0meV"
@@ -54,7 +55,8 @@ global_logger(tee_logger)
 
 const results,time,rest... = @timed run_simulation!(sim;
                                     kxparallel=true,
-                                    saveplots=false)
+                                    saveplots=false,
+                                    maxparallel_ky=32)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

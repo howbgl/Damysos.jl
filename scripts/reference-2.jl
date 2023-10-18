@@ -53,7 +53,8 @@ global_logger(tee_logger)
 
 const results,time,rest... = @timed run_simulation!(sim;
                                           kxparallel=true,
-                                          saveplots=true)
+                                          saveplots=true,
+                                          threaded=false)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

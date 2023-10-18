@@ -41,12 +41,12 @@ const console_logger   = ConsoleLogger(stdout)
 const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
 
 @info "Logging to $(joinpath(sim.plotpath,getshortname(sim)*"s(now()).log")) " *
-      " and $(joinpath(sim.plotpath,getshortname(sim)*"_$(now())_debug.log"))"
+      "and $(joinpath(sim.plotpath,getshortname(sim)*"_$(now())_debug.log"))"
 
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run_simulation!(sim;kxparallel=true,saveplots=false)
+const results,time,rest... = @timed run_simulation!(sim;threaded=true)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

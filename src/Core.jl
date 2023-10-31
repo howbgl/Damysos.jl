@@ -4,11 +4,12 @@ function runkxbatch!(
     ky::T,
     moving_bz::AbstractMatrix{T},
     rhs_cc,
-    rhs_cv;
+    rhs_cv,
+    obsfuncs;
     kwargs...) where {T<:Real}
 
-    p   = getparams(sim)
-    nkx = length(kxsamples)
+    p           = getparams(sim)
+    nkx         = length(kxsamples)
     
     @inline function rhs!(du,u,p,t)
         @inbounds for i in 1:nkx
@@ -25,7 +26,7 @@ function runkxbatch!(
     prob           = ODEProblem(rhs!,u0,tspan)
     sol            = solve(prob;saveat=p.tsamples,reltol=p.rtol,abstol=p.atol,kwargs...)
 
-    integrateobs_kxbatch_add!(sim,sol,kxsamples,ky,moving_bz)
+    integrateobs_kxbatch_add!(sim,sol,kxsamples,ky,moving_bz,obsfuncs)
 end
 
 
@@ -46,12 +47,13 @@ The combined observables obtained from the simulation.
 
 """
 function run_simulation1d!(
-    sim::Simulation{T},
-    ky::T=zero(T);
+    sim::Simulation{T};
+    ky::T=zero(T),
     kxbatch_basesize=512,
     kwargs...) where {T<:Real}
 
     p                   = getparams(sim)
+    obsfuncs            = [getfuncs(sim,o) for o in sim.observables]
     kxbatches           = padvecto_overlap!(subdivide_vector(p.kxsamples,kxbatch_basesize))
     γ1                  = oneunit(T) / p.t1
     γ2                  = oneunit(T) / p.t2    
@@ -65,7 +67,8 @@ function run_simulation1d!(
                         ((dvv(kx-a(t),ky)-dcc(kx-a(t),ky)) * cv + dcv(kx-a(t),ky) * (2.0cc - 1.0))
 
     for kxs in kxbatches
-        runkxbatch!(sim,kxs,ky,getmovingbz(sim,kxs),rhs_cc,rhs_cv;kwargs...)
+        runkxbatch!(sim,kxs,ky,getmovingbz(sim,kxs),rhs_cc,rhs_cv,obsfuncs;kwargs...)
+        GC.gc()
     end
 
     return sim.observables    
@@ -91,8 +94,8 @@ function run_simulation2d!(
     sim::Simulation{T};
     kyparallel=true,
     maxparallel_ky=64,
-    kxbatch_basesize=512,
-    threaded=true,
+    kxbatch_basesize=128,
+    threaded=false,
     kwargs...) where {T<:Real}
 
     if !kyparallel
@@ -138,15 +141,15 @@ end
 function run_kybatch!(
     sim::Simulation{T},
     kysamples::AbstractVector{T};
-    threaded=true,
+    threaded=false,
     kxbatch_basesize=512,
     kwargs...) where {T<:Real}
 
     if threaded
         obs = Folds.map(
             ky -> run_simulation1d!(
-                deepcopy(sim),
-                ky;
+                deepcopy(sim);
+                ky,
                 kxbatch_basesize=kxbatch_basesize,
                 kwargs...),
             kysamples)
@@ -154,8 +157,8 @@ function run_kybatch!(
     else
         obs = pmap(
             ky -> run_simulation1d!(
-                sim,
-                ky;
+                sim;
+                ky,
                 kxbatch_basesize=kxbatch_basesize,
                 kwargs...),
             kysamples)
@@ -167,22 +170,22 @@ function run_kybatch!(
 end
 
 """
-    run_simulation!(sim::Simulation{T};
-        savedata=true,
-        saveplots=true,
-        kxparallel=false,
-        kwargs...)
+run_simulation!(sim::Simulation{T};
+    savedata=true,
+    saveplots=true,
+    kyparallel=true,
+    threaded=false,
+    maxparallel_ky=64,
+    kxbatch_basesize=512,
+    kwargs...) where {T<:Real}
 
 Run a simulation.
 
 # Arguments
-- `sim::Simulation{T}`: The simulation object containing physical problem and results
-- `savedata::Bool`: Whether to save data (default is `true`).
-- `saveplots::Bool`: Whether to save plots (default is `true`).
-- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
-- `nbatches::Int` : The number of batches being run in parallel (default is 
-    4*max(nprocs,nthreads)).
-- `kwargs...`: Additional keyword arguments.
+- `sim::Simulation{T}`: See [`Simulation`](@ref)
+- `maxparallel_ky`: The maximum amount of different ky-lines computed in parallel. Good values are typically ~ 2nworkers. Large numbers mean high memory footprint.
+- `kxbatch_basesize` : Number of kx modes per ky-line processed in one solve call. Large numbers mean high memory footprint.
+- `kwargs...`: Additional keyword arguments are passed to the solve() function of DifferentialEquations.jl
 
 # Returns
 The observables obtained from the simulation.
@@ -198,7 +201,7 @@ function run_simulation!(
     kyparallel=true,
     threaded=false,
     maxparallel_ky=64,
-    kxbatch_basesize=512,
+    kxbatch_basesize=128,
     kwargs...) where {T<:Real}
     
     @info   "$(now())\nOn $(gethostname()):\n"*
@@ -212,6 +215,7 @@ function run_simulation!(
 
     resize_obs!(sim)
     zero.(sim.observables)
+
 
     if sim.dimensions==1
         run_simulation1d!(sim;kwargs...)
@@ -244,20 +248,20 @@ end
         savedata=true,
         saveplots=true,
         ensembleparallel=false,
-        kxparallel=false,
+        kyparallel=true,
+        threaded=false,
+        maxparallel_ky=64,
+        kxbatch_basesize=512,
         makecombined_plots=true,
-        kwargs...)
+        kwargs...) where {T<:Real}
 
 Run simulations for an ensemble of `sim` objects.
 
 # Arguments
-- `ens::Ensemble{T}`: The ensemble of simulation objects.
-- `savedata::Bool`: Whether to save data (default is `true`).
-- `saveplots::Bool`: Whether to save plots (default is `true`).
-- `ensembleparallel::Bool`: Whether to run ensemble simulations in parallel (default is `false`).
-- `kxparallel::Bool`: Whether to run kx-parallel simulations (default is `false`).
-- `makecombined_plots::Bool`: Whether to make combined plots (default is `true`).
-- `kwargs...`: Additional keyword arguments.
+- `ens::Ensemble{T}`: See [`Ensemble`](@ref)
+- `maxparallel_ky`: The maximum amount of different ky-lines computed in parallel. Good values are typically ~ 2nworkers. Large numbers mean high memory footprint.
+- `kxbatch_basesize` : Number of kx modes per ky-line processed in one solve call. Large numbers mean high memory footprint.
+- `kwargs...`: Additional keyword arguments are passed to the solve() function of DifferentialEquations.jl
 
 # Returns
 An array of observables obtained from the simulations.
@@ -270,7 +274,10 @@ function run_simulation!(ens::Ensemble{T};
                 savedata=true,
                 saveplots=true,
                 ensembleparallel=false,
-                kxparallel=false,
+                kyparallel=true,
+                threaded=false,
+                maxparallel_ky=64,
+                kxbatch_basesize=128,
                 makecombined_plots=true,
                 kwargs...) where {T<:Real}
 
@@ -280,9 +287,23 @@ function run_simulation!(ens::Ensemble{T};
     allobs = []
 
     if ensembleparallel
-        allobs = collect(
-            run_simulation!(s;savedata=savedata,saveplots=false,kxparallel=false,kwargs...)
-            for s in ens.simlist)
+        if threaded
+            @warn "At the moment parallel ensembles are only supported via multi-processing\n"*
+                    "Using pmap()"
+        end
+        if kyparallel
+            @warn "Only ensemble OR ky can be parallelized. Defaulting to ensemble."
+        end
+        allobs = pmap(
+                s -> run_simulation!(s;
+                    savedata=savedata,
+                    saveplots=saveplots,
+                    kyparallel=false,
+                    threaded=false,
+                    maxparallel_ky=maxparallel_ky,
+                    kxbatch_basesize=kxbatch_basesize,
+                    kwargs...),
+                ens.simlist)
         # Run plotting sequentially
         if saveplots
             Damysos.plotdata.(ens.simlist;kwargs...)
@@ -291,17 +312,20 @@ function run_simulation!(ens::Ensemble{T};
     else
         for i in eachindex(ens.simlist)
             obs = run_simulation!(ens.simlist[i];
-                        savedata=savedata,
-                        saveplots=saveplots,
-                        kxparallel=kxparallel,
-                        kwargs...)
+                savedata=savedata,
+                saveplots=saveplots,
+                kyparallel=kyparallel,
+                threaded=threaded,
+                maxparallel_ky=maxparallel_ky,
+                kxbatch_basesize=kxbatch_basesize,
+                kwargs...)
             push!(allobs,obs)
 
             @everywhere GC.gc
         end
     end
 
-    if makecombined_plots == true
+    if makecombined_plots
         Damysos.plotdata(ens)
     end
 

@@ -37,7 +37,7 @@ const dpath   = "/home/how09898/phd/data/hhgjl/zeta-sweep/dirac2d_2THz_50meV_200
 const ppath   = "/home/how09898/phd/plots/hhgjl/zeta-sweep/dirac2d_2THz_50meV_2000fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:kxmax,LinRange(450.0,550.0,10))
+const ens     = parametersweep(sim,sim.numericalparams,:kxmax,LinRange(600.0,700.0,10))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))
@@ -51,7 +51,11 @@ const tee_logger       = TeeLogger(info_logger,all_filelogger)
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run_simulation!(ens;kxparallel=true)
+const results,time,rest... = @timed run_simulation!(sim;
+      kyparallel=true,
+      threaded=false,
+      kxbatch_basesize=128,
+      maxparallel_ky=128)
 
 @info "$(time/60.)min spent in run_simulation!(ens::Ensemble;...)"
 @debug rest

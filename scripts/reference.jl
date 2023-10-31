@@ -54,8 +54,9 @@ global_logger(tee_logger)
 
 const results,time,rest... = @timed run_simulation!(sim;
       threaded=false,
+      kyparallel=true,
       kxbatch_basesize=64,
-      maxparallel_ky=128)
+      maxparallel_ky=64)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

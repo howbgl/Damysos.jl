@@ -1,0 +1,615 @@
+┌ Info: 2023-10-19T12:17:56.192
+│ On pc1011605708:
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:51
+┌ Info: Running Simulation with kxbatch_basesize=8
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:55
+┌ Info: 2023-10-19T12:18:05.711
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kxbatchtest)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.209 Å^-1 (180.0)
+│ dkx = 0.000116 Å^-1 (0.1)
+│ nkx = 3600.0 (3600.0)
+│ kymax = 0.0581 Å^-1 (50.0)
+│ dky = 0.00093 Å^-1 (0.8)
+│ nky = 126.0 (126.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+│ # threads: 1
+│ # processes: 33
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:206
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Starting parallel execution 
+│ Size of ky-batches: 64
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:114
+┌ Info: Size of kx-batches: 8
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:118
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved Simulation data at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest/data.csv
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:17
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Simulation metadata saved at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtestsimulation.meta
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:63
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vx)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vx.pdf & vx.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vy)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vy.pdf & vy.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: 29.174438110350003min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:63
+┌ Info: 2023-10-19T12:47:16.285: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:65
+┌ Info: Running Simulation with kxbatch_basesize=8
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:55
+┌ Info: 2023-10-19T12:47:16.285
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kxbatchtest)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.209 Å^-1 (180.0)
+│ dkx = 0.000116 Å^-1 (0.1)
+│ nkx = 3600.0 (3600.0)
+│ kymax = 0.0581 Å^-1 (50.0)
+│ dky = 0.00093 Å^-1 (0.8)
+│ nky = 126.0 (126.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+│ # threads: 1
+│ # processes: 33
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:206
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Starting parallel execution 
+│ Size of ky-batches: 64
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:114
+┌ Info: Size of kx-batches: 8
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:118
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved Simulation data at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest/data.csv
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:17
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Simulation metadata saved at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtestsimulation.meta
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:63
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vx)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vx.pdf & vx.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vy)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vy.pdf & vy.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: 28.19586931526667min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:63
+┌ Info: 2023-10-19T13:15:28.038: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:65
+┌ Info: Running Simulation with kxbatch_basesize=16
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:55
+┌ Info: 2023-10-19T13:15:28.038
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kxbatchtest)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.209 Å^-1 (180.0)
+│ dkx = 0.000116 Å^-1 (0.1)
+│ nkx = 3600.0 (3600.0)
+│ kymax = 0.0581 Å^-1 (50.0)
+│ dky = 0.00093 Å^-1 (0.8)
+│ nky = 126.0 (126.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+│ # threads: 1
+│ # processes: 33
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:206
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Starting parallel execution 
+│ Size of ky-batches: 64
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:114
+┌ Info: Size of kx-batches: 16
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:118
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved Simulation data at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest/data.csv
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:17
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Simulation metadata saved at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtestsimulation.meta
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:63
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vx)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vx.pdf & vx.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vy)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vy.pdf & vy.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: 23.579122981516665min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:63
+┌ Info: 2023-10-19T13:39:02.785: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:65
+┌ Info: Running Simulation with kxbatch_basesize=32
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:55
+┌ Info: 2023-10-19T13:39:02.785
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kxbatchtest)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.209 Å^-1 (180.0)
+│ dkx = 0.000116 Å^-1 (0.1)
+│ nkx = 3600.0 (3600.0)
+│ kymax = 0.0581 Å^-1 (50.0)
+│ dky = 0.00093 Å^-1 (0.8)
+│ nky = 126.0 (126.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+│ # threads: 1
+│ # processes: 33
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:206
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Starting parallel execution 
+│ Size of ky-batches: 64
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:114
+┌ Info: Size of kx-batches: 32
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:118
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved Simulation data at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest/data.csv
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:17
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Simulation metadata saved at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtestsimulation.meta
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:63
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vx)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vx.pdf & vx.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vy)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vy.pdf & vy.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: 20.813195687083333min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:63
+┌ Info: 2023-10-19T13:59:51.577: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:65
+┌ Info: Running Simulation with kxbatch_basesize=64
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:55
+┌ Info: 2023-10-19T13:59:51.577
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kxbatchtest)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.209 Å^-1 (180.0)
+│ dkx = 0.000116 Å^-1 (0.1)
+│ nkx = 3600.0 (3600.0)
+│ kymax = 0.0581 Å^-1 (50.0)
+│ dky = 0.00093 Å^-1 (0.8)
+│ nky = 126.0 (126.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+│ # threads: 1
+│ # processes: 33
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:206
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Starting parallel execution 
+│ Size of ky-batches: 64
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:114
+┌ Info: Size of kx-batches: 64
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:118
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved Simulation data at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest/data.csv
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:17
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Simulation metadata saved at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtestsimulation.meta
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:63
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vx)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vx.pdf & vx.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vy)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vy.pdf & vy.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: 20.693366381249998min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:63
+┌ Info: 2023-10-19T14:20:33.180: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:65
+┌ Info: Running Simulation with kxbatch_basesize=128
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:55
+┌ Info: 2023-10-19T14:20:33.180
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kxbatchtest)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.209 Å^-1 (180.0)
+│ dkx = 0.000116 Å^-1 (0.1)
+│ nkx = 3600.0 (3600.0)
+│ kymax = 0.0581 Å^-1 (50.0)
+│ dky = 0.00093 Å^-1 (0.8)
+│ nky = 126.0 (126.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+│ # threads: 1
+│ # processes: 33
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:206
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Starting parallel execution 
+│ Size of ky-batches: 64
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:114
+┌ Info: Size of kx-batches: 128
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:118
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:133
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved Simulation data at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest/data.csv
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:17
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Simulation metadata saved at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtestsimulation.meta
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:63
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vx)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vxinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vx.pdf & vx.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vy)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of kxbatchtest (vyinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vy.pdf & vy.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_kxbatchtest
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: 23.31118940785min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:63
+┌ Info: 2023-10-19T14:43:51.851: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/benchmarks/kxbatchtest_dirac2d_5THz_20meV_800fs.jl:65

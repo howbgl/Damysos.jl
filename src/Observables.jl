@@ -90,6 +90,14 @@ function zero(v::Velocity{T}) where {T<:Real}
     return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
 end
 
+function getfuncs(sim::Simulation,v::Velocity)
+    df = sim.drivingfield
+    h  = sim.hamiltonian
+    return [get_vecpotx(df),get_vecpoty(df),getvx_cc(h),getvx_vc(h),getvx_vv(h),
+            getvy_cc(h),getvy_vc(h),getvy_vv(h)]
+end
+
+
 @inline function vintra(kx::T,ky::T,ρcc::Complex{T},vcc,vvv) where {T<:Real}
     return vintra(kx,ky,real(ρcc),vcc,vvv)
 end
@@ -107,26 +115,32 @@ function integrateobs_kxbatch_add!(
     sol,
     kxsamples::AbstractVector{T},
     ky::T,
-    moving_bz::AbstractMatrix{T}) where {T<:Real}
+    moving_bz::AbstractMatrix{T},
+    funcs) where {T<:Real}
 
-    p     = getparams(sim)
+    ax,ay,vx_cc,vx_vc,vx_vv,vy_cc,vy_vc,vy_vv = funcs
+
+    ts    = getparams(sim).tsamples
     nkx   = length(kxsamples)
     kxt   = zeros(T,nkx)
-    ax    = get_vecpotx(sim.drivingfield)
-    ay    = get_vecpoty(sim.drivingfield)
-    vx_cc = getvx_cc(sim.hamiltonian)
-    vx_vv = getvx_vv(sim.hamiltonian)
-    vx_vc = getvx_vc(sim.hamiltonian)
-    vy_cc = getvy_cc(sim.hamiltonian)
-    vy_vc = getvy_vc(sim.hamiltonian)
-    vy_vv = getvy_vv(sim.hamiltonian)
+    vbuff = zeros(T,nkx)
 
-    for (i,t) in enumerate(p.tsamples)
+    for (i,t) in enumerate(ts)
         kxt             .= kxsamples .- ax(t)
-        v.vxintra[i]    += trapz(kxsamples,moving_bz[:,i] .* vintra.(kxt,ky,sol[1:nkx,i],vx_cc,vx_vv))
-        v.vxinter[i]    += trapz(kxsamples,moving_bz[:,i] .* vinter.(kxt,ky,sol[nkx+1:2nkx,i],vx_vc))
-        v.vyintra[i]    += trapz(kxsamples,moving_bz[:,i] .* vintra.(kxt,ky,sol[1:nkx,i],vy_cc,vy_vv))
-        v.vyinter[i]    += trapz(kxsamples,moving_bz[:,i] .* vinter.(kxt,ky,sol[nkx+1:2nkx,i],vy_vc))
+        ρcc             = @view sol[1:nkx,i]
+        ρcv             = @view sol[nkx+1:2nkx,i]
+
+        vbuff           .= vintra.(kxt,ky,ρcc,vx_cc,vx_vv)
+        v.vxintra[i]    += trapz(kxsamples,moving_bz[:,i] .* vbuff)
+
+        vbuff           .= vinter.(kxt,ky,ρcv,vx_vc)
+        v.vxinter[i]    += trapz(kxsamples,moving_bz[:,i] .* vbuff)
+
+        vbuff           .= vintra.(kxt,ky,ρcc,vy_cc,vy_vv)
+        v.vyintra[i]    += trapz(kxsamples,moving_bz[:,i] .* vbuff)
+
+        vbuff           .= vinter.(kxt,ky,ρcv,vy_vc)
+        v.vyinter[i]    += trapz(kxsamples,moving_bz[:,i] .* vbuff)
     end
     return v
 end
@@ -310,14 +324,10 @@ function integrateobs_kxbatch_add!(
     sol,
     kxsamples::AbstractVector{T},
     ky::T,
-    moving_bz::AbstractMatrix{T}) where {T<:Real}
+    moving_bz::AbstractMatrix{T},
+    obsfuncs) where {T<:Real}
 
-    for o in sim.observables 
-        integrateobs_kxbatch_add!(sim,o,sol,kxsamples,ky,moving_bz)
+    for (o,funcs) in zip(sim.observables,obsfuncs)
+        integrateobs_kxbatch_add!(sim,o,sol,kxsamples,ky,moving_bz,funcs)
     end        
-end
-
-function calc_obs_k1d!(sim::Simulation{T},sol,ky::T,moving_bz::Matrix{T}) where {T<:Real}
-
-    return [integrateobs_kxbatch!(sim,o,sol,ky,moving_bz) for o in sim.observables]
 end

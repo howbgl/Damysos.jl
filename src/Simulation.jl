@@ -154,6 +154,7 @@ function Base.show(io::IO,::MIME"text/plain",c::SimulationComponent{T}) where {T
     print(io,c |> getparams |> stringexpand_nt |> prepend_spaces)
 end
 
+export printparamsSI
 function printparamsSI(sim::Simulation;digits=3)
 
     p   = getparams(sim)

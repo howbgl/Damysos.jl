@@ -54,6 +54,17 @@ getvy_cv(h::GappedDirac{T}) where {T<:Real}  = (kx,ky) -> (h.Δ*ky/sqrt(kx^2+ky^
 getvy_vc(h::GappedDirac{T}) where {T<:Real}  = (kx,ky) -> (h.Δ*ky/sqrt(kx^2+ky^2+h.Δ^2) + 1.0im*kx) / (kx - 1.0im*ky)
 getvy_vv(h::GappedDirac{T}) where {T<:Real}  = (kx,ky) -> -ky/sqrt(kx^2+ky^2+h.Δ^2)
 
+getΔϵ(h::GappedDirac{T})  where {T<:Real}    = (kx,ky) -> convert(T,2)*sqrt(kx^2+ky^2+h.Δ^2)
+getΔvx(h::GappedDirac{T}) where {T<:Real}    = (kx,ky) -> convert(T,2)*kx/sqrt(kx^2+ky^2+h.Δ^2)
+getΔvy(h::GappedDirac{T}) where {T<:Real}    = (kx,ky) -> convert(T,2)*ky/sqrt(kx^2+ky^2+h.Δ^2)
+getΔv(h::GappedDirac{T})  where {T<:Real}    = (getΔvx(h),getΔvy(h))
+
+getgxx(h::GappedDirac{T}) where {T<:Real}    = (kx,ky) -> convert(T,2)*(h.Δ^2+ky^2) / (h.Δ^2+kx^2+ky^2)^(3/2)
+getgxy(h::GappedDirac{T}) where {T<:Real}    = (kx,ky) -> convert(T,2)*(-kx*ky) / (h.Δ^2+kx^2+ky^2)^(3/2)
+getgyx(h::GappedDirac{T}) where {T<:Real}    = getxy(h)
+getgyy(h::GappedDirac{T}) where {T<:Real}    = (kx,ky) -> convert(T,2)*(h.Δ^2+kx^2) / (h.Δ^2+kx^2+ky^2)^(3/2)
+
+
 getdipoles_x(h::GappedDirac{T}) where {T<:Real}  = (getdx_cc(h),getdx_cv(h),getdx_vc(h),getdx_vv(h))
 getvels_x(h::GappedDirac{T}) where {T<:Real}     = (getvx_cc(h),getvx_cv(h),getvx_vc(h),getvx_vv(h))
 getvels_y(h::GappedDirac{T}) where {T<:Real}     = (getvy_cc(h),getvy_cv(h),getvy_vc(h),getvy_vv(h))    

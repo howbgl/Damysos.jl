@@ -254,6 +254,31 @@ function zero(o::Occupation{T}) where {T<:Real}
     return Occupation(cbocc)
 end
 
+function getfuncs(sim::Simulation,o::Occupation)
+    return []
+end
+
+
+function integrateobs_kxbatch_add!(
+    sim::Simulation{T},
+    o::Occupation{T},
+    sol,
+    kxsamples::AbstractVector{T},
+    ky::T,
+    moving_bz::AbstractMatrix{T},
+    funcs) where {T<:Real}
+
+    ts    = getparams(sim).tsamples
+    nkx   = length(kxsamples)
+
+    for i in eachindex(ts)
+        ρcc             = @view sol[1:nkx,i]
+        o.cbocc[i]      += trapz(kxsamples,moving_bz[:,i] .* real.(ρcc))
+    end
+    return o
+end
+
+
 function integrateobs_kxbatch!(sim::Simulation{T},o::Occupation{T},sol,ky::T,
                     moving_bz::Array{T}) where {T<:Real}
 
@@ -279,6 +304,14 @@ function integrateobs(
     return Occupation(cbocc)
 end
 
+
+function integrateobs!(
+    occs::Vector{Occupation{T}},
+    odest::Occupation{T},
+    vertices::Vector{T}) where {T<:Real}
+
+    odest.cbocc .= trapz((:,hcat(vertices)),hcat([o.cbocc for o in occs]...))
+end
 
 function getmovingbz(sim::Simulation{T}) where {T<:Real}
     p              = getparams(sim)

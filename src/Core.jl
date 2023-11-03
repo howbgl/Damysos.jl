@@ -236,7 +236,6 @@ function run_simulation!(
     end
     if saveplots
         plotdata(sim;kwargs...)
-        plotfield(sim)
     end
 
     return sim.observables
@@ -283,6 +282,8 @@ function run_simulation!(ens::Ensemble{T};
 
     ensurepath(ens.datapath)
     ensurepath(ens.plotpath)
+
+    @info "Starting ensemble of $(length(ens.simlist)) Simulations"
 
     allobs = []
 

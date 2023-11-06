@@ -43,7 +43,7 @@ ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
 const all_filelogger   = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now())_debug.log"))
-const tee_logger       = TeeLogger(info_logger,all_filelogger)
+const tee_logger       = TeeLogger(global_logger(),info_logger,all_filelogger)
 
 @info "Logging to $(joinpath(ens.plotpath,getshortname(ens)*"_$(now()).log")) " *
       "and $(joinpath(ens.plotpath,getshortname(ens)*"_$(now())_debug.log"))"

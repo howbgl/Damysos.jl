@@ -1,3 +1,6 @@
+
+const DEFAULT_RESOLUTION = (1200,800)
+
 function plottimeseries(timeseries::Vector{Vector{T}},
                         labels::Vector{String},
                         tsamples::Vector{Vector{T}};
@@ -6,7 +9,7 @@ function plottimeseries(timeseries::Vector{Vector{T}},
                         colors="categorical",
                         kwargs...) where {T<:Real}
 
-    f   = Figure()
+    f   = Figure(resolution=DEFAULT_RESOLUTION)
     ax  = Axis(f[1,1],title=title,xlabel="t/tc")
     
     for (i,data,label,ts) in zip(1:length(timeseries),timeseries,labels,tsamples)
@@ -40,7 +43,7 @@ function plotspectra(timeseries::Vector{Vector{T}},
                     colors="categorical",
                     kwargs...) where {T<:Real}
 
-    f   = Figure()
+    f   = Figure(resolution=DEFAULT_RESOLUTION)
     ax  = Axis(f[1,1],
                 title=title,
                 xlabel="Ω/ω",
@@ -64,7 +67,7 @@ function plotspectra(timeseries::Vector{Vector{T}},
         xdata       = 1/ν .* pdg.freq
         cut_inds    = ydata .> floatmin(T)
         if length(ydata[cut_inds]) < length(ydata)
-            @info "Removing zeros/negatives in plotting spectrum of $title ($label)"
+            @debug "Removing zeros/negatives in plotting spectrum of $title ($label)"
         end
 
         if colors == "categorical"
@@ -139,8 +142,10 @@ function plotdata(
             (success,plotpath)  = ensurepath([plotpath,altpath])
             if success
                 CairoMakie.save(joinpath(plotpath,vname*".pdf"),figtime)
+                CairoMakie.save(joinpath(plotpath,vname*".png"),figtime,px_per_unit = 4)
                 CairoMakie.save(joinpath(plotpath,vname*"_spec.pdf"),figspectra)
-                @info "Saved $(vname).pdf & $(vname).spec.pdf at $(plotpath)"
+                CairoMakie.save(joinpath(plotpath,vname*"_spec.png"),figspectra,px_per_unit = 4)
+                @info "Saved $(vname).pdf & $(vname).spec.pdf at \n$(plotpath)"
             else
                 @warn "Could not save $(vname) plots: Unable to make dir\n"*plotpath
             end 
@@ -183,8 +188,10 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
         (success,plotpath)  = ensurepath([plotpath,altpath])
         if success
             CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
+            CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
             CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
-            @info "Saved cb_occ.pdf & cb_occ_spec.pdf at $(plotpath)"
+            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.png"),figspectra,px_per_unit = 4)
+            @info "Saved cb_occ.pdf & cb_occ_spec.pdf at \n$(plotpath)"
         else
             @warn "Could not save occupation plots."
         end
@@ -202,13 +209,13 @@ function plotdata(sim::Simulation{T};fftwindow=hanning,maxharm=30,kwargs...) whe
 
     plotfield(sim)
     plotbandstructure(sim)
-
-    return nothing
 end
 
 
 function plotdata(sim::Simulation{T},vel::Velocity{T};
                 fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
+
+    @info "Plotting Velocity"
 
     p           = getparams(sim)
     plotpath    = sim.plotpath
@@ -251,8 +258,10 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
             (success,plotpath)  = ensurepath([plotpath,altpath])
             if success
                 CairoMakie.save(joinpath(plotpath,"$(lab[1]).pdf"),figtime)
+                CairoMakie.save(joinpath(plotpath,"$(lab[1]).png"),figtime,px_per_unit = 4)
                 CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.pdf"),figspectra)
-                @info "Saved $(lab[1]).pdf & $(lab[1]).spec.pdf at $(plotpath)"
+                CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.png"),figspectra,px_per_unit = 4)
+                @info "Saved $(lab[1]).pdf & $(lab[1]).spec.pdf at \n$(plotpath)"
             else
                 @warn "Could not save $((lab[1])) plots: Unable to make dir\n"*plotpath
             end
@@ -269,7 +278,8 @@ end
 function plotdata(sim::Simulation{T},occ::Occupation{T};
                 fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
     
-    
+    @info "Plotting occupation"
+
     p           = getparams(sim)
     plotpath    = sim.plotpath
     try
@@ -288,8 +298,10 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
         (success,plotpath)  = ensurepath([plotpath,altpath])
         if success
             CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
+            CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
             CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
-            @info "Saved cb_occ.pdf & cb_occ_spec.spec.pdf at $(plotpath)"
+            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.png"),figspectra,px_per_unit = 4)
+            @info "Saved cb_occ.pdf & cb_occ_spec.spec.pdf at \n$(plotpath)"
         else
             @warn "Could not save occupation plots: Unable to make dir\n"*plotpath
         end
@@ -303,6 +315,8 @@ end
 
 
 function plotfield(sim::Simulation{T}) where {T<:Real}
+
+    @info "Plotting driving field"
 
     name    = getname(sim)
     p       = getparams(sim)
@@ -323,13 +337,16 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
         (success,plotpath)  = ensurepath([plotpath,altpath])
         if success
             CairoMakie.save(joinpath(plotpath,"vecfield.pdf"),figa)
+            CairoMakie.save(joinpath(plotpath,"vecfield.png"),figa,px_per_unit = 4)
             CairoMakie.save(joinpath(plotpath,"efield.pdf"),fige)
-            @info "Saved vecfield.pdf & efield.spec.pdf at $(plotpath)"
+            CairoMakie.save(joinpath(plotpath,"efield.png"),fige,px_per_unit = 4)
+            @info "Saved vecfield.pdf & efield.spec.pdf at \n$(plotpath)"
         else
             @warn "Could not save driving field plots: Unable to make dir\n"*plotpath
         end
     catch e
-        @warn "In plotfield(sim::Simulation{T})",e
+        @warn "In plotfield(sim::Simulation{T})"
+        @error e
     end
 end
 
@@ -345,7 +362,8 @@ end
 
 function plotbandstructure2d(sim::Simulation{T};plotkgrid=true,nk=2048) where {T<:Real}
     
-    
+    @info "Plotting bandstructure"
+
     plotpath    = sim.plotpath
     p           = getparams(sim)
     Δϵ          = getΔϵ(sim.hamiltonian)
@@ -355,30 +373,35 @@ function plotbandstructure2d(sim::Simulation{T};plotkgrid=true,nk=2048) where {T
     zdata       = [Δϵ(kx,ky) for kx in ks, ky in ks]
 
     leftbottom  = [p.bz[1],p.bz[3]]
-    width       = abs(p.bz[2]-p.bz[1])
-    height      = abs(p.bz[4]-p.bz[3])
+    width       = p.bz[2]-p.bz[1]
+    height      = p.bz[4]-p.bz[3]
     bzrect      = Rect2(leftbottom...,(width,height))
 
-    fig         = Figure(resolution=(1200,1200))
+    fig         = Figure(resolution=DEFAULT_RESOLUTION)
     ax          = Axis(fig[1, 1],title=sim.id,xlabel="kx/kc",ylabel="ky/kc",aspect=1)
-
-    heatmap!(ax,ks,ks,zdata)
-    if plotkgrid
-        for ky in p.kysamples
-            scatter!(ax,collect(p.kxsamples),fill(ky,p.nkx);color=:black,markersize=0.5)
+    
+    try
+        heatmap!(ax,ks,ks,zdata)
+        if plotkgrid
+            for ky in p.kysamples
+                scatter!(ax,collect(p.kxsamples),fill(ky,p.nkx);color=:black,markersize=1.2)
+            end
         end
-    end
-    poly!(ax,bzrect,color=(:grey,0.4),transparency=true)
+        poly!(ax,bzrect,color=(:grey,0.4),transparency=true)
 
-    altpath             = joinpath(pwd(),basename(plotpath))
-    (success,plotpath)  = ensurepath([plotpath,altpath])
-    if success
-        CairoMakie.save(joinpath(plotpath,"bandstructure.pdf"),fig)
-        CairoMakie.save(joinpath(plotpath,"bandstructure.png"),fig)
-        @info "Saved bandstructure.pdf $(plotpath)"
-    else
-        @warn "Could not save bandstructure plots: Unable to make dir\n"*plotpath
-    end
+        altpath             = joinpath(pwd(),basename(plotpath))
+        (success,plotpath)  = ensurepath([plotpath,altpath])
+        if success
+            CairoMakie.save(joinpath(plotpath,"bandstructure.pdf"),fig)
+            CairoMakie.save(joinpath(plotpath,"bandstructure.png"),fig,px_per_unit = 4)
+            @info "Saved bandstructure.pdf \n$(plotpath)"
+        else
+            @warn "Could not save bandstructure plots: Unable to make dir\n"*plotpath
+        end
+    catch e
+        @warn "In plotbandstructure2d(sim::Simulation{T})"
+        @error e
+    end   
 end
 
 

@@ -144,10 +144,12 @@ function plotdata(
                 CairoMakie.save(joinpath(plotpath,vname*".pdf"),figtime)
                 CairoMakie.save(joinpath(plotpath,vname*".png"),figtime,px_per_unit = 4)
                 CairoMakie.save(joinpath(plotpath,vname*"_spec.pdf"),figspectra)
-                CairoMakie.save(joinpath(plotpath,vname*"_spec.png"),figspectra,px_per_unit = 4)
-                @info "Saved $(vname).pdf & $(vname).spec.pdf at \n$(plotpath)"
+                CairoMakie.save(joinpath(plotpath,vname*"_spec.png"),figspectra,
+                    px_per_unit = 4)
+                @info "Saved $(vname).pdf & $(vname).spec.pdf at\n"*
+                    choptolength(plotpath,45)
             else
-                @warn "Could not save $(vname) plots: Unable to make dir\n"*plotpath
+                @warn "Could not save $(vname) plots"
             end 
 
         catch e
@@ -162,26 +164,34 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
     maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
 
     timeseries  = Vector{Vector{T}}(undef,0)
+    tsamples    = Vector{Vector{T}}(undef,0)
+    timesteps   = Vector{T}(undef,0)
+    frequencies = Vector{T}(undef,0)
     labels      = Vector{String}(undef,0)
     plotpath    = ens.plotpath
 
     for sim in ens.simlist
-        p       = getparams(sim)
+        pars    = getparams(sim)
         o       = filter(x -> x isa Occupation,sim.observables)[1]
         data    = o.cbocc
 
         push!(timeseries,data)
+        push!(tsamples,pars.tsamples)
+        push!(timesteps,pars.dt)
+        push!(frequencies,pars.ν)
         push!(labels,sim.id)
     end
 
     try
-        figtime     = plottimeseries(timeseries,labels,p.tsamples,
+        figtime     = plottimeseries(timeseries,labels,tsamples,
                                     title="CB occupation" * "(" * ens.id * ")",
+                                    colors="continuous",
                                     kwargs...)
-        figspectra  = plotspectra(timeseries,labels,p.ν,p.dt,
+        figspectra  = plotspectra(timeseries,labels,frequencies,timesteps,
                                     maxharm=maxharm,
                                     fftwindow=fftwindow,
                                     title="CB occupation" * "(" * ens.id * ")",
+                                    colors="continuous",
                                     kwargs...)
 
         altpath             = joinpath(pwd(),basename(plotpath))
@@ -191,13 +201,14 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
             CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
             CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
             CairoMakie.save(joinpath(plotpath,"cb_occ_spec.png"),figspectra,px_per_unit = 4)
-            @info "Saved cb_occ.pdf & cb_occ_spec.pdf at \n$(plotpath)"
+            @info "Saved cb_occ.pdf & cb_occ_spec.pdf at \n"*(choptolength(plotpath,45))
         else
             @warn "Could not save occupation plots."
         end
 
     catch e
-        @warn "In plotdata(ens::Ensemble{T},occ::Occupation{T};...)",e
+        @warn "In plotdata(ens::Ensemble{T},occ::Occupation{T};...)"
+        @error e
     end
 end
 
@@ -260,15 +271,18 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
                 CairoMakie.save(joinpath(plotpath,"$(lab[1]).pdf"),figtime)
                 CairoMakie.save(joinpath(plotpath,"$(lab[1]).png"),figtime,px_per_unit = 4)
                 CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.pdf"),figspectra)
-                CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.png"),figspectra,px_per_unit = 4)
-                @info "Saved $(lab[1]).pdf & $(lab[1]).spec.pdf at \n$(plotpath)"
+                CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.png"),
+                    figspectra,px_per_unit = 4)
+                @info "Saved $(lab[1]).pdf & $(lab[1]).spec.pdf at \n"*
+                    choptolength(plotpath,45)
             else
-                @warn "Could not save $((lab[1])) plots: Unable to make dir\n"*plotpath
+                @warn "Could not save $((lab[1])) plots"
             end
         end
         
     catch e
-        @warn "In plotdata(sim::Simulation{T},vel::Velocity{T};...)",e
+        @warn "In plotdata(sim::Simulation{T},vel::Velocity{T};...)"
+        @error e
     end
 
     return nothing
@@ -301,9 +315,9 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
             CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
             CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
             CairoMakie.save(joinpath(plotpath,"cb_occ_spec.png"),figspectra,px_per_unit = 4)
-            @info "Saved cb_occ.pdf & cb_occ_spec.spec.pdf at \n$(plotpath)"
+            @info "Saved cb_occ.pdf & cb_occ_spec.spec.pdf at \n"*choptolength(plotpath,45)
         else
-            @warn "Could not save occupation plots: Unable to make dir\n"*plotpath
+            @warn "Could not save occupation plots"
         end
 
     catch e
@@ -340,9 +354,9 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
             CairoMakie.save(joinpath(plotpath,"vecfield.png"),figa,px_per_unit = 4)
             CairoMakie.save(joinpath(plotpath,"efield.pdf"),fige)
             CairoMakie.save(joinpath(plotpath,"efield.png"),fige,px_per_unit = 4)
-            @info "Saved vecfield.pdf & efield.spec.pdf at \n$(plotpath)"
+            @info "Saved vecfield.pdf & efield.spec.pdf at \n"*choptolength(plotpath,45)
         else
-            @warn "Could not save driving field plots: Unable to make dir\n"*plotpath
+            @warn "Could not save driving field plots"
         end
     catch e
         @warn "In plotfield(sim::Simulation{T})"
@@ -373,8 +387,8 @@ function plotbandstructure2d(sim::Simulation{T};plotkgrid=true,nk=2048) where {T
     zdata       = [Δϵ(kx,ky) for kx in ks, ky in ks]
 
     leftbottom  = [p.bz[1],p.bz[3]]
-    width       = p.bz[2]-p.bz[1]
-    height      = p.bz[4]-p.bz[3]
+    width       = p.bz[1] < p.bz[2] ? p.bz[1]-p.bz[1]  : zero(T)
+    height      = p.bz[3] < p.bz[4] ? p.bz[4]-p.bz[3]  : zero(T)
     bzrect      = Rect2(leftbottom...,(width,height))
 
     fig         = Figure(resolution=DEFAULT_RESOLUTION)
@@ -394,9 +408,9 @@ function plotbandstructure2d(sim::Simulation{T};plotkgrid=true,nk=2048) where {T
         if success
             CairoMakie.save(joinpath(plotpath,"bandstructure.pdf"),fig)
             CairoMakie.save(joinpath(plotpath,"bandstructure.png"),fig,px_per_unit = 4)
-            @info "Saved bandstructure.pdf \n$(plotpath)"
+            @info "Saved bandstructure.pdf \n"*(choptolength(plotpath,45))
         else
-            @warn "Could not save bandstructure plots: Unable to make dir\n"*plotpath
+            @warn "Could not save bandstructure plots"
         end
     catch e
         @warn "In plotbandstructure2d(sim::Simulation{T})"

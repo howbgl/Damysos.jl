@@ -209,6 +209,7 @@ function run_simulation!(
             "# threads: $(Threads.nthreads())\n"*
             "# processes: $(Distributed.nprocs())"
 
+    checkbzbounds(sim)
 
     ensurepath(sim.datapath)
     ensurepath(sim.plotpath)

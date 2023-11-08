@@ -141,6 +141,13 @@ function getparams(sim::Simulation{T}) where {T<:Real}
         (dimensions=sim.dimensions,))
 end
 
+function checkbzbounds(sim::Simulation)
+    p = getparams(sim)
+    if p.bz[1] > p.bz[2] || p.bz[3] > p.bz[4]
+        @warn "Brillouin zone vanishes: $(p.bz)"
+    end
+end
+
 getnames_obs(sim::Simulation{T}) where {T<:Real} = vcat(getnames_obs.(sim.observables)...)
 arekresolved(sim::Simulation{T}) where {T<:Real} = vcat(arekresolved.(sim.observables)...)
 getname(sim::Simulation{T}) where {T<:Real}      = getshortname(sim)*'_'*sim.id

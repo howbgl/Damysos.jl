@@ -14,7 +14,7 @@ function savedata(sim::Simulation{T}) where {T<:Real}
 
     if success
         CSV.write(joinpath(datapath,"data.csv"),dat)
-        @info "Saved Simulation data at "*joinpath(datapath,"data.csv")
+        @info "Saved Simulation data at "*choptolength(joinpath(datapath,"data.csv"),45)
     else
         @warn "Could not save data.csv."
     end
@@ -60,7 +60,7 @@ function savemetadata(sim::Simulation)
     (success,datapath)  = ensurepath([sim.datapath,altpath])
     if success
         if save(joinpath(datapath,filename),sim)
-            @info "Simulation metadata saved at "*datapath*filename
+            @info "Simulation metadata saved at "*choptolength(datapath*filename,45)
             return
         end
     end

@@ -73,6 +73,14 @@ end
 
 droplast(path::AbstractString) = joinpath(splitpath(path)[1:end-1]...)
 
+function choptolength(s::AbstractString,l::Integer)
+    if length(s) > l
+        return s[end-l:end]
+    else
+        return s
+    end
+end
+
 export random_word
 function random_word()::String
     lines = readlines("words.txt")
@@ -125,20 +133,22 @@ end
 
 function ensurepath(path::String; n_tries::Int=3, wait_time::Real=10.0)
 
-    @info "Attempting to create $path"
+    shortpath = choptolength(path,45)
+    @info "Attempting to create \"...$shortpath\""
+    @debug "Full path: $path"
     success = false
     if !isdir(path)
         success = try_execute_n_times(mkpath, n_tries, path; wait_time=wait_time)
     else
-        @info "$path already exists. Proceeding..."
+        @info "\"$shortpath\" already exists. Proceeding..."
         return true
     end
 
     if success
-        @info "$path created. Proceeding..."
+        @info "\"$shortpath\" created. Proceeding..."
         return true
     else
-        @warn "Could not create $path"
+        @warn "Could not create \"$shortpath\""
         return false
     end
 end

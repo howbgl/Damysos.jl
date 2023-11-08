@@ -6,7 +6,7 @@ const vf        = u"4.3e5m/s"
 const m         = u"10.0meV"
 const e         = uconvert(u"C",1u"eV"/1u"V")
 
-const ζ         = 15.0
+const ζ         = 30.0
 const γ         = 0.1
 
 const M         = ζ * γ
@@ -20,20 +20,12 @@ const t2        = Inf*u"1s"
 const t1        = Inf*u"1s"
 const σ         = 2*tcycle
 
-# converged with t2 = tcycle/2 @
-# dt = 0.01
-# dkx = 0.08
-# dky = 0.1
-
-# converged with t2 = ∞ @
-# dt = 0.006
-# dkx =
-# dky =
-
+# converged @
+# dt = 0.01 
 
 const dt      = 0.01
-const dkx     = 0.08
-const kxmax   = 100.0
+const dkx     = 0.1
+const kxmax   = 200.0
 const dky     = 0.1
 const kymax   = 0.2
 
@@ -45,11 +37,11 @@ const obs     = [Velocity(h),Occupation(h)]
 
 const id      = "zeta=$(ζ)_gamma=$(γ)"
 const name    = "Simulation{$(typeof(h.Δ))}(2d)"*getshortname(h)*"_"*getshortname(df)*"_$id"
-const dpath   = "/home/how09898/phd/data/hhgjl/occupation_oscillations/zeta=15/"*name
-const ppath   = "/home/how09898/phd/plots/hhgjl/occupation_oscillations/zeta=15/"*name
+const dpath   = "/home/how09898/phd/data/hhgjl/occupation_oscillations/zeta=30/"*name
+const ppath   = "/home/how09898/phd/plots/hhgjl/occupation_oscillations/zeta=30/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:dkx,LinRange(0.01,0.006,5))
+const ens     = parametersweep(sim,sim.numericalparams,:kxmax,LinRange(150,250,10))
 
 ensurepath(ens.plotpath)
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))

@@ -98,9 +98,9 @@ function run_simulation2d!(sim::Simulation;
 
     p                   = getparams(sim)
     kybatches           = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
-    @info "Size of kx-batches: $kxbatch_basesize\nSize of ky-batches: $maxparallel_ky"
+    prog                = Progress(sum(length.(kybatches)))
 
-    return run_simulation2d!(sim,kybatches,sum(length.(kybatches)),0;
+    return run_simulation2d!(sim,kybatches,prog;
         kxbatch_basesize=kxbatch_basesize,
         threaded=threaded,
         kwargs...)
@@ -110,15 +110,12 @@ end
 function run_simulation2d!(
     sim::Simulation{T},
     kybatches::Vector{Vector{T}},
-    progtotal::Integer,
-    progstart::Integer;
+    prog::Progress;
     kxbatch_basesize=128,
     threaded=false,
     kwargs...) where {T<:Real}
     
     observables_total   = deepcopy(sim.observables)
-    prog                = Progress(progtotal;start=progstart)
-    @show prog
 
     for kybatch in kybatches
         observables_buffer = run_kybatch!(sim,kybatch;
@@ -133,7 +130,7 @@ function run_simulation2d!(
         resize_obs!(sim)
         
         @everywhere GC.gc()
-        update!(prog,length(kybatch))
+        update!(prog,prog.counter + length(kybatch))
     end
 
     sim.observables .= observables_total
@@ -207,15 +204,14 @@ function run_simulation!(
 
     if sim.dimensions==1
         kybatches = Vector{Vector{T}}(undef,0)
-        progtotal = 10 # dummy
+        prog      = Progress(10) # dummy
     elseif  sim.dimensions==2
         p                   = getparams(sim)
         kybatches           = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
-        @info "Size of kx-batches: $kxbatch_basesize\nSize of ky-batches: $maxparallel_ky"
-        progtotal           = sum(length.(kybatches))
+        prog                = Progress(sum(length.(kybatches)))
     end
 
-    return run_simulation!(sim,kybatches,progtotal;
+    return run_simulation!(sim,kybatches,prog;
         savedata=savedata,
         saveplots=saveplots,
         threaded=threaded,
@@ -226,8 +222,7 @@ end
 function run_simulation!(
     sim::Simulation{T},
     kybatches::Vector{Vector{T}},
-    progtotal::Integer,
-    progstart::Integer=0;
+    prog::Progress;
     savedata=true,
     saveplots=true,
     threaded=false,
@@ -237,8 +232,9 @@ function run_simulation!(
     @info   "$(now())\nOn $(gethostname()):\n"*
             "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)*
             "# threads: $(Threads.nthreads())\n"*
-            "# processes: $(Distributed.nprocs())"
-
+            "# processes: $(Distributed.nprocs())\n"*
+            "Size of kx-batches: $kxbatch_basesize\n"*
+            "Size of ky-batches: $(maximum(length.(kybatches)))"
     checkbzbounds(sim)
 
     ensurepath(sim.datapath)
@@ -248,10 +244,10 @@ function run_simulation!(
     zero.(sim.observables)
 
 
-    if sim.dimensions==1
+    if sim.dimensions == 1
         run_simulation1d!(sim;kwargs...)
     else
-        run_simulation2d!(sim,kybatches,progtotal,progstart;
+        run_simulation2d!(sim,kybatches,prog;
             threaded=threaded,
             kxbatch_basesize=kxbatch_basesize,
             kwargs...)
@@ -310,36 +306,36 @@ function run_simulation!(ens::Ensemble{T};
     ensurepath(ens.datapath)
     ensurepath(ens.plotpath)
 
-    @info "Starting ensemble of $(length(ens.simlist)) Simulations"
+    @info "Starting ensemble of $(length(ens.simlist)) Simulations\nid : $(ens.id)"
 
-    allobs = []
-
+    list_of_kybatches   = [padvecto_overlap!(
+        subdivide_vector(p.kysamples,maxparallel_ky)) for p in getparams.(ens.simlist)]
+    prog                = Progress(nestedcount(list_of_kybatches))
+    allobs              = []
     if ensembleparallel
         if threaded
             @warn "At the moment parallel ensembles are only supported via multi-processing\n"*
                     "Using pmap()"
         end
         allobs = pmap(
-                s -> run_simulation!(s;
+                (s,kys) -> run_simulation!(s,kys,prog;
                     savedata=savedata,
                     saveplots=saveplots,
-                    threaded=false,
-                    maxparallel_ky=maxparallel_ky,
+                    threaded=threaded,
                     kxbatch_basesize=kxbatch_basesize,
                     kwargs...),
-                ens.simlist)
+                ens.simlist,list_of_kybatches)
         # Run plotting sequentially
         if saveplots
             Damysos.plotdata.(ens.simlist;kwargs...)
         end
         
     else
-        for i in eachindex(ens.simlist)
-            obs = run_simulation!(ens.simlist[i];
+        for (s,kys) in zip(ens.simlist,list_of_kybatches)
+            obs = run_simulation!(s,kys,prog;
                 savedata=savedata,
                 saveplots=saveplots,
                 threaded=threaded,
-                maxparallel_ky=maxparallel_ky,
                 kxbatch_basesize=kxbatch_basesize,
                 kwargs...)
             push!(allobs,obs)

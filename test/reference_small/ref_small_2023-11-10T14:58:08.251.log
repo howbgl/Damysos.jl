@@ -1,0 +1,50 @@
+┌ Info: 2023-11-10T14:58:08.471
+│ On pc1011600420:
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/progress_damysos/scripts/reference_small.jl:46
+┌ Info: Size of kx-batches: 128
+│ Size of ky-batches: 64
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/progress_damysos/src/Core.jl:212
+┌ Info: 2023-11-10T14:58:20.962
+│ On pc1011600420:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref_small)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.298 Å^-1 (256.0)
+│ dkx = 0.00116 Å^-1 (1.0)
+│ nkx = 512.0 (512.0)
+│ kymax = 0.0372 Å^-1 (32.0)
+│ dky = 0.00116 Å^-1 (1.0)
+│ nky = 64.0 (64.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+│ # threads: 1
+│ # processes: 17
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/progress_damysos/src/Core.jl:234
+┌ Info: Attempting to create "...test/reference_small"
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/progress_damysos/src/Utility.jl:145
+┌ Info: "test/reference_small" already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/progress_damysos/src/Utility.jl:151
+┌ Info: Attempting to create "...test/reference_small"
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/progress_damysos/src/Utility.jl:145
+┌ Info: "test/reference_small" already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/progress_damysos/src/Utility.jl:151
+┌ Warning: Forcibly interrupting busy workers
+│   exception = ErrorException("rmprocs: pids [8, 9] not terminated after 5.0 seconds.")
+└ @ Distributed /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.3+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/cluster.jl:1253
+┌ Warning: rmprocs: process 1 not removed
+└ @ Distributed /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.3+0.x64.linux.gnu/share/julia/stdlib/v1.9/Distributed/src/cluster.jl:1049

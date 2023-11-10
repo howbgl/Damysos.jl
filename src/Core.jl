@@ -47,8 +47,8 @@ The combined observables obtained from the simulation.
 
 """
 function run_simulation1d!(
-    sim::Simulation{T};
-    ky::T=zero(T),
+    sim::Simulation{T},
+    ky::T=zero(T);
     kxbatch_basesize=512,
     kwargs...) where {T<:Real}
 
@@ -90,33 +90,35 @@ The combined observables obtained from the simulation.
 [`run_simulation!`](@ref), [`run_simulation1d!`](@ref)
 
 """
-function run_simulation2d!(
-    sim::Simulation{T};
-    kyparallel=true,
-    maxparallel_ky=64,
+function run_simulation2d!(sim::Simulation;
     kxbatch_basesize=128,
+    maxparallel_ky=64,
     threaded=false,
-    kwargs...) where {T<:Real}
-
-    if !kyparallel
-        @info "Starting serial execution"
-        return run_simulation2d!(sim;
-            kxbatch_basesize=kxbatch_basesize,
-            maxparallel_ky=1,
-            threaded=threaded,
-            kwargs...)
-    end
+    kwargs...)
 
     p                   = getparams(sim)
     kybatches           = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
+    @info "Size of kx-batches: $kxbatch_basesize\nSize of ky-batches: $maxparallel_ky"
+
+    return run_simulation2d!(sim,kybatches,sum(length.(kybatches)),0;
+        kxbatch_basesize=kxbatch_basesize,
+        threaded=threaded,
+        kwargs...)
+    
+end
+
+function run_simulation2d!(
+    sim::Simulation{T},
+    kybatches::Vector{Vector{T}},
+    progtotal::Integer,
+    progstart::Integer;
+    kxbatch_basesize=128,
+    threaded=false,
+    kwargs...) where {T<:Real}
+    
     observables_total   = deepcopy(sim.observables)
-
-    if maxparallel_ky > 1
-        @info "Starting parallel execution \n"*
-        "Size of ky-batches: $maxparallel_ky"
-    end
-
-    @info "Size of kx-batches: $kxbatch_basesize"
+    prog                = Progress(progtotal;start=progstart)
+    @show prog
 
     for kybatch in kybatches
         observables_buffer = run_kybatch!(sim,kybatch;
@@ -131,10 +133,11 @@ function run_simulation2d!(
         resize_obs!(sim)
         
         @everywhere GC.gc()
-        @info "Batch finished"
+        update!(prog,length(kybatch))
     end
 
     sim.observables .= observables_total
+
     return sim.observables
 end
 
@@ -148,8 +151,8 @@ function run_kybatch!(
     if threaded
         obs = Folds.map(
             ky -> run_simulation1d!(
-                deepcopy(sim);
-                ky,
+                deepcopy(sim),
+                ky;
                 kxbatch_basesize=kxbatch_basesize,
                 kwargs...),
             kysamples)
@@ -157,8 +160,8 @@ function run_kybatch!(
     else
         obs = pmap(
             ky -> run_simulation1d!(
-                sim;
-                ky,
+                sim,
+                ky;
                 kxbatch_basesize=kxbatch_basesize,
                 kwargs...),
             kysamples)
@@ -173,7 +176,6 @@ end
 run_simulation!(sim::Simulation{T};
     savedata=true,
     saveplots=true,
-    kyparallel=true,
     threaded=false,
     maxparallel_ky=64,
     kxbatch_basesize=512,
@@ -198,9 +200,37 @@ function run_simulation!(
     sim::Simulation{T};
     savedata=true,
     saveplots=true,
-    kyparallel=true,
     threaded=false,
+    kxbatch_basesize=128,
     maxparallel_ky=64,
+    kwargs...) where {T<:Real}
+
+    if sim.dimensions==1
+        kybatches = Vector{Vector{T}}(undef,0)
+        progtotal = 10 # dummy
+    elseif  sim.dimensions==2
+        p                   = getparams(sim)
+        kybatches           = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
+        @info "Size of kx-batches: $kxbatch_basesize\nSize of ky-batches: $maxparallel_ky"
+        progtotal           = sum(length.(kybatches))
+    end
+
+    return run_simulation!(sim,kybatches,progtotal;
+        savedata=savedata,
+        saveplots=saveplots,
+        threaded=threaded,
+        kxbatch_basesize=128,
+        kwargs...)
+end
+
+function run_simulation!(
+    sim::Simulation{T},
+    kybatches::Vector{Vector{T}},
+    progtotal::Integer,
+    progstart::Integer=0;
+    savedata=true,
+    saveplots=true,
+    threaded=false,
     kxbatch_basesize=128,
     kwargs...) where {T<:Real}
     
@@ -221,10 +251,8 @@ function run_simulation!(
     if sim.dimensions==1
         run_simulation1d!(sim;kwargs...)
     else
-        run_simulation2d!(sim;
-            kyparallel=kyparallel,
+        run_simulation2d!(sim,kybatches,progtotal,progstart;
             threaded=threaded,
-            maxparallel_ky=maxparallel_ky,
             kxbatch_basesize=kxbatch_basesize,
             kwargs...)
     end
@@ -248,7 +276,6 @@ end
         savedata=true,
         saveplots=true,
         ensembleparallel=false,
-        kyparallel=true,
         threaded=false,
         maxparallel_ky=64,
         kxbatch_basesize=512,
@@ -274,7 +301,6 @@ function run_simulation!(ens::Ensemble{T};
                 savedata=true,
                 saveplots=true,
                 ensembleparallel=false,
-                kyparallel=true,
                 threaded=false,
                 maxparallel_ky=64,
                 kxbatch_basesize=128,
@@ -293,14 +319,10 @@ function run_simulation!(ens::Ensemble{T};
             @warn "At the moment parallel ensembles are only supported via multi-processing\n"*
                     "Using pmap()"
         end
-        if kyparallel
-            @warn "Only ensemble OR ky can be parallelized. Defaulting to ensemble."
-        end
         allobs = pmap(
                 s -> run_simulation!(s;
                     savedata=savedata,
                     saveplots=saveplots,
-                    kyparallel=false,
                     threaded=false,
                     maxparallel_ky=maxparallel_ky,
                     kxbatch_basesize=kxbatch_basesize,
@@ -316,7 +338,6 @@ function run_simulation!(ens::Ensemble{T};
             obs = run_simulation!(ens.simlist[i];
                 savedata=savedata,
                 saveplots=saveplots,
-                kyparallel=kyparallel,
                 threaded=threaded,
                 maxparallel_ky=maxparallel_ky,
                 kxbatch_basesize=kxbatch_basesize,

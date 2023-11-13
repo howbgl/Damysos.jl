@@ -1,4 +1,4 @@
-using Damysos,Unitful,LoggingExtras,Dates,Formatting
+using Damysos,Unitful,LoggingExtras,Dates,Formatting,TerminalLoggers
 
 import Damysos.getshortname
 import Damysos.ensurepath
@@ -28,10 +28,10 @@ const σ         = u"800.0fs"
 # kymax = 50
 
 const dt      = 0.005
-const dkx     = 0.1
-const dky     = 0.8
+const dkx     = 1.0
+const dky     = 0.1
 const kxmax   = 100.0
-const kymax   = 1.6
+const kymax   = 10.0
 
 
 const us      = scaledriving_frequency(freq,vf)
@@ -47,9 +47,10 @@ const dpath   = "/home/how09898/phd/data/hhgjl/t2-sweep/dirac2d_5THz_20meV_800fs
 const ppath   = "/home/how09898/phd/plots/hhgjl/t2-sweep/dirac2d_5THz_20meV_800fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:dkx,LinRange(0.5,0.05,10))
+const ens     = parametersweep(sim,sim.numericalparams,:dkx,LinRange(5.0,0.5,10))
 
 ensurepath(ens.plotpath)
+global_logger(TerminalLogger(right_justify=120))
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
 const all_filelogger   = FileLogger(joinpath(ens.plotpath,ens.id*"$(now())_debug.log"))

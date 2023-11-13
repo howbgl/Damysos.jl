@@ -98,9 +98,9 @@ function run_simulation2d!(sim::Simulation;
 
     p                   = getparams(sim)
     kybatches           = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
-    prog                = Progress(sum(length.(kybatches)))
+    nprogress           = length(kybatches)
 
-    return run_simulation2d!(sim,kybatches,prog;
+    return run_simulation2d!(sim,kybatches,nprogress;
         kxbatch_basesize=kxbatch_basesize,
         threaded=threaded,
         kwargs...)
@@ -110,14 +110,15 @@ end
 function run_simulation2d!(
     sim::Simulation{T},
     kybatches::Vector{Vector{T}},
-    prog::Progress;
+    nprogress::Integer;
     kxbatch_basesize=128,
     threaded=false,
     kwargs...) where {T<:Real}
     
+    p                   = getparams(sim)
     observables_total   = deepcopy(sim.observables)
 
-    for kybatch in kybatches
+    @withprogress name="running" for kybatch in kybatches
         observables_buffer = run_kybatch!(sim,kybatch;
             kxbatch_basesize=kxbatch_basesize,
             threaded=threaded,
@@ -130,7 +131,7 @@ function run_simulation2d!(
         resize_obs!(sim)
         
         @everywhere GC.gc()
-        update!(prog,prog.counter + length(kybatch))
+        @logprogress p.nkx * p.nt * length(kybatch) / nprogress
     end
 
     sim.observables .= observables_total
@@ -164,7 +165,6 @@ function run_kybatch!(
             kysamples)
         integrateobs!(obs,sim.observables,kysamples)
     end
-
 
     return sim.observables
 end
@@ -202,52 +202,58 @@ function run_simulation!(
     maxparallel_ky=64,
     kwargs...) where {T<:Real}
 
+    p = getparams(sim)
     if sim.dimensions==1
         kybatches = Vector{Vector{T}}(undef,0)
-        prog      = Progress(10) # dummy
+        nprogress = p.nkx * p.nt
     elseif  sim.dimensions==2
-        p                   = getparams(sim)
-        kybatches           = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
-        prog                = Progress(sum(length.(kybatches)))
+        kybatches = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
+        nprogress = sum(length.(kybatches)) * p.nkx * p.nt
     end
 
-    return run_simulation!(sim,kybatches,prog;
+    return run_simulation!(sim,kybatches,nprogress;
         savedata=savedata,
         saveplots=saveplots,
         threaded=threaded,
-        kxbatch_basesize=128,
+        kxbatch_basesize=kxbatch_basesize,
         kwargs...)
 end
 
 function run_simulation!(
     sim::Simulation{T},
     kybatches::Vector{Vector{T}},
-    prog::Progress;
+    nprogress::Integer;
     savedata=true,
     saveplots=true,
     threaded=false,
     kxbatch_basesize=128,
     kwargs...) where {T<:Real}
     
-    @info   "$(now())\nOn $(gethostname()):\n"*
-            "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)*
-            "# threads: $(Threads.nthreads())\n"*
-            "# processes: $(Distributed.nprocs())\n"*
-            "Size of kx-batches: $kxbatch_basesize\n"*
-            "Size of ky-batches: $(maximum(length.(kybatches)))"
-    checkbzbounds(sim)
+    infostr ="""
+            ## $(getshortname(sim)) (id: $(sim.id))
 
+            Starting on **$(gethostname())** at **$(now())**:
+            
+            * Threads: $(Threads.nthreads())
+            * Processes: $(Distributed.nprocs())
+            * Size of kx-batches: $kxbatch_basesize
+            * Size of ky-batches: $(maximum(length.(kybatches)))
+
+            $(markdown_paramsSI(sim))
+            """
+    @info infostr
+
+    checkbzbounds(sim)
     ensurepath(sim.datapath)
     ensurepath(sim.plotpath)
 
     resize_obs!(sim)
     zero.(sim.observables)
 
-
     if sim.dimensions == 1
         run_simulation1d!(sim;kwargs...)
     else
-        run_simulation2d!(sim,kybatches,prog;
+        run_simulation2d!(sim,kybatches,nprogress;
             threaded=threaded,
             kxbatch_basesize=kxbatch_basesize,
             kwargs...)
@@ -306,11 +312,19 @@ function run_simulation!(ens::Ensemble{T};
     ensurepath(ens.datapath)
     ensurepath(ens.plotpath)
 
-    @info "Starting ensemble of $(length(ens.simlist)) Simulations\nid : $(ens.id)"
+    @info "# Ensemble of $(length(ens.simlist)) Simulations\nid : $(ens.id)"
 
-    list_of_kybatches   = [padvecto_overlap!(
-        subdivide_vector(p.kysamples,maxparallel_ky)) for p in getparams.(ens.simlist)]
-    prog                = Progress(nestedcount(list_of_kybatches))
+    # list_of_kybatches   = [padvecto_overlap!(
+    #     subdivide_vector(p.kysamples,maxparallel_ky)) for p in getparams.(ens.simlist)]
+    list_of_kybatches   = Vector{Vector{Vector{T}}}(undef,0)
+    nprogress           = 0
+
+    for p in getparams.(ens.simlist)
+        kybatches = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
+        nprogress += nestedcount(kybatches) * p.nt * p.nkx
+        push!(list_of_kybatches,kybatches) 
+    end
+
     allobs              = []
     if ensembleparallel
         if threaded
@@ -332,7 +346,7 @@ function run_simulation!(ens::Ensemble{T};
         
     else
         for (s,kys) in zip(ens.simlist,list_of_kybatches)
-            obs = run_simulation!(s,kys,prog;
+            obs = run_simulation!(s,kys,nprogress;
                 savedata=savedata,
                 saveplots=saveplots,
                 threaded=threaded,

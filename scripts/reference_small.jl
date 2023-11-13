@@ -1,4 +1,4 @@
-using Damysos,Unitful,LoggingExtras,Dates,Formatting
+using Damysos,Unitful,LoggingExtras,Dates,Formatting,TerminalLoggers,ProgressLogging
 
 import Damysos.getshortname
 import Damysos.ensurepath
@@ -34,6 +34,7 @@ const ppath   = dpath
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 
 ensurepath(sim.plotpath)
+global_logger(TerminalLogger(right_justify=120))
 const info_filelogger  = FileLogger(joinpath(sim.plotpath,sim.id*"_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
 const all_filelogger   = FileLogger(joinpath(sim.plotpath,sim.id*"_$(now())_debug.log"))

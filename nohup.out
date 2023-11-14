@@ -560,3 +560,730 @@ length(kxbatches) = 1
 [ Info: Attempting to create scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged
 [ Info: scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged already exists. Proceeding...
 [ Info: Logging to scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-10-17T16:31:24.346.log and scripts/benchmarks/dirac2d_5THz_20meV_800fs/Simulation{Float64}(2d)GappedDirac_GaussianPulse_converged/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-10-17T16:31:24.346_debug.log
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" created. Proceeding...
+┌ Info: Logging to
+│     /home/how09898/phd/plots/hhgjl/occupation_oscillations/zeta=30/Ensemble[10](2d)GappedDirac_GaussianPulse_kymax_sweep_2023-11-08_Absquatulate/Ensemble[10]{Float64}(2d)GappedDiracGaussianPulse_2023-11-08T19:27:45.482.log and
+└     /home/how09898/phd/plots/hhgjl/occupation_oscillations/zeta=30/Ensemble[10](2d)GappedDirac_GaussianPulse_kymax_sweep_2023-11-08_Absquatulate/Ensemble[10]{Float64}(2d)GappedDiracGaussianPulse_2023-11-08T19:27:45.482_debug.log
+┌ Info: 2023-11-08T19:27:45.551
+└ On pc1011605708:
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" created. Proceeding...
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" already exists. Proceeding...
+[ Info: Starting ensemble of 10 Simulations
+┌ Info: 2023-11-08T19:27:57.081
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kymax=2.0)
+│ ζ = 30.0
+│ γ = 0.1
+│ M = 3.0
+│ plz = 0.624
+│ Δ = 10.0 meV (9.42)
+│ t1 = Inf fs (Inf)
+│ t2 = Inf fs (Inf)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 1240.0 fs (2.0)
+│ ω = 0.0101 fs^-1 (6.28)
+│ ν = 1.61 THz (1.0)
+│ eE = 0.0236 MV cm^-1 (592.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.00667 eV (6.28)
+│ kxmax = 0.075 Å^-1 (200.0)
+│ dkx = 3.75e-5 Å^-1 (0.1)
+│ nkx = 4000.0 (4000.0)
+│ kymax = 0.00075 Å^-1 (2.0)
+│ dky = 0.000187 Å^-1 (0.5)
+│ nky = 8.0 (8.0)
+│ t0 = -6200.0 fs (-10.0)
+│ dt = 6.2 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 2000.0 (2000.0)
+│ # threads: 1
+└ # processes: 17
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/" created. Proceeding...
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/" created. Proceeding...
+┌ Info: Starting parallel execution 
+└ Size of ky-batches: 64
+[ Info: Size of kx-batches: 64
+[ Info: Batch finished
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/" already exists. Proceeding...
+[ Info: Saved Simulation data at eep_2023-11-08_Absquatulate/kymax=2.0/data.csv
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/" already exists. Proceeding...
+[ Info: Simulation metadata saved at 3-11-08_Absquatulate/kymax=2.0/simulation.meta
+[ Info: Plotting Velocity
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/
+[ Info: Plotting occupation
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/
+[ Info: Plotting driving field
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/" already exists. Proceeding...
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/
+[ Info: Plotting bandstructure
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/" already exists. Proceeding...
+┌ Info: Saved bandstructure.pdf 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=2.0/
+┌ Info: 2023-11-08T19:34:15.855
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kymax=4.0)
+│ ζ = 30.0
+│ γ = 0.1
+│ M = 3.0
+│ plz = 0.624
+│ Δ = 10.0 meV (9.42)
+│ t1 = Inf fs (Inf)
+│ t2 = Inf fs (Inf)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 1240.0 fs (2.0)
+│ ω = 0.0101 fs^-1 (6.28)
+│ ν = 1.61 THz (1.0)
+│ eE = 0.0236 MV cm^-1 (592.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.00667 eV (6.28)
+│ kxmax = 0.075 Å^-1 (200.0)
+│ dkx = 3.75e-5 Å^-1 (0.1)
+│ nkx = 4000.0 (4000.0)
+│ kymax = 0.0015 Å^-1 (4.0)
+│ dky = 0.000187 Å^-1 (0.5)
+│ nky = 16.0 (16.0)
+│ t0 = -6200.0 fs (-10.0)
+│ dt = 6.2 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 2000.0 (2000.0)
+│ # threads: 1
+└ # processes: 17
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/" created. Proceeding...
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/" created. Proceeding...
+┌ Info: Starting parallel execution 
+└ Size of ky-batches: 64
+[ Info: Size of kx-batches: 64
+[ Info: Batch finished
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/" already exists. Proceeding...
+[ Info: Saved Simulation data at eep_2023-11-08_Absquatulate/kymax=4.0/data.csv
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/" already exists. Proceeding...
+[ Info: Simulation metadata saved at 3-11-08_Absquatulate/kymax=4.0/simulation.meta
+[ Info: Plotting Velocity
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/
+[ Info: Plotting occupation
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/
+[ Info: Plotting driving field
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/" already exists. Proceeding...
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/
+[ Info: Plotting bandstructure
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/" already exists. Proceeding...
+┌ Info: Saved bandstructure.pdf 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=4.0/
+┌ Info: 2023-11-08T19:40:42.946
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kymax=6.0)
+│ ζ = 30.0
+│ γ = 0.1
+│ M = 3.0
+│ plz = 0.624
+│ Δ = 10.0 meV (9.42)
+│ t1 = Inf fs (Inf)
+│ t2 = Inf fs (Inf)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 1240.0 fs (2.0)
+│ ω = 0.0101 fs^-1 (6.28)
+│ ν = 1.61 THz (1.0)
+│ eE = 0.0236 MV cm^-1 (592.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.00667 eV (6.28)
+│ kxmax = 0.075 Å^-1 (200.0)
+│ dkx = 3.75e-5 Å^-1 (0.1)
+│ nkx = 4000.0 (4000.0)
+│ kymax = 0.00225 Å^-1 (6.0)
+│ dky = 0.000187 Å^-1 (0.5)
+│ nky = 24.0 (24.0)
+│ t0 = -6200.0 fs (-10.0)
+│ dt = 6.2 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 2000.0 (2000.0)
+│ # threads: 1
+└ # processes: 17
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/" created. Proceeding...
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/" created. Proceeding...
+┌ Info: Starting parallel execution 
+└ Size of ky-batches: 64
+[ Info: Size of kx-batches: 64
+[ Info: Batch finished
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/" already exists. Proceeding...
+[ Info: Saved Simulation data at eep_2023-11-08_Absquatulate/kymax=6.0/data.csv
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/" already exists. Proceeding...
+[ Info: Simulation metadata saved at 3-11-08_Absquatulate/kymax=6.0/simulation.meta
+[ Info: Plotting Velocity
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/
+[ Info: Plotting occupation
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/
+[ Info: Plotting driving field
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/" already exists. Proceeding...
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/
+[ Info: Plotting bandstructure
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/" already exists. Proceeding...
+┌ Info: Saved bandstructure.pdf 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=6.0/
+┌ Info: 2023-11-08T19:51:55.021
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kymax=8.0)
+│ ζ = 30.0
+│ γ = 0.1
+│ M = 3.0
+│ plz = 0.624
+│ Δ = 10.0 meV (9.42)
+│ t1 = Inf fs (Inf)
+│ t2 = Inf fs (Inf)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 1240.0 fs (2.0)
+│ ω = 0.0101 fs^-1 (6.28)
+│ ν = 1.61 THz (1.0)
+│ eE = 0.0236 MV cm^-1 (592.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.00667 eV (6.28)
+│ kxmax = 0.075 Å^-1 (200.0)
+│ dkx = 3.75e-5 Å^-1 (0.1)
+│ nkx = 4000.0 (4000.0)
+│ kymax = 0.003 Å^-1 (8.0)
+│ dky = 0.000187 Å^-1 (0.5)
+│ nky = 32.0 (32.0)
+│ t0 = -6200.0 fs (-10.0)
+│ dt = 6.2 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 2000.0 (2000.0)
+│ # threads: 1
+└ # processes: 17
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/" created. Proceeding...
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/" created. Proceeding...
+┌ Info: Starting parallel execution 
+└ Size of ky-batches: 64
+[ Info: Size of kx-batches: 64
+[ Info: Batch finished
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/" already exists. Proceeding...
+[ Info: Saved Simulation data at eep_2023-11-08_Absquatulate/kymax=8.0/data.csv
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/" already exists. Proceeding...
+[ Info: Simulation metadata saved at 3-11-08_Absquatulate/kymax=8.0/simulation.meta
+[ Info: Plotting Velocity
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/
+[ Info: Plotting occupation
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/
+[ Info: Plotting driving field
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/" already exists. Proceeding...
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/
+[ Info: Plotting bandstructure
+[ Info: Attempting to create "...kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/"
+[ Info: "kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/" already exists. Proceeding...
+┌ Info: Saved bandstructure.pdf 
+└ kymax_sweep_2023-11-08_Absquatulate/kymax=8.0/
+┌ Info: 2023-11-08T20:03:37.424
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kymax=10.0)
+│ ζ = 30.0
+│ γ = 0.1
+│ M = 3.0
+│ plz = 0.624
+│ Δ = 10.0 meV (9.42)
+│ t1 = Inf fs (Inf)
+│ t2 = Inf fs (Inf)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 1240.0 fs (2.0)
+│ ω = 0.0101 fs^-1 (6.28)
+│ ν = 1.61 THz (1.0)
+│ eE = 0.0236 MV cm^-1 (592.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.00667 eV (6.28)
+│ kxmax = 0.075 Å^-1 (200.0)
+│ dkx = 3.75e-5 Å^-1 (0.1)
+│ nkx = 4000.0 (4000.0)
+│ kymax = 0.00375 Å^-1 (10.0)
+│ dky = 0.000187 Å^-1 (0.5)
+│ nky = 40.0 (40.0)
+│ t0 = -6200.0 fs (-10.0)
+│ dt = 6.2 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 2000.0 (2000.0)
+│ # threads: 1
+└ # processes: 17
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/" created. Proceeding...
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/" created. Proceeding...
+┌ Info: Starting parallel execution 
+└ Size of ky-batches: 64
+[ Info: Size of kx-batches: 64
+[ Info: Batch finished
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/" already exists. Proceeding...
+[ Info: Saved Simulation data at ep_2023-11-08_Absquatulate/kymax=10.0/data.csv
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/" already exists. Proceeding...
+[ Info: Simulation metadata saved at -11-08_Absquatulate/kymax=10.0/simulation.meta
+[ Info: Plotting Velocity
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/
+[ Info: Plotting occupation
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/
+[ Info: Plotting driving field
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/" already exists. Proceeding...
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/
+[ Info: Plotting bandstructure
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/" already exists. Proceeding...
+┌ Info: Saved bandstructure.pdf 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=10.0/
+┌ Info: 2023-11-08T20:20:03.646
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kymax=12.0)
+│ ζ = 30.0
+│ γ = 0.1
+│ M = 3.0
+│ plz = 0.624
+│ Δ = 10.0 meV (9.42)
+│ t1 = Inf fs (Inf)
+│ t2 = Inf fs (Inf)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 1240.0 fs (2.0)
+│ ω = 0.0101 fs^-1 (6.28)
+│ ν = 1.61 THz (1.0)
+│ eE = 0.0236 MV cm^-1 (592.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.00667 eV (6.28)
+│ kxmax = 0.075 Å^-1 (200.0)
+│ dkx = 3.75e-5 Å^-1 (0.1)
+│ nkx = 4000.0 (4000.0)
+│ kymax = 0.0045 Å^-1 (12.0)
+│ dky = 0.000187 Å^-1 (0.5)
+│ nky = 48.0 (48.0)
+│ t0 = -6200.0 fs (-10.0)
+│ dt = 6.2 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 2000.0 (2000.0)
+│ # threads: 1
+└ # processes: 17
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/" created. Proceeding...
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/" created. Proceeding...
+┌ Info: Starting parallel execution 
+└ Size of ky-batches: 64
+[ Info: Size of kx-batches: 64
+[ Info: Batch finished
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/" already exists. Proceeding...
+[ Info: Saved Simulation data at ep_2023-11-08_Absquatulate/kymax=12.0/data.csv
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/" already exists. Proceeding...
+[ Info: Simulation metadata saved at -11-08_Absquatulate/kymax=12.0/simulation.meta
+[ Info: Plotting Velocity
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/
+[ Info: Plotting occupation
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/
+[ Info: Plotting driving field
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/" already exists. Proceeding...
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/
+[ Info: Plotting bandstructure
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/" already exists. Proceeding...
+┌ Info: Saved bandstructure.pdf 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=12.0/
+┌ Info: 2023-11-08T20:36:59.863
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kymax=13.999999999999998)
+│ ζ = 30.0
+│ γ = 0.1
+│ M = 3.0
+│ plz = 0.624
+│ Δ = 10.0 meV (9.42)
+│ t1 = Inf fs (Inf)
+│ t2 = Inf fs (Inf)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 1240.0 fs (2.0)
+│ ω = 0.0101 fs^-1 (6.28)
+│ ν = 1.61 THz (1.0)
+│ eE = 0.0236 MV cm^-1 (592.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.00667 eV (6.28)
+│ kxmax = 0.075 Å^-1 (200.0)
+│ dkx = 3.75e-5 Å^-1 (0.1)
+│ nkx = 4000.0 (4000.0)
+│ kymax = 0.00525 Å^-1 (14.0)
+│ dky = 0.000187 Å^-1 (0.5)
+│ nky = 56.0 (56.0)
+│ t0 = -6200.0 fs (-10.0)
+│ dt = 6.2 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 2000.0 (2000.0)
+│ # threads: 1
+└ # processes: 17
+[ Info: Attempting to create "...3-11-08_Absquatulate/kymax=13.999999999999998/"
+[ Info: "3-11-08_Absquatulate/kymax=13.999999999999998/" created. Proceeding...
+[ Info: Attempting to create "...3-11-08_Absquatulate/kymax=13.999999999999998/"
+[ Info: "3-11-08_Absquatulate/kymax=13.999999999999998/" created. Proceeding...
+┌ Info: Starting parallel execution 
+└ Size of ky-batches: 64
+[ Info: Size of kx-batches: 64
+[ Info: Batch finished
+[ Info: Attempting to create "...3-11-08_Absquatulate/kymax=13.999999999999998/"
+[ Info: "3-11-08_Absquatulate/kymax=13.999999999999998/" already exists. Proceeding...
+[ Info: Saved Simulation data at Absquatulate/kymax=13.999999999999998/data.csv
+[ Info: Attempting to create "...3-11-08_Absquatulate/kymax=13.999999999999998/"
+[ Info: "3-11-08_Absquatulate/kymax=13.999999999999998/" already exists. Proceeding...
+[ Info: Simulation metadata saved at ulate/kymax=13.999999999999998/simulation.meta
+[ Info: Plotting Velocity
+[ Info: Attempting to create "...3-11-08_Absquatulate/kymax=13.999999999999998/"
+[ Info: "3-11-08_Absquatulate/kymax=13.999999999999998/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+└ 3-11-08_Absquatulate/kymax=13.999999999999998/
+[ Info: Attempting to create "...3-11-08_Absquatulate/kymax=13.999999999999998/"
+[ Info: "3-11-08_Absquatulate/kymax=13.999999999999998/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+└ 3-11-08_Absquatulate/kymax=13.999999999999998/
+[ Info: Plotting occupation
+[ Info: Attempting to create "...3-11-08_Absquatulate/kymax=13.999999999999998/"
+[ Info: "3-11-08_Absquatulate/kymax=13.999999999999998/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.spec.pdf at 
+└ 3-11-08_Absquatulate/kymax=13.999999999999998/
+[ Info: Plotting driving field
+[ Info: Attempting to create "...3-11-08_Absquatulate/kymax=13.999999999999998/"
+[ Info: "3-11-08_Absquatulate/kymax=13.999999999999998/" already exists. Proceeding...
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+└ 3-11-08_Absquatulate/kymax=13.999999999999998/
+[ Info: Plotting bandstructure
+[ Info: Attempting to create "...3-11-08_Absquatulate/kymax=13.999999999999998/"
+[ Info: "3-11-08_Absquatulate/kymax=13.999999999999998/" already exists. Proceeding...
+┌ Info: Saved bandstructure.pdf 
+└ 3-11-08_Absquatulate/kymax=13.999999999999998/
+┌ Info: 2023-11-08T20:58:34.616
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kymax=16.0)
+│ ζ = 30.0
+│ γ = 0.1
+│ M = 3.0
+│ plz = 0.624
+│ Δ = 10.0 meV (9.42)
+│ t1 = Inf fs (Inf)
+│ t2 = Inf fs (Inf)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 1240.0 fs (2.0)
+│ ω = 0.0101 fs^-1 (6.28)
+│ ν = 1.61 THz (1.0)
+│ eE = 0.0236 MV cm^-1 (592.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.00667 eV (6.28)
+│ kxmax = 0.075 Å^-1 (200.0)
+│ dkx = 3.75e-5 Å^-1 (0.1)
+│ nkx = 4000.0 (4000.0)
+│ kymax = 0.006 Å^-1 (16.0)
+│ dky = 0.000187 Å^-1 (0.5)
+│ nky = 64.0 (64.0)
+│ t0 = -6200.0 fs (-10.0)
+│ dt = 6.2 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 2000.0 (2000.0)
+│ # threads: 1
+└ # processes: 17
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/" created. Proceeding...
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/" created. Proceeding...
+┌ Info: Starting parallel execution 
+└ Size of ky-batches: 64
+[ Info: Size of kx-batches: 64
+[ Info: Batch finished
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/" already exists. Proceeding...
+[ Info: Saved Simulation data at ep_2023-11-08_Absquatulate/kymax=16.0/data.csv
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/" already exists. Proceeding...
+[ Info: Simulation metadata saved at -11-08_Absquatulate/kymax=16.0/simulation.meta
+[ Info: Plotting Velocity
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/
+[ Info: Plotting occupation
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/
+[ Info: Plotting driving field
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/" already exists. Proceeding...
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/
+[ Info: Plotting bandstructure
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/" already exists. Proceeding...
+┌ Info: Saved bandstructure.pdf 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=16.0/
+┌ Info: 2023-11-08T21:20:44.450
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kymax=18.0)
+│ ζ = 30.0
+│ γ = 0.1
+│ M = 3.0
+│ plz = 0.624
+│ Δ = 10.0 meV (9.42)
+│ t1 = Inf fs (Inf)
+│ t2 = Inf fs (Inf)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 1240.0 fs (2.0)
+│ ω = 0.0101 fs^-1 (6.28)
+│ ν = 1.61 THz (1.0)
+│ eE = 0.0236 MV cm^-1 (592.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.00667 eV (6.28)
+│ kxmax = 0.075 Å^-1 (200.0)
+│ dkx = 3.75e-5 Å^-1 (0.1)
+│ nkx = 4000.0 (4000.0)
+│ kymax = 0.00675 Å^-1 (18.0)
+│ dky = 0.000187 Å^-1 (0.5)
+│ nky = 72.0 (72.0)
+│ t0 = -6200.0 fs (-10.0)
+│ dt = 6.2 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 2000.0 (2000.0)
+│ # threads: 1
+└ # processes: 17
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/" created. Proceeding...
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/" created. Proceeding...
+┌ Info: Starting parallel execution 
+└ Size of ky-batches: 64
+[ Info: Size of kx-batches: 64
+[ Info: Batch finished
+[ Info: Batch finished
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/" already exists. Proceeding...
+[ Info: Saved Simulation data at ep_2023-11-08_Absquatulate/kymax=18.0/data.csv
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/" already exists. Proceeding...
+[ Info: Simulation metadata saved at -11-08_Absquatulate/kymax=18.0/simulation.meta
+[ Info: Plotting Velocity
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/
+[ Info: Plotting occupation
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/
+[ Info: Plotting driving field
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/" already exists. Proceeding...
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/
+[ Info: Plotting bandstructure
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/" already exists. Proceeding...
+┌ Info: Saved bandstructure.pdf 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=18.0/
+┌ Info: 2023-11-08T21:51:41.816
+│ On pc1011605708:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: kymax=20.0)
+│ ζ = 30.0
+│ γ = 0.1
+│ M = 3.0
+│ plz = 0.624
+│ Δ = 10.0 meV (9.42)
+│ t1 = Inf fs (Inf)
+│ t2 = Inf fs (Inf)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 1240.0 fs (2.0)
+│ ω = 0.0101 fs^-1 (6.28)
+│ ν = 1.61 THz (1.0)
+│ eE = 0.0236 MV cm^-1 (592.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.00667 eV (6.28)
+│ kxmax = 0.075 Å^-1 (200.0)
+│ dkx = 3.75e-5 Å^-1 (0.1)
+│ nkx = 4000.0 (4000.0)
+│ kymax = 0.0075 Å^-1 (20.0)
+│ dky = 0.000187 Å^-1 (0.5)
+│ nky = 80.0 (80.0)
+│ t0 = -6200.0 fs (-10.0)
+│ dt = 6.2 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 2000.0 (2000.0)
+│ # threads: 1
+└ # processes: 17
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/" created. Proceeding...
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/" created. Proceeding...
+┌ Info: Starting parallel execution 
+└ Size of ky-batches: 64
+[ Info: Size of kx-batches: 64
+[ Info: Batch finished
+[ Info: Batch finished
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/" already exists. Proceeding...
+[ Info: Saved Simulation data at ep_2023-11-08_Absquatulate/kymax=20.0/data.csv
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/" already exists. Proceeding...
+[ Info: Simulation metadata saved at -11-08_Absquatulate/kymax=20.0/simulation.meta
+[ Info: Plotting Velocity
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/
+[ Info: Plotting occupation
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/
+[ Info: Plotting driving field
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/" already exists. Proceeding...
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/
+[ Info: Plotting bandstructure
+[ Info: Attempting to create "...ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/"
+[ Info: "ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/" already exists. Proceeding...
+┌ Info: Saved bandstructure.pdf 
+└ ymax_sweep_2023-11-08_Absquatulate/kymax=20.0/
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" already exists. Proceeding...
+┌ Info: Saved vx.pdf & vx.spec.pdf at
+└ sianPulse_kymax_sweep_2023-11-08_Absquatulate/
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" already exists. Proceeding...
+┌ Info: Saved vxintra.pdf & vxintra.spec.pdf at
+└ sianPulse_kymax_sweep_2023-11-08_Absquatulate/
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" already exists. Proceeding...
+┌ Info: Saved vxinter.pdf & vxinter.spec.pdf at
+└ sianPulse_kymax_sweep_2023-11-08_Absquatulate/
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" already exists. Proceeding...
+┌ Info: Saved vy.pdf & vy.spec.pdf at
+└ sianPulse_kymax_sweep_2023-11-08_Absquatulate/
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" already exists. Proceeding...
+┌ Info: Saved vyintra.pdf & vyintra.spec.pdf at
+└ sianPulse_kymax_sweep_2023-11-08_Absquatulate/
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" already exists. Proceeding...
+┌ Info: Saved vyinter.pdf & vyinter.spec.pdf at
+└ sianPulse_kymax_sweep_2023-11-08_Absquatulate/
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" already exists. Proceeding...
+┌ Info: Saved cb_occ.pdf & cb_occ_spec.pdf at 
+└ sianPulse_kymax_sweep_2023-11-08_Absquatulate/
+[ Info: Attempting to create "...sianPulse_kymax_sweep_2023-11-08_Absquatulate/"
+[ Info: "sianPulse_kymax_sweep_2023-11-08_Absquatulate/" already exists. Proceeding...
+[ Info: Ensemble metadata save at /home/how09898/phd/data/hhgjl/occupation_oscillations/zeta=30/Ensemble[10](2d)GappedDirac_GaussianPulse_kymax_sweep_2023-11-08_Absquatulate/ensemble.meta
+[ Info: 175.76888555336666min spent in run_simulation!(ens::Ensemble;...)
+[ Info: 2023-11-08T22:23:32.337: calculation finished.

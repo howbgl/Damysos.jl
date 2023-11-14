@@ -26,6 +26,14 @@ function padvecto_overlap!(kybatches::Vector{V}) where {V<:AbstractVector}
     return kybatches
 end
 
+function nestedcount(x::Vector)
+    if isprimitivetype(eltype(x))
+        return length(x)
+    else
+        return sum((nestedcount(el) for el in x))
+    end
+end
+
 export find_files_with_name
 function find_files_with_name(root_dir::String, target_name::String)
     file_paths = Vector{String}()

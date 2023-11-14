@@ -117,8 +117,9 @@ function run_simulation2d!(
     
     p                   = getparams(sim)
     observables_total   = deepcopy(sim.observables)
+    current_progress    = 0.0
 
-    @withprogress name="running" for kybatch in kybatches
+    @withprogress name="Simulation" for kybatch in kybatches
         observables_buffer = run_kybatch!(sim,kybatch;
             kxbatch_basesize=kxbatch_basesize,
             threaded=threaded,
@@ -131,7 +132,9 @@ function run_simulation2d!(
         resize_obs!(sim)
         
         @everywhere GC.gc()
-        @logprogress p.nkx * p.nt * length(kybatch) / nprogress
+        current_progress += p.nkx * p.nt * length(kybatch) / nprogress
+        @info current_progress
+        @logprogress current_progress
     end
 
     sim.observables .= observables_total
@@ -229,19 +232,18 @@ function run_simulation!(
     kxbatch_basesize=128,
     kwargs...) where {T<:Real}
     
-    infostr ="""
+    @info """
             ## $(getshortname(sim)) (id: $(sim.id))
 
             Starting on **$(gethostname())** at **$(now())**:
             
             * Threads: $(Threads.nthreads())
             * Processes: $(Distributed.nprocs())
-            * Size of kx-batches: $kxbatch_basesize
-            * Size of ky-batches: $(maximum(length.(kybatches)))
+            * Maximum size of kx-batches: $kxbatch_basesize
+            * Maximum size of ky-batches: $(maximum(length.(kybatches)))
 
             $(markdown_paramsSI(sim))
             """
-    @info infostr
 
     checkbzbounds(sim)
     ensurepath(sim.datapath)
@@ -345,7 +347,10 @@ function run_simulation!(ens::Ensemble{T};
         end
         
     else
-        for (s,kys) in zip(ens.simlist,list_of_kybatches)
+        current_progress = 0.0
+        collection = zip(ens.simlist,list_of_kybatches,getparams.(ens.simlist))
+
+        @withprogress name="Ensemble" for (s,kys,p) in collection
             obs = run_simulation!(s,kys,nprogress;
                 savedata=savedata,
                 saveplots=saveplots,
@@ -354,6 +359,9 @@ function run_simulation!(ens::Ensemble{T};
                 kwargs...)
             push!(allobs,obs)
 
+            current_progress += nestedcount(kybatches) * p.nt * p.nkx
+            @info current_progress
+            @logprogress current_progress
             @everywhere GC.gc
         end
     end

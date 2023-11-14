@@ -1,0 +1,107 @@
+┌ Info: 2023-11-14T18:07:11.634
+│ On pc1012251314:
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/smallerref.jl:47
+┌ Info: ## Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref_small)
+│ 
+│ Starting on **pc1012251314** at **2023-11-14T18:07:21.197**:
+│ 
+│ * Threads: 1
+│ * Processes: 5
+│ * Size of kx-batches: 128
+│ * Size of ky-batches: 17
+│ 
+│ | Parameter | Value (SI units) | Value (scaled) |
+│ |-----------|------------------|----------------|
+│ | ζ | 13.2 |   |
+│ | γ | 0.146 |   |
+│ | M | 1.93 |   |
+│ | plz | 0.641 |   |
+│ | Δ | 20.0 meV  | 6.08 |
+│ | t1 | Inf fs  |   |
+│ | t2 | 50.0 fs  | 0.25 |
+│ | vF | 430000.0 m s^-1  | 1.0 |
+│ | σ | 800.0 fs  | 4.0 |
+│ | ω | 0.0314 fs^-1  | 6.28 |
+│ | ν | 5.0 THz  | 1.0 |
+│ | eE | 0.1 MV cm^-1  | 261.0 |
+│ | φ | 0.0  | 0.0 |
+│ | ħω | 0.0207 eV  | 6.28 |
+│ | kxmax | 0.298 Å^-1  | 256.0 |
+│ | dkx | 0.0116 Å^-1  | 10.0 |
+│ | nkx | 52.0  | 52.0 |
+│ | kymax | 0.0372 Å^-1  | 32.0 |
+│ | dky | 0.00116 Å^-1  | 1.0 |
+│ | nky | 64.0  | 64.0 |
+│ | t0 | -4000.0 fs  |   |
+│ | dt | 2.0 fs  | 0.01 |
+│ | rtol | 1.0e-12  |   |
+│ | atol | 1.0e-12  |   |
+│ | nt | 4000.0  | 4000.0 |
+│ 
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:245
+┌ Info: Attempting to create "...test/reference_small"
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:146
+┌ Info: "test/reference_small" already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:152
+┌ Info: Attempting to create "...test/reference_small"
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:146
+┌ Info: "test/reference_small" already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:152
+┌ Info: 0.2537313432835821
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:134
+┌ Info: 0.2537313432835821
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:134
+┌ Info: 0.2537313432835821
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:134
+┌ Info: 0.23880597014925373
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:134
+┌ Info: Attempting to create "...test/reference_small"
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:146
+┌ Info: "test/reference_small" already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:152
+┌ Info: Saved Simulation data at test/reference_small/data.csv
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:17
+┌ Info: Attempting to create "...test/reference_small"
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:146
+┌ Info: "test/reference_small" already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:152
+┌ Info: Simulation metadata saved at test/reference_smallsimulation.meta
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:63
+┌ Info: Plotting Velocity
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:229
+┌ Info: Attempting to create "...test/reference_small"
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:146
+┌ Info: "test/reference_small" already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:152
+┌ Info: Saved vx.pdf & vx.spec.pdf at 
+│ test/reference_small
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:276
+┌ Info: Attempting to create "...test/reference_small"
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:146
+┌ Info: "test/reference_small" already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:152
+┌ Info: Saved vy.pdf & vy.spec.pdf at 
+│ test/reference_small
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:276
+┌ Info: Plotting driving field
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:333
+┌ Info: Attempting to create "...test/reference_small"
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:146
+┌ Info: "test/reference_small" already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:152
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at 
+│ test/reference_small
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:357
+┌ Info: Plotting bandstructure
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:379
+┌ Info: Attempting to create "...test/reference_small"
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:146
+┌ Info: "test/reference_small" already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:152
+┌ Info: Saved bandstructure.pdf 
+│ test/reference_small
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:411
+┌ Info: 2.09714760335min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/smallerref.jl:51
+┌ Info: 2023-11-14T18:09:17.970: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/smallerref.jl:53

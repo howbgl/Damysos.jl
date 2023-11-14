@@ -177,3 +177,35 @@ function printparamsSI(sim::Simulation;digits=3)
     str *= printparamsSI(sim.numericalparams,sim.unitscaling;digits=digits)
     return str
 end
+
+
+function markdown_paramsSI(sim::Simulation)
+
+    input_str = printparamsSI(sim)
+    table_str = "| Parameter | Value (SI units) | Value (scaled) |\n"*
+                "|-----------|------------------|----------------|\n"
+
+    # Split the input string into lines
+    lines = split(input_str, '\n')
+
+    for line in lines
+        # Use regular expressions to extract values
+        pattern = r"(.+?)\s*=\s*([^()]+)\s*(?:\(([\d\.]+)\))?"
+
+        # Match the pattern in the input string
+        match_result = match(pattern, line)
+
+        if match_result !== nothing
+            # Extract matched groups
+            parameter_name = match_result[1]
+            first_number = match_result[2]
+            number_in_brackets = isnothing(match_result[3]) ? " " : match_result[3]
+
+            # Append a new row to the table string
+            table_str *= "| $parameter_name | $first_number | $number_in_brackets |\n"
+        end
+    end
+
+    return table_str
+end
+

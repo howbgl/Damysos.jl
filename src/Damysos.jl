@@ -1,7 +1,9 @@
 module Damysos
 
 using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie
-using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,FLoops,Dates,ProgressMeter
+using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,FLoops,Dates
+using TerminalLoggers,ProgressLogging
+
 
 export Hamiltonian,GappedDirac,scalegapped_dirac
 export DrivingField,GaussianPulse,get_efieldx,get_vecpotx,scaledriving_frequency

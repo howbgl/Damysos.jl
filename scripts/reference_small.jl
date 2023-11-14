@@ -1,4 +1,4 @@
-using Damysos,Unitful,LoggingExtras,Dates,Formatting
+using Damysos,Unitful,LoggingExtras,Dates,Formatting,TerminalLoggers,ProgressLogging
 
 import Damysos.getshortname
 import Damysos.ensurepath
@@ -34,11 +34,11 @@ const ppath   = dpath
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 
 ensurepath(sim.plotpath)
+global_logger(TerminalLogger(right_justify=120))
 const info_filelogger  = FileLogger(joinpath(sim.plotpath,sim.id*"_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
 const all_filelogger   = FileLogger(joinpath(sim.plotpath,sim.id*"_$(now())_debug.log"))
-const console_logger   = ConsoleLogger(stdout)
-const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
+const tee_logger       = TeeLogger(info_logger,all_filelogger,global_logger())
 
 @info "Logging to $(joinpath(sim.plotpath,getshortname(sim)*"s(now()).log")) " *
       "and $(joinpath(sim.plotpath,getshortname(sim)*"_$(now())_debug.log"))"
@@ -46,7 +46,7 @@ const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
 global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run_simulation!(sim;threaded=true)
+const results,time,rest... = @timed run_simulation!(sim;maxparallel_ky=16)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

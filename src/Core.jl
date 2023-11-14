@@ -47,8 +47,8 @@ The combined observables obtained from the simulation.
 
 """
 function run_simulation1d!(
-    sim::Simulation{T};
-    ky::T=zero(T),
+    sim::Simulation{T},
+    ky::T=zero(T);
     kxbatch_basesize=512,
     kwargs...) where {T<:Real}
 
@@ -90,35 +90,35 @@ The combined observables obtained from the simulation.
 [`run_simulation!`](@ref), [`run_simulation1d!`](@ref)
 
 """
-function run_simulation2d!(
-    sim::Simulation{T};
-    kyparallel=true,
-    maxparallel_ky=64,
+function run_simulation2d!(sim::Simulation;
     kxbatch_basesize=128,
+    maxparallel_ky=64,
     threaded=false,
-    kwargs...) where {T<:Real}
-
-    if !kyparallel
-        @info "Starting serial execution"
-        return run_simulation2d!(sim;
-            kxbatch_basesize=kxbatch_basesize,
-            maxparallel_ky=1,
-            threaded=threaded,
-            kwargs...)
-    end
+    kwargs...)
 
     p                   = getparams(sim)
     kybatches           = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
+    nprogress           = length(kybatches)
+
+    return run_simulation2d!(sim,kybatches,nprogress;
+        kxbatch_basesize=kxbatch_basesize,
+        threaded=threaded,
+        kwargs...)
+    
+end
+
+function run_simulation2d!(
+    sim::Simulation{T},
+    kybatches::Vector{Vector{T}},
+    nprogress::Integer;
+    kxbatch_basesize=128,
+    threaded=false,
+    kwargs...) where {T<:Real}
+    
+    p                   = getparams(sim)
     observables_total   = deepcopy(sim.observables)
 
-    if maxparallel_ky > 1
-        @info "Starting parallel execution \n"*
-        "Size of ky-batches: $maxparallel_ky"
-    end
-
-    @info "Size of kx-batches: $kxbatch_basesize"
-
-    for kybatch in kybatches
+    @withprogress name="running" for kybatch in kybatches
         observables_buffer = run_kybatch!(sim,kybatch;
             kxbatch_basesize=kxbatch_basesize,
             threaded=threaded,
@@ -131,10 +131,11 @@ function run_simulation2d!(
         resize_obs!(sim)
         
         @everywhere GC.gc()
-        @info "Batch finished"
+        @logprogress p.nkx * p.nt * length(kybatch) / nprogress
     end
 
     sim.observables .= observables_total
+
     return sim.observables
 end
 
@@ -148,8 +149,8 @@ function run_kybatch!(
     if threaded
         obs = Folds.map(
             ky -> run_simulation1d!(
-                deepcopy(sim);
-                ky,
+                deepcopy(sim),
+                ky;
                 kxbatch_basesize=kxbatch_basesize,
                 kwargs...),
             kysamples)
@@ -157,14 +158,13 @@ function run_kybatch!(
     else
         obs = pmap(
             ky -> run_simulation1d!(
-                sim;
-                ky,
+                sim,
+                ky;
                 kxbatch_basesize=kxbatch_basesize,
                 kwargs...),
             kysamples)
         integrateobs!(obs,sim.observables,kysamples)
     end
-
 
     return sim.observables
 end
@@ -173,7 +173,6 @@ end
 run_simulation!(sim::Simulation{T};
     savedata=true,
     saveplots=true,
-    kyparallel=true,
     threaded=false,
     maxparallel_ky=64,
     kxbatch_basesize=512,
@@ -198,33 +197,64 @@ function run_simulation!(
     sim::Simulation{T};
     savedata=true,
     saveplots=true,
-    kyparallel=true,
     threaded=false,
+    kxbatch_basesize=128,
     maxparallel_ky=64,
+    kwargs...) where {T<:Real}
+
+    p = getparams(sim)
+    if sim.dimensions==1
+        kybatches = Vector{Vector{T}}(undef,0)
+        nprogress = p.nkx * p.nt
+    elseif  sim.dimensions==2
+        kybatches = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
+        nprogress = sum(length.(kybatches)) * p.nkx * p.nt
+    end
+
+    return run_simulation!(sim,kybatches,nprogress;
+        savedata=savedata,
+        saveplots=saveplots,
+        threaded=threaded,
+        kxbatch_basesize=kxbatch_basesize,
+        kwargs...)
+end
+
+function run_simulation!(
+    sim::Simulation{T},
+    kybatches::Vector{Vector{T}},
+    nprogress::Integer;
+    savedata=true,
+    saveplots=true,
+    threaded=false,
     kxbatch_basesize=128,
     kwargs...) where {T<:Real}
     
-    @info   "$(now())\nOn $(gethostname()):\n"*
-            "Starting $(getshortname(sim)) (id: $(sim.id))\n"*printparamsSI(sim)*
-            "# threads: $(Threads.nthreads())\n"*
-            "# processes: $(Distributed.nprocs())"
+    infostr ="""
+            ## $(getshortname(sim)) (id: $(sim.id))
+
+            Starting on **$(gethostname())** at **$(now())**:
+            
+            * Threads: $(Threads.nthreads())
+            * Processes: $(Distributed.nprocs())
+            * Size of kx-batches: $kxbatch_basesize
+            * Size of ky-batches: $(maximum(length.(kybatches)))
+
+            $(markdown_paramsSI(sim))
+            """
+    @info infostr
 
     checkbzbounds(sim)
-
     ensurepath(sim.datapath)
     ensurepath(sim.plotpath)
 
     resize_obs!(sim)
     zero.(sim.observables)
 
-
-    if sim.dimensions==1
+    if sim.dimensions == 1
         run_simulation1d!(sim;kwargs...)
     else
-        run_simulation2d!(sim;
-            kyparallel=kyparallel,
+        run_simulation2d!(sim,kybatches,nprogress;
             threaded=threaded,
-            maxparallel_ky=maxparallel_ky,
             kxbatch_basesize=kxbatch_basesize,
             kwargs...)
     end
@@ -248,7 +278,6 @@ end
         savedata=true,
         saveplots=true,
         ensembleparallel=false,
-        kyparallel=true,
         threaded=false,
         maxparallel_ky=64,
         kxbatch_basesize=512,
@@ -274,7 +303,6 @@ function run_simulation!(ens::Ensemble{T};
                 savedata=true,
                 saveplots=true,
                 ensembleparallel=false,
-                kyparallel=true,
                 threaded=false,
                 maxparallel_ky=64,
                 kxbatch_basesize=128,
@@ -284,41 +312,44 @@ function run_simulation!(ens::Ensemble{T};
     ensurepath(ens.datapath)
     ensurepath(ens.plotpath)
 
-    @info "Starting ensemble of $(length(ens.simlist)) Simulations"
+    @info "# Ensemble of $(length(ens.simlist)) Simulations\nid : $(ens.id)"
 
-    allobs = []
+    # list_of_kybatches   = [padvecto_overlap!(
+    #     subdivide_vector(p.kysamples,maxparallel_ky)) for p in getparams.(ens.simlist)]
+    list_of_kybatches   = Vector{Vector{Vector{T}}}(undef,0)
+    nprogress           = 0
 
+    for p in getparams.(ens.simlist)
+        kybatches = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
+        nprogress += nestedcount(kybatches) * p.nt * p.nkx
+        push!(list_of_kybatches,kybatches) 
+    end
+
+    allobs              = []
     if ensembleparallel
         if threaded
             @warn "At the moment parallel ensembles are only supported via multi-processing\n"*
                     "Using pmap()"
         end
-        if kyparallel
-            @warn "Only ensemble OR ky can be parallelized. Defaulting to ensemble."
-        end
         allobs = pmap(
-                s -> run_simulation!(s;
+                (s,kys) -> run_simulation!(s,kys,prog;
                     savedata=savedata,
                     saveplots=saveplots,
-                    kyparallel=false,
-                    threaded=false,
-                    maxparallel_ky=maxparallel_ky,
+                    threaded=threaded,
                     kxbatch_basesize=kxbatch_basesize,
                     kwargs...),
-                ens.simlist)
+                ens.simlist,list_of_kybatches)
         # Run plotting sequentially
         if saveplots
             Damysos.plotdata.(ens.simlist;kwargs...)
         end
         
     else
-        for i in eachindex(ens.simlist)
-            obs = run_simulation!(ens.simlist[i];
+        for (s,kys) in zip(ens.simlist,list_of_kybatches)
+            obs = run_simulation!(s,kys,nprogress;
                 savedata=savedata,
                 saveplots=saveplots,
-                kyparallel=kyparallel,
                 threaded=threaded,
-                maxparallel_ky=maxparallel_ky,
                 kxbatch_basesize=kxbatch_basesize,
                 kwargs...)
             push!(allobs,obs)

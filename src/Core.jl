@@ -350,8 +350,8 @@ function run_simulation!(ens::Ensemble{T};
         current_progress = 0.0
         collection = zip(ens.simlist,list_of_kybatches,getparams.(ens.simlist))
 
-        @withprogress name="Ensemble" for (s,kys,p) in collection
-            obs = run_simulation!(s,kys,nprogress;
+        @withprogress name="Ensemble" for (s,kybatches,p) in collection
+            obs = run_simulation!(s,kybatches,nprogress;
                 savedata=savedata,
                 saveplots=saveplots,
                 threaded=threaded,
@@ -359,7 +359,7 @@ function run_simulation!(ens::Ensemble{T};
                 kwargs...)
             push!(allobs,obs)
 
-            current_progress += nestedcount(kybatches) * p.nt * p.nkx
+            current_progress += nestedcount(kybatches) * p.nt * p.nkx / nprogress
             @info current_progress
             @logprogress current_progress
             @everywhere GC.gc

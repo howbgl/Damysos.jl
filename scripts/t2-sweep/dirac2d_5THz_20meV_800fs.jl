@@ -1,4 +1,4 @@
-using Damysos,Unitful,LoggingExtras,Dates,Formatting
+using Damysos,Unitful,LoggingExtras,Dates,Formatting,TerminalLoggers
 
 import Damysos.getshortname
 import Damysos.ensurepath
@@ -16,7 +16,7 @@ const σ         = u"800.0fs"
 # dt = 0.005
 # dkx = 0.05
 # dky = 0.4
-# kxmax = 
+# kxmax = 200
 # kymax = 
 
 
@@ -29,8 +29,8 @@ const σ         = u"800.0fs"
 
 const dt      = 0.005
 const dkx     = 0.05
-const dky     = 0.8
-const kxmax   = 100.0
+const dky     = 0.4
+const kxmax   = 200.0
 const kymax   = 2.0
 
 const us      = scaledriving_frequency(freq,vf)
@@ -46,9 +46,10 @@ const dpath   = "/home/how09898/phd/data/hhgjl/t2-sweep/dirac2d_5THz_20meV_800fs
 const ppath   = "/home/how09898/phd/plots/hhgjl/t2-sweep/dirac2d_5THz_20meV_800fs/"*name
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
-const ens     = parametersweep(sim,sim.numericalparams,:kxmax,LinRange(200.0,300.0,10))
+const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(50.0,100.0,5))
 
 ensurepath(ens.plotpath)
+global_logger(TerminalLogger())
 const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))
 const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
 const all_filelogger   = FileLogger(joinpath(ens.plotpath,ens.id*"$(now())_debug.log"))
@@ -61,10 +62,8 @@ global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
 const results,time,rest... = @timed run_simulation!(ens;
-      kyparallel=true,
-      threaded=false,
-      kxbatch_basesize=128,
-      maxparallel_ky=64)
+      kxbatch_basesize=512,
+      maxparallel_ky=128)
 
 @info "$(time/60.)min spent in run_simulation!(...)"
 @debug rest

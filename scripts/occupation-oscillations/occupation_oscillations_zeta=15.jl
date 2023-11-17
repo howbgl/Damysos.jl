@@ -64,7 +64,6 @@ global_logger(tee_logger)
 @info "$(now())\nOn $(gethostname()):"
 
 const results,time,rest... = @timed run_simulation!(ens;
-      kyparallel=true,
       threaded=false,
       kxbatch_basesize=64,
       maxparallel_ky=64)

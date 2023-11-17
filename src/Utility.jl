@@ -227,6 +227,7 @@ function parametersweep(
         joinpath(plotpath, ensname * "/"))
 end
 
+
 function resize_obs!(sim::Simulation{T}) where {T<:Real}
 
     sim.observables .= [resize(o, sim.numericalparams) for o in sim.observables]

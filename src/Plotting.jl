@@ -91,6 +91,7 @@ end
 function plotdata(ens::Ensemble{T};maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
     
     for obs in ens[1].observables
+        @info "Plotting " * getshortname(obs)
         plotdata(ens,obs;maxharm=maxharm,fftwindow=fftwindow,kwargs...)
     end
 end
@@ -146,8 +147,7 @@ function plotdata(
                 CairoMakie.save(joinpath(plotpath,vname*"_spec.pdf"),figspectra)
                 CairoMakie.save(joinpath(plotpath,vname*"_spec.png"),figspectra,
                     px_per_unit = 4)
-                @info "Saved $(vname).pdf & $(vname).spec.pdf at\n"*
-                    choptolength(plotpath,45)
+                @debug "Saved $(vname).pdf & $(vname).spec.pdf at\n\"$plotpath\""
             else
                 @warn "Could not save $(vname) plots"
             end 
@@ -201,7 +201,7 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
             CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
             CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
             CairoMakie.save(joinpath(plotpath,"cb_occ_spec.png"),figspectra,px_per_unit = 4)
-            @info "Saved cb_occ.pdf & cb_occ_spec.pdf at \n"*(choptolength(plotpath,45))
+            @debug "Saved cb_occ.pdf & cb_occ_spec.pdf at \n\"$plotpath\""
         else
             @warn "Could not save occupation plots."
         end
@@ -214,7 +214,10 @@ end
 
 function plotdata(sim::Simulation{T};fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
     
+    @info "Generating plots"
+
     for obs in sim.observables
+        @info "Plotting " * getshortname(obs)
         plotdata(sim,obs;fftwindow=fftwindow,maxharm=maxharm,kwargs...)        
     end
 
@@ -225,8 +228,6 @@ end
 
 function plotdata(sim::Simulation{T},vel::Velocity{T};
                 fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
-
-    @info "Plotting Velocity"
 
     p           = getparams(sim)
     plotpath    = sim.plotpath
@@ -273,8 +274,7 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
                 CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.pdf"),figspectra)
                 CairoMakie.save(joinpath(plotpath,"$(lab[1])_spec.png"),
                     figspectra,px_per_unit = 4)
-                @info "Saved $(lab[1]).pdf & $(lab[1]).spec.pdf at \n"*
-                    choptolength(plotpath,45)
+                @debug "Saved $(lab[1]).pdf & $(lab[1]).spec.pdf at \n\"$plotpath\""
             else
                 @warn "Could not save $((lab[1])) plots"
             end
@@ -291,8 +291,6 @@ end
 
 function plotdata(sim::Simulation{T},occ::Occupation{T};
                 fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
-    
-    @info "Plotting occupation"
 
     p           = getparams(sim)
     plotpath    = sim.plotpath
@@ -315,7 +313,7 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
             CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
             CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
             CairoMakie.save(joinpath(plotpath,"cb_occ_spec.png"),figspectra,px_per_unit = 4)
-            @info "Saved cb_occ.pdf & cb_occ_spec.spec.pdf at \n"*choptolength(plotpath,45)
+            @debug "Saved cb_occ.pdf & cb_occ_spec.spec.pdf at \"$plotpath\"\n"
         else
             @warn "Could not save occupation plots"
         end
@@ -354,7 +352,7 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
             CairoMakie.save(joinpath(plotpath,"vecfield.png"),figa,px_per_unit = 4)
             CairoMakie.save(joinpath(plotpath,"efield.pdf"),fige)
             CairoMakie.save(joinpath(plotpath,"efield.png"),fige,px_per_unit = 4)
-            @info "Saved vecfield.pdf & efield.spec.pdf at \n"*choptolength(plotpath,45)
+            @debug "Saved vecfield.pdf & efield.spec.pdf at \"$plotpath\"\n"
         else
             @warn "Could not save driving field plots"
         end
@@ -408,7 +406,7 @@ function plotbandstructure2d(sim::Simulation{T};plotkgrid=true,nk=2048) where {T
         if success
             CairoMakie.save(joinpath(plotpath,"bandstructure.pdf"),fig)
             CairoMakie.save(joinpath(plotpath,"bandstructure.png"),fig,px_per_unit = 4)
-            @info "Saved bandstructure.pdf \n"*(choptolength(plotpath,45))
+            @debug "Saved bandstructure.pdf \n\"$plotpath\""
         else
             @warn "Could not save bandstructure plots"
         end

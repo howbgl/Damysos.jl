@@ -1,6 +1,9 @@
 
 function savedata(sim::Simulation{T}) where {T<:Real}
 
+    @info "Saving simulation data"
+    @debug "datapath = \"$(sim.datapath)\""
+
     dat         = DataFrame(t=getparams(sim).tsamples)
     
     for o in sim.observables
@@ -14,7 +17,7 @@ function savedata(sim::Simulation{T}) where {T<:Real}
 
     if success
         CSV.write(joinpath(datapath,"data.csv"),dat)
-        @info "Saved Simulation data at "*choptolength(joinpath(datapath,"data.csv"),45)
+        @debug "Saved Simulation data at\n\"$datapath\""
     else
         @warn "Could not save data.csv."
     end
@@ -60,7 +63,7 @@ function savemetadata(sim::Simulation)
     (success,datapath)  = ensurepath([sim.datapath,altpath])
     if success
         if save(joinpath(datapath,filename),sim)
-            @info "Simulation metadata saved at "*choptolength(datapath*filename,45)
+            @debug "Simulation metadata saved at \""*joinpath(datapath,filename)*"\""
             return
         end
     end
@@ -76,7 +79,7 @@ function savemetadata(ens::Ensemble)
     (success,datapath)  = ensurepath([ens.datapath,altpath])
     if success
         if save(joinpath(datapath,filename),ens)
-            @info "Ensemble metadata save at "*datapath*filename
+            @debug "Ensemble metadata saved at \""*joinpath(datapath,filename)*"\""
             return 
         end
     end

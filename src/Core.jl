@@ -237,10 +237,12 @@ function run_simulation!(
 
             Starting on **$(gethostname())** at **$(now())**:
             
-            * Threads: $(Threads.nthreads())
-            * Processes: $(Distributed.nprocs())
-            * Maximum size of kx-batches: $kxbatch_basesize
-            * Maximum size of ky-batches: $(maximum(length.(kybatches)))
+            * threads: $(Threads.nthreads())
+            * processes: $(Distributed.nprocs())
+            * maximum size of kx-batches: $kxbatch_basesize
+            * maximum size of ky-batches: $(maximum(length.(kybatches)))
+            * plotpath: $(sim.plotpath)
+            * datapath: $(sim.datapath)
 
             $(markdown_paramsSI(sim))
             """
@@ -308,13 +310,17 @@ function run_simulation!(ens::Ensemble{T};
                 threaded=false,
                 maxparallel_ky=64,
                 kxbatch_basesize=128,
-                makecombined_plots=true,
                 kwargs...) where {T<:Real}
 
     ensurepath(ens.datapath)
     ensurepath(ens.plotpath)
 
-    @info "# Ensemble of $(length(ens.simlist)) Simulations\nid : $(ens.id)"
+    @info """
+        # Ensemble of $(length(ens.simlist)) Simulations
+        
+        * id : $(ens.id)
+        * plotpath: $(ens.plotpath)
+        * datapath: $(ens.datapath)"""
 
     # list_of_kybatches   = [padvecto_overlap!(
     #     subdivide_vector(p.kysamples,maxparallel_ky)) for p in getparams.(ens.simlist)]
@@ -366,7 +372,7 @@ function run_simulation!(ens::Ensemble{T};
         end
     end
 
-    if makecombined_plots
+    if saveplots
         Damysos.plotdata(ens)
     end
 

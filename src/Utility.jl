@@ -82,7 +82,7 @@ end
 
 droplast(path::AbstractString) = joinpath(splitpath(path)[1:end-1]...)
 
-function choptolength(s::AbstractString,l::Integer)
+function chopto_length_from_front(s::AbstractString,l::Integer)
     if length(s) > l
         return s[end-l:end]
     else
@@ -142,22 +142,21 @@ end
 
 function ensurepath(path::String; n_tries::Int=3, wait_time::Real=10.0)
 
-    shortpath = choptolength(path,45)
-    @info "Attempting to create \"...$shortpath\""
+    @debug "Attempting to create \"...$path\""
     @debug "Full path: $path"
     success = false
     if !isdir(path)
         success = try_execute_n_times(mkpath, n_tries, path; wait_time=wait_time)
     else
-        @info "\"$shortpath\" already exists. Proceeding..."
+        @debug "\"$path\" already exists."
         return true
     end
 
     if success
-        @info "\"$shortpath\" created. Proceeding..."
+        @debug "\"$path\" created."
         return true
     else
-        @warn "Could not create \"$shortpath\""
+        @warn "Could not create \"$path\""
         return false
     end
 end

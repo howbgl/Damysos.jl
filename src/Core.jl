@@ -98,9 +98,8 @@ function run_simulation2d!(sim::Simulation;
 
     p                   = getparams(sim)
     kybatches           = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
-    nprogress           = length(kybatches)
-
-    return run_simulation2d!(sim,kybatches,nprogress;
+    
+    return run_simulation2d!(sim,kybatches;
         kxbatch_basesize=kxbatch_basesize,
         threaded=threaded,
         kwargs...)
@@ -109,14 +108,14 @@ end
 
 function run_simulation2d!(
     sim::Simulation{T},
-    kybatches::Vector{Vector{T}},
-    nprogress::Integer;
+    kybatches::Vector{Vector{T}};
     kxbatch_basesize=128,
     threaded=false,
     kwargs...) where {T<:Real}
     
     p                   = getparams(sim)
     observables_total   = deepcopy(sim.observables)
+    nprogress           = nestedcount(kybatches) * p.nt * p.nkx
     current_progress    = 0.0
 
     @withprogress name="Simulation" for kybatch in kybatches
@@ -133,7 +132,7 @@ function run_simulation2d!(
         
         @everywhere GC.gc()
         current_progress += p.nkx * p.nt * length(kybatch) / nprogress
-        @info current_progress
+        @debug "$(round(100*current_progress,digits=2))%"
         @logprogress current_progress
     end
 
@@ -208,13 +207,12 @@ function run_simulation!(
     p = getparams(sim)
     if sim.dimensions==1
         kybatches = Vector{Vector{T}}(undef,0)
-        nprogress = p.nkx * p.nt
     elseif  sim.dimensions==2
         kybatches = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
-        nprogress = sum(length.(kybatches)) * p.nkx * p.nt
     end
 
-    return run_simulation!(sim,kybatches,nprogress;
+
+    return run_simulation!(sim,kybatches;
         savedata=savedata,
         saveplots=saveplots,
         threaded=threaded,
@@ -224,8 +222,7 @@ end
 
 function run_simulation!(
     sim::Simulation{T},
-    kybatches::Vector{Vector{T}},
-    nprogress::Integer;
+    kybatches::Vector{Vector{T}};
     savedata=true,
     saveplots=true,
     threaded=false,
@@ -257,7 +254,7 @@ function run_simulation!(
     if sim.dimensions == 1
         run_simulation1d!(sim;kwargs...)
     else
-        run_simulation2d!(sim,kybatches,nprogress;
+        run_simulation2d!(sim,kybatches;
             threaded=threaded,
             kxbatch_basesize=kxbatch_basesize,
             kwargs...)
@@ -322,8 +319,7 @@ function run_simulation!(ens::Ensemble{T};
         * plotpath: $(ens.plotpath)
         * datapath: $(ens.datapath)"""
 
-    # list_of_kybatches   = [padvecto_overlap!(
-    #     subdivide_vector(p.kysamples,maxparallel_ky)) for p in getparams.(ens.simlist)]
+    
     list_of_kybatches   = Vector{Vector{Vector{T}}}(undef,0)
     nprogress           = 0
 
@@ -340,7 +336,7 @@ function run_simulation!(ens::Ensemble{T};
                     "Using pmap()"
         end
         allobs = pmap(
-                (s,kys) -> run_simulation!(s,kys,prog;
+                (s,kys) -> run_simulation!(s,kys;
                     savedata=savedata,
                     saveplots=saveplots,
                     threaded=threaded,
@@ -357,7 +353,7 @@ function run_simulation!(ens::Ensemble{T};
         collection = zip(ens.simlist,list_of_kybatches,getparams.(ens.simlist))
 
         @withprogress name="Ensemble" for (s,kybatches,p) in collection
-            obs = run_simulation!(s,kybatches,nprogress;
+            obs = run_simulation!(s,kybatches;
                 savedata=savedata,
                 saveplots=saveplots,
                 threaded=threaded,
@@ -366,8 +362,8 @@ function run_simulation!(ens::Ensemble{T};
             push!(allobs,obs)
 
             current_progress += nestedcount(kybatches) * p.nt * p.nkx / nprogress
-            @info current_progress
             @logprogress current_progress
+            @debug "$(round(100*current_progress,digits=2))%"
             @everywhere GC.gc
         end
     end

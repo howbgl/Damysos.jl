@@ -1,4 +1,9 @@
 
+"""
+    Ensemble{T}(simlist, id, datapath, plotpath)
+
+A struct representing an ensemble of simulations.
+"""
 struct Ensemble{T<:Real}
     simlist::Vector{Simulation{T}}
     id::String

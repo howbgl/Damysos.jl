@@ -1,0 +1,54 @@
+using Damysos,Unitful,LoggingExtras,Dates,Formatting,TerminalLoggers,ProgressLogging
+
+import Damysos.getshortname
+import Damysos.ensurepath
+
+const vf        = u"4.3e5m/s"
+const freq      = u"5THz"
+const m         = u"20.0meV"
+const emax      = u"0.1MV/cm"
+const tcycle    = uconvert(u"fs",1/freq) # 100 fs
+const t2        = tcycle / 4             # 25 fs
+const t1        = Inf*u"1s"
+const σ         = u"800.0fs"
+
+
+const dt      = 0.01
+const dkx     = 10.0
+const kxmax   = 320.0
+const dky     = 1.0
+const kymax   = 32.0
+
+const us      = scaledriving_frequency(freq,vf)
+const h       = GappedDirac(us,m,vf,t1,t2)
+const df      = GaussianPulse(us,σ,freq,emax)
+const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
+const obs     = [Velocity(h)]
+
+# const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
+const id      = "ref_small"
+const name    = "Simulation{$(typeof(h.Δ))}(2d)reference_small"
+const dpath   = "test/reference_small"
+const ppath   = dpath
+
+const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
+const ens     = parametersweep(sim,sim.hamiltonian,:t2,[h.t2,h.t2/2,h.t2/4])
+
+ensurepath(ens.plotpath)
+global_logger(TerminalLogger(stderr,Logging.Debug,right_justify=120))
+const info_filelogger  = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now()).log"))
+const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
+const all_filelogger   = FileLogger(joinpath(ens.plotpath,ens.id*"_$(now())_debug.log"))
+const tee_logger       = TeeLogger(info_logger,all_filelogger,global_logger())
+
+global_logger(tee_logger)
+@info "$(now())\nOn $(gethostname()):"
+
+const results,time,rest... = @timed run_simulation!(ens;
+      maxparallel_ky=16,
+      saveplots=false,
+      savedata=false)
+
+@info "$(time/60.)min spent in run_simulation!(...)"
+@debug rest
+@info "$(now()): calculation finished."

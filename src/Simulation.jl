@@ -41,6 +41,11 @@ function wavenumberSI(k,us::UnitScaling)
     return uconvert(u"Å^-1",k/lc)
 end
 
+"""
+    Simulation{T}(hamiltonian, drivingfield, numericalparams, observables, unitscaling, dimensions, id, datapath, plotpath)
+
+A struct representing a simulation with various components.
+"""
 struct Simulation{T<:Real}
     hamiltonian::Hamiltonian{T}
     drivingfield::DrivingField{T}

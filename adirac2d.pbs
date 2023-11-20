@@ -1,0 +1,9 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=24
+#PBS -l walltime=0:00:40:00
+#PBS -l pmem=2gb
+#PBS -q express 
+
+cd $PBS_O_WORKDIR
+
+/home/how09898/julia-1.8.4/bin/julia -t 24 --project scripts/adirac2d.jl 

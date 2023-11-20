@@ -1,0 +1,2708 @@
+nohup: Eingabe wird ignoriert
+
+[2557666] signal (15): Beendet
+in expression starting at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/reference.jl:55
+- at ./float.jl:409 [inlined]
+rhs_cv at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:35
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:45
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:338
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+* at ./float.jl:410 [inlined]
+#10 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Hamiltonians.jl:45
+rhs_cc at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:34 [inlined]
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:41
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:344
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+/ at ./float.jl:411 [inlined]
+#10 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Hamiltonians.jl:45
+rhs_cc at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:34 [inlined]
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:41
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+_ode_addsteps! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/dense/verner_addsteps.jl:279
+ode_addsteps! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/dense/generic_dense.jl:48 [inlined]
+ode_addsteps! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/dense/generic_dense.jl:39 [inlined]
+ode_addsteps! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/dense/generic_dense.jl:39 [inlined]
+addsteps! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/dense/generic_dense.jl:85 [inlined]
+_savevalues! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:70
+savevalues! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:57 [inlined]
+savevalues! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:57 [inlined]
+handle_callbacks! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:342 [inlined]
+_loopfooter! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:245
+loopfooter! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:198 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:527
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+exp at ./special/exp.jl:325
+gauss at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:2 [inlined]
+#33 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:46
+rhs_cc at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:34 [inlined]
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:41
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:338
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+| at ./bool.jl:39 [inlined]
+/ at ./complex.jl:395
+#10 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Hamiltonians.jl:45
+rhs_cc at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:34 [inlined]
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:41
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:372
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
++ at ./float.jl:408 [inlined]
+exp_impl at ./special/exp.jl:216 [inlined]
+exp at ./special/exp.jl:325
+gauss at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:2 [inlined]
+#35 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:50
+rhs_cv at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:35
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:45
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:352
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+/ at ./float.jl:411 [inlined]
+/ at ./int.jl:97 [inlined]
+lerpi at ./range.jl:964 [inlined]
+unsafe_getindex at ./range.jl:959 [inlined]
+getindex at ./range.jl:941 [inlined]
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:45
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:358
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+abs at ./float.jl:609 [inlined]
+exp_impl at ./special/exp.jl:218 [inlined]
+exp at ./special/exp.jl:325
+gauss at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:2 [inlined]
+#33 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:46
+rhs_cv at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:35
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:45
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:372
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+Complex at ./complex.jl:14 [inlined]
+Complex at ./complex.jl:14 [inlined]
+- at ./complex.jl:333 [inlined]
+#8 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Hamiltonians.jl:44
+rhs_cv at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:35
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:45
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:338
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+#33 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:46
+rhs_cc at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:34 [inlined]
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:41
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:352
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+/ at ./float.jl:411 [inlined]
+#10 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Hamiltonians.jl:45
+rhs_cc at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:34 [inlined]
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:41
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:358
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+<< at ./int.jl:503 [inlined]
+<< at ./int.jl:510 [inlined]
+exp_impl at ./special/exp.jl:228 [inlined]
+exp at ./special/exp.jl:325
+gauss at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:2 [inlined]
+#35 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:50
+rhs_cv at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:35
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:45
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+_ode_addsteps! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/dense/verner_addsteps.jl:289
+ode_addsteps! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/dense/generic_dense.jl:48 [inlined]
+ode_addsteps! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/dense/generic_dense.jl:39 [inlined]
+ode_addsteps! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/dense/generic_dense.jl:39 [inlined]
+addsteps! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/dense/generic_dense.jl:85 [inlined]
+_savevalues! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:70
+savevalues! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:57 [inlined]
+savevalues! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:57 [inlined]
+handle_callbacks! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:342 [inlined]
+_loopfooter! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:245
+loopfooter! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/integrators/integrator_utils.jl:198 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:527
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+cos at ./special/trig.jl:98
+#35 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:50
+rhs_cc at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:34 [inlined]
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:41
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:347
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+/ at ./complex.jl:405
+#10 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Hamiltonians.jl:45
+rhs_cc at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:34 [inlined]
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:41
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:358
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+#33 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/DrivingFields.jl:46
+rhs_cv at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:35
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:45
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:334
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+#178 at ./threadingconstructs.jl:410
+unknown function (ip: 0x7efcfe34798f)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+start_task at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/task.c:1092
+unknown function (ip: (nil))
+- at ./float.jl:409 [inlined]
+#6 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Hamiltonians.jl:43 [inlined]
+rhs_cv at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:35
+rhs! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:45
+unknown function (ip: 0x7efcfe36dcd1)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe357a54)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+Void at /home/how09898/.julia/packages/SciMLBase/szsYq/src/utils.jl:473 [inlined]
+CallWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:65
+unknown function (ip: 0x7efcfe363cf5)
+macro expansion at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:137 [inlined]
+do_ccall at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:125 [inlined]
+FunctionWrapper at /home/how09898/.julia/packages/FunctionWrappers/Q5cBx/src/FunctionWrappers.jl:144 [inlined]
+_call at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:12 [inlined]
+FunctionWrappersWrapper at /home/how09898/.julia/packages/FunctionWrappersWrappers/9XR0m/src/FunctionWrappersWrappers.jl:10 [inlined]
+ODEFunction at /home/how09898/.julia/packages/SciMLBase/szsYq/src/scimlfunctions.jl:2266 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/verner_rk_perform_step.jl:344
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:91 [inlined]
+perform_step! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/perform_step/composite_perform_step.jl:90 [inlined]
+solve! at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:526
+unknown function (ip: 0x7efcfe395088)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#740 at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:6
+__solve at /home/how09898/.julia/packages/OrdinaryDiffEq/NH6if/src/solve.jl:1 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1020
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe365c4d)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#__solve#1 at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:14
+__solve at /home/how09898/.julia/packages/DifferentialEquations/nHZ7l/src/default_solve.jl:1 [inlined]
+#__solve#62 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1299 [inlined]
+__solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1292 [inlined]
+#solve_call#34 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:559 [inlined]
+solve_call at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:529 [inlined]
+#solve_up#42 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:1024
+solve_up at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:993 [inlined]
+#solve#40 at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:930
+unknown function (ip: 0x7efcfe35b757)
+solve at /home/how09898/.julia/packages/DiffEqBase/s433k/src/solve.jl:920
+unknown function (ip: 0x7efcfe356986)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation1d!#83 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:51
+run_simulation1d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:16 [inlined]
+#run_simulation2d_serial!#95 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:149
+run_simulation2d_serial! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:136 [inlined]
+#91 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:114 [inlined]
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:199 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/simd.jl:41 [inlined]
+_foldl_linear_bulk at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:198 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:192 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/basics.jl:117 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:188 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+#transduce#142 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:519 [inlined]
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:508 [inlined]
+#transduce#141 at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:502
+transduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:500 [inlined]
+_copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:920 [inlined]
+copy at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:880 [inlined]
+#193 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355
+unknown function (ip: 0x7efcfe35082e)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/library.jl:54
+unknown function (ip: 0x7efcfe347b46)
+next at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:787 [inlined]
+macro expansion at /home/how09898/.julia/packages/Transducers/xbs8O/src/core.jl:181 [inlined]
+_foldl_array at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:187 [inlined]
+__foldl__ at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:182 [inlined]
+foldl_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/processes.jl:361 [inlined]
+_reduce_basecase at /home/how09898/.julia/packages/Transducers/xbs8O/src/threading_utils.jl:58
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:146
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_reduce at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:155
+_transduce_assoc_nocomplete at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:138 [inlined]
+#transduce_assoc#177 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:108
+transduce_assoc at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:84 [inlined]
+#foldxt#185 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:242
+foldxt at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:242 [inlined]
+#_tcopy#192 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:355 [inlined]
+_tcopy at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:352 [inlined]
+#tcopy#190 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:350 [inlined]
+tcopy at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:350 [inlined]
+#tcollect#200 at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:430 [inlined]
+tcollect at /home/how09898/.julia/packages/Transducers/xbs8O/src/reduce.jl:430 [inlined]
+collect at /home/how09898/.julia/packages/Folds/ZayPF/src/collect.jl:12
+unknown function (ip: 0x7efcfe347952)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#map#50 at /home/how09898/.julia/packages/Folds/ZayPF/src/collect.jl:83
+map at /home/how09898/.julia/packages/Folds/ZayPF/src/collect.jl:83
+unknown function (ip: 0x7efcfe343916)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+#run_simulation2d!#90 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:113
+run_simulation2d! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:99 [inlined]
+#run_simulation!#96 at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:208
+run_simulation! at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/src/Core.jl:188
+unknown function (ip: 0x7efcfe33be56)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+top-level scope at ./timing.jl:501 [inlined]
+top-level scope at /misc/rz_cloud/richter/how09898/.julia/dev/kyagain/scripts/reference.jl:0
+jl_toplevel_eval_flex at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/toplevel.c:903
+jl_toplevel_eval_flex at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/toplevel.c:856
+ijl_toplevel_eval_in at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/toplevel.c:971
+eval at ./boot.jl:370 [inlined]
+include_string at ./loading.jl:1903
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+_include at ./loading.jl:1963
+include at ./Base.jl:457
+jfptr_include_35036.clone_1 at /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.3+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+exec_options at ./client.jl:307
+_start at ./client.jl:522
+jfptr__start_40034.clone_1 at /misc/rz_cloud/richter/how09898/.julia/juliaup/julia-1.9.3+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+_jl_invoke at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2758 [inlined]
+ijl_apply_generic at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/gf.c:2940
+jl_apply at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/julia.h:1880 [inlined]
+true_main at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/jlapi.c:573
+jl_repl_entrypoint at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/src/jlapi.c:717
+main at /cache/build/default-amdci5-5/julialang/julia-release-1-dot-9/cli/loader_exe.c:59
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8)
+unknown function (ip: (nil))
+Allocations: 2284835558 (Pool: 2129488407; Big: 155347151); GC: 1307
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+[ Info: Logging to test/reference/Simulation{Float64}(2d)GappedDirac_GaussianPulses(now()).log and test/reference/Simulation{Float64}(2d)GappedDirac_GaussianPulse_2023-10-12T13:20:29.353_debug.log
+┌ Info: 2023-10-12T13:20:29.419
+└ On pc1011600218:
+┌ Info: 2023-10-12T13:20:38.219
+│ On pc1011600218:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.203 Å^-1 (175.0)
+│ dkx = 0.00116 Å^-1 (1.0)
+│ nkx = 350.0 (350.0)
+│ kymax = 0.116 Å^-1 (100.0)
+│ dky = 0.00116 Å^-1 (1.0)
+│ nky = 200.0 (200.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+└ nt = 4000.0 (4000.0)
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+[ Info: Attempting to create test/reference
+[ Info: test/reference already exists. Proceeding...
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 3.076923076923077%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 6.153846153846154%
+[ Info: 46.15384615384615%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 12.307692307692308%
+[ Info: 52.30769230769231%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 15.384615384615385%
+[ Info: 55.38461538461539%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 43.07692307692308%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 46.15384615384615%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 49.23076923076923%
+[ Info: 64.61538461538461%
+[ Info: 24.615384615384617%
+[ Info: 64.61538461538461%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 52.30769230769231%
+[ Info: 27.692307692307693%
+[ Info: 67.6923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 55.38461538461539%
+[ Info: 70.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 58.46153846153846%
+[ Info: 73.84615384615384%
+[ Info: 33.84615384615385%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 61.53846153846154%
+[ Info: 76.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 64.61538461538461%
+[ Info: 80.0%
+[ Info: 40.0%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 67.6923076923077%
+[ Info: 83.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 70.76923076923077%
+[ Info: 86.15384615384616%
+[ Info: 46.15384615384615%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 73.84615384615384%
+[ Info: 89.23076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 49.23076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 76.92307692307692%
+[ Info: 92.3076923076923%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 52.30769230769231%
+[ Info: 95.38461538461539%
+[ Info: 80.0%
+[ Info: 95.38461538461539%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 55.38461538461539%
+[ Info: 83.07692307692308%
+[ Info: 98.46153846153847%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 86.15384615384616%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 61.53846153846154%
+[ Info: 3.076923076923077%
+[ Info: 61.53846153846154%
+[ Info: 89.23076923076923%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 64.61538461538461%
+[ Info: 6.153846153846154%
+[ Info: 64.61538461538461%
+[ Info: 92.3076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 67.6923076923077%
+[ Info: 95.38461538461539%
+[ Info: 67.6923076923077%
+[ Info: 9.23076923076923%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 12.307692307692308%
+[ Info: 70.76923076923077%
+[ Info: 98.46153846153847%
+[ Info: 70.76923076923077%
+[ Info: 12.307692307692308%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 15.384615384615385%
+[ Info: 73.84615384615384%
+[ Info: 15.384615384615385%
+[ Info: 73.84615384615384%
+[ Info: 15.384615384615385%
+[ Info: 3.076923076923077%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 76.92307692307692%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 76.92307692307692%
+[ Info: 18.46153846153846%
+[ Info: 6.153846153846154%
+[ Info: 80.0%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 80.0%
+[ Info: 21.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 9.23076923076923%
+[ Info: 83.07692307692308%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 83.07692307692308%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 86.15384615384616%
+[ Info: 12.307692307692308%
+[ Info: 86.15384615384616%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 89.23076923076923%
+[ Info: 15.384615384615385%
+[ Info: 89.23076923076923%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 92.3076923076923%
+[ Info: 30.76923076923077%
+[ Info: 92.3076923076923%
+[ Info: 18.46153846153846%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 33.84615384615385%
+[ Info: 95.38461538461539%
+[ Info: 33.84615384615385%
+[ Info: 95.38461538461539%
+[ Info: 21.53846153846154%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 98.46153846153847%
+[ Info: 36.92307692307692%
+[ Info: 98.46153846153847%
+[ Info: 24.615384615384617%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 40.0%
+[ Info: 3.076923076923077%
+[ Info: 27.692307692307693%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 3.076923076923077%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 6.153846153846154%
+[ Info: 30.76923076923077%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 6.153846153846154%
+[ Info: 46.15384615384615%
+[ Info: 46.15384615384615%
+[ Info: 33.84615384615385%
+[ Info: 9.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 52.30769230769231%
+[ Info: 36.92307692307692%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 12.307692307692308%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 52.30769230769231%
+[ Info: 12.307692307692308%
+[ Info: 52.30769230769231%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 40.0%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 15.384615384615385%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 55.38461538461539%
+[ Info: 15.384615384615385%
+[ Info: 55.38461538461539%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 43.07692307692308%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 18.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 46.15384615384615%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 21.53846153846154%
+[ Info: 61.53846153846154%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 49.23076923076923%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 64.61538461538461%
+[ Info: 24.615384615384617%
+[ Info: 24.615384615384617%
+[ Info: 64.61538461538461%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 52.30769230769231%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 67.6923076923077%
+[ Info: 27.692307692307693%
+[ Info: 27.692307692307693%
+[ Info: 67.6923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 55.38461538461539%
+[ Info: 70.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 70.76923076923077%
+[ Info: 30.76923076923077%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 73.84615384615384%
+[ Info: 58.46153846153846%
+[ Info: 73.84615384615384%
+[ Info: 33.84615384615385%
+[ Info: 73.84615384615384%
+[ Info: 33.84615384615385%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 61.53846153846154%
+[ Info: 76.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 76.92307692307692%
+[ Info: 36.92307692307692%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 80.0%
+[ Info: 64.61538461538461%
+[ Info: 80.0%
+[ Info: 40.0%
+[ Info: 80.0%
+[ Info: 40.0%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 67.6923076923077%
+[ Info: 83.07692307692308%
+[ Info: 83.07692307692308%
+[ Info: 43.07692307692308%
+[ Info: 86.15384615384616%
+[ Info: 43.07692307692308%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 70.76923076923077%
+[ Info: 86.15384615384616%
+[ Info: 86.15384615384616%
+[ Info: 46.15384615384615%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 46.15384615384615%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 89.23076923076923%
+[ Info: 73.84615384615384%
+[ Info: 89.23076923076923%
+[ Info: 49.23076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 49.23076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 92.3076923076923%
+[ Info: 76.92307692307692%
+[ Info: 92.3076923076923%
+[ Info: 52.30769230769231%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 52.30769230769231%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 95.38461538461539%
+[ Info: 80.0%
+[ Info: 95.38461538461539%
+[ Info: 98.46153846153847%
+[ Info: 55.38461538461539%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 98.46153846153847%
+[ Info: 55.38461538461539%
+[ Info: 98.46153846153847%
+[ Info: 83.07692307692308%
+[ Info: 98.46153846153847%
+[ Info: 58.46153846153846%
+[ Info: 58.46153846153846%
+[ Info: 86.15384615384616%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 3.076923076923077%
+[ Info: 61.53846153846154%
+[ Info: 3.076923076923077%
+[ Info: 61.53846153846154%
+[ Info: 89.23076923076923%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 6.153846153846154%
+[ Info: 64.61538461538461%
+[ Info: 6.153846153846154%
+[ Info: 92.3076923076923%
+[ Info: 64.61538461538461%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 9.23076923076923%
+[ Info: 67.6923076923077%
+[ Info: 9.23076923076923%

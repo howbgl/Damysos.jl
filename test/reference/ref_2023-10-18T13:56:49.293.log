@@ -1,0 +1,103 @@
+┌ Info: 2023-10-18T13:56:49.537
+│ On pc1011900173:
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/reference.jl:53
+┌ Info: 2023-10-18T13:56:57.571
+│ On pc1011900173:
+│ Starting Simulation{Float64}(2d)GappedDirac_GaussianPulse (id: ref)
+│ ζ = 13.2
+│ γ = 0.146
+│ M = 1.93
+│ plz = 0.641
+│ Δ = 20.0 meV (6.08)
+│ t1 = Inf fs (Inf)
+│ t2 = 50.0 fs (0.25)
+│ vF = 430000.0 m s^-1 (1.0)
+│ σ = 800.0 fs (4.0)
+│ ω = 0.0314 fs^-1 (6.28)
+│ ν = 5.0 THz (1.0)
+│ eE = 0.1 MV cm^-1 (261.0)
+│ φ = 0.0 (0.0)
+│ ħω = 0.0207 eV (6.28)
+│ kxmax = 0.203 Å^-1 (175.0)
+│ dkx = 0.00116 Å^-1 (1.0)
+│ nkx = 350.0 (350.0)
+│ kymax = 0.116 Å^-1 (100.0)
+│ dky = 0.00116 Å^-1 (1.0)
+│ nky = 200.0 (200.0)
+│ t0 = -4000.0 fs (-20.0)
+│ dt = 2.0 fs (0.01)
+│ rtol = 1.0e-12 (1.0e-12)
+│ atol = 1.0e-12 (1.0e-12)
+│ nt = 4000.0 (4000.0)
+│ # threads: 1
+│ # processes: 65
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:204
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Starting parallel execution 
+│ Size of ky-batches: 128
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:112
+┌ Info: Size of kx-batches: 64
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:116
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:131
+┌ Info: Batch finished
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Core.jl:131
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved Simulation data at test/reference/data.csv
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:17
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Simulation metadata saved at test/referencesimulation.meta
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Data.jl:63
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vx)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vxintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vxinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vx.pdf & vx.spec.pdf at test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vy)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vyintra)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Removing zeros/negatives in plotting spectrum of ref (vyinter)
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:67
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vy.pdf & vy.spec.pdf at test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:253
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: Attempting to create test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:128
+┌ Info: test/reference already exists. Proceeding...
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Utility.jl:133
+┌ Info: Saved vecfield.pdf & efield.spec.pdf at test/reference
+└ @ Damysos /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/src/Plotting.jl:323
+┌ Info: 2.799047263083333min spent in run_simulation!(...)
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/reference.jl:60
+┌ Info: 2023-10-18T13:59:38.197: calculation finished.
+└ @ Main /misc/rz_cloud/richter/how09898/.julia/dev/Damysos/scripts/reference.jl:62

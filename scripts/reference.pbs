@@ -6,4 +6,4 @@
 
 cd $PBS_O_WORKDIR
 
-/home/how09898/julia-1.8.4/bin/julia -t 24 --project scripts/adirac2d.jl 
+/home/how09898/.juliaup/bin/julia -p 23 --project scripts/reference.jl 

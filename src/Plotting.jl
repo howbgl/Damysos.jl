@@ -7,10 +7,12 @@ function plottimeseries(timeseries::Vector{Vector{T}},
                         title="",
                         sidelabel="",
                         colors="categorical",
+                        xlabel="t/tc",
+                        ylabel="",
                         kwargs...) where {T<:Real}
 
     f   = Figure(resolution=DEFAULT_RESOLUTION)
-    ax  = Axis(f[1,1],title=title,xlabel="t/tc")
+    ax  = Axis(f[1,1],title=title,xlabel=xlabel,ylabel=ylabel)
     
     for (i,data,label,ts) in zip(1:length(timeseries),timeseries,labels,tsamples)
         
@@ -116,12 +118,15 @@ function plotdata(
         labels      = Vector{String}(undef,0)
 
         for sim in ens.simlist
-            pars    = getparams(sim)
-            v       = filter(x -> x isa Velocity,sim.observables)[1]
-            data    = getproperty(v,vsymb)
+            pars        = getparams(sim)
+            lc_in_nm    = ustrip(u"nm",pars.lengthscale)
+            d           = sim.dimensions
+            ts_in_cyc   = collect(pars.tsamples) .* pars.ν
+            v           = filter(x -> x isa Velocity,sim.observables)[1]
+            data        = getproperty(v,vsymb) .* p.vF ./ lc_in_nm^d
 
             push!(timeseries,data)
-            push!(tsamples,pars.tsamples)
+            push!(tsamples,ts_in_cyc)
             push!(timesteps,pars.dt)
             push!(frequencies,pars.ν)
             push!(labels,sim.id)
@@ -131,6 +136,7 @@ function plotdata(
             figtime     = plottimeseries(timeseries,labels,tsamples,
                                         title=vname * " (" * ens.id * ")",
                                         colors="continuous",
+                                        ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
                                         kwargs...)
             figspectra  = plotspectra(timeseries,labels,frequencies,timesteps,
                                         maxharm=maxharm,
@@ -171,9 +177,11 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
     plotpath    = ens.plotpath
 
     for sim in ens.simlist
+
+        lc      = sim.unitscaling.lengthscale
         pars    = getparams(sim)
         o       = filter(x -> x isa Occupation,sim.observables)[1]
-        data    = o.cbocc
+        data    = o.cbocc  / (lc^sim.dimensions)
 
         push!(timeseries,data)
         push!(tsamples,pars.tsamples)
@@ -187,20 +195,12 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
                                     title="CB occupation" * "(" * ens.id * ")",
                                     colors="continuous",
                                     kwargs...)
-        figspectra  = plotspectra(timeseries,labels,frequencies,timesteps,
-                                    maxharm=maxharm,
-                                    fftwindow=fftwindow,
-                                    title="CB occupation" * "(" * ens.id * ")",
-                                    colors="continuous",
-                                    kwargs...)
 
         altpath             = joinpath(pwd(),basename(plotpath))
         (success,plotpath)  = ensurepath([plotpath,altpath])
         if success
             CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
             CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
-            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
-            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.png"),figspectra,px_per_unit = 4)
             @debug "Saved cb_occ.pdf & cb_occ_spec.pdf at \n\"$plotpath\""
         else
             @warn "Could not save occupation plots."
@@ -230,10 +230,12 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
                 fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
 
     p           = getparams(sim)
+    lc_in_nm    = ustrip(u"nm",p.lengthscale)
+    d           = sim.dimensions
+    ts_in_cyc   = collect(p.tsamples) .* p.ν
     plotpath    = sim.plotpath
-
-    timeseriesx = [vel.vx,vel.vxintra,vel.vxinter]
-    tsamplesx   = collect.([p.tsamples,p.tsamples,p.tsamples])
+    timeseriesx = [p.vF * x ./ lc_in_nm^d for x in [vel.vx,vel.vxintra,vel.vxinter]]
+    tsamplesx   = [ts_in_cyc,ts_in_cyc,ts_in_cyc]
     timestepsx  = [p.dt,p.dt,p.dt]
     frequenciesx = [p.ν,p.ν,p.ν]
     labelsx     = ["vx", "vxintra", "vxinter"]
@@ -245,7 +247,7 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
     labels      = [labelsx]
 
     if sim.dimensions==2
-        push!(timeseries,[vel.vy,vel.vyintra,vel.vyinter])
+        push!(timeseries,[x ./ lc_in_nm^d for x in [vel.vy,vel.vyintra,vel.vyinter]])
         push!(tsamples,tsamplesx)
         push!(timesteps,timestepsx)
         push!(frequencies,frequenciesx)
@@ -255,16 +257,19 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
     try
         for (data,lab,ts,dt,ν) in zip(timeseries,labels,tsamples,timesteps,frequencies)
 
-            figtime     = plottimeseries(data,lab,ts,
-                                    title=sim.id,
-                                    sidelabel=printparamsSI(sim),
-                                    kwargs...)
-            figspectra  = plotspectra(data,lab,ν,dt,
-                                        maxharm=maxharm,
-                                        fftwindow=fftwindow,
-                                        title=sim.id,
-                                        sidelabel=printparamsSI(sim),
-                                        kwargs...)
+            figtime     = plottimeseries(
+                data,lab,ts,
+                title=sim.id,
+                sidelabel=printparamsSI(sim),
+                ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
+                kwargs...)
+            figspectra  = plotspectra(
+                data,lab,ν,dt,
+                maxharm=maxharm,
+                fftwindow=fftwindow,
+                title=sim.id,
+                sidelabel=printparamsSI(sim),
+                kwargs...)
 
             altpath             = joinpath(pwd(),basename(plotpath))
             (success,plotpath)  = ensurepath([plotpath,altpath])
@@ -294,16 +299,16 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
 
     p           = getparams(sim)
     plotpath    = sim.plotpath
+    lc_in_nm    = ustrip(u"nm",p.lengthscale)
+    d           = sim.dimensions
+    data        = occ.cbocc ./ lc_in_nm^d
+    ts_in_cyc   = collect(p.tsamples) .* p.ν
     try
-        figtime     = plottimeseries([occ.cbocc],["CB occupation"],[collect(p.tsamples)],
+        
+        figtime     = plottimeseries([data],["CB occupation"],[ts_in_cyc],
                 title=sim.id,
                 sidelabel=printparamsSI(sim),
-                kwargs...)
-        figspectra  = plotspectra([occ.cbocc],["CB occupation"],[p.ν],[p.dt],
-                maxharm=maxharm,
-                fftwindow=fftwindow,
-                title=sim.id,
-                sidelabel=printparamsSI(sim),
+                ylabel = sim.dimensions == 1 ? "ρcc [nm^-1]" : "ρcc [nm^-2]",
                 kwargs...)
 
         altpath             = joinpath(pwd(),basename(plotpath))
@@ -311,8 +316,6 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
         if success
             CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
             CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
-            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.pdf"),figspectra)
-            CairoMakie.save(joinpath(plotpath,"cb_occ_spec.png"),figspectra,px_per_unit = 4)
             @debug "Saved cb_occ.pdf & cb_occ_spec.spec.pdf at \"$plotpath\"\n"
         else
             @warn "Could not save occupation plots"

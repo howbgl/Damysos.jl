@@ -74,15 +74,41 @@ end
     v.vyintra ./= norm
 end
 
-function zero(v::Velocity{T}) where {T<:Real}
-    
-    vxintra     = zero(v.vxintra)
-    vxinter     = zero(v.vxinter)
-    vx          = zero(v.vx)
-    vyintra     = zero(v.vyintra)
-    vyinter     = zero(v.vyinter)
-    vy          = zero(v.vy)
-    return Velocity(vx,vxintra,vxinter,vy,vyintra,vyinter)
+function +(v1::Velocity,v2::Velocity)
+    Velocity(
+        v1.vx .+ v2.vx,
+        v1.vxintra .+ v2.vxintra,
+        v1.vxinter .+ v2.vxinter,
+        v1.vy .+ v2.vy,
+        v1.vyintra .+ v2.vyintra,
+        v1.vyinter .+ v2.vyinter,)
+end
+function -(v1::Velocity,v2::Velocity)
+    Velocity(
+        v1.vx .- v2.vx,
+        v1.vxintra .- v2.vxintra,
+        v1.vxinter .- v2.vxinter,
+        v1.vy .- v2.vy,
+        v1.vyintra .- v2.vyintra,
+        v1.vyinter .- v2.vyinter)
+end
+*(v::Velocity,x::Number) = Velocity(
+    x .* v.vx,
+    x .* v.vxintra,
+    x .* v.vxinter,
+    x .* v.vy,
+    x .* v.vyintra,
+    x .* v.vyinter)
+*(x::Number,v::Velocity) = v * x
+
+function zero(v::Velocity) 
+    Velocity(
+        zero(v.vx),
+        zero(v.vxintra),
+        zero(v.vxinter),
+        zero(v.vy),
+        zero(v.vyintra),
+        zero(v.vyinter))
 end
 
 function getfuncs(sim::Simulation,v::Velocity)

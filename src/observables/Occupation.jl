@@ -33,10 +33,12 @@ end
     o.cbocc ./= norm
 end
 
-function zero(o::Occupation{T}) where {T<:Real}
-    cbocc = zero(o.cbocc)
-    return Occupation(cbocc)
-end
++(o1::Occupation,o2::Occupation) = Occupation(o1.cbocc .+ o2.cbocc)
+-(o1::Occupation,o2::Occupation) = Occupation(o1.cbocc .- o2.cbocc)
+*(o::Occupation,x::Number)       = Occupation(x .* o.cbocc)
+*(x::Number,o::Occupation)       = o*x
+zero(o::Occupation)              = Occupation(zero(o.cbocc))
+
 
 function getfuncs(sim::Simulation,o::Occupation)
     return []

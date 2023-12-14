@@ -30,7 +30,7 @@ function make_system(
       emax      = uconvert(u"MV/cm",ω*m / (vf * e * γ))
 
       tcycle    = uconvert(u"fs",1/freq)
-      t2        = tcycle / 4
+      t2        = Inf*u"1s"
       t1        = Inf*u"1s"
       σ         = 2*tcycle
 
@@ -60,11 +60,12 @@ function make_system(
       return Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 end
 
-const sim     = make_system("hhgjl/occupation_oscillations/zeta=30/t2_sweep")
-@show sim.datapath
-const γ2      = 1.0 / sim.hamiltonian.t2  
-const γ2range = LinRange(0.0,γ2,10)
-const ens     = parametersweep(sim,sim.hamiltonian,:t2,[1/g2 for g2 in γ2range])
+const sim     = make_system("hhgjl/occupation_oscillations/zeta=30/tol_sweep")
+const ens     = parametersweep(
+      sim,
+      sim.numericalparams,
+      [:atol,:rtol],
+      [(t,t) for t in [1e-12,1e-10,1e-8,1e-6,1e-4]])
 
 ensurepath(ens.plotpath)
 global_logger(make_teelogger(ens.plotpath,ens.id))
@@ -72,7 +73,7 @@ global_logger(make_teelogger(ens.plotpath,ens.id))
 @info "Logging to \"$(ens.plotpath)\""
 
 const results,time,rest... = @timed run_simulation!(ens;
-      kxbatch_basesize=256,
+      kxbatch_basesize=128,
       maxparallel_ky=128)
 
 @info "$(time/60.)min spent in run_simulation!(ens::Ensemble;...)"

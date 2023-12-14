@@ -21,7 +21,7 @@ function make_system(
       m         = u"10.0meV"
       e         = uconvert(u"C",1u"eV"/1u"V")
 
-      ζ         = 30.0
+      ζ         = 45.0
       γ         = 0.1
 
       M         = ζ * γ
@@ -34,17 +34,17 @@ function make_system(
       t1        = Inf*u"1s"
       σ         = 2*tcycle
 
-      # for T2 = T1 = ∞ converged @
-      # dt = 0.01 
-      # dkx = 0.1
+      # for T2 = tcycle/4 converged @
+      # dt = 0.007
+      # dkx = 1.0
       # dky = 1.0
-      # kxmax = 330
-      # kymax = 150
-      dt      = 0.01
-      dkx     = 0.1
+      # kxmax = 500
+      # kymax = 300
+      dt      = 0.007
+      dkx     = 1.0
       dky     = 1.0
-      kxmax   = 330.0
-      kymax   = 150.0
+      kxmax   = 500.0
+      kymax   = 100.0
 
       us      = scaledriving_frequency(freq,vf)
       h       = GappedDirac(us,m,vf,t1,t2)
@@ -60,11 +60,10 @@ function make_system(
       return Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 end
 
-const sim     = make_system("hhgjl/occupation_oscillations/zeta=30/t2_sweep")
-@show sim.datapath
-const γ2      = 1.0 / sim.hamiltonian.t2  
-const γ2range = LinRange(0.0,γ2,10)
-const ens     = parametersweep(sim,sim.hamiltonian,:t2,[1/g2 for g2 in γ2range])
+const sim     = make_system("hhgjl/occupation_oscillations/zeta=45")
+# const γ2      = 1.0 / sim.hamiltonian.t2  
+# const γ2range = LinRange(γ2,10γ2,10)
+const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(100.0,400.0,4))
 
 ensurepath(ens.plotpath)
 global_logger(make_teelogger(ens.plotpath,ens.id))
@@ -72,7 +71,7 @@ global_logger(make_teelogger(ens.plotpath,ens.id))
 @info "Logging to \"$(ens.plotpath)\""
 
 const results,time,rest... = @timed run_simulation!(ens;
-      kxbatch_basesize=256,
+      kxbatch_basesize=128,
       maxparallel_ky=128)
 
 @info "$(time/60.)min spent in run_simulation!(ens::Ensemble;...)"

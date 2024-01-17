@@ -1,31 +1,30 @@
 
-gauss(t::T,σ::T) where {T<:Real} = exp(-t^2 / (2σ^2))
+export GaussianAPulse
 
-function scaledriving_frequency(ufrequency,ufermivelocity)
-    return scaledriving_frequency(promote(ufrequency,ufermivelocity)...)
-end
+"""
+    GaussianAPulse{T<:Real}
 
-function scaledriving_frequency(
-        frequency::Unitful.Frequency{T},
-        fermivelocity::Unitful.Velocity{T}) where{T<:Real}
+Represents spacially homogeneous, linearly polarized pulse with Gaussian envelope. 
 
-    tc = uconvert(u"fs",1/frequency)
-    lc = uconvert(u"nm",fermivelocity*tc)
-    return UnitScaling(tc,lc)
-end
+# Mathematical form
+The form of the vector potential is given by
+```math
+\\vec{A}(t) = \\vec{A}_0 \\cos(\\omega t) e^{-t^2 / \\sigma^2}
+``` 
+where ``\\vec{A}_0=A_0(\\cos\\varphi\\,\\vec{e}_x + \\sin\\varphi\\,\\vec{e}_y``). 
 
-
-struct GaussianPulse{T<:Real} <: DrivingField{T}
+"""
+struct GaussianAPulse{T<:Real} <: DrivingField{T}
     σ::T
     ω::T
     eE::T
     φ::T
-    GaussianPulse{T}(σ,ω,eE,φ) where {T<:Real} = new(σ,ω,eE,φ)
+    GaussianAPulse{T}(σ,ω,eE,φ) where {T<:Real} = new(σ,ω,eE,φ)
 end
-GaussianPulse(σ::T,ω::T,eE::T,φ::T) where {T<:Real} = GaussianPulse{T}(σ,ω,eE,φ)
-GaussianPulse(σ::Real,ω::Real,eE::Real,φ::Real)     = GaussianPulse(promote(σ,ω,eE,φ)...)
-GaussianPulse(σ::Real,ω::Real,eE::Real)             = GaussianPulse(σ,ω,eE,0)
-function GaussianPulse(us::UnitScaling,
+GaussianAPulse(σ::T,ω::T,eE::T,φ::T) where {T<:Real} = GaussianAPulse{T}(σ,ω,eE,φ)
+GaussianAPulse(σ::Real,ω::Real,eE::Real,φ::Real)     = GaussianAPulse(promote(σ,ω,eE,φ)...)
+GaussianAPulse(σ::Real,ω::Real,eE::Real)             = GaussianAPulse(σ,ω,eE,0)
+function GaussianAPulse(us::UnitScaling,
                     standard_dev::Unitful.Time,
                     frequency::Unitful.Frequency,
                     fieldstrength::Unitful.EField,
@@ -35,34 +34,38 @@ function GaussianPulse(us::UnitScaling,
     ω   = uconvert(Unitful.NoUnits,2π*frequency*p.timescale)
     e   = uconvert(u"C",1u"eV"/1u"V")
     eE  = uconvert(Unitful.NoUnits,e*p.timescale*p.lengthscale*fieldstrength/Unitful.ħ)
-    return GaussianPulse(promote(σ,ω,eE,φ)...)
+    return GaussianAPulse(promote(σ,ω,eE,φ)...)
 end
 
-function getparams(df::GaussianPulse{T}) where {T<:Real}  
+# type alias for backwards compatibility
+export GaussianPulse
+GaussianPulse = GaussianAPulse
+
+function getparams(df::GaussianAPulse{T}) where {T<:Real}  
     return (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE,φ=df.φ,ħω=df.ω)
 end
 
-@inline function get_efieldx(df::GaussianPulse{T}) where {T<:Real}
+@inline function get_efieldx(df::GaussianAPulse{T}) where {T<:Real}
     return t-> cos(df.φ) * df.eE * (t*cos(df.ω*t) + df.σ^2*df.ω*sin(df.ω*t)) * 
                 gauss(t,df.σ) / (df.ω*df.σ^2)  
 end
-@inline function get_vecpotx(df::GaussianPulse{T}) where {T<:Real}
+@inline function get_vecpotx(df::GaussianAPulse{T}) where {T<:Real}
     return t -> cos(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
 end
 
-@inline function get_efieldy(df::GaussianPulse{T}) where {T<:Real}
+@inline function get_efieldy(df::GaussianAPulse{T}) where {T<:Real}
     return t-> sin(df.φ) * df.eE * (t*cos(df.ω*t) + df.σ^2*df.ω*sin(df.ω*t)) * 
                 gauss(t,df.σ) / (df.ω*df.σ^2)  
 end
-@inline function get_vecpoty(df::GaussianPulse{T}) where {T<:Real}
+@inline function get_vecpoty(df::GaussianAPulse{T}) where {T<:Real}
     return t -> sin(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
 end
 
-function getfields(df::GaussianPulse)
+function getfields(df::GaussianAPulse)
     return (get_vecpotx(df),get_vecpoty(df),get_efieldx(df),get_efieldy(df))
 end
 
-function printparamsSI(df::GaussianPulse,us::UnitScaling;digits=4)
+function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)
 
     p       = getparams(df)
     σ       = timeSI(df.σ,us)
@@ -84,8 +87,3 @@ function printparamsSI(df::GaussianPulse,us::UnitScaling;digits=4)
     end
     return str
 end
-
-get_efieldx(sim::Simulation{T}) where {T<:Real} = get_efieldx(sim.drivingfield)
-get_efieldy(sim::Simulation{T}) where {T<:Real} = get_efieldy(sim.drivingfield)
-get_vecpotx(sim::Simulation{T}) where {T<:Real} = get_vecpotx(sim.drivingfield)
-get_vecpoty(sim::Simulation{T}) where {T<:Real} = get_vecpoty(sim.drivingfield)

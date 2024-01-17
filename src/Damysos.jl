@@ -1,12 +1,12 @@
 module Damysos
 
 using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie
-using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,FLoops,Dates
+using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,FLoops,Dates,SpecialFunctions
 using TerminalLoggers,ProgressLogging
 
 
 export Hamiltonian,GappedDirac,scalegapped_dirac
-export DrivingField,GaussianPulse,get_efieldx,get_vecpotx,scaledriving_frequency
+export DrivingField,GaussianAPulse,get_efieldx,get_vecpotx,scaledriving_frequency,GaussianPulse
 export NumericalParameters,NumericalParams2d,NumericalParams1d,NumericalParams2dSlice
 export Simulation,Ensemble,getparams,parametersweep
 export UnitScaling,semiclassical_interband_range,maximum_k
@@ -24,7 +24,7 @@ abstract type NumericalParameters{T}    <: SimulationComponent{T} end
 include("Simulation.jl")
 include("Ensemble.jl")
 include("Hamiltonians.jl")
-include("DrivingFields.jl")
+include("drivingfields/DrivingFields.jl")
 include("NumericalParams.jl")
 include("observables/Observables.jl")
 include("Data.jl")

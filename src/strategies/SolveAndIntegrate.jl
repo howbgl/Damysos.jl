@@ -172,18 +172,18 @@ function run_kybatch!(
 end
 
 """
-run_simulation!(sim::Simulation{T};
-    savedata=true,
-    saveplots=true,
-    threaded=false,
-    maxparallel_ky=64,
-    kxbatch_basesize=512,
-    kwargs...) where {T<:Real}
+    run_simulation!(sim::Simulation;
+        savedata=true,
+        saveplots=true,
+        threaded=false,
+        maxparallel_ky=64,
+        kxbatch_basesize=512,
+        kwargs...)
 
 Run a simulation.
 
 # Arguments
-- `sim::Simulation{T}`: See [`Simulation`](@ref)
+- `sim::Simulation`: See [`Simulation`](@ref)
 - `maxparallel_ky`: The maximum amount of different ky-lines computed in parallel. Good values are typically ~ 2nworkers. Large numbers mean high memory footprint.
 - `kxbatch_basesize` : Number of kx modes per ky-line processed in one solve call. Large numbers mean high memory footprint.
 - `kwargs...`: Additional keyword arguments are passed to the solve() function of DifferentialEquations.jl
@@ -275,7 +275,7 @@ end
 
 
 """
-    run_simulation!(ens::Ensemble{T};
+    run_simulation!(ens::Ensemble;
         savedata=true,
         saveplots=true,
         ensembleparallel=false,
@@ -283,12 +283,12 @@ end
         maxparallel_ky=64,
         kxbatch_basesize=512,
         makecombined_plots=true,
-        kwargs...) where {T<:Real}
+        kwargs...)
 
 Run simulations for an ensemble of `sim` objects.
 
 # Arguments
-- `ens::Ensemble{T}`: See [`Ensemble`](@ref)
+- `ens::Ensemble`: See [`Ensemble`](@ref)
 - `maxparallel_ky`: The maximum amount of different ky-lines computed in parallel. Good values are typically ~ 2nworkers. Large numbers mean high memory footprint.
 - `kxbatch_basesize` : Number of kx modes per ky-line processed in one solve call. Large numbers mean high memory footprint.
 - `kwargs...`: Additional keyword arguments are passed to the solve() function of DifferentialEquations.jl

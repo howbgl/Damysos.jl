@@ -341,12 +341,29 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
     ex      = get_efieldx(sim)
     ey      = get_efieldy(sim)
 
+    ts_in_cyc           = collect(p.tsamples) .* p.ν
+    e                   = uconvert(u"C",u"1eV" / u"1V")
+    vecpot_SI_factor    = ustrip(u"MV*fs/cm",Unitful.ħ/(e*p.lengthscale))
+    field_SI_factor     = ustrip(u"MV/cm",Unitful.ħ/(e*p.lengthscale*p.timescale))
+
     plotpath = sim.plotpath
     try
-        figa    = plottimeseries([ax.(ts),ay.(ts)],["Ax","Ay"],[ts,ts],
-                    title=name,sidelabel=printparamsSI(sim))
-        fige    = plottimeseries([ex.(ts),ey.(ts)],["Ex","Ey"],[ts,ts],
-                    title=name,sidelabel=printparamsSI(sim))
+        figa    = plottimeseries(
+            [ax.(ts) .* vecpot_SI_factor,ay.(ts) .* vecpot_SI_factor],
+            ["Ax","Ay"],
+            [ts_in_cyc,ts_in_cyc],
+            title=name,
+            sidelabel=printparamsSI(sim),
+            xlabel="time [1/ν]",
+            ylabel="vector potential [fs MV/cm]")
+        fige    = plottimeseries(
+            [ex.(ts) .* field_SI_factor,ey.(ts) .* field_SI_factor],
+            ["Ex","Ey"],
+            [ts_in_cyc,ts_in_cyc],
+            title=name,
+            sidelabel=printparamsSI(sim),
+            xlabel="time [1/ν]",
+            ylabel="el. field [MV/cm]")
 
         altpath             = joinpath(pwd(),basename(plotpath))
         (success,plotpath)  = ensurepath([plotpath,altpath])

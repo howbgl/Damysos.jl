@@ -237,7 +237,7 @@ function maximum_k(df::DrivingField)
     @warn "using fallback for maximum k value of DrivingField!"
     return df.eE / df.ω
 end
-maximum_k(df::GaussianPulse) = df.eE / df.ω
+maximum_k(df::GaussianAPulse) = df.eE / df.ω
 
 function semiclassical_interband_range(h::GappedDirac, df::DrivingField)
     ϵ = getϵ(h)

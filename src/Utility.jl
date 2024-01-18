@@ -1,3 +1,7 @@
+@inline function vector_of_svec_to_matrix(u::Vector{SVector{N,T}}) where {N,T}
+    return reshape(reinterpret(T,u),(N,:))
+end
+
 function subdivide_vector(vec::AbstractVector{T}, basesize::U) where {T<:Real,U}
 
     batches = Vector{Vector{T}}(undef, 0)

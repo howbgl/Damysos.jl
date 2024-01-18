@@ -56,40 +56,83 @@ struct Simulation{T<:Real}
     id::String
     datapath::String
     plotpath::String
-    function Simulation{T}(h,df,p,obs,us,d,id,dpath,ppath) where {T<:Real}
+    temppath::String
+    function Simulation{T}(h,df,p,obs,us,d,id,dpath,ppath,tpath) where {T<:Real}
 
         if p isa NumericalParams1d{T} && d!=1
             @warn "given dimensions ($d) not matching $p\nsetting dimensions to 1"
-            new(h,df,p,obs,us,UInt8(1),id,dpath,ppath)
+            new(h,df,p,obs,us,UInt8(1),id,dpath,ppath,tpath)
 
         elseif p isa NumericalParams2d{T} && d!=2
             @warn "given dimensions ($d) not matching $p\nsetting dimensions to 2"
-            new(h,df,p,obs,us,UInt8(2),id,dpath,ppath)
+            new(h,df,p,obs,us,UInt8(2),id,dpath,ppath,tpath)
             
         else
-            new(h,df,p,obs,us,d,id,dpath,ppath)
+            new(h,df,p,obs,us,d,id,dpath,ppath,tpath)
         end
     end
 end
 
-function Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
-    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer,
-    id::String,dpath::String,ppath::String) where {T<:Real} 
+function Simulation(
+    h::Hamiltonian{T},
+    df::DrivingField{T},
+    p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},
+    us::UnitScaling{T},
+    d::Integer,
+    id::String,
+    dpath::String,
+    ppath::String,
+    tpath::String) where {T<:Real} 
 
-    return Simulation{T}(h,df,p,obs,us,UInt8(abs(d)),id,dpath,ppath)
+    return Simulation{T}(h,df,p,obs,us,UInt8(abs(d)),id,dpath,ppath,tpath)
 end
 
-function Simulation(h::Hamiltonian{T},df::DrivingField{T},
-    p::NumericalParameters{T},obs::Vector{O} where {O<:Observable{T}},
-    us::UnitScaling{T},d::Integer,id) where {T<:Real} 
+function Simulation(
+    h::Hamiltonian{T},
+    df::DrivingField{T},
+    p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},
+    us::UnitScaling{T},
+    d::Integer,
+    id::String,
+    dpath::String,
+    ppath::String) where {T<:Real} 
+
+    return Simulation{T}(h,df,p,obs,us,UInt8(abs(d)),id,dpath,ppath,dpath)
+end
+
+function Simulation(
+    h::Hamiltonian{T},
+    df::DrivingField{T},
+    p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},
+    us::UnitScaling{T},
+    d::Integer,
+    id) where {T<:Real} 
+
     name = "Simulation{$T}($(d)d)" * getshortname(h) *"_"*  getshortname(df) * "_$id"
-    return Simulation(h,df,p,obs,us,d,String(id),
-                "/home/how09898/phd/data/hhgjl/"*name*"/",
-                "/home/how09898/phd/plots/hhgjl/"*name*"/")
+    
+    return Simulation(
+        h,
+        df,
+        p,
+        obs,
+        us,
+        d,
+        String(id),
+        "/home/how09898/phd/data/hhgjl/"*name*"/",
+        "/home/how09898/phd/plots/hhgjl/"*name*"/",
+        "/home/how09898/phd/data/hhgjl/"*name*"/")
 end
 
-function Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
-    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer) where {T<:Real} 
+function Simulation(
+    h::Hamiltonian{T},
+    df::DrivingField{T},
+    p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},
+    us::UnitScaling{T},
+    d::Integer) where {T<:Real} 
     id = sprintf1("%x",hash([h,df,p,obs,us,d]))
     return Simulation(h,df,p,obs,us,d,id)
 end

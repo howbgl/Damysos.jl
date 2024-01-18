@@ -1,5 +1,5 @@
 
-function savedata(sim::Simulation{T}) where {T<:Real}
+function savedata(sim::Simulation)
 
     @info "Saving simulation data"
     @debug "datapath = \"$(sim.datapath)\""

@@ -1,7 +1,7 @@
 module Damysos
 
-using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie
-using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,FLoops,Dates
+using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie,HDF5
+using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,FLoops,Dates,StaticArrays
 using TerminalLoggers,ProgressLogging
 
 

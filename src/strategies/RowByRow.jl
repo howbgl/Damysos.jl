@@ -171,56 +171,8 @@ function run_kybatch!(
     return sim.observables
 end
 
-"""
-run_simulation!(sim::Simulation{T};
-    savedata=true,
-    saveplots=true,
-    threaded=false,
-    maxparallel_ky=64,
-    kxbatch_basesize=512,
-    kwargs...) where {T<:Real}
 
-Run a simulation.
-
-# Arguments
-- `sim::Simulation{T}`: See [`Simulation`](@ref)
-- `maxparallel_ky`: The maximum amount of different ky-lines computed in parallel. Good values are typically ~ 2nworkers. Large numbers mean high memory footprint.
-- `kxbatch_basesize` : Number of kx modes per ky-line processed in one solve call. Large numbers mean high memory footprint.
-- `kwargs...`: Additional keyword arguments are passed to the solve() function of DifferentialEquations.jl
-
-# Returns
-The observables obtained from the simulation.
-
-# See also
-[`run_simulation1d!`](@ref), [`run_simulation2d!`](@ref)
-
-"""
-function run_simulation!(
-    sim::Simulation{T};
-    savedata=true,
-    saveplots=true,
-    threaded=false,
-    kxbatch_basesize=128,
-    maxparallel_ky=64,
-    kwargs...) where {T<:Real}
-
-    p = getparams(sim)
-    if sim.dimensions==1
-        kybatches = Vector{Vector{T}}(undef,0)
-    elseif  sim.dimensions==2
-        kybatches = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
-    end
-
-
-    return run_simulation!(sim,kybatches;
-        savedata=savedata,
-        saveplots=saveplots,
-        threaded=threaded,
-        kxbatch_basesize=kxbatch_basesize,
-        kwargs...)
-end
-
-function run_simulation!(
+function run_simulation_si!(
     sim::Simulation{T},
     kybatches::Vector{Vector{T}};
     savedata=true,
@@ -274,52 +226,16 @@ function run_simulation!(
 end
 
 
-"""
-    run_simulation!(ens::Ensemble{T};
-        savedata=true,
-        saveplots=true,
-        ensembleparallel=false,
-        threaded=false,
-        maxparallel_ky=64,
-        kxbatch_basesize=512,
-        makecombined_plots=true,
-        kwargs...) where {T<:Real}
+function run_simulation_si!(ens::Ensemble;
+    savedata=true,
+    saveplots=true,
+    ensembleparallel=false,
+    threaded=false,
+    maxparallel_ky=64,
+    kxbatch_basesize=128,
+    kwargs...)
 
-Run simulations for an ensemble of `sim` objects.
 
-# Arguments
-- `ens::Ensemble{T}`: See [`Ensemble`](@ref)
-- `maxparallel_ky`: The maximum amount of different ky-lines computed in parallel. Good values are typically ~ 2nworkers. Large numbers mean high memory footprint.
-- `kxbatch_basesize` : Number of kx modes per ky-line processed in one solve call. Large numbers mean high memory footprint.
-- `kwargs...`: Additional keyword arguments are passed to the solve() function of DifferentialEquations.jl
-
-# Returns
-An array of observables obtained from the simulations.
-
-# See also
-[`run_simulation2d!`](@ref), [`run_simulation!`](@ref)
-
-"""
-function run_simulation!(ens::Ensemble{T};
-                savedata=true,
-                saveplots=true,
-                ensembleparallel=false,
-                threaded=false,
-                maxparallel_ky=64,
-                kxbatch_basesize=128,
-                kwargs...) where {T<:Real}
-
-    ensurepath(ens.datapath)
-    ensurepath(ens.plotpath)
-
-    @info """
-        # Ensemble of $(length(ens.simlist)) Simulations
-        
-        * id : $(ens.id)
-        * plotpath: $(ens.plotpath)
-        * datapath: $(ens.datapath)"""
-
-    
     list_of_kybatches   = Vector{Vector{Vector{T}}}(undef,0)
     nprogress           = 0
 
@@ -336,7 +252,7 @@ function run_simulation!(ens::Ensemble{T};
                     "Using pmap()"
         end
         allobs = pmap(
-                (s,kys) -> run_simulation!(s,kys;
+                (s,kys) -> run_simulation_si!(s,kys;
                     savedata=savedata,
                     saveplots=saveplots,
                     threaded=threaded,
@@ -353,7 +269,7 @@ function run_simulation!(ens::Ensemble{T};
         collection = zip(ens.simlist,list_of_kybatches,getparams.(ens.simlist))
 
         @withprogress name="Ensemble" for (s,kybatches,p) in collection
-            obs = run_simulation!(s,kybatches;
+            obs = run_simulation_si!(s,kybatches;
                 savedata=savedata,
                 saveplots=saveplots,
                 threaded=threaded,
@@ -367,15 +283,6 @@ function run_simulation!(ens::Ensemble{T};
             @everywhere GC.gc
         end
     end
-
-    if saveplots
-        Damysos.plotdata(ens)
-    end
-
-    if savedata
-        savemetadata(ens)
-    end
-
+    
     return allobs
 end
-

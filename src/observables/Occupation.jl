@@ -98,14 +98,3 @@ function integrateobs!(
 
     odest.cbocc .= trapz((:,hcat(vertices)),hcat([o.cbocc for o in occs]...))
 end
-
-@inline function sumobservable_ktile!(
-    sim::Simulation,
-    occ::Occupation,
-    sols,
-    ktile,
-    moving_bz,
-    funcs)
-    
-    occ.cbocc .= sum(moving_bz .* sols)
-end

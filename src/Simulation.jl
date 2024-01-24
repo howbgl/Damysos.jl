@@ -148,7 +148,20 @@ function getparams(sim::Simulation{T}) where {T<:Real}
 
     numpars     = getparams(sim.numericalparams)
     fieldpars   = getparams(sim.drivingfield)
-    bztuple     = (bz=getbzbounds(sim),)
+
+    if sim.dimensions==1
+        bztuple = (bz=(
+            -numpars.kxmax + 1.3*fieldpars.eE/fieldpars.ω, 
+            numpars.kxmax - 1.3*fieldpars.eE/fieldpars.ω
+            ),)
+    elseif sim.dimensions==2
+        bztuple = (bz=(
+            -numpars.kxmax + 1.3*fieldpars.eE/fieldpars.ω, 
+            numpars.kxmax - 1.3*fieldpars.eE/fieldpars.ω,
+            -numpars.kymax, 
+            numpars.kymax
+            ),)
+    end
 
     merge(bztuple,
         getparams(sim.hamiltonian),
@@ -156,33 +169,6 @@ function getparams(sim::Simulation{T}) where {T<:Real}
         numpars,
         getparams(sim.unitscaling),
         (dimensions=sim.dimensions,))
-end
-
-function getbzbounds(sim::Simulation)
-
-    max_vecpot  = getmax_vecpot(sim)
-    p           = sim.numericalparams
-    bz          = (-p.kxmax + 1.3max_vecpot[1],p.kxmax - 1.3max_vecpot[1])
-    if sim.dimensions==2
-        bz = (bz...,-p.kymax + 1.3max_vecpot[2],p.kymax - 1.3max_vecpot[2])
-    end
-    return bz
-end
-
-getmax_vecpot(sim::Simulation) = [getmax_vecpot_x(sim),getmax_vecpot_y(sim)]
-
-function getmax_vecpot_x(sim::Simulation)
-
-    ax = get_vecpotx(sim.drivingfield)
-    ts = gettsamples(sim.numericalparams)
-    return maximum(ax.(ts))
-end
-
-function getmax_vecpot_y(sim::Simulation)
-
-    ay = get_vecpoty(sim.drivingfield)
-    ts = gettsamples(sim.numericalparams)
-    return maximum(ay.(ts))
 end
 
 function checkbzbounds(sim::Simulation)

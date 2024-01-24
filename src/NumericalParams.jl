@@ -30,7 +30,7 @@ function getparams(p::NumericalParams2dSlice{T}) where {T<:Real}
 end
 
 
-function getparams(p::NumericalParams2d)
+function getparams(p::NumericalParams2d{T}) where {T<:Real} 
     return (
     dkx=p.dkx,
     dky=p.dky,
@@ -43,9 +43,9 @@ function getparams(p::NumericalParams2d)
     nkx=2*Int(cld(p.kxmax,p.dkx)),
     nky=2*Int(cld(p.kymax,p.dky)),
     nt=2*Int(cld(abs(p.t0),p.dt)),
-    tsamples=gettsamples(p),
-    kxsamples=getkxsamples(p),
-    kysamples=getkysamples(p))
+    tsamples=LinRange(-abs(p.t0),abs(p.t0),2*Int(cld(abs(p.t0),p.dt))),
+    kxsamples=LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx))),
+    kysamples=LinRange(-p.kymax,p.kymax,2*Int(cld(p.kymax,p.dky))))
 end
 
 function printparamsSI(p::NumericalParams2d,us::UnitScaling;digits=3)
@@ -92,7 +92,7 @@ function NumericalParams1d(dkx::Real,kxmax::Real,dt::Real,t0::Real)
     return NumericalParams1d(dkx,kxmax,dt,t0,1e-12,1e-12)
 end
 
-function getparams(p::NumericalParams1d)
+function getparams(p::NumericalParams1d{T}) where {T<:Real} 
     return (
     dkx=p.dkx,
     kxmax=p.kxmax,
@@ -102,10 +102,9 @@ function getparams(p::NumericalParams1d)
     atol=p.atol,
     nkx=2*Int(cld(p.kxmax,p.dkx)),
     nt=2*Int(cld(abs(p.t0),p.dt)),
-    tsamples=gettsamples(p),
-    kxsamples=getkxsamples(p))
+    tsamples=LinRange(-abs(p.t0),abs(p.t0),2*Int(cld(abs(p.t0),p.dt))),
+    kxsamples=LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx))))
 end
-
 
 function printparamsSI(p::NumericalParams1d,us::UnitScaling;digits=3)
 
@@ -131,8 +130,3 @@ function printparamsSI(p::NumericalParams1d,us::UnitScaling;digits=3)
     end
     return str
 end
-
-getkxsamples(p::NumericalParameters) = LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx)))
-getkysamples(p::NumericalParameters) = LinRange(-p.kymax,p.kymax,2*Int(cld(p.kymax,p.dky)))
-gettsamples(p::NumericalParameters) = LinRange(-abs(p.t0),abs(p.t0),2*Int(cld(abs(p.t0),p.dt)))
-

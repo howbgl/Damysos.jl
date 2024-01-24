@@ -1,54 +1,18 @@
-@inline function vector_of_svec_to_matrix(u::Vector{SVector{N,T}}) where {N,T}
-    return reshape(reinterpret(T,u),(N,:))
+function subdivide_vector(vec::AbstractVector{T}, basesize::U) where {T<:Real,U}
+
+    batches = Vector{Vector{T}}(undef, 0)
+    buffer  = Vector{T}(undef,0)
+
+    for (i,el) in enumerate(vec)
+        push!(buffer,el)
+        if length(buffer)==basesize || i==length(vec)
+            push!(batches,deepcopy(buffer))
+            buffer  = Vector{T}(undef,0)
+        end
+    end
+
+    return batches
 end
-
-export subdivide_vector
-function subdivide_vector(vec::AbstractVector,step::Integer,overlap::Integer=0)
-
-    step <= 0 && throw(ArgumentError("step must be positive integer"))
-    overlap <= -step && throw(ArgumentError("overlap must be larger than -step"))
-
-    return (vec[1+d:minimum((end,step+d+overlap))] for d in 0:step:length(vec))
-end
-
-function makeindices_kspace_linearsubdiv(
-    kxsamples::AbstractVector{<:Number},
-    kysamples::AbstractVector{<:Number},
-    kchunksize::Integer=4096)
-
-    fullrange = 1:length(CartesianIndices((length(kxsamples),length(kysamples))))
-    return subdivide_vector(fullrange,kchunksize)
-end
-
-function make_kspace_tiling(
-    kxsamples::AbstractVector{<:Number},
-    kysamples::AbstractVector{<:Number},
-    kchunksize::Integer=4096;
-    kxoverlap=0,
-    kyoverlap=0)
-    
-    nk              = largest_root_below(kchunksize)
-    kchunksize      = nk^2
-    return make_kspace_tiling(kxsamples,kysamples,nk,nk;
-        kxoverlap=kxoverlap,kyoverlap=kyoverlap)
-end
-
-function make_kspace_tiling(
-    kxsamples::AbstractVector{<:Number},
-    kysamples::AbstractVector{<:Number},
-    nkxtile::Integer,
-    nkytile::Integer;
-    kxoverlap=0,
-    kyoverlap=0)
-
-    kxtiles = subdivide_vector(kxsamples,nkxtile,kxoverlap)
-    kytiles = subdivide_vector(kysamples,nkytile,kyoverlap)
-
-    kxtiling = [kxs for kxs in kxtiles for _ in kytiles]
-    kytiling = [kys for _ in kxtiles for kys in kytiles]
-    return (kxtiling,kytiling)
-end
-
 
 function padvecto_overlap(kybatches::AbstractVector{V}) where {V<:AbstractVector}
     padvecto_overlap!(deepcopy(kybatches))
@@ -70,7 +34,6 @@ function nestedcount(x::Vector)
     end
 end
 
-largest_root_below(n::Integer) = floor(Int, sqrt(n))
 
 export find_files_with_name
 function find_files_with_name(root_dir::String, target_name::String)

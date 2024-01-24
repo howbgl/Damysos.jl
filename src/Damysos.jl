@@ -8,8 +8,6 @@ using TerminalLoggers,ProgressLogging
 export Hamiltonian,GappedDirac,scalegapped_dirac
 export DrivingField,get_efieldx,get_vecpotx
 export NumericalParameters,NumericalParams2d,NumericalParams1d,NumericalParams2dSlice
-export Ensemble,parametersweep
-export semiclassical_interband_range,maximum_k
 export run_simulation!,run_simulation1d!,runsim2d_kybatches!
 export savemetadata,save,load,savedata,loaddata
 export getvx_cc,getvx_cv,getvx_vc,getvx_vv

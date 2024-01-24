@@ -1,4 +1,9 @@
 
+export Ensemble
+
+export getshortname
+export make_ensemble_from_path
+
 """
     Ensemble{T}(simlist, id, datapath, plotpath)
 
@@ -36,3 +41,16 @@ function getshortname(ens::Ensemble{T}) where {T<:Real}
 end
 
 getname(ens::Ensemble) = getshortname(ens) * ens.id
+
+
+function make_ensemble_from_path(
+    path::String,
+    ensembleid="default",
+    datapath="/home/how09898/phd/data/hhgjl/default",
+    plotpath="/home/how09898/phd/plots/hhgjl/default")
+
+    simfiles = find_files_with_name(path,"simulation.meta")
+    simlist  = load.(simfiles)
+
+    return Ensemble(simlist,ensembleid,datapath,plotpath)
+end

@@ -17,12 +17,12 @@ function make_system(
       plotpath_base="/home/how09898/phd/plots",
       datapath_base="/home/how09898/phd/data")
 
-      vf        = u"497070m/s"
+      vf        = u"497070.0m/s"
       m         = u"0.02eV"
       freq      = u"25.0THz"
       emax      = u"0.5MV/cm"
-      t2        = Inf*u"1s"
-      t1        = Inf*u"1s"
+      t2        = Inf*u"1.0s"
+      t1        = Inf*u"1.0s"
       σ         = u"40.0fs"
 
       # for T2 = T1 = ∞ converged @
@@ -53,7 +53,7 @@ function make_system(
 end
 
 const sim     = make_system("hhgjl/tqt-compare/")
-const ens     = parametersweep(sim,sim.NumericalParams2d,:dt,LinRange(0.1,0.01,8))
+const ens     = parametersweep(sim,sim.numericalparams,:dt,LinRange(0.1,0.01,8))
 
 ensurepath(ens.plotpath)
 global_logger(make_teelogger(ens.plotpath,sim.id))

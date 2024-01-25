@@ -30,22 +30,29 @@ function make_system(
       emax      = uconvert(u"MV/cm",ω*m / (vf * e * γ))
 
       tcycle    = uconvert(u"fs",1/freq)
-      t2        = tcycle / 4
-      t1        = Inf*u"1s"
+      t2        = Inf*u"1.0s"
+      t1        = Inf*u"1.0s"
       σ         = 2*tcycle
 
-      # for γ=0.2 T2 = T1 = ∞ converged @
+      # for γ=0.2; T2=T/4; T1=∞ converged @
       # dt = 0.01
       # dkx = 0.1
       # dky = 1.0
       # kxmax = 330
-      # kymax = 200
+      # kymax = 2002*tcycle
+
+      # for γ=0.2 T2 = T1 = ∞ converged @
+      # dt = 
+      # dkx = 
+      # dky = 
+      # kxmax =
+      # kymax = 
 
       dt      = 0.01
-      dkx     = 0.1
+      dkx     = 1.0
       dky     = 1.0
-      kxmax   = 330.0
-      kymax   = 200.0
+      kxmax   = 200.0
+      kymax   = 5.0
 
       us      = scaledriving_frequency(freq,vf)
       h       = GappedDirac(us,m,vf,t1,t2)
@@ -64,7 +71,7 @@ end
 const sim     = make_system("hhgjl/occupation_oscillations/zeta=30/gamma=0.2")
 const γ2      = 1.0 / sim.hamiltonian.t2  
 const γ2range = LinRange(0.0,γ2,10)
-const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(230.0,280.0,5))
+const ens     = parametersweep(sim,sim.numericalparams,:dt,LinRange(0.01,0.006,5))
 
 ensurepath(ens.plotpath)
 global_logger(make_teelogger(ens.plotpath,ens.id))

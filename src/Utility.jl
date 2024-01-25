@@ -1,3 +1,9 @@
+
+export ensurepath
+export find_files_with_name
+export parametersweep
+export random_word
+
 function subdivide_vector(vec::AbstractVector{T}, basesize::U) where {T<:Real,U}
 
     batches = Vector{Vector{T}}(undef, 0)
@@ -35,7 +41,6 @@ function nestedcount(x::Vector)
 end
 
 
-export find_files_with_name
 function find_files_with_name(root_dir::String, target_name::String)
     file_paths = Vector{String}()
     
@@ -90,7 +95,7 @@ function chopto_length_from_front(s::AbstractString,l::Integer)
     end
 end
 
-export random_word
+
 function random_word()::String
     lines = readlines("words.txt")
     
@@ -126,7 +131,6 @@ function try_execute_n_times(f::Function, n::Int, arg; wait_time::Real=10.0)
     return success
 end
 
-export ensurepath
 function ensurepath(paths::Vector{String}; n_tries::Int=3, wait_time::Real=10.0)
 
     for path in paths

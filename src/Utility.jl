@@ -1,6 +1,10 @@
 
 export ensurepath
 export find_files_with_name
+export getkgrid_index
+export getkgrid_point
+export getkgrid_point_kx
+export getkgrid_point_ky
 export parametersweep
 export random_word
 
@@ -38,6 +42,51 @@ function nestedcount(x::Vector)
     else
         return sum((nestedcount(el) for el in x))
     end
+end
+
+@inline function get_cartesianindices_kgrid(
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    return CartesianIndices((length(kxsamples),length(kysamples)))
+end
+
+
+@inline function getkgrid_index(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    return get_cartesianindices_kgrid(kxsamples,kysamples)[i]
+end
+
+@inline function getkgrid_point(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    idx = getkgrid_index(i,kxsamples,kysamples)
+
+    return SA[kxsamples[idx[1]],kysamples[idx[2]]]
+end
+
+@inline function getkgrid_point_kx(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    idx = getkgrid_index(i,kxsamples,kysamples)
+
+    return kxsamples[idx[1]]
+end
+@inline function getkgrid_point_ky(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    idx = getkgrid_index(i,kxsamples,kysamples)
+
+    return kysamples[idx[2]]
 end
 
 

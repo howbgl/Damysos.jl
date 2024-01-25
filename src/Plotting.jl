@@ -1,5 +1,6 @@
 
-const DEFAULT_RESOLUTION = (1200,800)
+const DEFAULT_FIGSIZE           = (1200,800)
+const DEFAULT_COLORSCHEME_CONT  = ColorSchemes.viridis
 
 function plottimeseries(timeseries::Vector{Vector{T}},
                         labels::Vector{String},
@@ -11,7 +12,7 @@ function plottimeseries(timeseries::Vector{Vector{T}},
                         ylabel="",
                         kwargs...) where {T<:Real}
 
-    f   = Figure(resolution=DEFAULT_RESOLUTION)
+    f   = Figure(size=DEFAULT_FIGSIZE)
     ax  = Axis(f[1,1],title=title,xlabel=xlabel,ylabel=ylabel)
     
     for (i,data,label,ts) in zip(1:length(timeseries),timeseries,labels,tsamples)
@@ -19,8 +20,8 @@ function plottimeseries(timeseries::Vector{Vector{T}},
         if colors == "categorical"
             lines!(ax,ts,data,label=label)
         elseif colors == "continuous"
-            lines!(ax,ts,data,label=label,colormap=:viridis,
-                colorrange=(1,length(timeseries)),color=i)
+            cs = DEFAULT_COLORSCHEME_CONT
+            lines!(ax,ts,data,label=label,color=cs[(i-1)/(length(timeseries)-1)])
         else
             @warn "Unknown kwarg colors = $colors, using default (categorical)"
             lines!(ax,ts,data,label=label)
@@ -45,7 +46,7 @@ function plotspectra(timeseries::Vector{Vector{T}},
                     colors="categorical",
                     kwargs...) where {T<:Real}
 
-    f   = Figure(resolution=DEFAULT_RESOLUTION)
+    f   = Figure(size=DEFAULT_FIGSIZE)
     ax  = Axis(f[1,1],
                 title=title,
                 xlabel="Ω/ω",
@@ -75,8 +76,9 @@ function plotspectra(timeseries::Vector{Vector{T}},
         if colors == "categorical"
             lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label) 
         elseif colors == "continuous"
-            lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label,colormap=:viridis,
-            colorrange=(1,length(timeseries)),color=i) 
+            cs = DEFAULT_COLORSCHEME_CONT
+            lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label,
+                color=cs[(i-1)/(length(timeseries)-1)]) 
         else
             @warn "Unknown kwarg colors = $colors, using default (categorical)"
             lines!(ax,xdata[cut_inds],ydata[cut_inds],label=label)
@@ -136,7 +138,7 @@ function plotdata(
             figtime     = plottimeseries(timeseries,labels,tsamples,
                                         title=vname * " (" * ens.id * ")",
                                         colors="continuous",
-                                        ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
+                                        ylabel=ens[1].dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
                                         kwargs...)
             figspectra  = plotspectra(timeseries,labels,frequencies,timesteps,
                                         maxharm=maxharm,
@@ -409,7 +411,7 @@ function plotbandstructure2d(sim::Simulation{T};plotkgrid=true,nk=2048) where {T
     height      = p.bz[3] < p.bz[4] ? p.bz[4]-p.bz[3]  : zero(T)
     bzrect      = Rect2(leftbottom...,(width,height))
 
-    fig         = Figure(resolution=DEFAULT_RESOLUTION)
+    fig         = Figure(size=DEFAULT_FIGSIZE)
     ax          = Axis(fig[1, 1],title=sim.id,xlabel="kx/kc",ylabel="ky/kc",aspect=1)
     
     try

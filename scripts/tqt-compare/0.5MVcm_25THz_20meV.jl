@@ -26,17 +26,17 @@ function make_system(
       σ         = u"40.0fs"
 
       # for T2 = T1 = ∞ converged @
-      # dt = 
-      # dkx = 
+      # dt = 0.01
+      # dkx = 0.1
       # dky = 
       # kxmax = 
       # kymax = 
 
       dt      = 0.001
-      dkx     = 1.0
+      dkx     = 0.1
       dky     = 1.0
       kxmax   = 330.0
-      kymax   = 2.0
+      kymax   = 5.0
 
       us      = scaledriving_frequency(freq,vf)
       h       = GappedDirac(us,m,vf,t1,t2)
@@ -53,7 +53,7 @@ function make_system(
 end
 
 const sim     = make_system("hhgjl/tqt-compare/")
-const ens     = parametersweep(sim,sim.numericalparams,:dt,LinRange(0.01,0.001,8))
+const ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(1.0,0.1,10))
 
 ensurepath(ens.plotpath)
 global_logger(make_teelogger(ens.plotpath,sim.id))

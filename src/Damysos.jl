@@ -5,8 +5,8 @@ using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,FLoops,Dates,Specia
 using TerminalLoggers,ProgressLogging,ColorSchemes
 
 
-export Hamiltonian,GappedDirac,scalegapped_dirac
-export DrivingField,get_efieldx,get_vecpotx
+export DrivingField
+export Hamiltonian
 export NumericalParameters,NumericalParams2d,NumericalParams1d,NumericalParams2dSlice
 export run_simulation!,run_simulation1d!,runsim2d_kybatches!
 export savemetadata,save,load,savedata,loaddata

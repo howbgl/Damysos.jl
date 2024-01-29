@@ -1,7 +1,18 @@
 
+export gauss
+export get_efieldx
+export get_efieldx_expression
+export get_efieldy
+export get_efieldy_expression
+export get_vecpotx
+export get_vecpotx_expression
+export get_vecpoty
+export get_vecpoty_expression
+export scaledriving_frequency
+
+
 gauss(t::T,σ::T) where {T<:Real} = exp(-t^2 / (2σ^2))
 
-export scaledriving_frequency
 function scaledriving_frequency(ufrequency,ufermivelocity)
     return scaledriving_frequency(promote(ufrequency,ufermivelocity)...)
 end
@@ -14,12 +25,6 @@ function scaledriving_frequency(
     lc = uconvert(u"nm",fermivelocity*tc)
     return UnitScaling(tc,lc)
 end
-
-
-get_efieldx(sim::Simulation) = get_efieldx(sim.drivingfield)
-get_efieldy(sim::Simulation) = get_efieldy(sim.drivingfield)
-get_vecpotx(sim::Simulation) = get_vecpotx(sim.drivingfield)
-get_vecpoty(sim::Simulation) = get_vecpoty(sim.drivingfield)
 
 include("GaussianAPulse.jl")
 include("GaussianEPulse.jl")

@@ -87,3 +87,25 @@ function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)
     end
     return str
 end
+
+export get_efieldx_expression
+function get_efieldx_expression(df::GaussianAPulse)
+    return :(fx(t) = $(cos(df.φ) * df.eE)*(t*cos($(df.ω)*t)+$(df.σ^2*df.ω)*sin($(df.ω)*t))* 
+        gauss(t,$(df.σ)) / $(df.ω*df.σ^2))
+end
+
+export get_efieldy_expression
+function get_efieldy_expression(df::GaussianAPulse)
+    return :(fy(t) = $(sin(df.φ) * df.eE)*(t*cos($(df.ω)*t)+$(df.σ^2*df.ω)*sin($(df.ω)*t))* 
+        gauss(t,$(df.σ)) / $(df.ω*df.σ^2))
+end
+
+export get_vecpotx_expression
+function get_vecpotx_expression(df::GaussianAPulse)
+    return :(ax(t) =  cos($(df.ω)*t) * gauss(t,$(df.σ)) *$(cos(df.φ) * df.eE / df.ω))
+end
+
+export get_vecpoty_expression
+function get_vecpoty_expression(df::GaussianAPulse)
+    return :(ay(t) =  cos($(df.ω)*t) * gauss(t,$(df.σ)) *$(sin(df.φ) * df.eE / df.ω))
+end

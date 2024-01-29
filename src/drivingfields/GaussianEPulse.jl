@@ -1,4 +1,5 @@
 
+export erf
 export GaussianEPulse
 
 """
@@ -74,9 +75,27 @@ end
     end 
 end
 
-function getfields(df::GaussianEPulse)
-    return (get_vecpotx(df),get_vecpoty(df),get_efieldx(df),get_efieldy(df))
+function get_efieldx_expression(df::GaussianEPulse)
+    return :(fx(t) = $(cos(df.φ)*df.eE)*sin($(df.σ) * t + $(df.ϕ))*gauss(t,$(df.σ)))
 end
+
+function get_efieldy_expression(df::GaussianEPulse)
+    return :(fy(t) = $(sin(df.φ)*df.eE)*sin($(df.σ) * t + $(df.ϕ))*gauss(t,$(df.σ)))
+end
+
+function get_vecpotx_expression(df::GaussianEPulse)
+    a = convert(typeof(df.σ),-df.σ*df.eE*cos(df.φ)*sqrt(π/2.) * exp(-df.σ^2*df.ω^2/2.))
+    b = exp(im*df.ϕ)
+    return :(ax(t) = $a*imag($b*erf( (t-im*$(df.σ^2*df.ω)) / $(sqrt(2.)*df.σ) )))
+end
+
+function get_vecpoty_expression(df::GaussianEPulse)
+    a = convert(typeof(df.σ),-df.σ*df.eE*sin(df.φ)*sqrt(π/2.) * exp(-df.σ^2*df.ω^2/2.))
+    b = exp(im*df.ϕ)
+    return :(ay(t) =$a*imag($b*erf( (t-im*$(df.σ^2*df.ω)) / $(sqrt(2.)*df.σ) )))
+end
+
+
 
 function printparamsSI(df::GaussianEPulse,us::UnitScaling;digits=4)
 

@@ -44,7 +44,7 @@ function make_system(
       # for γ=0.2; T2 = T1 = ∞ converged @
       # dt = 0.01
       # dkx = 0.1
-      # dky = 1.0
+      # dky = 
       # kxmax = 
       # kymax = 
 
@@ -71,7 +71,7 @@ end
 const sim     = make_system("hhgjl/occupation_oscillations/zeta=30/gamma=1.0")
 const γ2      = 1.0 / sim.hamiltonian.t2  
 const γ2range = LinRange(0.0,γ2,10)
-const ens     = parametersweep(sim,sim.numericalparams,:dt,LinRange(0.01,0.001,8))
+const ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(1.0,0.1,6))
 
 ensurepath(ens.plotpath)
 global_logger(make_teelogger(ens.plotpath,ens.id))

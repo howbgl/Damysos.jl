@@ -34,7 +34,7 @@ function make_system(
 
       dt      = 0.001
       dkx     = 0.1
-      dky     = 1.0
+      dky     = 0.1
       kxmax   = 330.0
       kymax   = 5.0
 
@@ -53,7 +53,7 @@ function make_system(
 end
 
 const sim     = make_system("hhgjl/tqt-compare/")
-const ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(1.0,0.1,10))
+const ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(0.2,0.02,10))
 
 ensurepath(ens.plotpath)
 global_logger(make_teelogger(ens.plotpath,sim.id))

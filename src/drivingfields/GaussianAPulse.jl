@@ -105,3 +105,36 @@ end
 function get_vecpoty_expression(df::GaussianAPulse)
     return :(ay(t) =  cos($(df.ω)*t) * gauss(t,$(df.σ)) *$(sin(df.φ) * df.eE / df.ω))
 end
+
+function makedefining_expression_efieldx(df::GaussianAPulse,name=:fx)
+
+    warning_quote   = warn_ifdefined_quote(name)
+    defining_quote  = :($name(t) = $(cos(df.φ) * df.eE)*(t*cos($(df.ω)*t)+$(df.σ^2*df.ω)*
+        sin($(df.ω)*t)) * gauss(t,$(df.σ)) / $(df.ω*df.σ^2))
+    return Expr(:block,warning_quote,defining_quote)
+end
+
+function makedefining_expression_efieldy(df::GaussianAPulse,name=:fy)
+
+    warning_quote   = warn_ifdefined_quote(name)
+    defining_quote  = :($name(t) = $(sin(df.φ) * df.eE)*(t*cos($(df.ω)*t)+$(df.σ^2*df.ω)*
+        sin($(df.ω)*t))*gauss(t,$(df.σ)) / $(df.ω*df.σ^2))
+    return Expr(:block,warning_quote,defining_quote)
+end
+
+function makedefining_expression_vecpotx(df::GaussianAPulse,name=:ax)
+
+    warning_quote   = warn_ifdefined_quote(name)
+    defining_quote  = :($name(t) =  cos($(df.ω)*t) * gauss(t,$(df.σ)) *
+        $(cos(df.φ) * df.eE / df.ω))
+    return Expr(:block,warning_quote,defining_quote)
+end
+
+function makedefining_expression_vecpoty(df::GaussianAPulse,name=:ay)
+
+    warning_quote   = warn_ifdefined_quote(name)
+    defining_quote  = :($name(t) =  cos($(df.ω)*t) * gauss(t,$(df.σ)) *
+        $(sin(df.φ) * df.eE / df.ω))
+    return Expr(:block,warning_quote,defining_quote)
+end
+

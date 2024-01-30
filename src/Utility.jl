@@ -8,6 +8,19 @@ export getkgrid_point_ky
 export parametersweep
 export random_word
 
+function warn_ifdefined_quote(s::Symbol)
+
+    warnstr = """
+    Symbol $s is already defined in current scope! It might be overwritten now.
+    """
+    return quote
+        if @isdefined $s
+            @warn $warnstr
+        end
+    end    
+end
+
+
 function subdivide_vector(vec::AbstractVector{T}, basesize::U) where {T<:Real,U}
 
     batches = Vector{Vector{T}}(undef, 0)

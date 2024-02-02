@@ -1,5 +1,9 @@
 
+export efieldx
+export efieldy
 export GaussianAPulse
+export vecpotx
+export vecpoty
 
 """
     GaussianAPulse{T<:Real}
@@ -64,6 +68,29 @@ end
 function getfields(df::GaussianAPulse)
     return (get_vecpotx(df),get_vecpoty(df),get_efieldx(df),get_efieldy(df))
 end
+
+function efieldx(df::GaussianAPulse)
+    c1 = cos(df.φ) * df.eE / (df.ω*df.σ^2)
+    c2 = df.σ^2*df.ω
+    return  :($c1 *(t*cos($(df.ω)*t) + $c2 * sin($(df.ω)*t)) * gauss(t,$(df.σ)))
+end
+
+function efieldy(df::GaussianAPulse)
+    c1 = sin(df.φ) * df.eE / (df.ω*df.σ^2)
+    c2 = df.σ^2*df.ω
+    return  :($c1 *(t*cos($(df.ω)*t) + $c2 * sin($(df.ω)*t)) * gauss(t,$(df.σ)))
+end
+
+function vecpotx(df::GaussianAPulse)
+    c1 = cos(df.φ) * df.eE / df.ω
+    return :($c1 * cos($(df.ω)*t) * gauss(t,$(df.σ)))
+end
+
+function vecpoty(df::GaussianAPulse)
+    c1 = sin(df.φ) * df.eE / df.ω
+    return :($c1 * cos($(df.ω)*t) * gauss(t,$(df.σ)))
+end
+
 
 function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)
 

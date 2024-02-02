@@ -197,10 +197,19 @@ function printparamsSI(sim::Simulation;digits=3)
     p   = getparams(sim)
     γ   = round(p.Δ*p.ω / p.eE,sigdigits=digits)        # Keldysh parameter
     M   = round(2*p.Δ / p.ω,sigdigits=digits)           # Multi-photon number
-    ζ   = round(M/γ,sigdigits=digits)                    # My dimless asymptotic ζ
+    ζ   = round(M/γ,sigdigits=digits)                   # My dimless asymptotic ζ
     plz = round(exp(-π*p.Δ^2 / p.eE),sigdigits=digits)  # Maximal LZ tunnel prob
+    bzSI  = [wavenumberSI(k,sim.unitscaling) for k in p.bz]
+    bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
+    bz    = [round(x,sigdigits=digits) for x in p.bz]
 
-    str = "ζ = $ζ\nγ = $γ\nM = $M\nplz = $plz\n"
+    str = """
+        ζ = $ζ
+        γ = $γ
+        M = $M
+        plz = $plz
+        BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])
+        BZ(ky) = [$(bzSI[3]),$(bzSI[4])] ([$(bz[3]),$(bz[4])])\n"""
 
     str *= printparamsSI(sim.hamiltonian,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.drivingfield,sim.unitscaling;digits=digits)

@@ -70,9 +70,19 @@ function stringexpand_vector(v::AbstractVector)
 end
 
 function stringexpand_nt(nt::NamedTuple)
-    str = ""
+    str = []
     for (k, v) in pairs(nt)
-        str *= "$k: $v\n"
+        push!(str,"$k: $v")
+    end
+    return join(str,'\n')
+end
+
+function stringexpand_2nt(nt1::NamedTuple,nt2::NamedTuple)
+    str = ""
+    for key in intersect(keys(nt1),keys(nt2))
+        v1  = getfield(nt1,key)
+        v2  = getfield(nt2,key)
+        str *= "$key: $v1 ($v2)\n"
     end
     return str
 end

@@ -5,7 +5,9 @@ export electricfieldSI
 export energySI
 export frequencySI
 export getparams
+export getparamsSI
 export lengthSI
+export printparamsSI
 export timeSI
 export velocitySI
 export wavenumberSI
@@ -31,10 +33,10 @@ end
 function UnitScaling(timescale,lengthscale) 
     return UnitScaling(ustrip(u"fs",timescale),ustrip(u"nm",lengthscale))
 end
-function getparams(us::UnitScaling{T}) where {T<:Real} 
-    return (timescale=Quantity(us.timescale,u"fs"),
-            lengthscale=Quantity(us.lengthscale,u"nm"))
-end
+lengthscaleSI(us::UnitScaling)  = Quantity(us.lengthscale,u"nm")
+timescaleSI(us::UnitScaling)    = Quantity(us.timescale,u"fs")
+getparams(us::UnitScaling)      = (timescale=timescaleSI(us),lengthscale=lengthscaleSI(us))
+getparamsSI(us::UnitScaling)    = (timescale=timescaleSI(us),lengthscale=lengthscaleSI(us))
 
 function energySI(en,us::UnitScaling)
     tc,lc = getparams(us)
@@ -72,7 +74,7 @@ end
 A struct representing a simulation with various components.
 """
 struct Simulation{T<:Real}
-    hamiltonian::Hamiltonian{T}
+    liouvillian::Liouvillian{T}
     drivingfield::DrivingField{T}
     numericalparams::NumericalParameters{T}
     observables::Vector{Observable{T}}
@@ -81,42 +83,54 @@ struct Simulation{T<:Real}
     id::String
     datapath::String
     plotpath::String
-    function Simulation{T}(h,df,p,obs,us,d,id,dpath,ppath) where {T<:Real}
+    function Simulation{T}(l,df,p,obs,us,d,id,dpath,ppath) where {T<:Real}
 
         if p isa NumericalParams1d{T} && d!=1
             @warn "given dimensions ($d) not matching $p\nsetting dimensions to 1"
-            new(h,df,p,obs,us,UInt8(1),id,dpath,ppath)
+            new(l,df,p,obs,us,UInt8(1),id,dpath,ppath)
 
         elseif p isa NumericalParams2d{T} && d!=2
             @warn "given dimensions ($d) not matching $p\nsetting dimensions to 2"
-            new(h,df,p,obs,us,UInt8(2),id,dpath,ppath)
+            new(l,df,p,obs,us,UInt8(2),id,dpath,ppath)
             
         else
-            new(h,df,p,obs,us,d,id,dpath,ppath)
+            new(l,df,p,obs,us,d,id,dpath,ppath)
         end
     end
 end
 
-function Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
+function Simulation(l::Liouvillian{T},df::DrivingField{T},p::NumericalParameters{T},
     obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer,
     id::String,dpath::String,ppath::String) where {T<:Real} 
 
-    return Simulation{T}(h,df,p,obs,us,UInt8(abs(d)),id,dpath,ppath)
+    return Simulation{T}(l,df,p,obs,us,UInt8(abs(d)),id,dpath,ppath)
 end
 
-function Simulation(h::Hamiltonian{T},df::DrivingField{T},
-    p::NumericalParameters{T},obs::Vector{O} where {O<:Observable{T}},
-    us::UnitScaling{T},d::Integer,id) where {T<:Real} 
-    name = "Simulation{$T}($(d)d)" * getshortname(h) *"_"*  getshortname(df) * "_$id"
-    return Simulation(h,df,p,obs,us,d,String(id),
+function Simulation(
+    l::Liouvillian{T},
+    df::DrivingField{T},
+    p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},
+    us::UnitScaling{T},
+    d::Integer,
+    id) where {T<:Real}
+
+    name = "Simulation{$T}($(d)d)" * getshortname(l) *"_"*  getshortname(df) * "_$id"
+    return Simulation(l,df,p,obs,us,d,String(id),
                 "/home/how09898/phd/data/hhgjl/"*name*"/",
                 "/home/how09898/phd/plots/hhgjl/"*name*"/")
 end
 
-function Simulation(h::Hamiltonian{T},df::DrivingField{T},p::NumericalParameters{T},
-    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer) where {T<:Real} 
-    id = sprintf1("%x",hash([h,df,p,obs,us,d]))
-    return Simulation(h,df,p,obs,us,d,id)
+function Simulation(
+    l::Liouvillian{T},
+    df::DrivingField{T},
+    p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},
+    us::UnitScaling{T},
+    d::Integer) where {T<:Real} 
+
+    id = sprintf1("%x",hash([l,df,p,obs,us,d]))
+    return Simulation(l,df,p,obs,us,d,id)
 end
 
 function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
@@ -139,12 +153,12 @@ function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
     end
 end
 
-function getshortname(sim::Simulation{T}) where {T<:Real}
+function getshortname(sim::Simulation)
     return "Simulation{$T}($(sim.dimensions)d)" * getshortname(sim.hamiltonian) *"_"* 
             getshortname(sim.drivingfield)
 end
 
-function getparams(sim::Simulation{T}) where {T<:Real}
+function getparams(sim::Simulation)
 
     numpars     = getparams(sim.numericalparams)
     fieldpars   = getparams(sim.drivingfield)
@@ -178,20 +192,19 @@ function checkbzbounds(sim::Simulation)
     end
 end
 
-getnames_obs(sim::Simulation{T}) where {T<:Real} = vcat(getnames_obs.(sim.observables)...)
-arekresolved(sim::Simulation{T}) where {T<:Real} = vcat(arekresolved.(sim.observables)...)
-getname(sim::Simulation{T}) where {T<:Real}      = getshortname(sim)*'_'*sim.id
+getnames_obs(sim::Simulation)   = vcat(getnames_obs.(sim.observables)...)
+arekresolved(sim::Simulation)   = vcat(arekresolved.(sim.observables)...)
+getname(sim::Simulation)        = getshortname(sim)*'_'*sim.id
 
 
 getshortname(obs::Observable)           = split("$obs",'{')[1]
 getshortname(c::SimulationComponent)    = split("$c",'{')[1]
 
-function Base.show(io::IO,::MIME"text/plain",c::SimulationComponent{T}) where {T}
+function Base.show(io::IO,::MIME"text/plain",c::Union{SimulationComponent,Hamiltonian})
     println(io,getshortname(c))
     print(io,c |> getparams |> stringexpand_nt |> prepend_spaces)
 end
 
-export printparamsSI
 function printparamsSI(sim::Simulation;digits=3)
 
     p   = getparams(sim)

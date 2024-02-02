@@ -44,7 +44,7 @@ function make_system(
       # for γ=0.2; T2 = T1 = ∞ converged @
       # dt = 0.01
       # dkx = 0.1
-      # dky = 
+      # dky = 1.0
       # kxmax = 
       # kymax = 
 
@@ -52,7 +52,7 @@ function make_system(
       dkx     = 0.1
       dky     = 1.0
       kxmax   = 200.0
-      kymax   = 10.0
+      kymax   = 1.0
 
       us      = scaledriving_frequency(freq,vf)
       h       = GappedDirac(us,m,vf,t1,t2)
@@ -71,7 +71,7 @@ end
 const sim     = make_system("hhgjl/occupation_oscillations/zeta=30/gamma=1.0")
 const γ2      = 1.0 / sim.hamiltonian.t2  
 const γ2range = LinRange(0.0,γ2,10)
-const ens     = parametersweep(sim,sim.numericalparams,:dky,LinRange(1.0,0.1,6))
+const ens     = parametersweep(sim,sim.numericalparams,:kxmax,LinRange(500,600,6))
 
 ensurepath(ens.plotpath)
 global_logger(make_teelogger(ens.plotpath,ens.id))

@@ -1,4 +1,9 @@
 
+export plotbandstructure
+export plotdata
+export plotfield
+
+
 const DEFAULT_FIGSIZE           = (1200,800)
 const DEFAULT_COLORSCHEME_CONT  = ColorSchemes.viridis
 

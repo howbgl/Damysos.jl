@@ -399,7 +399,7 @@ function plotbandstructure(sim::Simulation{T};plotkgrid=true) where {T<:Real}
 end
 
 
-function plotbandstructure2d(sim::Simulation{T};plotkgrid=true,nk=2048) where {T<:Real}
+function plotbandstructure2d(sim::Simulation;plotkgrid=false,nk=2048)
     
     @info "Plotting bandstructure"
 

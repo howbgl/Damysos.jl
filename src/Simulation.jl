@@ -1,13 +1,20 @@
 export Simulation
 export UnitScaling
 
+export electricfield_scaled
 export electricfieldSI
+export energyscaled
 export energySI
+export frequencyscaled
 export frequencySI
 export getparams
+export lengthscaled
 export lengthSI
+export timescaled
 export timeSI
+export velocityscaled
 export velocitySI
+export wavenumberscaled
 export wavenumberSI
 
 """
@@ -36,35 +43,80 @@ function getparams(us::UnitScaling{T}) where {T<:Real}
             lengthscale=Quantity(us.lengthscale,u"nm"))
 end
 
-function energySI(en,us::UnitScaling)
+function energySI(en::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"meV",en*Unitful.ħ/tc)
 end
-function electricfieldSI(field,us::UnitScaling)
-    tc,lc   = getparams(us)
-    e   = uconvert(u"C",1u"eV"/1u"V")
-    return uconvert(u"MV/cm",field*Unitful.ħ/(e*tc*lc))
+
+function energyscaled(energy::Unitful.Energy,us::UnitScaling)
+    tc,lc = getparams(us)
+    ħ     = Unitful.ħ
+    return uconvert(Unitful.NoUnits,tc*energy/ħ)
 end
-function timeSI(time,us::UnitScaling)
+
+function electricfieldSI(field::Real,us::UnitScaling)
+    tc,lc   = getparams(us)
+    e       = uconvert(u"C",1u"eV"/1u"V")
+    ħ       = Unitful.ħ
+    return uconvert(u"MV/cm",field*ħ/(e*tc*lc))
+end
+
+function electricfield_scaled(field::Unitful.EField,us::UnitScaling)
+    tc,lc   = getparams(us)
+    e       = uconvert(u"C",1u"eV"/1u"V")
+    ħ       = Unitful.ħ
+    return uconvert(Unitful.NoUnits,e*tc*lc*field/ħ)
+end
+
+function timeSI(time::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"fs",time*tc)
 end
-function lengthSI(length,us::UnitScaling)
+
+function timescaled(time::Unitful.Time,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(Unitful.NoUnits,time/tc)    
+end
+
+function lengthSI(length::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"Å",length*lc)
 end
-function frequencySI(ν,us::UnitScaling)
+function lengthscaled(length::Unitful.Length,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(Unitful.NoUnits,length/lc)
+end
+
+function frequencySI(ν::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"THz",ν/tc)
 end
-function velocitySI(v,us::UnitScaling)
+
+function frequencyscaled(ν::Unitful.Frequency,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(Unitful.NoUnits,ν*tc)
+end
+
+function velocitySI(v::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"m/s",v*lc/tc)
 end
-function wavenumberSI(k,us::UnitScaling)
+
+function velocityscaled(v::Unitful.Velocity,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(Unitful.NoUnits,v*tc/lc)
+end
+
+function wavenumberSI(k::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"Å^-1",k/lc)
 end
+
+function wavenumberscaled(k::Unitful.Wavenumber,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(Unitful.NoUnits,k*lc)
+end
+
 
 """
     Simulation{T}(hamiltonian, drivingfield, numericalparams, observables, unitscaling, dimensions, id, datapath, plotpath)

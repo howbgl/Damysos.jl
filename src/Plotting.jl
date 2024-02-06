@@ -424,7 +424,6 @@ function plotbandstructure2d(sim::Simulation;plotkgrid=false,nk=2048)
     
     try
         cont = contourf!(ax,ksSI,ksSI,zdataSI)
-        @show cont
         Colorbar(fig[1,2],cont)
         if plotkgrid
             for ky in p.kysamples

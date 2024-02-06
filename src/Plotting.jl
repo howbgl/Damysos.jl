@@ -389,7 +389,7 @@ function plotfield(sim::Simulation{T}) where {T<:Real}
     end
 end
 
-function plotbandstructure(sim::Simulation{T};plotkgrid=true) where {T<:Real}
+function plotbandstructure(sim::Simulation;plotkgrid=false)
     
     if sim.dimensions==2
         return plotbandstructure2d(sim;plotkgrid=plotkgrid)
@@ -405,28 +405,35 @@ function plotbandstructure2d(sim::Simulation;plotkgrid=false,nk=2048)
 
     plotpath    = sim.plotpath
     p           = getparams(sim)
+    bzSI        = [ustrip(u"Å^-1",wavenumberSI(k,sim.unitscaling)) for k in p.bz]
+    bzSI_kx     = [bzSI[1],bzSI[2],bzSI[2],bzSI[1],bzSI[1]] 
+    bzSI_ky     = [bzSI[3],bzSI[3],bzSI[4],bzSI[4],bzSI[3]] 
     Δϵ          = getΔϵ(sim.hamiltonian)
     kmax        = maximum([p.kxmax,p.kymax])
     dk          = 2kmax/nk
     ks          = -kmax:dk:kmax
+    ksSI        = [ustrip(u"Å^-1",wavenumberSI(k,sim.unitscaling)) for k in ks]
     zdata       = [Δϵ(kx,ky) for kx in ks, ky in ks]
-
-    leftbottom  = [p.bz[1],p.bz[3]]
-    width       = p.bz[1] < p.bz[2] ? p.bz[1]-p.bz[1]  : zero(T)
-    height      = p.bz[3] < p.bz[4] ? p.bz[4]-p.bz[3]  : zero(T)
-    bzrect      = Rect2(leftbottom...,(width,height))
-
-    fig         = Figure(size=DEFAULT_FIGSIZE)
-    ax          = Axis(fig[1, 1],title=sim.id,xlabel="kx/kc",ylabel="ky/kc",aspect=1)
+    zdataSI     = [ustrip(u"meV",energySI(en,sim.unitscaling)) for en in zdata]
+    fig         = Figure(size=DEFAULT_FIGSIZE .+ (200,0))
+    ax          = Axis(fig[1, 1],
+        title=sim.id,
+        xlabel="kx [Å^-1]",
+        ylabel="ky [Å^-1]",
+        aspect=1)
     
     try
-        heatmap!(ax,ks,ks,zdata)
+        cont = contourf!(ax,ksSI,ksSI,zdataSI)
+        @show cont
+        Colorbar(fig[1,2],cont)
         if plotkgrid
             for ky in p.kysamples
                 scatter!(ax,collect(p.kxsamples),fill(ky,p.nkx);color=:black,markersize=1.2)
             end
         end
-        poly!(ax,bzrect,color=(:grey,0.4),transparency=true)
+        lines!(ax,bzSI_kx,bzSI_ky,color=:black)
+        tooltip!(bzSI[2],bzSI[4],"Brillouin Zone",offset=0,align=0.8)
+        Label(fig[1,3],printparamsSI(sim),tellheight=false,justification = :left)
 
         altpath             = joinpath(pwd(),basename(plotpath))
         (success,plotpath)  = ensurepath([plotpath,altpath])

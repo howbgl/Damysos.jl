@@ -1,13 +1,15 @@
 
-function savedata(sim::Simulation{T}) where {T<:Real}
+function savedata(sim::Simulation)
 
     @info "Saving simulation data"
     @debug "datapath = \"$(sim.datapath)\""
 
-    dat         = DataFrame(t=getparams(sim).tsamples)
+    tsamples    = getparams(sim).tsamples
+    dat         = DataFrame(t=tsamples)
     
     for o in sim.observables
         addproperobs!(dat,o)
+        add_drivingfield!(dat,sim.drivingfield,tsamples)
         saveimproperobs(o)
     end
     
@@ -55,6 +57,18 @@ function saveimproperobs(occ::Occupation)
     return nothing
 end
 
+function add_drivingfield!(dat::DataFrame,df::DrivingField,tsamples::AbstractVector{<:Real})
+    
+    fx = get_efieldx(df)
+    fy = get_efieldy(df)
+    ax = get_vecpotx(df)
+    ay = get_vecpoty(df)
+
+    dat.fx = fx.(tsamples)
+    dat.fy = fy.(tsamples)
+    dat.ax = ax.(tsamples)
+    dat.ay = ay.(tsamples)
+end
 
 function savemetadata(sim::Simulation)
 

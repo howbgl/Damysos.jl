@@ -43,7 +43,8 @@ end
 function plotspectra(timeseries::Vector{Vector{T}},
                     labels::Vector{String},
                     frequencies::Vector{T},
-                    timesteps::Vector{T};
+                    timesteps::Vector{T},
+                    rtol=1e-10;
                     maxharm=30,
                     fftwindow=hanning,
                     title="",
@@ -63,6 +64,8 @@ function plotspectra(timeseries::Vector{Vector{T}},
                 xticks=0:5:maxharm)
     xlims!(ax,[0,maxharm])
 
+    total_ymax = typemin(T)
+
     for (i,data,label,dt,ν) in zip(1:length(timeseries),timeseries,labels,timesteps,
                                     frequencies)
 
@@ -71,9 +74,10 @@ function plotspectra(timeseries::Vector{Vector{T}},
                                     fs=1/dt,
                                     window=fftwindow)
         ydata       = pdg.power .* (pdg.freq .^ 2)
-        # ydata       = ydata / maximum(ydata)
+        ymax        = maximum(ydata)
+        total_ymax  = total_ymax < ymax ? ymax : total_ymax
         xdata       = 1/ν .* pdg.freq
-        cut_inds    = ydata .> floatmin(T)
+        cut_inds    = ydata .> 10floatmin(T)
         if length(ydata[cut_inds]) < length(ydata)
             @debug "Removing zeros/negatives in plotting spectrum of $title ($label)"
         end
@@ -90,14 +94,16 @@ function plotspectra(timeseries::Vector{Vector{T}},
         end
         
     end
-
+    hlines!(ax,[total_ymax*rtol,total_ymax*rtol*1e3],color=:grey)
+    text!(ax,0.05,total_ymax*rtol,text="$rtol",align=(:left,:baseline))
+    text!(ax,0.05,total_ymax*rtol*1e3,text="$(rtol*1e3)",align=(:left,:baseline))
     axislegend(ax,position=:lb)
     Label(f[1,2],sidelabel,tellheight=false,justification = :left)
     
     return f
 end
 
-function plotdata(ens::Ensemble{T};maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
+function plotdata(ens::Ensemble;maxharm=30,fftwindow=hanning,kwargs...)
     
     for obs in ens[1].observables
         @info "Plotting " * getshortname(obs)
@@ -140,17 +146,25 @@ function plotdata(
         end
         
         try
-            figtime     = plottimeseries(timeseries,labels,tsamples,
-                                        title=vname * " (" * ens.id * ")",
-                                        colors="continuous",
-                                        ylabel=ens[1].dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
-                                        kwargs...)
-            figspectra  = plotspectra(timeseries,labels,frequencies,timesteps,
-                                        maxharm=maxharm,
-                                        fftwindow=fftwindow,
-                                        title=vname * " (" * ens.id * ")",
-                                        colors="continuous",
-                                        kwargs...)
+            rtol        = maximum(getparams(s).rtol for s in ens.simlist)
+            figtime     = plottimeseries(
+                timeseries,
+                labels,
+                tsamples,
+                title=vname * " (" * ens.id * ")",
+                colors="continuous",
+                ylabel=ens[1].dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
+                kwargs...)
+            figspectra  = plotspectra(timeseries,
+                labels,
+                frequencies,
+                timesteps,
+                rtol,
+                maxharm=maxharm,
+                fftwindow=fftwindow,
+                title=vname * " (" * ens.id * ")",
+                colors="continuous",
+                kwargs...)
             
             altpath             = joinpath(pwd(),basename(plotpath))
             (success,plotpath)  = ensurepath([plotpath,altpath])
@@ -265,13 +279,19 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
         for (data,lab,ts,dt,ν) in zip(timeseries,labels,tsamples,timesteps,frequencies)
 
             figtime     = plottimeseries(
-                data,lab,ts,
+                data,
+                lab,
+                ts,
                 title=sim.id,
                 sidelabel=printparamsSI(sim),
                 ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
                 kwargs...)
             figspectra  = plotspectra(
-                data,lab,ν,dt,
+                data,
+                lab,
+                ν,
+                dt,
+                p.rtol,
                 maxharm=maxharm,
                 fftwindow=fftwindow,
                 title=sim.id,

@@ -2,6 +2,14 @@
 export NumericalParams1d
 export NumericalParams2d
 export NumericalParams2dSlice
+
+getnt(p::NumericalParameters)           = 2*Int(cld(abs(p.t0),p.dt))
+getnkx(p::NumericalParameters)          = 2*Int(cld(p.kxmax,p.dkx))
+gettsamples(p::NumericalParameters)     = LinRange(-abs(p.t0),abs(p.t0),getnt(p))
+getkxsamples(p::NumericalParameters)    = LinRange(-p.kxmax,p.kxmax,getnkx(p))
+gettspan(p::NumericalParameters)        = (gettsamples(p)[1],gettsamples(p)[2])
+
+
 struct NumericalParams2d{T<:Real} <: NumericalParameters{T}
     dkx::T
     dky::T
@@ -20,12 +28,8 @@ function NumericalParams2d(dkx::Real,dky::Real,kxmax::Real,kymax::Real,dt::Real,
     return NumericalParams2d(dkx,dky,kxmax,kymax,dt,t0,1e-12,1e-12)
 end
 
-getnt(p::NumericalParams2d)        = 2*Int(cld(abs(p.t0),p.dt))
-getnkx(p::NumericalParams2d)       = 2*Int(cld(p.kxmax,p.dkx))
-getnky(p::NumericalParams2d)       = 2*Int(cld(p.kymax,p.dky))
-gettsamples(p::NumericalParams2d)  = LinRange(-abs(p.t0),abs(p.t0),getnt(p))
-getkxsamples(p::NumericalParams2d) = LinRange(-p.kxmax,p.kxmax,getnkx(p))
-getkysamples(p::NumericalParams2d) = LinRange(-p.kymax,p.kymax,getnky(p))
+getnky(p::NumericalParams2d)         = 2*Int(cld(p.kymax,p.dky))
+getkysamples(p::NumericalParameters) = LinRange(-p.kxmax,p.kxmax,getnkx(p))
 
 function getparams(p::NumericalParams2d)
     return (
@@ -41,6 +45,7 @@ function getparams(p::NumericalParams2d)
         nky=getnky(p),
         nt=getnt(p),
         tsamples=gettsamples(p),
+        tspan=gettspan(p),
         kxsamples=getkxsamples(p),
         kysamples=getkysamples(p))
 end
@@ -89,11 +94,6 @@ function NumericalParams1d(dkx::Real,kxmax::Real,dt::Real,t0::Real)
     return NumericalParams1d(dkx,kxmax,dt,t0,1e-12,1e-12)
 end
 
-getnt(p::NumericalParams1d)        = 2*Int(cld(abs(p.t0),p.dt))
-getnkx(p::NumericalParams1d)       = 2*Int(cld(p.kxmax,p.dkx))
-gettsamples(p::NumericalParams1d)  = LinRange(-abs(p.t0),abs(p.t0),getnt(p))
-getkxsamples(p::NumericalParams1d) = LinRange(-p.kxmax,p.kxmax,getnkx(p))
-
 function getparams(p::NumericalParams1d{T}) where {T<:Real} 
     return (
     dkx=p.dkx,
@@ -105,6 +105,7 @@ function getparams(p::NumericalParams1d{T}) where {T<:Real}
     nkx=getnkx(p),
     nt=getnt(p),
     tsamples=gettsamples(p),
+    tspan=gettspan(p),
     kxsamples=getkxsamples(p))
 end
 

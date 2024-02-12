@@ -116,38 +116,49 @@ function Simulation(
     id) where {T<:Real}
 
     name = "Simulation{$T}($(d)d)" * getshortname(l) *"_"*  getshortname(df) * "_$id"
-    return Simulation(l,df,p,obs,us,d,String(id),
-                "/home/how09898/phd/data/hhgjl/"*name*"/",
-                "/home/how09898/phd/plots/hhgjl/"*name*"/")
+    return Simulation(
+        l,
+        df,
+        p,
+        obs,
+        us,
+        d,
+        String(id),
+        "/home/how09898/phd/data/hhgjl/"*name*"/",
+        "/home/how09898/phd/plots/hhgjl/"*name*"/")
 end
 
 function Simulation(
-    l::Liouvillian{T},
-    df::DrivingField{T},
-    p::NumericalParameters{T},
-    obs::Vector{O} where {O<:Observable{T}},
-    us::UnitScaling{T},
-    d::Integer) where {T<:Real} 
+    l::Liouvillian,
+    df::DrivingField,
+    p::NumericalParameters,
+    obs::Vector{O} where {O<:Observable},
+    us::UnitScaling,
+    d::Integer)
 
     id = sprintf1("%x",hash([l,df,p,obs,us,d]))
     return Simulation(l,df,p,obs,us,d,id)
 end
 
-function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
-    print(io,"Simulation{$T} ($(s.dimensions)d) with components{$T}:\n")
+function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where T
+
+    buf = IOBuffer()
+    print(io,"Simulation{$T} ($(s.dimensions)d):\n")
+    
     for n in fieldnames(Simulation{T})
         if !(n == :dimensions)
             if n == :observables
-                println(io,"  Observables")
-                str = ""
-                for o in getfield(s,n)
-                    str *= "    "*getshortname(o)*"\n"
-                end 
-                println(io,str)
+                println(io," Observables:")
+                str = join([getshortname(o) for o in getfield(s,n)],"\n")
+                println(io,prepend_spaces(str,2))
+            elseif getfield(s,n) isa SimulationComponent
+                Base.show(buf,MIME"text/plain"(),getfield(s,n))
+                str = String(take!(buf))
+                print(io,prepend_spaces(str)*"\n")
             else
-                print(io,"  ")
-                Base.show(io,MIME"text/plain"(),getfield(s,n))
-                print(io,'\n')
+                Base.show(buf,MIME"text/plain"(),getfield(s,n))
+                str = String(take!(buf))
+                println(io," $n: "*str)
             end
         end
     end
@@ -178,7 +189,7 @@ function getparams(sim::Simulation)
     end
 
     merge(bztuple,
-        getparams(sim.hamiltonian),
+        getparams(sim.liouvillian),
         fieldpars,
         numpars,
         getparams(sim.unitscaling),
@@ -201,7 +212,7 @@ getshortname(obs::Observable)           = split("$obs",'{')[1]
 getshortname(c::SimulationComponent)    = split("$c",'{')[1]
 
 function Base.show(io::IO,::MIME"text/plain",c::Union{SimulationComponent,Hamiltonian})
-    println(io,getshortname(c))
+    println(io,getshortname(c)*":")
     print(io,c |> getparams |> stringexpand_nt |> prepend_spaces)
 end
 

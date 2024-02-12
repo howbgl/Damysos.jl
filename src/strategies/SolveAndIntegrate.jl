@@ -195,7 +195,7 @@ The observables obtained from the simulation.
 [`run_simulation1d!`](@ref), [`run_simulation2d!`](@ref)
 
 """
-function run_simulation!(
+function run_simulation_old!(
     sim::Simulation{T};
     savedata=true,
     saveplots=true,
@@ -212,7 +212,7 @@ function run_simulation!(
     end
 
 
-    return run_simulation!(sim,kybatches;
+    return run_simulation_old!(sim,kybatches;
         savedata=savedata,
         saveplots=saveplots,
         threaded=threaded,
@@ -220,7 +220,7 @@ function run_simulation!(
         kwargs...)
 end
 
-function run_simulation!(
+function run_simulation_old!(
     sim::Simulation{T},
     kybatches::Vector{Vector{T}};
     savedata=true,
@@ -300,7 +300,7 @@ An array of observables obtained from the simulations.
 [`run_simulation2d!`](@ref), [`run_simulation!`](@ref)
 
 """
-function run_simulation!(ens::Ensemble{T};
+function run_simulation_old!(ens::Ensemble{T};
                 savedata=true,
                 saveplots=true,
                 ensembleparallel=false,
@@ -336,7 +336,7 @@ function run_simulation!(ens::Ensemble{T};
                     "Using pmap()"
         end
         allobs = pmap(
-                (s,kys) -> run_simulation!(s,kys;
+                (s,kys) -> run_simulation_old!(s,kys;
                     savedata=savedata,
                     saveplots=saveplots,
                     threaded=threaded,
@@ -353,7 +353,7 @@ function run_simulation!(ens::Ensemble{T};
         collection = zip(ens.simlist,list_of_kybatches,getparams.(ens.simlist))
 
         @withprogress name="Ensemble" for (s,kybatches,p) in collection
-            obs = run_simulation!(s,kybatches;
+            obs = run_simulation_old!(s,kybatches;
                 savedata=savedata,
                 saveplots=saveplots,
                 threaded=threaded,

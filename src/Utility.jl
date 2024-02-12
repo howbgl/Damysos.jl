@@ -5,6 +5,56 @@ export parametersweep
 export random_word
 export replace_expression!
 
+@inline function vector_of_svec_to_matrix(u::Vector{SVector{N,T}}) where {N,T}
+    return reshape(reinterpret(T,u),(N,:))
+end
+
+
+@inline function get_cartesianindices_kgrid(
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    return CartesianIndices((length(kxsamples),length(kysamples)))
+end
+
+@inline function getkgrid_index(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    return get_cartesianindices_kgrid(kxsamples,kysamples)[i]
+end
+
+@inline function getkgrid_point(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    idx = getkgrid_index(i,kxsamples,kysamples)
+
+    return SA[kxsamples[idx[1]],kysamples[idx[2]]]
+end
+
+@inline function getkgrid_point_kx(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    idx = getkgrid_index(i,kxsamples,kysamples)
+
+    return kxsamples[idx[1]]
+end
+@inline function getkgrid_point_ky(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    idx = getkgrid_index(i,kxsamples,kysamples)
+
+    return kysamples[idx[2]]
+end
+
+
 function replace_expression!(e, old, new)
     for (i,a) in enumerate(e.args)
         if a==old
@@ -70,17 +120,7 @@ function find_files_with_name(root_dir::String, target_name::String)
     return file_paths
 end
 
-function stringexpand_vector(v::AbstractVector)
-    str = ""
-    for i in eachindex(v)
-        if i == length(v) # drop last underscore
-            str *= "$(v[i])"
-        else
-            str *= "$(v[i])_"
-        end
-    end
-    return str
-end
+stringexpand_vector(v::AbstractVector) = join(String.(v),"_")
 
 function stringexpand_nt(nt::NamedTuple)
     str = []

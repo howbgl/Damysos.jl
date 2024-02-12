@@ -61,8 +61,10 @@ Returns the eigenenergy of the positive (conduction band) state at ``\\vec{k}=[k
 ϵ(h::SVector{3,<:Number})               = sqrt(h[1]^2 + h[2]^2 + h[3]^2)
 ϵ(h::GeneralTwoBand)                    = :(sqrt($(hx(h))^2+$(hy(h))^2+$(hz(h))^2))
 
-getΔϵ(hvec::Function)   = (kx,ky) -> 2sqrt(sum(hvec(kx,ky) .^ 2))
-getϵ(hvec::Function)    = (kx,ky) -> sqrt(sum(hvec(kx,ky) .^ 2))
+getΔϵ(hvec::Function)       = (kx,ky) -> 2sqrt(sum(hvec(kx,ky) .^ 2))
+getΔϵ(h::GeneralTwoBand)    = getΔϵ(gethvec(h))
+getϵ(hvec::Function)        = (kx,ky) -> sqrt(sum(hvec(kx,ky) .^ 2))
+getϵ(h::GeneralTwoBand)     = getϵ(gethvec(h))
 
 include("pauli.jl")
 include("velocity.jl")

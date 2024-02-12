@@ -21,8 +21,8 @@ end
 
 function Base.show(io::IO,::MIME"text/plain",l::Liouvillian) 
     println(io,getshortname(l))
-    println(io,"    Hamiltonian: $(getshortname(l.hamiltonian))")
-    print(io,prepend_spaces(stringexpand_nt(getparams(l.hamiltonian)),8))
+    println(io,"  Hamiltonian: $(getshortname(l.hamiltonian))")
+    print(io,prepend_spaces(stringexpand_nt(getparams(l.hamiltonian)),2))
     print(io,"\n")
     print(io,l |> getparamsonly |> stringexpand_nt |> prepend_spaces)
 end

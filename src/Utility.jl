@@ -3,6 +3,19 @@ export ensurepath
 export find_files_with_name
 export parametersweep
 export random_word
+export replace_expression!
+
+function replace_expression!(e, old, new)
+    for (i,a) in enumerate(e.args)
+        if a==old
+            e.args[i] = new
+        elseif a isa Expr
+            replace_expression!(a, old, new)
+        end
+        ## otherwise do nothing
+    end
+    e
+end
 
 function subdivide_vector(vec::AbstractVector{T}, basesize::U) where {T<:Real,U}
 
@@ -87,7 +100,7 @@ function stringexpand_2nt(nt1::NamedTuple,nt2::NamedTuple)
     return str
 end
 
-function prepend_spaces(str::AbstractString,n_spaces::Int64=4)
+function prepend_spaces(str::AbstractString,n_spaces::Int64=1)
     lines = split(str, '\n')
     indented_lines = [repeat(" ",n_spaces)*"$line" for line in lines]
     indented_str = join(indented_lines, '\n')

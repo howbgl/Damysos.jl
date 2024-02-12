@@ -1,7 +1,8 @@
+export gauss
+export scaledriving_frequency
 
 gauss(t::T,σ::T) where {T<:Real} = exp(-t^2 / (2σ^2))
 
-export scaledriving_frequency
 function scaledriving_frequency(ufrequency,ufermivelocity)
     return scaledriving_frequency(promote(ufrequency,ufermivelocity)...)
 end

@@ -1,9 +1,15 @@
 import LinearAlgebra: normalize!,copyto!
 import Base: +,-,*,zero,empty
 
-export Observable,getnames_obs,zero!,resize
+export bzmask1d
+export getnames_obs
+export Observable
+export resize
+export sig
+export zero!
 
-sig(x)         = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
+sig(x)                      = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
+bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
 
 include("Velocity.jl")
 include("Occupation.jl")

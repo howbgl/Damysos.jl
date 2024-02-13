@@ -29,7 +29,7 @@ function NumericalParams2d(dkx::Real,dky::Real,kxmax::Real,kymax::Real,dt::Real,
 end
 
 getnky(p::NumericalParams2d)         = 2*Int(cld(p.kymax,p.dky))
-getkysamples(p::NumericalParameters) = LinRange(-p.kxmax,p.kxmax,getnkx(p))
+getkysamples(p::NumericalParameters) = LinRange(-p.kymax,p.kymax,getnky(p))
 
 function getparams(p::NumericalParams2d)
     return (

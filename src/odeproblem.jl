@@ -5,8 +5,8 @@ export ntrajectories
 
 function buildensemble_linear(sim::Simulation,rhs::Function)
 
-    kxs            = getkxsamples(sim.numericalparams)
-    kys            = getkysamples(sim.numericalparams)
+    kxs            = collect(getkxsamples(sim.numericalparams))
+    kys            = collect(getkysamples(sim.numericalparams))
     tspan          = gettspan(sim.numericalparams)
     u0             = SA[zero(Complex{eltype(kxs)}),zero(Complex{eltype(kxs)})]
     prob           = ODEProblem{false}(rhs,u0,tspan,getkgrid_point(1,kxs,kys))

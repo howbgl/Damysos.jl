@@ -5,6 +5,10 @@ export parametersweep
 export random_word
 export replace_expression!
 
+@inline cartesianindex2dx(i,n) = 1 + ((i-1) % n)
+@inline cartesianindex2dy(i,n) = 1 + ((i-1) ÷ n)
+@inline caresianindex2d(i,n)   = (cartesianindex2dx(i,n),cartesianindex2dy(i,n))
+
 @inline function vector_of_svec_to_matrix(u::Vector{SVector{N,T}}) where {N,T}
     return reshape(reinterpret(T,u),(N,:))
 end
@@ -25,15 +29,20 @@ end
     return get_cartesianindices_kgrid(kxsamples,kysamples)[i]
 end
 
+@inline function getkgrid_index(i::Integer,nkx::Integer,nky::Integer)
+    return caresianindex2d(i,nkx)
+end
+
 @inline function getkgrid_point(
     i::Integer,
     kxsamples::AbstractVector{<:Real},
     kysamples::AbstractVector{<:Real})
 
-    idx = getkgrid_index(i,kxsamples,kysamples)
+    idx = caresianindex2d(i,length(kxsamples))
 
     return SA[kxsamples[idx[1]],kysamples[idx[2]]]
 end
+
 
 @inline function getkgrid_point_kx(
     i::Integer,

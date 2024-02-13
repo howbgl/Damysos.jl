@@ -57,17 +57,7 @@ function find_files_with_name(root_dir::String, target_name::String)
     return file_paths
 end
 
-function stringexpand_vector(v::AbstractVector)
-    str = ""
-    for i in eachindex(v)
-        if i == length(v) # drop last underscore
-            str *= "$(v[i])"
-        else
-            str *= "$(v[i])_"
-        end
-    end
-    return str
-end
+stringexpand_vector(v::AbstractVector) = join(String.(v),"_")
 
 function stringexpand_nt(nt::NamedTuple)
     str = ""

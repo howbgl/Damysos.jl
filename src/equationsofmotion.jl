@@ -1,6 +1,19 @@
 
+export buildrhsx
 export get_rhs_x
 export rhs_x_expression
+
+function buildrhsx(sim::Simulation)
+
+    expr = rhs_x_expression(sim.liouvillian,sim.drivingfield)
+
+    replace_expression!(expr,:cc,:(u[1]))
+    replace_expression!(expr,:cv,:(u[2]))
+    replace_expression!(expr,:kx,:(p[1]))
+    replace_expression!(expr,:ky,:(p[2]))
+    
+    return @eval (u,p,t) -> $expr
+end
 
 function rhs_x_expression(l::TwoBandDephasingLiouvillian,df::DrivingField)
 

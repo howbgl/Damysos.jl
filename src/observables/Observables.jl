@@ -1,6 +1,7 @@
 import LinearAlgebra: normalize!,copyto!
 import Base: +,-,*,zero,empty
 
+export buildbzmask_expression
 export bzmask1d
 export getnames_obs
 export Observable
@@ -13,6 +14,15 @@ bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
 
 include("Velocity.jl")
 include("Occupation.jl")
+
+function buildbzmask_expression(sim::Simulation)
+
+    bz = getbzbounds(sim)
+    ax = vecpotx(sim.drivingfield)
+    dkx = sim.numericalparams.dkx
+
+    return :(bzmask1d(kx - $ax,$dkx,$(bz[1]),$(bz[2])))
+end
 
 function getmovingbz(sim::Simulation{T}) where {T<:Real}
     p              = getparams(sim)

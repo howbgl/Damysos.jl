@@ -188,7 +188,7 @@ function getparams(sim::Simulation)
             ),)
     end
 
-    merge(bztuple,
+    merge((bz=getbzbounds(sim),),
         getparams(sim.liouvillian),
         fieldpars,
         numpars,
@@ -196,10 +196,27 @@ function getparams(sim::Simulation)
         (dimensions=sim.dimensions,))
 end
 
+function getbzbounds(sim::Simulation)
+
+    ax      = get_vecpotx(sim)
+    ts      = gettsamples(sim.numericalparams)
+    axmax   = maximum(abs.(ax.(ts)))
+    kxmax   = maximum(getkxsamples(sim.numericalparams))
+    
+    bztuple = (-kxmax + 1.3axmax,kxmax - 1.3axmax)
+    if sim.dimensions==2
+        ay      = get_vecpoty(sim)
+        aymax   = maximum(abs.(ay.(ts)))
+        kymax   = maximum(getkysamples(sim.numericalparams))
+        bztuple = (bztuple...,-kymax + 1.3aymax,kymax - 1.3aymax)
+    end
+    return bztuple
+end
+
 function checkbzbounds(sim::Simulation)
-    p = getparams(sim)
-    if p.bz[1] > p.bz[2] || p.bz[3] > p.bz[4]
-        @warn "Brillouin zone vanishes: $(p.bz)"
+    bz = getbzbounds(sim)
+    if bz[1] > bz[2] || bz[3] > bz[4]
+        @warn "Brillouin zone vanishes: $(bz)"
     end
 end
 

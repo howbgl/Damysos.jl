@@ -3,7 +3,7 @@ DEFAULT_K_CHUNK_SIZE = 4096
 export buildensemble_linear
 export ntrajectories
 
-function buildensemble_linear(sim::Simulation,rhs::Function)
+function buildensemble_linear(sim::Simulation,rhs::Function,bzmask::Function)
 
     kxs            = collect(getkxsamples(sim.numericalparams))
     kys            = collect(getkysamples(sim.numericalparams))
@@ -14,7 +14,7 @@ function buildensemble_linear(sim::Simulation,rhs::Function)
     ensprob = EnsembleProblem(
         prob,
         prob_func   = (prob,i,repeat) -> remake(prob,p = getkgrid_point(i,kxs,kys)),
-        output_func = (sol,i) -> (sol.u,false),
+        output_func = (sol,i) -> ([sol.u,bzmask.(sol.prob.p[1],sol.prob.p[2],sol.t)],false),
         # reduction   = build_observable_reduction_linear(sim,kchunksize),
         u_init      = [],
         safetycopy  = false)

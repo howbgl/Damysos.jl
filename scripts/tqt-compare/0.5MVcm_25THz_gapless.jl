@@ -18,7 +18,7 @@ function make_system(
       datapath_base="/home/how09898/phd/data")
 
       vf        = u"497070.0m/s"
-      m         = u"0.02eV"
+      m         = u"1.0e-10meV"
       freq      = u"25.0THz"
       emax      = u"0.5MV/cm"
       t2        = Inf*u"1.0s"
@@ -26,17 +26,17 @@ function make_system(
       σ         = u"40.0fs"
 
       # for T2 = T1 = ∞ converged @
-      # dt = 0.01
-      # dkx = 0.1
-      # dky = 0.2
-      # kxmax = 80
-      # kymax = 50
+      # dt = 
+      # dkx = 
+      # dky = 
+      # kxmax = 
+      # kymax = 
 
       dt      = 0.001
-      dkx     = 0.1
-      dky     = 0.1
-      kxmax   = 80
-      kymax   = 50
+      dkx     = 0.5
+      dky     = 1.0
+      kxmax   = 80.0
+      kymax   = 5.0
 
       us      = scaledriving_frequency(freq,vf)
       h       = GappedDirac(us,m,vf,t1,t2)
@@ -44,7 +44,7 @@ function make_system(
       pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
       obs     = [Velocity(h),Occupation(h)]
 
-      id      = "0.5MVcm_25THz_20meV_t2_sweep2"
+      id      = "0.5MVcm_25THz_gapless"
       name    = "Simulation(2d)"*getshortname(h)*"_"*getshortname(df)*"_$id"
       dpath   = joinpath(datapath_base,subpath,name)
       ppath   = joinpath(plotpath_base,subpath,name)
@@ -52,10 +52,13 @@ function make_system(
       return Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 end
 
-const sim     = make_system("hhgjl/tqt-compare/")
-const γ2cyc   = getparams(sim).ν
-const γ2range = LinRange(0.1γ2cyc,γ2cyc,10)
-const ens     = parametersweep(sim,sim.hamiltonian,:t2,[1/γ2 for γ2 in γ2range])
+const sim     = make_system("hhgjl/tqt-compare/gapless")
+const ens     = parametersweep(
+      sim,
+      sim.numericalparams,
+      :dt,
+      LinRange(0.001,0.0001,10),
+      id="0.5MVcm_25THz_dt_sweep")
 
 ensurepath(ens.plotpath)
 global_logger(make_teelogger(ens.plotpath,sim.id))

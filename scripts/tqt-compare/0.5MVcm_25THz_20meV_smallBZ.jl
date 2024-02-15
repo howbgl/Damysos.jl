@@ -25,18 +25,12 @@ function make_system(
       t1        = Inf*u"1.0s"
       σ         = u"40.0fs"
 
-      # for T2 = T1 = ∞ converged @
-      # dt = 0.01
-      # dkx = 0.1
-      # dky = 0.2
-      # kxmax = 80
-      # kymax = 50
-
       dt      = 0.001
       dkx     = 0.1
       dky     = 0.1
-      kxmax   = 80
-      kymax   = 50
+      # choose such that BZ is 0.13Å^-1 x 0.13Å^-1
+      kxmax   = 38.34750309065676
+      kymax   = 25.84764 
 
       us      = scaledriving_frequency(freq,vf)
       h       = GappedDirac(us,m,vf,t1,t2)
@@ -44,7 +38,7 @@ function make_system(
       pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
       obs     = [Velocity(h),Occupation(h)]
 
-      id      = "0.5MVcm_25THz_20meV_t2_sweep2"
+      id      = "0.5MVcm_25THz_20meV_smallBZ"
       name    = "Simulation(2d)"*getshortname(h)*"_"*getshortname(df)*"_$id"
       dpath   = joinpath(datapath_base,subpath,name)
       ppath   = joinpath(plotpath_base,subpath,name)
@@ -53,16 +47,13 @@ function make_system(
 end
 
 const sim     = make_system("hhgjl/tqt-compare/")
-const γ2cyc   = getparams(sim).ν
-const γ2range = LinRange(0.1γ2cyc,γ2cyc,10)
-const ens     = parametersweep(sim,sim.hamiltonian,:t2,[1/γ2 for γ2 in γ2range])
 
-ensurepath(ens.plotpath)
-global_logger(make_teelogger(ens.plotpath,sim.id))
+ensurepath(sim.plotpath)
+global_logger(make_teelogger(sim.plotpath,sim.id))
 
-@info "Logging to \"$(ens.plotpath)\""
+@info "Logging to \"$(sim.plotpath)\""
 
-const results,time,rest... = @timed run_simulation!(ens;
+const results,time,rest... = @timed run_simulation!(sim;
       threaded=false,
       kxbatch_basesize=256,
       maxparallel_ky=128)

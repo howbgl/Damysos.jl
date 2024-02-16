@@ -48,8 +48,11 @@ function make_ensemble_from_path(
     ensembleid="default",
     datapath="/home/how09898/phd/data/hhgjl/default",
     plotpath="/home/how09898/phd/plots/hhgjl/default")
-
+    
     simfiles = find_files_with_name(path,"simulation.meta")
+    if isempty(simfiles)
+        throw(ErrorException("No simulation.meta files found in path:\n$path"))
+    end
     simlist  = load.(simfiles)
 
     return Ensemble(simlist,ensembleid,datapath,plotpath)

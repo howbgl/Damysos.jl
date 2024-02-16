@@ -7,7 +7,7 @@ getnt(p::NumericalParameters)           = 2*Int(cld(abs(p.t0),p.dt))
 getnkx(p::NumericalParameters)          = 2*Int(cld(p.kxmax,p.dkx))
 gettsamples(p::NumericalParameters)     = LinRange(-abs(p.t0),abs(p.t0),getnt(p))
 getkxsamples(p::NumericalParameters)    = LinRange(-p.kxmax,p.kxmax,getnkx(p))
-gettspan(p::NumericalParameters)        = (gettsamples(p)[1],gettsamples(p)[2])
+gettspan(p::NumericalParameters)        = (gettsamples(p)[1],gettsamples(p)[end])
 
 
 struct NumericalParams2d{T<:Real} <: NumericalParameters{T}

@@ -157,10 +157,19 @@ end
 
 
 
-function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol,
-    range::AbstractVector{T}; id="") where {T<:Real}
+function parametersweep(
+    sim::Simulation{T},
+    comp::SimulationComponent{T},
+    param::Symbol,
+    range::AbstractVector{T};
+    id="",
+    plotpath="",
+    datapath="") where {T<:Real}
 
-    return parametersweep(sim,comp,[param],[(r,) for r in range];id=id)
+    return parametersweep(sim,comp,[param],[(r,) for r in range];
+        id=id,
+        plotpath=plotpath,
+        datapath=datapath)
 end
 
 function parametersweep(

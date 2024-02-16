@@ -323,6 +323,10 @@ function run_simulation!(ens::Ensemble{T};
     list_of_kybatches   = Vector{Vector{Vector{T}}}(undef,0)
     nprogress           = 0
 
+    if savedata
+        savemetadata(ens) # to be able to continue if simulation crashes
+    end
+
     for p in getparams.(ens.simlist)
         kybatches = padvecto_overlap!(subdivide_vector(p.kysamples,maxparallel_ky))
         nprogress += nestedcount(kybatches) * p.nt * p.nkx

@@ -40,7 +40,7 @@ function plottimeseries(timeseries::Vector{Vector{T}},
     return f
 end
 
-function plotspectra(timeseries::Vector{Vector{T}},
+function plotpowerspectra(timeseries::Vector{Vector{T}},
                     labels::Vector{String},
                     frequencies::Vector{T},
                     timesteps::Vector{T},
@@ -69,10 +69,11 @@ function plotspectra(timeseries::Vector{Vector{T}},
     for (i,data,label,dt,ν) in zip(1:length(timeseries),timeseries,labels,timesteps,
                                     frequencies)
 
-        pdg         = periodogram(data,
-                                    nfft=8*length(data),
-                                    fs=1/dt,
-                                    window=fftwindow)
+        pdg         = periodogram(
+            data,
+            nfft=8*length(data),
+            fs=1/dt,
+            window=fftwindow)
         ydata       = pdg.power .* (pdg.freq .^ 2)
         ymax        = maximum(ydata)
         total_ymax  = total_ymax < ymax ? ymax : total_ymax
@@ -155,7 +156,7 @@ function plotdata(
                 colors="continuous",
                 ylabel=ens[1].dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
                 kwargs...)
-            figspectra  = plotspectra(timeseries,
+            figspectra  = plotpowerspectra(timeseries,
                 labels,
                 frequencies,
                 timesteps,
@@ -286,7 +287,7 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
                 sidelabel=printparamsSI(sim),
                 ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
                 kwargs...)
-            figspectra  = plotspectra(
+            figspectra  = plotpowerspectra(
                 data,
                 lab,
                 ν,

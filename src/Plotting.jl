@@ -5,6 +5,7 @@ export plotfield
 
 
 const DEFAULT_FIGSIZE           = (1200,800)
+const DEFAULT_MAX_HARMONIC      = 40
 const DEFAULT_COLORSCHEME_CONT  = ColorSchemes.viridis
 
 function plottimeseries(timeseries::Vector{Vector{T}},
@@ -45,7 +46,7 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
                     frequencies::Vector{T},
                     timesteps::Vector{T},
                     rtol=1e-10;
-                    maxharm=30,
+                    maxharm=DEFAULT_MAX_HARMONIC,
                     fftwindow=hanning,
                     title="",
                     sidelabel="",
@@ -104,7 +105,7 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
     return f
 end
 
-function plotdata(ens::Ensemble;maxharm=30,fftwindow=hanning,kwargs...)
+function plotdata(ens::Ensemble;maxharm=DEFAULT_MAX_HARMONIC,fftwindow=hanning,kwargs...)
     
     for obs in ens[1].observables
         @info "Plotting " * getshortname(obs)
@@ -116,7 +117,7 @@ end
 function plotdata(
     ens::Ensemble{T},
     vel::Velocity{T};
-    maxharm=30,
+    maxharm=DEFAULT_MAX_HARMONIC,
     fftwindow=hanning,
     kwargs...) where {T<:Real}
     
@@ -189,7 +190,7 @@ end
 
 
 function plotdata(ens::Ensemble{T},occ::Occupation{T};
-    maxharm=30,fftwindow=hanning,kwargs...) where {T<:Real}
+    maxharm=DEFAULT_MAX_HARMONIC,fftwindow=hanning,kwargs...) where {T<:Real}
 
     timeseries  = Vector{Vector{T}}(undef,0)
     tsamples    = Vector{Vector{T}}(undef,0)
@@ -234,7 +235,11 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
     end
 end
 
-function plotdata(sim::Simulation{T};fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
+function plotdata(
+    sim::Simulation;
+    fftwindow=hanning,
+    maxharm=DEFAULT_MAX_HARMONIC,
+    kwargs...)
     
     @info "Generating plots"
 
@@ -248,8 +253,12 @@ function plotdata(sim::Simulation{T};fftwindow=hanning,maxharm=30,kwargs...) whe
 end
 
 
-function plotdata(sim::Simulation{T},vel::Velocity{T};
-                fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
+function plotdata(
+    sim::Simulation,
+    vel::Velocity;
+    fftwindow=hanning,
+    maxharm=DEFAULT_MAX_HARMONIC,
+    kwargs...)
 
     p           = getparams(sim)
     lc_in_nm    = ustrip(u"nm",p.lengthscale)
@@ -314,7 +323,7 @@ function plotdata(sim::Simulation{T},vel::Velocity{T};
         end
         
     catch e
-        @warn "In plotdata(sim::Simulation{T},vel::Velocity{T};...)"
+        @warn "In plotdata(sim::Simulation,vel::Velocity;...)"
         @error e
     end
 
@@ -323,7 +332,7 @@ end
 
 
 function plotdata(sim::Simulation{T},occ::Occupation{T};
-                fftwindow=hanning,maxharm=30,kwargs...) where {T<:Real}
+                fftwindow=hanning,maxharm=DEFAULT_MAX_HARMONIC,kwargs...) where {T<:Real}
 
     p           = getparams(sim)
     plotpath    = sim.plotpath

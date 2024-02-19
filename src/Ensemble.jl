@@ -27,6 +27,8 @@ Base.size(a::Ensemble)                  = (size(a.simlist))
 Base.setindex!(a::Ensemble,v,i::Int)    = (a.simlist[i] = v)
 Base.getindex(a::Ensemble,i::Int)       = a.simlist[i]
 Base.length(a::Ensemble)                = length(a.simlist)
+Base.firstindex(a::Ensemble)            = 1
+Base.lastindex(a::Ensemble)             = length(a)
 
 function Base.show(io::IO,::MIME"text/plain",e::Ensemble{T}) where {T}
     println(io,"Ensemble{$T} of $(length(e)) Simulations{$T}:")

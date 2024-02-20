@@ -31,7 +31,7 @@ pages:
     #     using Damysos
     #     doctest(Damysos)
     #     include("docs/make.jl")'
-    - julia -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate("Damysos");'  # rebuild Julia (can be put somewhere else I'm sure
+    - julia -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate();'  # rebuild Julia (can be put somewhere else I'm sure
     - julia -e 'using Pkg; using Damysos; Pkg.add("Documenter")'  # install Documenter
     - julia --color=yes docs/make.jl  # make documentation
     - mkdir -p public

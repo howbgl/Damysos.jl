@@ -105,11 +105,113 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
     return f
 end
 
-function plotdata(ens::Ensemble;maxharm=DEFAULT_MAX_HARMONIC,fftwindow=hanning,kwargs...)
+function plotinterference_spectra(
+    totals::Vector{<:Vector{<:Real}},
+    contribution1::Vector{<:Vector{<:Real}},
+    contribution2::Vector{<:Vector{<:Real}},
+    labels::Vector{String},
+    frequencies::Vector{<:Real},
+    timesteps::Vector{<:Real},
+    rtol=1e-10;
+    maxharm=DEFAULT_MAX_HARMONIC,
+    fftwindow=hanning,
+    title="",
+    sidelabel="",
+    kwargs...)
+
+    f   = Figure(size=1.5 .* DEFAULT_FIGSIZE)
+    ax1  = Axis(f[1,1],
+                title=title,
+                xlabel="Ω/ω",
+                ylabel="|v1^*v2|²",
+                yscale=log10,
+                xminorticksvisible=true,
+                xminorgridvisible=true,
+                xminorticks=0:1:maxharm,
+                xticks=0:5:maxharm)
+    ax2  = Axis(f[2,1],
+                title=title,
+                xlabel="Ω/ω",
+                ylabel="arg(v1^*v2)",
+                yticks=MultiplesTicks(5,pi/2,"π/2"),
+                xminorticksvisible=true,
+                xminorgridvisible=true,
+                xminorticks=0:1:maxharm,
+                xticks=0:5:maxharm)
+    xlims!(ax1,[0,maxharm])
+    xlims!(ax2,[0,maxharm])
+
+    total_ymax = typemin(eltype(first(totals)))
+    collection = zip(
+        1:length(totals),
+        totals,
+        contribution1,
+        contribution2,
+        labels,
+        timesteps,
+        frequencies)
+
+    for (i,tot,c1,c2,label,dt,ν) in collection
+
+        pdgtot = periodogram(
+            tot,
+            fs=1/dt,
+            window=fftwindow)
+        totfft  = rfft(tot .* fftwindow(length(tot)))
+        c1fft   = rfft(c1 .* fftwindow(length(c1)))
+        c2fft   = rfft(c2 .* fftwindow(length(c2)))
+        
+        ydata       = abs2.(c1fft .* conj.(c2fft))
+        ymax        = maximum(ydata)
+        total_ymax  = total_ymax < ymax ? ymax : total_ymax
+        xdata       = 1/ν .* pdgtot.freq
+        # cut_inds    = ydata .> 100floatmin(eltype(first(totals)))
+        cut_inds    = ydata .> maximum([1e-30,1e-35 * ymax])
+
+        if length(ydata[cut_inds]) < length(ydata)
+            @debug "Removing zeros/negatives in interference spectrum of $title ($label)"
+        end
+
+        cs = DEFAULT_COLORSCHEME_CONT
+        lines!(
+            ax1,
+            xdata[cut_inds],
+            ydata[cut_inds],
+            label=label,
+            color=cs[(i-1)/(length(totals)-1)]) 
+        lines!(
+            ax2,
+            xdata,
+            angle.(c1fft .* conj.(c2fft)),
+            label=label,
+            color=cs[(i-1)/(length(totals)-1)])
+        
+    end
+    hlines!(ax1,[total_ymax*rtol,total_ymax*rtol*1e3],color=:grey)
+    text!(ax1,0.05,total_ymax*rtol,text="$rtol",align=(:left,:baseline))
+    text!(ax1,0.05,total_ymax*rtol*1e3,text="$(rtol*1e3)",align=(:left,:baseline))
+    axislegend(ax1,position=:rb)
+    axislegend(ax2,position=:rb)
+    Label(f[2,2],sidelabel,tellheight=false,justification = :left)
+    
+    return f
+end
+
+function plotdata(ens::Ensemble;
+    maxharm=DEFAULT_MAX_HARMONIC,
+    fftwindow=hanning,
+    plotinterference=false,
+    kwargs...)
     
     for obs in ens[1].observables
         @info "Plotting " * getshortname(obs)
-        plotdata(ens,obs;maxharm=maxharm,fftwindow=fftwindow,kwargs...)
+        plotdata(
+            ens,
+            obs;
+            maxharm=maxharm,
+            fftwindow=fftwindow,
+            plotinterference=plotinterference,
+            kwargs...)
     end
 end
 
@@ -119,9 +221,11 @@ function plotdata(
     vel::Velocity{T};
     maxharm=DEFAULT_MAX_HARMONIC,
     fftwindow=hanning,
+    plotinterference=false,
     kwargs...) where {T<:Real}
     
     plotpath    = ens.plotpath
+    rtol        = maximum(getparams(s).rtol for s in ens.simlist)
 
     for (vsymb,vname) in zip([:vx,:vxintra,:vxinter,:vy,:vyintra,:vyinter],
                             ["vx","vxintra","vxinter","vy","vyintra","vyinter"])
@@ -148,7 +252,6 @@ function plotdata(
         end
         
         try
-            rtol        = maximum(getparams(s).rtol for s in ens.simlist)
             figtime     = plottimeseries(
                 timeseries,
                 labels,
@@ -185,12 +288,93 @@ function plotdata(
             @warn "In plotdata(ens::Ensemble{T},vel::Velocity{T};...)"
             @error e
         end            
-    end        
+    end
+
+    if !plotinterference
+        return
+    end
+
+    totalsx     = Vector{Vector{T}}(undef,0)
+    contrib1x   = Vector{Vector{T}}(undef,0)
+    contrib2x   = Vector{Vector{T}}(undef,0)
+    totalsy     = Vector{Vector{T}}(undef,0)
+    contrib1y   = Vector{Vector{T}}(undef,0)
+    contrib2y   = Vector{Vector{T}}(undef,0)
+    timesteps   = Vector{T}(undef,0)
+    frequencies = Vector{T}(undef,0)
+    labels      = Vector{String}(undef,0)
+
+    for sim in ens.simlist
+        pars        = getparams(sim)
+        lc_in_nm    = ustrip(u"nm",pars.lengthscale)
+        d           = sim.dimensions
+        v           = filter(x -> x isa Velocity,sim.observables)[1]
+
+        push!(totalsx,v.vx .* pars.vF ./ lc_in_nm^d)
+        push!(contrib1x,v.vxintra .* pars.vF ./ lc_in_nm^d)
+        push!(contrib1y,v.vyintra .* pars.vF ./ lc_in_nm^d)
+
+        if d==2
+            push!(totalsy,v.vy .* pars.vF ./ lc_in_nm^d)
+            push!(contrib2x,v.vxinter .* pars.vF ./ lc_in_nm^d)
+            push!(contrib2y,v.vyinter .* pars.vF ./ lc_in_nm^d)
+        end
+
+        push!(timesteps,pars.dt)
+        push!(frequencies,pars.ν)
+        push!(labels,sim.id)
+    end
+
+    collection = zip(
+        [totalsx,totalsy],
+        [contrib1x,contrib2x],
+        [contrib2x,contrib2y],
+        ["2Re[vxinter(ω)*vxintra(ω)]","2Re[vyinter(ω)*vyintra(ω)]"])
+
+    try
+        figx,figy  = [plotinterference_spectra(
+            tot,
+            c1,
+            c2,
+            labels,
+            frequencies,
+            timesteps,
+            rtol=rtol;
+            maxharm=maxharm,
+            fftwindow=fftwindow,
+            title=tit * " (" * ens.id * ")",
+            kwargs...) for (tot,c1,c2,tit) in collection]
+
+        altpath             = joinpath(pwd(),basename(plotpath))
+        (success,plotpath)  = ensurepath([plotpath,altpath])
+        if success
+            CairoMakie.save(joinpath(plotpath,"vxinterference_spec.pdf"),figx)
+            CairoMakie.save(joinpath(plotpath,"vxinterference_spec.png"),figx,px_per_unit = 4)
+            CairoMakie.save(joinpath(plotpath,"vyinterference_spec.pdf"),figy)
+            CairoMakie.save(joinpath(plotpath,"vyinterference_spec.png"),figy,px_per_unit = 4)
+            @debug """
+                Saved vxinterference_spec.pdf, vxinterference_spec.png,
+                vyinterference_spec.pdf and vyinterference_spec.png at
+                \"$plotpath\"
+                """
+        else
+            @warn "Could not save interference plots"
+        end
+
+    catch e
+        @warn "In plotdata(ens::Ensemble{T},vel::Velocity{T};...)"
+        @error e
+    end
+    
 end
 
 
-function plotdata(ens::Ensemble{T},occ::Occupation{T};
-    maxharm=DEFAULT_MAX_HARMONIC,fftwindow=hanning,kwargs...) where {T<:Real}
+function plotdata(
+    ens::Ensemble{T},
+    occ::Occupation{T};
+    maxharm=DEFAULT_MAX_HARMONIC,
+    fftwindow=hanning,
+    kwargs...) where {T<:Real}
 
     timeseries  = Vector{Vector{T}}(undef,0)
     tsamples    = Vector{Vector{T}}(undef,0)
@@ -214,10 +398,13 @@ function plotdata(ens::Ensemble{T},occ::Occupation{T};
     end
 
     try
-        figtime     = plottimeseries(timeseries,labels,tsamples,
-                                    title="CB occupation" * "(" * ens.id * ")",
-                                    colors="continuous",
-                                    kwargs...)
+        figtime = plottimeseries(
+            timeseries,
+            labels,
+            tsamples;
+            title="CB occupation" * "(" * ens.id * ")",
+            colors="continuous",
+            kwargs...)
 
         altpath             = joinpath(pwd(),basename(plotpath))
         (success,plotpath)  = ensurepath([plotpath,altpath])
@@ -239,13 +426,18 @@ function plotdata(
     sim::Simulation;
     fftwindow=hanning,
     maxharm=DEFAULT_MAX_HARMONIC,
+    plotinterference=false,
     kwargs...)
     
     @info "Generating plots"
 
     for obs in sim.observables
         @info "Plotting " * getshortname(obs)
-        plotdata(sim,obs;fftwindow=fftwindow,maxharm=maxharm,kwargs...)        
+        plotdata(sim,obs;
+            fftwindow=fftwindow,
+            maxharm=maxharm,
+            plotinterference=plotinterference,
+            kwargs...)        
     end
 
     plotfield(sim)
@@ -258,6 +450,7 @@ function plotdata(
     vel::Velocity;
     fftwindow=hanning,
     maxharm=DEFAULT_MAX_HARMONIC,
+    plotinterference=false,
     kwargs...)
 
     p           = getparams(sim)
@@ -278,7 +471,8 @@ function plotdata(
     labels      = [labelsx]
 
     if sim.dimensions==2
-        push!(timeseries,[x ./ lc_in_nm^d for x in [vel.vy,vel.vyintra,vel.vyinter]])
+        timeseriesy = [x ./ lc_in_nm^d for x in [vel.vy,vel.vyintra,vel.vyinter]]
+        push!(timeseries,timeseriesy)
         push!(tsamples,tsamplesx)
         push!(timesteps,timestepsx)
         push!(frequencies,frequenciesx)
@@ -327,6 +521,59 @@ function plotdata(
         @error e
     end
 
+    if !plotinterference
+        return nothing
+    end
+
+    try
+        vx,vxintra,vxinter  = timeseriesx
+        total               = [vx]
+        contribution1       = [vxintra]
+        contribution2       = [vxinter]
+        timesteps           = [timestepsx[1]]
+        frequencies         = [frequenciesx[1]]
+        labels              = ["vx"]
+
+        if sim.dimensions==2
+            
+            vy,vyintra,vyinter = timeseriesy
+            push!(total,vy)
+            push!(contribution1,vyintra)
+            push!(contribution2,vyinter)
+            push!(timesteps,timestepsx[1])
+            push!(frequencies,frequenciesx[1])
+            push!(labels,"vy")
+        end
+
+        fig = plotinterference_spectra(
+            total,
+            contribution1,
+            contribution2,
+            labels,
+            frequencies,
+            timesteps,
+            rtol=p.rtol;
+            maxharm=maxharm,
+            fftwindow=fftwindow,
+            title=sim.id,
+            sidelabel=printparamsSI(sim),
+            kwargs...)
+
+            altpath             = joinpath(pwd(),basename(plotpath))
+            (success,plotpath)  = ensurepath([plotpath,altpath])
+            if success
+                CairoMakie.save(joinpath(plotpath,"vinterference_spec.pdf"),fig)
+                CairoMakie.save(joinpath(plotpath,"vinterference_spec.png"),fig,px_per_unit = 4)
+                @debug "Saved vinterference_spec.pdf & vinterference_spec.png at \n\"$plotpath\""
+            else
+                @warn "Could not save $((lab[1])) plots"
+            end
+
+    catch e
+        @warn "In plotdata(sim::Simulation,vel::Velocity;...)"
+        @error e
+    end
+
     return nothing
 end
 
@@ -342,11 +589,14 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
     ts_in_cyc   = collect(p.tsamples) .* p.ν
     try
         
-        figtime     = plottimeseries([data],["CB occupation"],[ts_in_cyc],
-                title=sim.id,
-                sidelabel=printparamsSI(sim),
-                ylabel = sim.dimensions == 1 ? "ρcc [nm^-1]" : "ρcc [nm^-2]",
-                kwargs...)
+        figtime     = plottimeseries(
+            [data],
+            ["CB occupation"],
+            [ts_in_cyc];
+            title=sim.id,
+            sidelabel=printparamsSI(sim),
+            ylabel = sim.dimensions == 1 ? "ρcc [nm^-1]" : "ρcc [nm^-2]",
+            kwargs...)
 
         altpath             = joinpath(pwd(),basename(plotpath))
         (success,plotpath)  = ensurepath([plotpath,altpath])

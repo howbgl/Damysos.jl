@@ -118,6 +118,26 @@ function getfuncs(sim::Simulation,v::Velocity)
             getvy_cc(h),getvy_vc(h),getvy_vv(h)]
 end
 
+function isapprox(
+    v1::Velocity{T},
+    v2::Velocity{U};
+    atol::Real=0,
+    rtol=atol>0 ? 0 : √eps(promote_type(T,U)),
+    nans::Bool=false) where {T,U}
+    
+    vx1 = deepcopy(v1.vx)
+    vx2 = deepcopy(v2.vx)
+    vy1 = deepcopy(v1.vy)
+    vy2 = deepcopy(v2.vy)
+
+    upsample!(vx1,vx2)
+    upsample!(vy1,vy2)
+
+    return all([
+        Base.isapprox(vx1,vx2;atol=atol,rtol=rtol,nans=nans),
+        Base.isapprox(vy1,vy2;atol=atol,rtol=rtol,nans=nans)])
+end
+
 
 @inline function vintra(kx::T,ky::T,ρcc::Complex{T},vcc,vvv) where {T<:Real}
     return vintra(kx,ky,real(ρcc),vcc,vvv)

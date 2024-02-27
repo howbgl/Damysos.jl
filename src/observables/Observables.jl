@@ -1,5 +1,5 @@
 import LinearAlgebra: normalize!,copyto!
-import Base: +,-,*,zero,empty
+import Base: +,-,*,zero,empty,isapprox
 
 export Observable,getnames_obs,zero!,resize
 

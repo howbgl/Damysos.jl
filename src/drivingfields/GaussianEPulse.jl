@@ -38,10 +38,6 @@ function GaussianEPulse(us::UnitScaling,
     return GaussianEPulse(promote(σ,ω,eE,φ,ϕ)...)
 end
 
-# type alias for backwards compatibility
-export GaussianPulse
-GaussianPulse = GaussianEPulse
-
 function getparams(df::GaussianEPulse)
     return (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE,φ=df.φ,ħω=df.ω,ϕ=df.ϕ)
 end

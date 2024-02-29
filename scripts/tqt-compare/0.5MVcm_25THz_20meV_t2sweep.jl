@@ -54,7 +54,7 @@ end
 
 const sim     = make_system("hhgjl/tqt-compare/")
 const γ2cyc   = getparams(sim).ν
-const γ2range = LinRange(0.1γ2cyc,γ2cyc,10)
+const γ2range = LinRange(1e-4γ2cyc,1e-1γ2cyc,8)
 const ens     = parametersweep(sim,sim.hamiltonian,:t2,[1/γ2 for γ2 in γ2range])
 
 ensurepath(ens.plotpath)

@@ -34,8 +34,9 @@ const obs     = [Velocity(h)]
 # const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 const id      = "ref"
 const name    = "Simulation{$(typeof(h.Δ))}(2d)reference"
-const dpath   = "test/reference"
-const ppath   = dpath
+const dpath   = "/home/how09898/phd/data/hhgjl/test/reference"
+const ppath   = "/home/how09898/phd/plots/hhgjl/test/reference"
+
 
 const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 

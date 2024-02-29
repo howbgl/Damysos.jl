@@ -616,7 +616,7 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
 end
 
 
-function plotfield(sim::Simulation{T}) where {T<:Real}
+function plotfield(sim::Simulation)
 
     @info "Plotting driving field"
 

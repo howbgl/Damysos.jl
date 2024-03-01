@@ -56,27 +56,16 @@ end
 
 const keldyshs = LinRange(0.1,2.0,5)
 const sims     = [make_system(g,0.1,"hhgjl/inter-intra-cancellation/") for g in keldyshs]
+const logpath  = basename(sims[1].plotpath)
+ensurepath(logpath)
+global_logger(make_teelogger(logpath,"convergence_tests"))
+@info "Logging to \"$logpath\""
 
 for s in sims
-      method = SequentialTest(PowerLawTest(:dt,0.5),PowerLawTest(:dkx,0.7))
+      method = SequentialTest([PowerLawTest(:dt,0.5),PowerLawTest(:dkx,0.7)])
       test = ConvergenceTest(s,method,1e-12,1e-10)
-      run!(s,20,60*60)
+      run!(test,20,60*60)
 end
 
-# const γ2cyc   = getparams(sim).ν
-# const γ2range = LinRange(1e-4γ2cyc,1e-1γ2cyc,8)
-# const ens     = parametersweep(sim,sim.numericalparams,:kymax,LinRange(1,0.1,10))
 
-# ensurepath(ens.plotpath)
-# global_logger(make_teelogger(ens.plotpath,sim.id))
 
-# @info "Logging to \"$(ens.plotpath)\""
-
-# const results,time,rest... = @timed run_simulation!(ens;
-#       threaded=false,
-#       kxbatch_basesize=256,
-#       maxparallel_ky=128)
-
-# @info "$(time/60.)min spent in run_simulation!"
-# @debug rest
-# @info "$(now()): calculation finished."

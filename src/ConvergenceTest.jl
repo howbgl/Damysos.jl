@@ -128,6 +128,18 @@ function run!(
     elapsedtime_seconds = 0.0
 
     while !finished
+
+        if currentiteration > maxiterations || elapsedtime_seconds > maxduration
+            @warn """
+            Maximum number of iterations or duration reached.
+            Aborting convergence test."""
+            finished = true
+        elseif length(test.completedsims) > 1 && converged(test) 
+            @info """
+            ## Converged. after $(elapsedtime_seconds/60)min and $currentiteration iterations"""
+            finished = true
+        end
+
         if isempty(test.completedsims)
             push!(test.completedsims,test.start)
         else
@@ -137,16 +149,6 @@ function run!(
         elapsedtime_seconds += @elapsed run_simulation!(test.completedsims[end])
         currentiteration    += 1
         @info "$(elapsedtime_seconds/60)min elapsed after $currentiteration-th iteration"
-
-        if currentiteration > maxiterations || elapsedtime_seconds > maxduration
-            @warn """
-            Maximum number of iterations or duration reached.
-            Aborting convergence test."""
-            finished = true
-        elseif length(test.completedsims) > 1 && converged(test) 
-            @info "## Converged."
-            finished = true
-        end
     end
     achieved_tol = length(test.completedsims) < 2 ? (Inf,Inf) : findminimum_precision(
         test.completedsims[end-1],
@@ -175,16 +177,13 @@ function run!(
         Starting sequence of $(length(method.testsequence)) convergence tests
         """
 
-        remainingiterations = maxiterations - currentiteration + 1
-        remainingduration   = maxduration - elapsedtime_seconds
-
-        time = @elapsed result = run!(test,m,remainingiterations,remainingduration)
-
-        elapsedtime_seconds += time
-        currentiteration    += length(result.test.completedsims)
+        remainingiterations     = maxiterations - currentiteration + 1
+        remainingduration       = maxduration - elapsedtime_seconds
+        time = @elapsed result  = run!(test,m,remainingiterations,remainingduration)
+        elapsedtime_seconds     += time
+        currentiteration        += length(result.test.completedsims)
 
         push!(results,result)
-        result.success && break
     end
     result = worst(results,test)
 

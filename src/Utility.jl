@@ -194,7 +194,7 @@ function ensurepath(path::String; n_tries::Int=3, wait_time::Real=10.0)
     @debug "Attempting to create \"...$path\""
     @debug "Full path: $path"
     success = false
-    if !isdir(path)
+    if !ispath(path)
         success = try_execute_n_times(mkpath, n_tries, path; wait_time=wait_time)
     else
         @debug "\"$path\" already exists."

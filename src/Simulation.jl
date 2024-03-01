@@ -192,7 +192,7 @@ function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where {T}
 end
 
 
-function isapprox(
+function Base.isapprox(
     s1::Simulation{T},
     s2::Simulation{U};
     atol::Real=0,

@@ -5,6 +5,7 @@ export get_efieldy
 export get_vecpotx
 export get_vecpoty
 export scaledriving_frequency
+export maximum_kdisplacement
 
 gauss(t::T,σ::T) where {T<:Real} = exp(-t^2 / (2σ^2))
 
@@ -21,6 +22,11 @@ function scaledriving_frequency(
     return UnitScaling(tc,lc)
 end
 
+function maximum_kdisplacement(df::DrivingField,ts::AbstractVector{<:Real})
+    ax = get_vecpotx(df)
+    ay = get_vecpoty(df)
+    return (maximum(abs.(ax.(ts))),maximum(abs.(ay.(ts))))
+end
 
 get_efieldx(sim::Simulation) = get_efieldx(sim.drivingfield)
 get_efieldy(sim::Simulation) = get_efieldy(sim.drivingfield)

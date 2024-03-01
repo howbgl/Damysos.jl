@@ -1,5 +1,6 @@
 
 export GaussianAPulse
+export GaussianPulse
 
 """
     GaussianAPulse{T<:Real}
@@ -36,9 +37,7 @@ function GaussianAPulse(us::UnitScaling,
     eE  = uconvert(Unitful.NoUnits,e*p.timescale*p.lengthscale*fieldstrength/Unitful.ħ)
     return GaussianAPulse(promote(σ,ω,eE,φ)...)
 end
-
 # type alias for backwards compatibility
-export GaussianPulse
 GaussianPulse = GaussianAPulse
 
 function getparams(df::GaussianAPulse{T}) where {T<:Real}  

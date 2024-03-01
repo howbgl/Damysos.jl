@@ -134,8 +134,8 @@ function isapprox(
     upsample!(vy1,vy2)
 
     return all([
-        Base.isapprox(vx1,vx2;atol=atol,rtol=rtol,nans=nans),
-        Base.isapprox(vy1,vy2;atol=atol,rtol=rtol,nans=nans)])
+        isapprox(vx1,vx2;atol=atol,rtol=rtol,nans=nans),
+        isapprox(vy1,vy2;atol=atol,rtol=rtol,nans=nans)])
 end
 
 

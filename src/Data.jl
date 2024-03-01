@@ -1,3 +1,9 @@
+export load
+export loaddata
+export save
+export savedata
+export savemetadata
+
 
 function savedata(sim::Simulation)
 
@@ -29,6 +35,19 @@ end
 
 function loaddata(sim::Simulation)
     return DataFrame(CSV.File(joinpath(sim.datapath,"data.csv")))
+end
+
+function savedata(
+    result::ConvergenceTestResult,
+    path::String,
+    altpath=joinpath(pwd(),"testresult.txt"))
+    
+    filename       = splitdir(path)[end]
+    (success,path) = ensurepath([path,altpath])
+    if success
+        save(joinpath(path,filename),repr("text/plain",result))
+        @info "Saved convergence test result at $path"
+    end
 end
 
 function addproperobs!(dat::DataFrame,v::Velocity)

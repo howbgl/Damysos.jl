@@ -1,3 +1,5 @@
+export GappedDirac
+
 struct GappedDirac{T<:Real} <: Hamiltonian{T}
     Δ::T
     t1::T

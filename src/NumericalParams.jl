@@ -1,3 +1,8 @@
+export NumericalParameters
+export NumericalParams1d
+export NumericalParams2d
+export NumericalParams2dSlice
+
 struct NumericalParams2d{T<:Real} <: NumericalParameters{T}
     dkx::T
     dky::T

@@ -1,7 +1,9 @@
 import LinearAlgebra: normalize!,copyto!
 import Base: +,-,*,zero,empty,isapprox
 
-export Observable,getnames_obs,zero!,resize
+export getnames_obs
+export Observable
+export resize
 
 sig(x)         = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
 

@@ -50,7 +50,7 @@ function isapprox(
     cb2 = deepcopy(o2.cbocc)
     upsample!(cb1,cb2)
 
-    return Base.isapprox(cb1,cb2;atol=atol,rtol=rtol,nans=nans)
+    return isapprox(cb1,cb2;atol=atol,rtol=rtol,nans=nans)
 end
 
 

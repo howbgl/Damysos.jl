@@ -1,3 +1,7 @@
+export run_simulation!
+export run_simulation1d!
+export run_simulation2d!
+
 function runkxbatch!(
     sim::Simulation{T},
     kxsamples::AbstractVector{T},

@@ -245,7 +245,7 @@ function integrateobs_threaded!(
     vdest::Velocity{T},
     vertices::Vector{T}) where {T<:Real}
 
-    @floop ThreadedEx() for i in 1:length(vdest.vx)
+    Threads.@threads for i in 1:length(vdest.vx)
         vdest.vxintra[i] = trapz(vertices,[v.vxintra[i] for v in vels])
         vdest.vxinter[i] = trapz(vertices,[v.vxinter[i] for v in vels])
         vdest.vyintra[i] = trapz(vertices,[v.vyintra[i] for v in vels])

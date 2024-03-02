@@ -42,10 +42,10 @@ function savedata(
     path::String,
     altpath=joinpath(pwd(),"testresult.txt"))
     
-    filename       = splitdir(path)[end]
-    (success,path) = ensurepath([path,altpath])
+    dirpath,name   = splitdir(path)
+    (success,path) = ensurepath(dirname.([path,altpath]))
     if success
-        save(joinpath(path,filename),repr("text/plain",result))
+        save(joinpath(path,name),repr("text/plain",result))
         @info "Saved convergence test result at $path"
     end
 end

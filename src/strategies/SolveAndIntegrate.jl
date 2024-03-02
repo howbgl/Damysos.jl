@@ -98,6 +98,7 @@ function run_simulation2d!(sim::Simulation;
     kxbatch_basesize=128,
     maxparallel_ky=64,
     threaded=false,
+    sequential=false,
     kwargs...)
 
     p                   = getparams(sim)
@@ -106,6 +107,7 @@ function run_simulation2d!(sim::Simulation;
     return run_simulation2d!(sim,kybatches;
         kxbatch_basesize=kxbatch_basesize,
         threaded=threaded,
+        sequential=sequential,
         kwargs...)
     
 end
@@ -115,6 +117,7 @@ function run_simulation2d!(
     kybatches::Vector{Vector{T}};
     kxbatch_basesize=128,
     threaded=false,
+    sequential=false,
     kwargs...) where {T<:Real}
     
     p                   = getparams(sim)
@@ -126,6 +129,7 @@ function run_simulation2d!(
         observables_buffer = run_kybatch!(sim,kybatch;
             kxbatch_basesize=kxbatch_basesize,
             threaded=threaded,
+            sequential=sequential,
             kwargs...)
 
         for (o,otot) in zip(observables_buffer,observables_total)
@@ -149,8 +153,15 @@ function run_kybatch!(
     sim::Simulation{T},
     kysamples::AbstractVector{T};
     threaded=false,
+    sequential=false,
     kxbatch_basesize=512,
     kwargs...) where {T<:Real}
+
+    ex = ThreadedEx()
+
+    if sequential
+        ex = SequentialEx() 
+    end
 
     if threaded
         obs = Folds.map(
@@ -159,7 +170,8 @@ function run_kybatch!(
                 ky;
                 kxbatch_basesize=kxbatch_basesize,
                 kwargs...),
-            kysamples)
+            kysamples,
+            ex)
         integrateobs_threaded!(obs,sim.observables,kysamples)
     else
         obs = pmap(
@@ -204,6 +216,7 @@ function run_simulation!(
     savedata=true,
     saveplots=true,
     threaded=false,
+    sequential=false,
     kxbatch_basesize=128,
     maxparallel_ky=64,
     kwargs...) where {T<:Real}
@@ -220,6 +233,7 @@ function run_simulation!(
         savedata=savedata,
         saveplots=saveplots,
         threaded=threaded,
+        sequential=sequential,
         kxbatch_basesize=kxbatch_basesize,
         kwargs...)
 end
@@ -230,6 +244,7 @@ function run_simulation!(
     savedata=true,
     saveplots=true,
     threaded=false,
+    sequential=false,
     kxbatch_basesize=128,
     kwargs...) where {T<:Real}
     
@@ -242,6 +257,7 @@ function run_simulation!(
             * processes: $(Distributed.nprocs())
             * maximum size of kx-batches: $kxbatch_basesize
             * maximum size of ky-batches: $(maximum(length.(kybatches)))
+            * number of ky-batches: $(length(kybatches))
             * plotpath: $(sim.plotpath)
             * datapath: $(sim.datapath)
 
@@ -249,8 +265,8 @@ function run_simulation!(
             """
 
     checkbzbounds(sim)
-    ensurepath(sim.datapath)
-    ensurepath(sim.plotpath)
+    savedata && ensurepath(sim.datapath)
+    saveplots && ensurepath(sim.plotpath)
 
     resize_obs!(sim)
     zero.(sim.observables)
@@ -260,6 +276,7 @@ function run_simulation!(
     else
         run_simulation2d!(sim,kybatches;
             threaded=threaded,
+            sequential=sequential,
             kxbatch_basesize=kxbatch_basesize,
             kwargs...)
     end
@@ -313,8 +330,8 @@ function run_simulation!(ens::Ensemble{T};
                 kxbatch_basesize=128,
                 kwargs...) where {T<:Real}
 
-    ensurepath(ens.datapath)
-    ensurepath(ens.plotpath)
+    savedata && ensurepath(ens.datapath)
+    saveplots && ensurepath(ens.plotpath)
 
     @info """
         # Ensemble of $(length(ens.simlist)) Simulations

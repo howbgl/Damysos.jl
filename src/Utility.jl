@@ -122,6 +122,12 @@ function stringexpand_nt(nt::NamedTuple)
     return str
 end
 
+function escape_underscores(input::AbstractString)
+    output = replace(input, r"_"=>"\\_")
+    return output
+end
+
+
 function prepend_spaces(str::AbstractString,n_spaces::Int64=4)
     lines = split(str, '\n')
     indented_lines = [repeat(" ",n_spaces)*"$line" for line in lines]

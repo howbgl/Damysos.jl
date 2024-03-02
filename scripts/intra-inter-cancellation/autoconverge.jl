@@ -1,8 +1,9 @@
-using Damysos,Unitful,LoggingExtras,Dates,Formatting,TerminalLoggers
+using Distributed
+@everywhere using Damysos,Unitful,LoggingExtras,Dates,Formatting,TerminalLoggers,Dagger
 
-import Damysos.getshortname
+@everywhere import Damysos.getshortname
 
-function make_teelogger(logging_path::AbstractString,name::AbstractString)
+@everywhere function make_teelogger(logging_path::AbstractString,name::AbstractString)
 
       ensurepath(logging_path)
       info_filelogger  = FileLogger(joinpath(logging_path,name)*"_$(now()).log")
@@ -12,7 +13,7 @@ function make_teelogger(logging_path::AbstractString,name::AbstractString)
       return  TeeLogger(TerminalLogger(),info_logger,all_filelogger)
 end
 
-function make_system(
+@everywhere function make_system(
       ζ::Real,
       γ::Real,
       subpath::AbstractString;
@@ -54,18 +55,43 @@ function make_system(
       return Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
 end
 
-const keldyshs = LinRange(0.1,2.0,5)
-const sims     = [make_system(g,0.1,"hhgjl/inter-intra-cancellation/") for g in keldyshs]
-const logpath  = basename(sims[1].plotpath)
-ensurepath(logpath)
-global_logger(make_teelogger(logpath,"convergence_tests"))
-@info "Logging to \"$logpath\""
+@everywhere function make_n_runtest(s)
+      method      = SequentialTest([PowerLawTest(:dt,0.5),PowerLawTest(:dkx,0.7)])
+      test        = ConvergenceTest(s,method,1e-12,1e-8)
 
-for s in sims
-      method = SequentialTest([PowerLawTest(:dt,0.5),PowerLawTest(:dkx,0.7)])
-      test = ConvergenceTest(s,method,1e-12,1e-10)
-      run!(test,20,60*60)
+      run!(test,50,24*60*60,savesimdata=false)
 end
 
+@everywhere function runall(sims)
+      results = []
+      @sync for s in sims
+            res = Dagger.@spawn make_n_runtest(s)
+            push!(results,res)
+      end
+      return fetch(results)      
+end
 
+const keldyshs = LinRange(0.1,2.0,8)
+const zetas    = LinRange(1.0,5.0,8)
+const sims     = [make_system(
+      z,
+      g,
+      "hhgjl/inter-intra-cancellation/") for g in keldyshs for z in zetas]
+const logpath  = "hhgjl/inter-intra-cancellation/convergence_tests"
+ensurepath(logpath)
+global_logger(make_teelogger(logpath,"all-convergence-tests.log"))
+@info "Logging to \"$logpath\""
+
+
+const results = runall(sims)
+str           = repr.("text/plain",results)
+for (res,pars) in zip(results,[(z,g) for g in keldyshs for z in zetas])
+      @info """
+      Result for ζ=$(pars[1]) γ=$(pars[2])
+
+      $res
+
+
+      """
+end
 

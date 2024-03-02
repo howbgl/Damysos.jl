@@ -1,7 +1,7 @@
 module Damysos
 
 using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie,FFTW
-using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,FLoops,Dates,SpecialFunctions
+using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,Dates,SpecialFunctions
 using TerminalLoggers,ProgressLogging,ColorSchemes
 
 export getvx_cc,getvx_cv,getvx_vc,getvx_vv

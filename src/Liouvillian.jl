@@ -26,3 +26,19 @@ function Base.show(io::IO,::MIME"text/plain",l::Liouvillian)
     print(io,"\n")
     print(io,l |> getparamsonly |> stringexpand_nt |> prepend_spaces)
 end
+
+function printparamsSI(l::TwoBandDephasingLiouvillian,us::UnitScaling;digits=3)
+
+    symbols     = [:t1,:t2]
+    valuesSI    = [timeSI(l.t1,us),timeSI(l.t2,us)]
+    values      = [l.t1,l.t2]
+
+    str = ""
+
+    for (s,v,vsi) in zip([:t1,:t2],values,valuesSI)
+        valSI   = round(typeof(vsi),vsi,sigdigits=digits)
+        val     = round(v,sigdigits=digits)
+        str     *= "$s = $valSI ($val)\n"
+    end
+    return printparamsSI(l.hamiltonian,us,digits=digits) * str
+end

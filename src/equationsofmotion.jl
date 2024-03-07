@@ -1,21 +1,15 @@
 
 export buildrhsx
 export get_rhs_x
-export rhs_x_expression
+export buildrhs_x_expression
 
 function buildrhsx(sim::Simulation)
 
-    expr = rhs_x_expression(sim.liouvillian,sim.drivingfield)
-
-    replace_expression!(expr,:cc,:(u[1]))
-    replace_expression!(expr,:cv,:(u[2]))
-    replace_expression!(expr,:kx,:(p[1]))
-    replace_expression!(expr,:ky,:(p[2]))
-    
+    expr = buildrhs_x_expression(sim.liouvillian,sim.drivingfield)
     return @eval (u,p,t) -> $expr
 end
 
-function rhs_x_expression(l::TwoBandDephasingLiouvillian,df::DrivingField)
+function buildrhs_x_expression(l::TwoBandDephasingLiouvillian,df::DrivingField)
 
     h       = l.hamiltonian
     f       = efieldx(df)
@@ -29,13 +23,17 @@ function rhs_x_expression(l::TwoBandDephasingLiouvillian,df::DrivingField)
     γ1      = 1 / l.t1
     γ2      = 1 / l.t2
 
-    rhs_cc = :(2*$f * imag(cv * $dvc) + $γ1 * (1-cc))
-    rhs_cv = :((-$γ2 - im*$Δe)*cv - im*$f *(($dvv - $dcc)*cv + $dcv*(2cc-1) ))
+    rhs_cc  = :(2*$f * imag(cv * $dvc) + $γ1 * (1-cc))
+    rhs_cv  = :((-$γ2 - im*$Δe)*cv - im*$f *(($dvv - $dcc)*cv + $dcv*(2cc-1) ))
+    rhs     = :(SA[$rhs_cc,$rhs_cv])
 
-    replace_expression!(rhs_cc,:kx,:(kx-$a))
-    replace_expression!(rhs_cv,:kx,:(kx-$a))
+    replace_expression!(rhs,:kx,:(kx-$a))
+    replace_expression!(rhs,:cc,:(u[1]))
+    replace_expression!(rhs,:cv,:(u[2]))
+    replace_expression!(rhs,:kx,:(p[1]))
+    replace_expression!(rhs,:ky,:(p[2]))
 
-    return :(SA[$rhs_cc,$rhs_cv])
+    return rhs
 end
 
 function get_rhs_x(h::GappedDiracOld,df::DrivingField)

@@ -1,15 +1,20 @@
 export Simulation
 export UnitScaling
 
+export electricfield_scaled
 export electricfieldSI
+export energyscaled
 export energySI
+export frequencyscaled
 export frequencySI
 export getparams
-export getparamsSI
+export lengthscaled
 export lengthSI
-export printparamsSI
+export timescaled
 export timeSI
+export velocityscaled
 export velocitySI
+export wavenumberscaled
 export wavenumberSI
 
 """
@@ -33,39 +38,83 @@ end
 function UnitScaling(timescale,lengthscale) 
     return UnitScaling(ustrip(u"fs",timescale),ustrip(u"nm",lengthscale))
 end
-lengthscaleSI(us::UnitScaling)  = Quantity(us.lengthscale,u"nm")
-timescaleSI(us::UnitScaling)    = Quantity(us.timescale,u"fs")
-getparams(us::UnitScaling)      = (timescale=timescaleSI(us),lengthscale=lengthscaleSI(us))
-getparamsSI(us::UnitScaling)    = (timescale=timescaleSI(us),lengthscale=lengthscaleSI(us))
+function getparams(us::UnitScaling{T}) where {T<:Real} 
+    return (timescale=Quantity(us.timescale,u"fs"),
+            lengthscale=Quantity(us.lengthscale,u"nm"))
+end
 
-function energySI(en,us::UnitScaling)
+function energySI(en::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"meV",en*Unitful.ħ/tc)
 end
-function electricfieldSI(field,us::UnitScaling)
-    tc,lc   = getparams(us)
-    e   = uconvert(u"C",1u"eV"/1u"V")
-    return uconvert(u"MV/cm",field*Unitful.ħ/(e*tc*lc))
+
+function energyscaled(energy::Unitful.Energy,us::UnitScaling)
+    tc,lc = getparams(us)
+    ħ     = Unitful.ħ
+    return uconvert(Unitful.NoUnits,tc*energy/ħ)
 end
-function timeSI(time,us::UnitScaling)
+
+function electricfieldSI(field::Real,us::UnitScaling)
+    tc,lc   = getparams(us)
+    e       = uconvert(u"C",1u"eV"/1u"V")
+    ħ       = Unitful.ħ
+    return uconvert(u"MV/cm",field*ħ/(e*tc*lc))
+end
+
+function electricfield_scaled(field::Unitful.EField,us::UnitScaling)
+    tc,lc   = getparams(us)
+    e       = uconvert(u"C",1u"eV"/1u"V")
+    ħ       = Unitful.ħ
+    return uconvert(Unitful.NoUnits,e*tc*lc*field/ħ)
+end
+
+function timeSI(time::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"fs",time*tc)
 end
-function lengthSI(length,us::UnitScaling)
+
+function timescaled(time::Unitful.Time,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(Unitful.NoUnits,time/tc)    
+end
+
+function lengthSI(length::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"Å",length*lc)
 end
-function frequencySI(ν,us::UnitScaling)
+function lengthscaled(length::Unitful.Length,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(Unitful.NoUnits,length/lc)
+end
+
+function frequencySI(ν::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"THz",ν/tc)
 end
-function velocitySI(v,us::UnitScaling)
+
+function frequencyscaled(ν::Unitful.Frequency,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(Unitful.NoUnits,ν*tc)
+end
+
+function velocitySI(v::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"m/s",v*lc/tc)
 end
-function wavenumberSI(k,us::UnitScaling)
+
+function velocityscaled(v::Unitful.Velocity,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(Unitful.NoUnits,v*tc/lc)
+end
+
+function wavenumberSI(k::Real,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(u"Å^-1",k/lc)
+end
+
+function wavenumberscaled(k::Unitful.Wavenumber,us::UnitScaling)
+    tc,lc = getparams(us)
+    return uconvert(Unitful.NoUnits,k*lc)
 end
 
 """
@@ -236,10 +285,10 @@ end
 function printparamsSI(sim::Simulation;digits=3)
 
     p   = getparams(sim)
-    γ   = round(p.Δ*p.ω / p.eE,sigdigits=digits)        # Keldysh parameter
-    M   = round(2*p.Δ / p.ω,sigdigits=digits)           # Multi-photon number
+    γ   = round(p.m*p.ω / p.eE,sigdigits=digits)        # Keldysh parameter
+    M   = round(2*p.m / p.ω,sigdigits=digits)           # Multi-photon number
     ζ   = round(M/γ,sigdigits=digits)                   # My dimless asymptotic ζ
-    plz = round(exp(-π*p.Δ^2 / p.eE),sigdigits=digits)  # Maximal LZ tunnel prob
+    plz = round(exp(-π*p.m^2 / p.eE),sigdigits=digits)  # Maximal LZ tunnel prob
     bzSI  = [wavenumberSI(k,sim.unitscaling) for k in p.bz]
     bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
     bz    = [round(x,sigdigits=digits) for x in p.bz]
@@ -252,7 +301,7 @@ function printparamsSI(sim::Simulation;digits=3)
         BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])
         BZ(ky) = [$(bzSI[3]),$(bzSI[4])] ([$(bz[3]),$(bz[4])])\n"""
 
-    str *= printparamsSI(sim.hamiltonian,sim.unitscaling;digits=digits)
+    str *= printparamsSI(sim.liouvillian,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.drivingfield,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.numericalparams,sim.unitscaling;digits=digits)
     return str

@@ -40,6 +40,14 @@ end
 zero(o::Occupation)              = Occupation(zero(o.cbocc))
 
 
+function buildobservable_expression(sim::Simulation,o::Occupation) 
+    return :(real(u[1]))
+end
+
+function observable_from_data(sim::Simulation,o::Occupation,data)
+    
+end
+
 function getfuncs(sim::Simulation,o::Occupation)
     return []
 end

@@ -1,4 +1,11 @@
 
+export getkxsamples
+export getkysamples
+export getnkx
+export getnky
+export getnt
+export gettsamples
+export gettspan
 export NumericalParams1d
 export NumericalParams2d
 export NumericalParams2dSlice

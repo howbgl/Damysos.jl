@@ -1,19 +1,29 @@
 import LinearAlgebra: normalize!,copyto!
 import Base: +,-,*,zero,empty
 
+export buildbzmask
 export buildbzmask_expression
+export buildobservable
+export buildobservable_expression
 export bzmask1d
 export getnames_obs
 export Observable
+export observable_from_data
 export resize
 export sig
 export zero!
+
 
 sig(x)                      = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
 bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
 
 include("Velocity.jl")
 include("Occupation.jl")
+
+function buildbzmask(sim::Simulation)
+    expr = buildbzmask_expression(sim)
+    return @eval (kx,ky,t) -> $expr
+end
 
 function buildbzmask_expression(sim::Simulation)
 
@@ -22,6 +32,27 @@ function buildbzmask_expression(sim::Simulation)
     dkx = sim.numericalparams.dkx
 
     return :(bzmask1d(kx - $ax,$dkx,$(bz[1]),$(bz[2])))
+end
+
+function buildobservable(sim::Simulation)
+    return @eval (u,p,t) -> $(buildobservable_expression(sim))
+end
+
+function buildobservable_expression(sim::Simulation)
+    expressions = [buildobservable_expression(sim,o) for o in sim.observables]
+    return :([$(expressions...)])
+end
+
+function observable_from_data(sim::Simulation,data)
+
+    observabledata = [empty([d]) for d in data[1]]
+    @show observabledata
+    for slice in data
+        for (d,obs) in zip(slice,observabledata) 
+            push!(obs,d)
+        end
+    end
+    return observabledata
 end
 
 function getmovingbz(sim::Simulation{T}) where {T<:Real}

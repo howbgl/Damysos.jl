@@ -1,7 +1,14 @@
-using Damysos,Unitful,LoggingExtras,Dates,Formatting
+using Unitful,LoggingExtras,Dates,Formatting,DifferentialEquations,TerminalLoggers
+using Distributed
+
+@everywhere using Damysos
+@everywhere using StaticArrays
+
 
 import Damysos.getshortname
 import Damysos.ensurepath
+
+global_logger(TerminalLogger())
 
 const vf        = u"4.3e5m/s"
 const freq      = u"5THz"
@@ -26,37 +33,30 @@ const dky     = 1.0
 const kymax   = 100.0
 
 const us      = scaledriving_frequency(freq,vf)
-const h       = GappedDirac(us,m,vf,t1,t2)
-const df      = GaussianPulse(us,σ,freq,emax)
+const h       = GappedDirac(energyscaled(m,us))
+const l       = TwoBandDephasingLiouvillian(h,Inf,timescaled(t2,us))
+const df      = GaussianAPulse(us,σ,freq,emax)
 const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
 const obs     = [Velocity(h)]
 
 # const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 const id      = "ref"
-const name    = "Simulation{$(typeof(h.Δ))}(2d)reference"
-const dpath   = "test/reference"
-const ppath   = dpath
+const name    = "Simulation{$(typeof(h.m))}(2d)reference"
+const dpath   = "/home/how09898/phd/data/hhgjl/test/reference"
+const ppath   = "/home/how09898/phd/plots/hhgjl/test/reference"
 
-const sim     = Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
+const sim     = Simulation(l,df,pars,obs,us,2,id,dpath,ppath)
 
-ensurepath(sim.plotpath)
-const info_filelogger  = FileLogger(joinpath(sim.plotpath,sim.id*"_$(now()).log"))
-const info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
-const all_filelogger   = FileLogger(joinpath(sim.plotpath,sim.id*"_$(now())_debug.log"))
-const console_logger   = ConsoleLogger(stdout)
-const tee_logger       = TeeLogger(info_logger,all_filelogger,console_logger)
+@everywhere @eval rhs(u,p,t)        = $(buildrhs_x_expression(sim.liouvillian,sim.drivingfield))
+@everywhere @eval bzmask(kx,ky,t)   = $(buildbzmask_expression(sim))
+@everywhere @eval f(u,kx,ky,t)      = $(buildobservable_expression(sim))
 
-@info "Logging to $(joinpath(sim.plotpath,getshortname(sim)*"s(now()).log")) " *
-      "and $(joinpath(sim.plotpath,getshortname(sim)*"_$(now())_debug.log"))"
-
-global_logger(tee_logger)
-@info "$(now())\nOn $(gethostname()):"
-
-const results,time,rest... = @timed run_simulation!(sim;
-      threaded=false,
-      kxbatch_basesize=64,
-      maxparallel_ky=64)
-
-@info "$(time/60.)min spent in run_simulation!(...)"
-@debug rest
-@info "$(now()): calculation finished."
+const prob              = buildensemble_linear(sim,rhs,bzmask,f,reduction)
+const ts                = collect(gettsamples(sim.numericalparams))
+sol                     = solve(
+    prob,
+    nothing,
+    EnsembleThreads(),
+    saveat=ts,
+    trajectories=1_000,
+    progress=true)

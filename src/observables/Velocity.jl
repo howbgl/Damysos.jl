@@ -111,6 +111,47 @@ function zero(v::Velocity)
         zero(v.vyinter))
 end
 
+function buildobservable_expression(sim::Simulation,v::Velocity)
+    
+    h    = sim.liouvillian.hamiltonian
+    df   = sim.drivingfield
+
+    vxvc = vx_vc(h)
+    vxcc = vx_cc(h)
+    vxvv = vx_vv(h)
+    vyvc = vy_vc(h)
+    vycc = vy_cc(h)
+    vyvv = vy_vv(h)
+
+    ax  = vecpotx(df)
+    ay  = vecpoty(df)
+    
+    vxintra_expr = :(real(u[1]) * ($vxcc - $vxvv))
+    vxinter_expr = :(2real(u[2] * $vxvc))
+    vyintra_expr = :(real(u[1]) * ($vycc - $vyvv))
+    vyinter_expr = :(2real(u[2] * $vyvc))
+    vel_expr     = :(SA[$vxintra_expr,$vxinter_expr,$vyintra_expr,$vyinter_expr])
+
+    replace_expression!(vel_expr,:kx,:(kx-$ax))
+    return vel_expr
+end
+
+function observable_from_data(sim::Simulation,v::Velocity,data)
+
+    vxintra = empty(getkxsamples(sim.numericalparams))
+    vxinter = empty(getkxsamples(sim.numericalparams))
+    vyintra = empty(getkxsamples(sim.numericalparams))
+    vyinter = empty(getkxsamples(sim.numericalparams))
+
+    for v in data
+        push!(vxintra,v[1])
+        push!(vxinter,v[2])
+        push!(vyintra,v[3])
+        push!(vyinter,v[4])
+    end
+    return Velocity(vxinter .+ vxintra,vxintra,vxinter,vyinter .+ vyintra,vyintra,vyinter)
+end
+
 function getfuncs(sim::Simulation,v::Velocity)
     df = sim.drivingfield
     h  = sim.hamiltonian

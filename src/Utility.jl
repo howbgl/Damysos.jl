@@ -1,4 +1,5 @@
 
+export diffparams
 export ensurepath
 export find_files_with_name
 export parametersweep
@@ -295,6 +296,23 @@ end
 function resize_obs!(sim::Simulation{T}) where {T<:Real}
 
     sim.observables .= [resize(o, sim.numericalparams) for o in sim.observables]
+end
+
+"""
+    diffparams(c1::SimulationComponent,c2::SimulationComponent)
+
+Returns the parameters in c1 and c2, which have different values
+"""
+function diffparams(c1::SimulationComponent,c2::SimulationComponent)
+    res = Symbol[]
+    if !(c1 isa typeof(c2))
+        throw(ArgumentError("""
+        cannot compare the two different types $(typeof(c1)) and $(typeof(c1))"""))
+    end
+    for name in fieldnames(typeof(c1))
+        getproperty(c1,name) != getproperty(c2,name) && push!(res,name)
+    end
+    return res
 end
 
 function maximum_k(df::DrivingField)

@@ -18,6 +18,7 @@ struct ConvergenceTest{T<:Real}
     plotpath::String
     id::String
     completedsims::Vector{Simulation{T}}
+    parameterhistory::DataFrame
 end
 
 
@@ -54,7 +55,7 @@ function ConvergenceTest(
     
     atolg = convert(T,atolgoal)
     rtolg = convert(T,rtolgoal)
-    ConvergenceTest(start,method,atolg,rtolg,dpath,ppath,id,empty([start]))
+    ConvergenceTest(start,method,atolg,rtolg,dpath,ppath,id,empty([start]),DataFrame())
 end
 
 function ConvergenceTest(
@@ -109,13 +110,25 @@ end
 
 function run!(test::ConvergenceTest,maxiterations::Integer=10,maxtime::Real=30*60;
     sequentialsim=true,
-    savesimdata=true)
+    savealldata=true,
+    savelastdata=true)
     
     @info "## Starting "*repr("text/plain",test)
 
-    run!(matchpaths(test),test.method,maxiterations,maxtime;
+    result = run!(
+        matchpaths(test),
+        test.method,
+        maxiterations,
+        maxtime;
         sequentialsim=sequentialsim,
-        savesimdata=savesimdata)
+        savesimdata=savealldata)
+    
+    addhistory!(test)
+
+    if !savealldata && savelastdata
+        savedata(result.test.completedsims[end])
+    end
+    return result
 end
 
 function run!(
@@ -129,22 +142,13 @@ function run!(
 
     @info repr("text/plain",method)
     
-    finished            = false
-    currentiteration    = 1
+    currentiteration    = 0
     elapsedtime_seconds = 0.0
 
-    while !finished
+    while currentiteration < maxiterations && elapsedtime_seconds < maxduration
 
-        if currentiteration > maxiterations || elapsedtime_seconds > maxduration
-            @warn """
-            Maximum number of iterations or duration reached.
-            Aborting convergence test."""
-            finished = true
-        elseif length(test.completedsims) > 1 && converged(test) 
-            @info """
-            ## Converged. after $(elapsedtime_seconds/60)min and $currentiteration iterations"""
-            finished = true
-        end
+        elapsed_round       = round(elapsedtime_seconds/60,sigdigits=3)
+        max_round           = round(maxduration/60,sigdigits=3)
 
         if isempty(test.completedsims)
             push!(test.completedsims,test.start)
@@ -158,12 +162,29 @@ function run!(
             savedata=savesimdata,
             sequential=sequentialsim)
         currentiteration    += 1
-        @info "$(elapsedtime_seconds/60)min elapsed after $currentiteration-th iteration"
+        @info """
+        - $(elapsed_round)min of $(max_round)min elapsed 
+        - Iteration $currentiteration of maximum of $maxiterations
+        """
+        converged(test) && break
     end
+
+    if converged(test)
+        @info """
+        ## Converged after $(round(elapsedtime_seconds/60,sigdigits=3))min and\
+        $currentiteration iterations"""
+    elseif currentiteration > maxiterations
+        @warn "Maximum number of iterations ($maxiterations) reached, aborting."
+    elseif elapsedtime_seconds > maxduration
+        @warn "Maximum duration exceeded, aborting."
+    else
+        @warn "Something very weird happened..."
+    end
+
     achieved_tol = length(test.completedsims) < 2 ? (Inf,Inf) : findminimum_precision(
         test.completedsims[end-1],
         test.completedsims[end])
-
+    
     result = ConvergenceTestResult(test,converged(test),achieved_tol...)
     if savetestresult
         savedata(result,joinpath(test.datapath,"$(method.parameter)-testresult.txt"))
@@ -180,7 +201,7 @@ function run!(
     savesimdata=true,
     sequentialsim=true)
 
-    currentiteration    = 1
+    currentiteration    = 0
     elapsedtime_seconds = 0.0
     results             = ConvergenceTestResult[]
 
@@ -189,7 +210,7 @@ function run!(
         Starting sequence of $(length(method.testsequence)) convergence tests
         """
 
-        remainingiterations     = maxiterations - currentiteration + 1
+        remainingiterations     = maxiterations - currentiteration
         remainingduration       = maxduration - elapsedtime_seconds
         time = @elapsed result  = run!(
             test,
@@ -199,10 +220,13 @@ function run!(
             savesimdata=savesimdata,
             sequentialsim=sequentialsim)
         elapsedtime_seconds     += time
-        currentiteration        += length(result.test.completedsims)
+        currentiteration        = length(result.test.completedsims)
 
         push!(results,result)
         !result.success && break
+        if currentiteration > maxiterations || elapsedtime_seconds > maxduration
+            break
+        end
     end
     result = worst(results,test)
 
@@ -227,6 +251,16 @@ function worst(results::Vector{ConvergenceTestResult},test::ConvergenceTest)
     ConvergenceTestResult(test,success,min_achieved_atol,min_achieved_rtol)
 end
 
+function addhistory!(test::ConvergenceTest)
+    
+    pars = []
+    for (s1,s2) in zip(test.completedsims[1:end-1],test.completedsims[2:end])
+        push!(pars,diffparams(s1.numericalparams,s2.numericalparams))
+    end
+    changed_parameters = union(pars...)
+    return DataFrame(Dict(
+        [s => getproperty.(test.completedsims,s) for s in changed_parameters]))
+end
 
 function findminimum_precision(
     s1::Simulation,
@@ -283,12 +317,12 @@ function Base.show(io::IO,::MIME"text/plain",t::ConvergenceTest)
     println(io,"Convergence Test ($(t.id)):" |> escape_underscores)
     methodstring = repr("text/plain",t.method)
     str = """
-    $(getshortname(t.start))
-    method: $(methodstring)
-    atolgoal: $(t.atolgoal)
-    rtolgoal: $(t.rtolgoal)
-    datapath: $(t.datapath)
-    plotpath: $(t.plotpath)
+    - $(getshortname(t.start))
+    - method: $(methodstring)
+    - atolgoal: $(t.atolgoal)
+    - rtolgoal: $(t.rtolgoal)
+    - datapath: $(t.datapath)
+    - plotpath: $(t.plotpath)
     """ |> escape_underscores
     print(io,prepend_spaces(str,2))
 end
@@ -302,14 +336,18 @@ function Base.show(io::IO,::MIME"text/plain",r::ConvergenceTestResult)
         endparams = r.test.completedsims[end] |> printparamsSI |> escape_underscores 
     end
     str = """
-    success: $(r.success)
-    achieved tolerances:
-     atol: $(r.min_achieved_atol) 
-     rtol: $(r.min_achieved_rtol)
-    number of simulations: $(length(r.test.completedsims))
+    - success: $(r.success)
+    - achieved tolerances:
+        * atol: $(r.min_achieved_atol) 
+        * rtol: $(r.min_achieved_rtol)
+    - number of simulations: $(length(r.test.completedsims))
+
+    Parameter history:
+    $(r.test.parameterhistory)
 
     First simulation: 
     $(prepend_spaces(startparams,1))
+
     Last simulation:  
     $(prepend_spaces(endparams,1))
     """ |> escape_underscores
@@ -325,7 +363,7 @@ end
 function Base.show(io::IO,::MIME"text/plain",m::PowerLawTest)
     println(io,"Power-law convergence test method (*$(m.multiplier)):")
     str = print_iterated_symbolsequence(x -> nextvalue(x,m),m.parameter)
-    print(io,str)
+    print(io," - " * str)
 end
 
 function print_iterated_symbolsequence(f::Function,s::Symbol;sigdigits=3,n=5)
@@ -334,7 +372,7 @@ function print_iterated_symbolsequence(f::Function,s::Symbol;sigdigits=3,n=5)
         push!(seq,f(seq[end]))
     end
     str = join(["$(round(v,sigdigits=sigdigits))$s, " for v in seq])
-    return " [" * str * "...]"
+    return "[" * str * "...]"
 end
 
 function Base.show(io::IO,::MIME"text/plain",m::SequentialTest)

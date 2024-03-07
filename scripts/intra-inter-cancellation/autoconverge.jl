@@ -18,7 +18,9 @@ end
       γ::Real,
       subpath::AbstractString;
       plotpath_base="/home/how09898/phd/plots",
-      datapath_base="/home/how09898/phd/data")
+      datapath_base="/home/how09898/phd/data",
+      rtol=1e-12,
+      atol=1e-12)
 
       vf        = u"497070.0m/s"
       m         = u"0.02eV"
@@ -44,7 +46,7 @@ end
       dkx     = 2kxmax / 1_200
       dky     = 1.0
 
-      pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
+      pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ,rtol,atol)
       obs     = [Velocity(h),Occupation(h)]
 
       id      = "gamma=$(round(γ,sigdigits=3))_zeta=$(round(ζ,sigdigits=3))"
@@ -56,10 +58,13 @@ end
 end
 
 @everywhere function make_n_runtest(s)
-      method      = SequentialTest([PowerLawTest(:dt,0.5),PowerLawTest(:dkx,0.7)])
-      test        = ConvergenceTest(s,method,1e-12,1e-8)
+  method      = SequentialTest(
+      [PowerLawTest(:dt,0.5),
+      PowerLawTest(:dkx,0.7),
+      LinearTest(:kxmax,50.)])
+      test        = ConvergenceTest(s,method,1e-12,1e-4)
 
-      run!(test,50,24*60*60,savesimdata=false)
+      run!(test,100,2*60*60,savealldata=false)
 end
 
 @everywhere function runall(sims)
@@ -68,7 +73,7 @@ end
             res = Dagger.@spawn make_n_runtest(s)
             push!(results,res)
       end
-      return fetch(results)      
+      return fetch.(results)
 end
 
 const keldyshs = LinRange(0.1,2.0,8)
@@ -76,15 +81,17 @@ const zetas    = LinRange(1.0,5.0,8)
 const sims     = [make_system(
       z,
       g,
-      "hhgjl/inter-intra-cancellation/") for g in keldyshs for z in zetas]
-const logpath  = "hhgjl/inter-intra-cancellation/convergence_tests"
+      "hhgjl/inter-intra-cancellation/";
+      rtol=1e-6,
+      atol=1e-12) for g in keldyshs for z in zetas]
+const logpath  = dirname(sims[1].datapath)
 ensurepath(logpath)
 global_logger(make_teelogger(logpath,"all-convergence-tests.log"))
-@info "Logging to \"$logpath\""
+@info "Logging to \"$logpath\"/all-convergence-tests.log"
 
 
-const results = runall(sims)
-str           = repr.("text/plain",results)
+results     = runall(sims)
+str         = repr.("text/plain",results)
 for (res,pars) in zip(results,[(z,g) for g in keldyshs for z in zetas])
       @info """
       Result for ζ=$(pars[1]) γ=$(pars[2])
@@ -93,5 +100,10 @@ for (res,pars) in zip(results,[(z,g) for g in keldyshs for z in zetas])
 
 
       """
+end
+
+@info "Plotting for last sims"
+for r in results
+      plotdata(r.test.completedsims[end])
 end
 

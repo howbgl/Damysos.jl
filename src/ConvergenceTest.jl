@@ -123,7 +123,9 @@ function run!(test::ConvergenceTest,maxiterations::Integer=10,maxtime::Real=30*6
         sequentialsim=sequentialsim,
         savesimdata=savealldata)
     
-    addhistory!(test)
+    addhistory!(result.test)
+
+    @show length(result.test.completedsims)
 
     if !savealldata && savelastdata
         savedata(result.test.completedsims[end])
@@ -257,9 +259,13 @@ function addhistory!(test::ConvergenceTest)
     for (s1,s2) in zip(test.completedsims[1:end-1],test.completedsims[2:end])
         push!(pars,diffparams(s1.numericalparams,s2.numericalparams))
     end
+    isempty(pars) && return DataFrame()
     changed_parameters = union(pars...)
-    return DataFrame(Dict(
-        [s => getproperty.(test.completedsims,s) for s in changed_parameters]))
+    numericalparams    = [s.numericalparams for s in test.completedsims]
+    for s in changed_parameters
+        test.parameterhistory[!, s] = getproperty.(numericalparams,s)
+    end
+    return nothing
 end
 
 function findminimum_precision(

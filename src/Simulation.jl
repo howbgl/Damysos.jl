@@ -25,7 +25,10 @@ Represents a physical length- and time-scale used for non-dimensionalization of 
 # Examples
 ```jldoctest
 julia> using Unitful; us = UnitScaling(u"1.0s",u"1.0m")
-UnitScaling{Float64}(1.0e15, 1.0e9)
+UnitScaling
+    timescale: 1.0e15 fs
+    lengthscale: 1.0e9 nm
+
 ```
 
 # Further information

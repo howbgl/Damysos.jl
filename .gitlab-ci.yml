@@ -33,8 +33,8 @@ pages:
     #     include("docs/make.jl")'
     # - julia -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate();'  # rebuild Julia (can be put somewhere else I'm sure
     # - julia -e 'using Pkg; using Damysos; Pkg.add("Documenter")'  # install Documenter
-    - julia --project=docs/ -e "using Pkg; Pkg.instantiate()"
-    - julia --project=docs/ docs/make.jl  # make documentation
+    #- julia --project=docs/ -e "using Pkg; Pkg.instantiate()"
+    #- julia --project=docs/ docs/make.jl  # make documentation
     - mkdir -p public
     - mv docs/build public/dev
   artifacts:

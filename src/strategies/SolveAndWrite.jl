@@ -149,14 +149,15 @@ function run_kybatch!(
     kwargs...) where {T<:Real}
 
     if threaded
-        obs = Folds.map(
+        @warn "Threaded algorithm under developement, falling back to sequential map"
+        obs = map(
             ky -> run_simulation1d!(
                 deepcopy(sim),
                 ky;
                 kxbatch_basesize=kxbatch_basesize,
                 kwargs...),
             kysamples)
-        integrateobs_threaded!(obs,sim.observables,kysamples)
+        integrateobs!(obs,sim.observables,kysamples)
     else
         obs = pmap(
             ky -> run_simulation1d!(

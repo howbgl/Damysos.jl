@@ -84,16 +84,6 @@ function integrateobs!(
     end    
 end
 
-function integrateobs_threaded!(
-    observables::Vector{Vector{Observable{T}}},
-    observables_dest::Vector{Observable{T}},
-    vertices::AbstractVector{T}) where {T<:Real}
-
-    for (i,odest) in enumerate(observables_dest) 
-        integrateobs_threaded!([o[i] for o in observables],odest,collect(vertices))
-    end    
-end
-
 function integrateobs_kxbatch_add!(
     sim::Simulation{T},
     sol,

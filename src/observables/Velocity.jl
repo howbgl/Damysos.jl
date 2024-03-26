@@ -260,19 +260,3 @@ function integrateobs!(
     @. vdest.vx   = vdest.vxintra + vdest.vxinter
     @. vdest.vy   = vdest.vyintra + vdest.vyinter
 end
-
-function integrateobs_threaded!(
-    vels::Vector{Velocity{T}},
-    vdest::Velocity{T},
-    vertices::Vector{T}) where {T<:Real}
-
-    @floop ThreadedEx() for i in 1:length(vdest.vx)
-        vdest.vxintra[i] = trapz(vertices,[v.vxintra[i] for v in vels])
-        vdest.vxinter[i] = trapz(vertices,[v.vxinter[i] for v in vels])
-        vdest.vyintra[i] = trapz(vertices,[v.vyintra[i] for v in vels])
-        vdest.vyinter[i] = trapz(vertices,[v.vyinter[i] for v in vels])
-    end
-
-    @. vdest.vx   = vdest.vxintra + vdest.vxinter
-    @. vdest.vy   = vdest.vyintra + vdest.vyinter    
-end

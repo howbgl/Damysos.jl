@@ -1,8 +1,27 @@
 module Damysos
 
-using Unitful,Accessors,Trapz,DifferentialEquations,Interpolations,CairoMakie
-using DSP,DataFrames,Random,CSV,Formatting,Distributed,Folds,FLoops,Dates,SpecialFunctions
-using TerminalLoggers,ProgressLogging,ColorSchemes,StaticArrays
+
+using Accessors
+using CairoMakie
+using ColorSchemes
+using CSV
+using Dagger
+using Dates
+using Distributed
+using DataFrames
+using DSP
+using Formatting
+using Interpolations
+using ProgressLogging
+using Random
+using Reexport
+using SpecialFunctions
+using StaticArrays
+using TerminalLoggers
+using Trapz
+
+@reexport using DifferentialEquations
+@reexport using Unitful
 
 import Base.promote_rule
 
@@ -35,5 +54,6 @@ include("Data.jl")
 include("Plotting.jl")
 include("Core.jl")
 include("Utility.jl")
+include("observablereduction.jl")
 
 end

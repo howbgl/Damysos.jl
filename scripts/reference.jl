@@ -42,8 +42,8 @@ const obs     = [Velocity(h)]
 # const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 const id      = "ref"
 const name    = "Simulation{$(typeof(h.m))}(2d)reference"
-const dpath   = "/home/how09898/phd/data/hhgjl/test/reference"
-const ppath   = "/home/how09898/phd/plots/hhgjl/test/reference"
+const dpath   = "/home/how09898/phd/data/hhgjl/expressions_test/reference"
+const ppath   = "/home/how09898/phd/plots/hhgjl/expressions_test/reference"
 
 const sim     = Simulation(l,df,pars,obs,us,2,id,dpath,ppath)
 
@@ -51,12 +51,16 @@ const sim     = Simulation(l,df,pars,obs,us,2,id,dpath,ppath)
 @everywhere @eval bzmask(kx,ky,t)   = $(buildbzmask_expression(sim))
 @everywhere @eval f(u,kx,ky,t)      = $(buildobservable_expression(sim))
 
-const prob              = buildensemble_linear(sim,rhs,bzmask,f,reduction)
+const prob              = buildensemble_linear(sim,rhs,bzmask,f)
 const ts                = collect(gettsamples(sim.numericalparams))
+
+@info "Solving differential equations"
 sol                     = solve(
     prob,
     nothing,
     EnsembleThreads(),
     saveat=ts,
-    trajectories=1_000,
+    trajectories=ntrajectories(sim),
     progress=true)
+
+

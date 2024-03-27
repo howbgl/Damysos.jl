@@ -43,6 +43,24 @@ function buildobservable_expression(sim::Simulation)
     return :([$(expressions...)])
 end
 
+function calculate_observables(
+    sols::Vector{<:Vector{<:SVector{2,<:Complex}}},
+    ts::AbstractVector{<:Real},
+    ks::Vector{<:SVector{2,<:Real}},
+    bzmask::Function,
+    obsfunction::Function)
+    
+    length(sols) != length(ks) && throw(ArgumentError(
+        "length of solution and k vector not equal!"))
+
+    obs = []
+    @sync for (s,k) in zip(sols,ks)
+        weights = Dagger.@spawn bzmask.(k[1],k[2],ts)
+        push!(obs,Dagger.@spawn obsfunction.(s,k[1],k[2],ts) .* weights)
+    end
+    return fetch.(obs)
+end
+
 function observable_from_data(sim::Simulation,data)
 
     observabledata = [empty([d]) for d in data[1]]

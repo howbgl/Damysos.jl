@@ -18,7 +18,7 @@ function pairwise_reduction(
     end
 end
 
-function pairwise_sum(x::Vector,min_chunk_size=MIN_CHUNK_SIZE)
+function pairwise_sum(x::Union{Vector,EnsembleSolution},min_chunk_size=MIN_CHUNK_SIZE)
     
     n = length(x)
     if n <= min_chunk_size
@@ -27,7 +27,7 @@ function pairwise_sum(x::Vector,min_chunk_size=MIN_CHUNK_SIZE)
         m = floor(Int64,n/2)
         s1 = Dagger.@spawn pairwise_sum(x[1:m])
         s2 = Dagger.@spawn pairwise_sum(x[m+1:end])
-        return Dagger.@spawn s1 + s2
+        return fetch(s1) + fetch(s2)
     end
 end
 

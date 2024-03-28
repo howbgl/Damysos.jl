@@ -1,5 +1,5 @@
 using Unitful,LoggingExtras,Dates,Formatting,DifferentialEquations,TerminalLoggers
-using Distributed
+using Distributed,BenchmarkTools
 
 @everywhere using Damysos
 @everywhere using StaticArrays
@@ -7,6 +7,16 @@ using Distributed
 
 import Damysos.getshortname
 import Damysos.ensurepath
+
+function make_teelogger(logging_path::AbstractString,name::AbstractString)
+
+    ensurepath(logging_path)
+    info_filelogger  = FileLogger(joinpath(logging_path,name)*"_$(now()).log")
+    info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
+    all_filelogger   = FileLogger(joinpath(logging_path,name)*"_$(now())_debug.log")
+
+    return  TeeLogger(TerminalLogger(),info_logger,all_filelogger)
+end
 
 global_logger(TerminalLogger())
 
@@ -45,6 +55,9 @@ const name    = "Simulation{$(typeof(h.m))}(2d)reference"
 const dpath   = "/home/how09898/phd/data/hhgjl/expressions_test/reference"
 const ppath   = "/home/how09898/phd/plots/hhgjl/expressions_test/reference"
 
+global_logger(make_teelogger(ppath,id))
+@info "Now saving logs to $ppath"
+
 const sim     = Simulation(l,df,pars,obs,us,2,id,dpath,ppath)
 
 @everywhere @eval rhs(u,p,t)        = $(buildrhs_x_expression(sim.liouvillian,sim.drivingfield))
@@ -55,12 +68,14 @@ const prob              = buildensemble_linear(sim,rhs,bzmask,f)
 const ts                = collect(gettsamples(sim.numericalparams))
 
 @info "Solving differential equations"
-sol                     = solve(
+const observables,time,rest... = @timed sum(solve(
     prob,
     nothing,
-    EnsembleThreads(),
+    EnsembleDistributed(),
     saveat=ts,
     trajectories=ntrajectories(sim),
-    progress=true)
+    batch_size=4_000).u)
+@info "Call to solve took $(time/60.)min"
+
 
 

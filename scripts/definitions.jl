@@ -1,4 +1,4 @@
-using Damysos,StaticArrays
+using Damysos,StaticArrays,Distributed
 
 h       = GappedDirac(0.1)
 l       = TwoBandDephasingLiouvillian(h,Inf,Inf)

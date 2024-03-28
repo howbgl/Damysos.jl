@@ -5,21 +5,13 @@ export buildsimvector_linear
 export ntrajectories
 export reduction
 
-DEFAULT_REDUCTION(u, data, I) = (append!(u, data), false)
-
-# function reduction(u,data,I)
-#     for s in data
-#         s[2] .*= s[1]
-#     end
-#     return (append!(u,sum(x -> getindex(x,2),data)),false)
-# end
-
+DEFAULT_REDUCTION(u, data, I) = (append!(u,sum(data)),false)
 
 function buildensemble_linear(
     sim::Simulation,
     rhs::Function,
     bzmask::Function,
-    obsfunction::Function;
+    obsfunction::Function,
     reduction::Function=DEFAULT_REDUCTION)
 
     kxs            = collect(getkxsamples(sim.numericalparams))
@@ -110,22 +102,23 @@ function runparallel_pairwise(
             push!(res,obsfunction.(u,k[1],k[2],ts))
         end
         return sum(res)
-    else
+    else @sync begin
         m::Int64 = floor(n/2)
         s1 = Dagger.@spawn runparallel_pairwise(
             deepcopy(prob),
-            ks[1:m],
+            deepcopy(ks[1:m]),
             deepcopy(ts),
             bzmask,
             obsfunction;
             kwargs...)
         s2 = Dagger.@spawn runparallel_pairwise(
             deepcopy(prob),
-            ks[m+1:end],
+            deepcopy(ks[m+1:end]),
             deepcopy(ts),
             bzmask,
             obsfunction;
             kwargs...)
+        end
         return Dagger.@spawn s1 + s2
     end
 end

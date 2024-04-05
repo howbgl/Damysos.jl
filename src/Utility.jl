@@ -76,16 +76,16 @@ function replace_expression!(e, old, new)
     e
 end
 
-function subdivide_vector(vec::AbstractVector{T}, basesize::U) where {T<:Real,U}
+function subdivide_vector(vec::AbstractVector,basesize::Integer)
 
-    batches = Vector{Vector{T}}(undef, 0)
-    buffer  = Vector{T}(undef,0)
+    batches = Vector{Vector{eltype(vec)}}(undef, 0)
+    buffer  = Vector{eltype(vec)}(undef,0)
 
     for (i,el) in enumerate(vec)
         push!(buffer,el)
         if length(buffer)==basesize || i==length(vec)
             push!(batches,deepcopy(buffer))
-            buffer  = Vector{T}(undef,0)
+            buffer  = Vector{eltype(vec)}(undef,0)
         end
     end
 

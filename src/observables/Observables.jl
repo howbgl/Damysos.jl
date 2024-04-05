@@ -25,6 +25,15 @@ function buildbzmask(sim::Simulation)
     return @eval (kx,ky,t) -> $expr
 end
 
+function buildbzmask_expression_upt(sim::Simulation)
+
+    bz = getbzbounds(sim)
+    ax = vecpotx(sim.drivingfield)
+    dkx = sim.numericalparams.dkx
+
+    return :(bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2])))
+end
+
 function buildbzmask_expression(sim::Simulation)
 
     bz = getbzbounds(sim)
@@ -36,6 +45,11 @@ end
 
 function buildobservable(sim::Simulation)
     return @eval (u,p,t) -> $(buildobservable_expression(sim))
+end
+
+function buildobservable_expression_upt(sim::Simulation)
+    expressions = [buildobservable_expression_upt(sim,o) for o in sim.observables]
+    return :([$(expressions...)])
 end
 
 function buildobservable_expression(sim::Simulation)
@@ -61,16 +75,19 @@ function calculate_observables(
     return fetch.(obs)
 end
 
-function observable_from_data(sim::Simulation,data)
+function observable_from_ensemble_data!(sim::Simulation,data)
 
+    resize_obs!(sim)
     observabledata = [empty([d]) for d in data[1]]
-    @show observabledata
     for slice in data
         for (d,obs) in zip(slice,observabledata) 
             push!(obs,d)
         end
     end
-    return observabledata
+    for (o,d) in zip(sim.observables,observabledata)
+        write_svec_to_observable!(o,d)
+    end
+    return sim.observables
 end
 
 function getmovingbz(sim::Simulation{T}) where {T<:Real}

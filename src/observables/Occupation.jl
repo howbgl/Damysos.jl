@@ -39,14 +39,35 @@ end
 *(x::Number,o::Occupation)       = o*x
 zero(o::Occupation)              = Occupation(zero(o.cbocc))
 
+function buildobservable_expression_upt(sim::Simulation,::Occupation)
+    return :(real(u[1]))
+end
 
 function buildobservable_expression(sim::Simulation,o::Occupation) 
     return :(real(u[1]))
 end
 
-function observable_from_data(sim::Simulation,o::Occupation,data)
-    
+
+function write_svec_to_observable!(o::Occupation,data::Vector{<:Real})
+
+    length(o.cbocc) != length(data) && throw(ArgumentError(
+        """
+        data must be same length as observable Occupation. Got lengths of \
+        $(length(data)) and $(length(o.cbocc))"""))
+
+    for (i,d) in enumerate(data)
+        write_svec_timeslice_to_observable!(o,i,d)
+    end
 end
+
+function write_svec_timeslice_to_observable!(
+    o::Occupation,
+    timeindex::Integer,
+    data::Real)
+    
+    o.cbocc[timeindex] = data
+end
+
 
 function getfuncs(sim::Simulation,o::Occupation)
     return []

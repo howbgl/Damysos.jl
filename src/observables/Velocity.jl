@@ -111,6 +111,36 @@ function zero(v::Velocity)
         zero(v.vyinter))
 end
 
+function buildobservable_expression_upt(sim::Simulation,::Velocity)
+    
+    h    = sim.liouvillian.hamiltonian
+    df   = sim.drivingfield
+
+    vxvc = vx_vc(h)
+    vxcc = vx_cc(h)
+    vxvv = vx_vv(h)
+    vyvc = vy_vc(h)
+    vycc = vy_cc(h)
+    vyvv = vy_vv(h)
+
+    ax  = vecpotx(df)
+    ay  = vecpoty(df)
+    
+    vxintra_expr = :(real(cc) * ($vxcc - $vxvv))
+    vxinter_expr = :(2real(cv * $vxvc))
+    vyintra_expr = :(real(cc) * ($vycc - $vyvv))
+    vyinter_expr = :(2real(cv * $vyvc))
+    vel_expr     = :(SA[$vxintra_expr,$vxinter_expr,$vyintra_expr,$vyinter_expr])
+
+    replace_expression!(vel_expr,:kx,:(kx-$ax))
+    replace_expression!(vel_expr,:cc,:(u[1]))
+    replace_expression!(vel_expr,:cv,:(u[2]))
+    replace_expression!(vel_expr,:kx,:(p[1]))
+    replace_expression!(vel_expr,:ky,:(p[2]))
+    
+    return vel_expr
+end
+
 function buildobservable_expression(sim::Simulation,v::Velocity)
     
     h    = sim.liouvillian.hamiltonian
@@ -136,20 +166,31 @@ function buildobservable_expression(sim::Simulation,v::Velocity)
     return vel_expr
 end
 
-function observable_from_data(sim::Simulation,v::Velocity,data)
+function write_svec_to_observable!(v::Velocity,data::Vector{<:SVector{4,<:Real}})
 
-    vxintra = empty(getkxsamples(sim.numericalparams))
-    vxinter = empty(getkxsamples(sim.numericalparams))
-    vyintra = empty(getkxsamples(sim.numericalparams))
-    vyinter = empty(getkxsamples(sim.numericalparams))
+    length(v.vx) != length(data) && throw(ArgumentError(
+        """
+        data must be same length as observable Velocity. Got lengths of \
+        $(length(data)) and $(length(v.vx))"""))
 
-    for v in data
-        push!(vxintra,v[1])
-        push!(vxinter,v[2])
-        push!(vyintra,v[3])
-        push!(vyinter,v[4])
+    for (i,d) in enumerate(data)
+        write_svec_timeslice_to_observable!(v,i,d)
     end
-    return Velocity(vxinter .+ vxintra,vxintra,vxinter,vyinter .+ vyintra,vyintra,vyinter)
+end
+
+function write_svec_timeslice_to_observable!(
+    v::Velocity,
+    timeindex::Integer,
+    data::SVector{4,<:Real})
+    
+    for i in 1:4
+        v.vxintra[timeindex] = data[1]
+        v.vxinter[timeindex] = data[2]
+        v.vyintra[timeindex] = data[3]
+        v.vyinter[timeindex] = data[4]
+        v.vx[timeindex] = v.vxinter[timeindex] + v.vxintra[timeindex]
+        v.vy[timeindex] = v.vyinter[timeindex] + v.vyintra[timeindex]
+    end
 end
 
 function getfuncs(sim::Simulation,v::Velocity)

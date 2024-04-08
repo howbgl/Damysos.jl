@@ -14,11 +14,15 @@ such that ``\\vec{h}=[k_x,k_y,m]``.
 # Examples
 ```jldoctest
 julia> h = GappedDirac(1.0)
-GappedDirac{Float64}(1.0)
+GappedDirac:
+ m: 1.0
+ vF: 1.0
+
+
 ```
 
 # See also
-[`GeneralTwoBand`](@ref TwoBandHamiltonians.GeneralTwoBand)
+[`GeneralTwoBand`](@ref GeneralTwoBand)
 """
 struct GappedDirac{T<:Real} <: GeneralTwoBand{T} 
     m::T

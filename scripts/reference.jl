@@ -24,48 +24,56 @@ end
 
 global_logger(TerminalLogger())
 
-const vf        = u"4.3e5m/s"
-const freq      = u"5THz"
-const m         = u"20.0meV"
-const emax      = u"0.1MV/cm"
-const tcycle    = uconvert(u"fs",1/freq) # 100 fs
-const t2        = tcycle / 4             # 25 fs
-const t1        = Inf*u"1s"
-const σ         = u"800.0fs"
+@everywhere function make_system()
 
-# converged at
-# dt = 0.01
-# dkx = 1.0
-# dky = 1.0
-# kxmax = 175
-# kymax = 100
+    vf        = u"4.3e5m/s"
+    freq      = u"5THz"
+    m         = u"20.0meV"
+    emax      = u"0.1MV/cm"
+    tcycle    = uconvert(u"fs",1/freq) # 100 fs
+    t2        = tcycle / 4             # 25 fs
+    t1        = Inf*u"1s"
+    σ         = u"800.0fs"
 
-const dt      = 0.01
-const dkx     = 1.0
-const kxmax   = 175.0
-const dky     = 1.0
-const kymax   = 100.0
+    # converged at
+    # dt = 0.01
+    # dkx = 1.0
+    # dky = 1.0
+    # kxmax = 175
+    # kymax = 100
 
-const us      = scaledriving_frequency(freq,vf)
-const h       = GappedDirac(energyscaled(m,us))
-const l       = TwoBandDephasingLiouvillian(h,Inf,timescaled(t2,us))
-const df      = GaussianAPulse(us,σ,freq,emax)
-const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
-const obs     = [Velocity(h)]
+    dt      = 0.01
+    dkx     = 1.0
+    kxmax   = 175.0
+    dky     = 1.0
+    kymax   = 100.0
 
-# const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
-const id      = "ref"
-const name    = "Simulation{$(typeof(h.m))}(2d)reference"
-const dpath   = "/home/how09898/phd/data/hhgjl/expressions_test/reference"
+    us      = scaledriving_frequency(freq,vf)
+    h       = GappedDirac(energyscaled(m,us))
+    l       = TwoBandDephasingLiouvillian(h,Inf,timescaled(t2,us))
+    df      = GaussianAPulse(us,σ,freq,emax)
+    pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
+    obs     = [Velocity(h)]
+
+#  id      = sprintf1("%x",hash([h,df,pars,obs,us]))
+    id      = "ref"
+    name    = "Simulation{$(typeof(h.m))}(2d)reference"
+    dpath   = "/home/how09898/phd/data/hhgjl/expressions_test/reference"
+    ppath   = "/home/how09898/phd/plots/hhgjl/expressions_test/reference"
+
+    return Simulation(l,df,pars,obs,us,2,id,dpath,ppath)
+end
+
+
 const ppath   = "/home/how09898/phd/plots/hhgjl/expressions_test/reference"
-
+const id      = "ref"
 global_logger(make_teelogger(ppath,id))
 @info "Now saving logs to $ppath"
-const sim     = Simulation(l,df,pars,obs,us,2,id,dpath,ppath)
+@everywhere sim     = make_system()
 
 @everywhere const functions = define_functions(sim)
 @info "Solving differential equations"
-const observables,time,rest... = @timed run!(sim,functions,CPUEnsembleChunked(128))
+const observables,time,rest... = @timed run!(sim,functions)
 @info "Call to run! took $(time/60.)min"
 
 

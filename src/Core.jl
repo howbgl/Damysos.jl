@@ -1,71 +1,63 @@
 
 
-export CPUEnsembleChunked
 export define_functions
 export run!
 
-struct CPUEnsembleChunked{T<:Integer} <: DamysosSolver 
-    kchunksize::T
-end
-CPUEnsembleChunked() = CPUEnsembleChunked(DEFAULT_K_CHUNK_SIZE)
+include("solvers/CPULinearChunked.jl")
 
-include("strategies/SolveAndIntegrate.jl")
+"""
+    run!(sim, functions[, solver]; kwargs...)
 
+Run a simulation.
+
+# Arguments
+- `sim::Simulation`: contains physical & numerical information (see [`Simulation`](@ref))
+- `functions`: needed by the solver/integrator (see [`define_functions`](@ref)).
+- `solver`: strategy for integrating in k-space. Defaults to [`CPULinearChunked`](@ref))
+
+# Keyword Arguments
+- `savedata::Bool`: save observables and simulation to disk after completion
+- `plotdata::Bool`: create default plots and save them to disk after completion
+
+# Returns
+The observables obtained from the simulation.
+
+# See also
+[`Simulation`](@ref), [`define_functions`](@ref), [`CPULinearChunked`](@ref)
+
+"""
 function run!(
     sim::Simulation,
-    functions;
+    functions,
+    solver::DamysosSolver=CPULinearChunked();
     savedata=true,
     saveplots=true)
     
     run!(
         sim,
         functions,
-        CPUEnsembleChunked(),
+        solver,
         savedata=savedata,
         saveplots=saveplots)
 end
 
-function run!(
-    sim::Simulation,
-    functions,
-    solver::CPUEnsembleChunked;
-    savedata=true,
-    saveplots=true)
+"""
+    define_functions(sim[, solver])
 
-    prerun!(sim)
+Hardcode the functions needed to run the Simulation. 
 
-    @info """
-        ### Using CPUEnsembleChunked with $(solver.kchunksize) k-chunks"""
+# Arguments
+- `sim::Simulation`: contains physical & numerical information (see [`Simulation`](@ref))
+- `solver`: strategy for integrating in k-space. Defaults to [`CPULinearChunked`](@ref))
 
-    prob,kchunks = buildensemble_chunked_linear(sim,functions...;
-        kchunk_size=solver.kchunksize)
-    
-    res = solve(
-        prob,
-        nothing,
-        choose_threaded_or_distributed();
-        trajectories = length(kchunks),
-        saveat = gettsamples(sim.numericalparams),
-        abstol = sim.numericalparams.atol,
-        reltol = sim.numericalparams.rtol)
+# Returns
+Vector of functions used by [`run!`](@ref).
 
-    write_ensemblesols_to_observables!(sim,res.u)
+# See also
+[`Simulation`](@ref), [`run!`](@ref), [`CPULinearChunked`](@ref)
 
-    postrun!(sim;savedata=savedata,saveplots=saveplots)
-
-    return sim.observables 
-end
-
-define_functions(sim::Simulation) = define_functions(sim,CPUEnsembleChunked())
-function define_functions(sim::Simulation,::CPUEnsembleChunked)
-
-    ccex,cvex = buildrhs_cc_cv_x_expression(sim)
-    return @eval [
-        (cc,cv,kx,ky,t) -> $ccex,
-        (cc,cv,kx,ky,t) -> $cvex,
-        (p,t) -> $(buildbzmask_expression_upt(sim)),
-        (u,p,t) -> $(buildobservable_expression_upt(sim))]
-end
+"""
+define_functions(sim::Simulation) = define_functions(sim,CPULinearChunked())
 
 function prerun!(sim::Simulation)
 

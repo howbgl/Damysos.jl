@@ -38,14 +38,6 @@ function buildbzmask_expression(sim::Simulation)
     return :(bzmask1d(kx - $ax,$dkx,$(bz[1]),$(bz[2])))
 end
 
-function buildobservable(sim::Simulation)
-    return @eval (u,kx,ky,t) -> $(buildobservable_expression(sim))
-end
-
-function buildobservable_upt(sim::Simulation)
-    return @eval (u,p,t) -> $(buildobservable_expression_upt(sim))
-end
-
 function buildobservable_expression_upt(sim::Simulation)
     expressions = [buildobservable_expression_upt(sim,o) for o in sim.observables]
     return :([$(expressions...)])
@@ -54,24 +46,6 @@ end
 function buildobservable_expression(sim::Simulation)
     expressions = [buildobservable_expression(sim,o) for o in sim.observables]
     return :([$(expressions...)])
-end
-
-function calculate_observables(
-    sols::Vector{<:Vector{<:SVector{2,<:Complex}}},
-    ts::AbstractVector{<:Real},
-    ks::Vector{<:SVector{2,<:Real}},
-    bzmask::Function,
-    obsfunction::Function)
-    
-    length(sols) != length(ks) && throw(ArgumentError(
-        "length of solution and k vector not equal!"))
-
-    obs = []
-    @sync for (s,k) in zip(sols,ks)
-        weights = Dagger.@spawn bzmask.(k[1],k[2],ts)
-        push!(obs,Dagger.@spawn obsfunction.(s,k[1],k[2],ts) .* weights)
-    end
-    return fetch.(obs)
 end
 
 function write_ensemblesols_to_observables!(sim::Simulation,data)
@@ -89,8 +63,8 @@ function write_ensemblesols_to_observables!(sim::Simulation,data)
     return sim.observables
 end
 
-function getmovingbz(sim::Simulation{T}) where {T<:Real}
-    p              = getparams(sim)
+function getmovingbz(sim::Simulation)
+    p = getparams(sim)
     return getmovingbz(sim,p.kxsamples)
 end
 
@@ -106,27 +80,4 @@ function getmovingbz(sim::Simulation{T},kxsamples::AbstractVector{T}) where {T<:
         moving_bz[:,i] .= bzmask1d.(kxsamples .- ax(p.tsamples[i]))
     end
     return moving_bz    
-end
-
-function integrateobs!(
-    observables::Vector{Vector{Observable{T}}},
-    observables_dest::Vector{Observable{T}},
-    vertices::AbstractVector{T}) where {T<:Real}
-
-    for (i,odest) in enumerate(observables_dest) 
-        integrateobs!([o[i] for o in observables],odest,collect(vertices))
-    end    
-end
-
-function integrateobs_kxbatch_add!(
-    sim::Simulation{T},
-    sol,
-    kxsamples::AbstractVector{T},
-    ky::T,
-    moving_bz::AbstractMatrix{T},
-    obsfuncs) where {T<:Real}
-
-    for (o,funcs) in zip(sim.observables,obsfuncs)
-        integrateobs_kxbatch_add!(sim,o,sol,kxsamples,ky,moving_bz,funcs)
-    end        
 end

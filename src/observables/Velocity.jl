@@ -1,4 +1,28 @@
 export Velocity
+"""
+    Velocity{T<:Real} <: Observable{T}
+
+Holds time series data of the physical velocity computed from the density matrix.
+
+The velocity is computed via
+```math
+\\vec{v}(t) = Tr [\\rho(t) \\frac{\\partial H}{\\partial\\vec{k}}]
+            = \\rho_{cc}(t) \\vec{v}_{cc}(t)  + \\rho_{cv}(t) \\vec{v}_{vc}(t) 
+            + \\rho_{vv}(t) \\vec{v}_{vv}(t)  + \\rho_{vc}(t) \\vec{v}_{cv}(t) 
+``` 
+
+
+# Fields
+- `vx::Vector{T}`: total velocity in x-direction. 
+- `vxintra::Vector{T}`: ``\\rho_{cc}(t) v^{x}_{cc}(t)  + \\rho_{vv}(t) v^{x}_{vv}(t) ``
+- `vxinter::Vector{T}`: ``\\rho_{cv}(t) v^{x}_{vc}(t)  + \\rho_{vc}(t) v^{x}_{cv}(t) ``
+- `vy::Vector{T}`: total velocity in y-direction. 
+- `vyintra::Vector{T}`: ``\\rho_{cc}(t) v^{y}_{cc}(t)  + \\rho_{vv}(t) v^{y}_{vv}(t) ``
+- `vyinter::Vector{T}`: ``\\rho_{cv}(t) v^{y}_{vc}(t)  + \\rho_{vc}(t) v^{y}(t) _{cv}(t) ``
+
+# See also
+[`Occupation`](@ref Occupation)
+"""
 struct Velocity{T<:Real} <: Observable{T}
     vx::Vector{T}
     vxintra::Vector{T}
@@ -209,94 +233,4 @@ end
 
 @inline function vinter(kx::Real,ky::Real,ρcv::Complex,vvc)
     return 2 * real(vvc(kx,ky) * ρcv)
-end
-
-function integrateobs_kxbatch_add!(
-    sim::Simulation{T},
-    v::Velocity{T},
-    sol,
-    kxsamples::AbstractVector{T},
-    ky::T,
-    moving_bz::AbstractMatrix{T},
-    funcs) where {T<:Real}
-
-    ax,ay,vx_cc,vx_vc,vx_vv,vy_cc,vy_vc,vy_vv = funcs
-
-    ts    = getparams(sim).tsamples
-    nkx   = length(kxsamples)
-    kxt   = zeros(T,nkx)
-    vbuff = zeros(T,nkx)
-
-    for (i,t) in enumerate(ts)
-        kxt             .= kxsamples .- ax(t)
-        ρcc             = @view sol[1:nkx,i]
-        ρcv             = @view sol[nkx+1:2nkx,i]
-
-        vbuff           .= vintra.(kxt,ky,ρcc,vx_cc,vx_vv)
-        v.vxintra[i]    += trapz(kxsamples,moving_bz[:,i] .* vbuff)
-
-        vbuff           .= vinter.(kxt,ky,ρcv,vx_vc)
-        v.vxinter[i]    += trapz(kxsamples,moving_bz[:,i] .* vbuff)
-
-        vbuff           .= vintra.(kxt,ky,ρcc,vy_cc,vy_vv)
-        v.vyintra[i]    += trapz(kxsamples,moving_bz[:,i] .* vbuff)
-
-        vbuff           .= vinter.(kxt,ky,ρcv,vy_vc)
-        v.vyinter[i]    += trapz(kxsamples,moving_bz[:,i] .* vbuff)
-    end
-    return v
-end
-
-function integrateobs_kxbatch!(
-    sim::Simulation{T},
-    v::Velocity{T},
-    sol,
-    ky::T,
-    moving_bz::Array{T}) where {T<:Real}
-
-    p     = getparams(sim)
-    kxt   = zeros(T,p.nkx)
-    ax    = get_vecpotx(sim.drivingfield)
-    ay    = get_vecpoty(sim.drivingfield)
-    vx_cc = getvx_cc(sim.hamiltonian)
-    vx_vv = getvx_vv(sim.hamiltonian)
-    vx_vc = getvx_vc(sim.hamiltonian)
-    vy_cc = getvy_cc(sim.hamiltonian)
-    vy_vc = getvy_vc(sim.hamiltonian)
-    vy_vv = getvy_vv(sim.hamiltonian)
-
-    for (i,t) in enumerate(p.tsamples)
-        kxt             .= p.kxsamples .- ax(t)
-        v.vxintra[i]    = trapz(p.kxsamples,moving_bz[:,i] .* vintra.(kxt,ky,sol[1:p.nkx,i],vx_cc,vx_vv))
-        v.vxinter[i]    = trapz(p.kxsamples,moving_bz[:,i] .* vinter.(kxt,ky,sol[p.nkx+1:2p.nkx,i],vx_vc))
-        v.vyintra[i]    = trapz(p.kxsamples,moving_bz[:,i] .* vintra.(kxt,ky,sol[1:p.nkx,i],vy_cc,vy_vv))
-        v.vyinter[i]    = trapz(p.kxsamples,moving_bz[:,i] .* vinter.(kxt,ky,sol[p.nkx+1:2p.nkx,i],vy_vc))
-    end
-
-    @. v.vx   = v.vxinter + v.vxintra
-    @. v.vy   = v.vyinter + v.vyintra
-
-    return v
-end
-
-function integrateobs(
-    vels::Vector{Velocity{T}},
-    vertices::Vector{T}) where {T<:Real}
-
-    vdest = zero(vels[1])
-    return integrateobs!(vels,vdest,vertices)
-end
-
-function integrateobs!(
-    vels::Vector{Velocity{T}},
-    vdest::Velocity{T},
-    vertices::Vector{T}) where {T<:Real}
-
-    vdest.vxintra .= trapz((:,hcat(vertices)),hcat([v.vxintra for v in vels]...))
-    vdest.vxinter .= trapz((:,hcat(vertices)),hcat([v.vxinter for v in vels]...))
-    vdest.vyintra .= trapz((:,hcat(vertices)),hcat([v.vyintra for v in vels]...))
-    vdest.vyinter .= trapz((:,hcat(vertices)),hcat([v.vyinter for v in vels]...))
-
-    @. vdest.vx   = vdest.vxintra + vdest.vxinter
-    @. vdest.vy   = vdest.vyintra + vdest.vyinter
 end

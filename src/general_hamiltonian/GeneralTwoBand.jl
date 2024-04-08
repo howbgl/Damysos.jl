@@ -30,7 +30,7 @@ and its derivatives with respect to ``k_\\mu``. Any particular Hamiltonian deriv
 GeneralTwoBand{T} must then only implement ``\\vec{h}(\\vec{k})`` and its derivatives.
 
 # See also
-[`GappedDirac`](@ref TwoBandHamiltonians.GappedDirac)
+[`GappedDirac`](@ref GappedDirac)
 """
 abstract type GeneralTwoBand{T} <: Hamiltonian{T} end
 

@@ -30,12 +30,15 @@ export Hamiltonian
 export Liouvillian
 export NumericalParameters
 
+abstract type DamysosSolver end
 abstract type Observable{T} end
 abstract type SimulationComponent{T} end
 abstract type Hamiltonian{T} end
 abstract type Liouvillian{T}            <: SimulationComponent{T} end
 abstract type DrivingField{T}           <: SimulationComponent{T} end
 abstract type NumericalParameters{T}    <: SimulationComponent{T} end
+
+const DEFAULT_K_CHUNK_SIZE = 256
 
 
 include("Simulation.jl")

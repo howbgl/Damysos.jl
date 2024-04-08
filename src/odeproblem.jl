@@ -1,4 +1,3 @@
-const DEFAULT_K_CHUNK_SIZE = 256
 
 export buildensemble_chunked_linear
 export buildensemble_linear
@@ -14,7 +13,7 @@ function buildensemble_chunked_linear(
     rhs_cc::Function,
     rhs_cv::Function,
     bzmask::Function,
-    obsfunction::Function,
+    obsfunction::Function;
     kchunk_size::Integer=DEFAULT_K_CHUNK_SIZE)
 
     kxs            = collect(getkxsamples(sim.numericalparams))

@@ -9,7 +9,7 @@ function Occupation(p::NumericalParameters{T}) where {T<:Real}
     return Occupation(zeros(T,getparams(p).nt))
 end
 
-function resize(o::Occupation{T},p::NumericalParameters{T}) where {T<:Real}
+function resize(o::Occupation,p::NumericalParameters)
     return Occupation(p)
 end
 
@@ -17,11 +17,11 @@ function empty(o::Occupation)
     return Occupation(o)
 end
 
-getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc", "cbocck"]
-getparams(occ::Occupation{T}) where {T<:Real}    = getnames_obs(occ)
-arekresolved(occ::Occupation{T}) where {T<:Real} = [false, true]
+getnames_obs(occ::Occupation)   = ["cbocc", "cbocck"]
+getparams(occ::Occupation)      = getnames_obs(occ)
+arekresolved(occ::Occupation)   = [false, true]
 
-@inline function addto!(o::Occupation{T},ototal::Occupation{T}) where {T<:Real}
+@inline function addto!(o::Occupation,ototal::Occupation)
     ototal.cbocc .= ototal.cbocc .+ o.cbocc
 end
 
@@ -29,7 +29,7 @@ end
     odest.cbocc .= osrc.cbocc
 end
 
-@inline function normalize!(o::Occupation{T},norm::T) where {T<:Real}
+@inline function normalize!(o::Occupation,norm::Real)
     o.cbocc ./= norm
 end
 
@@ -48,26 +48,15 @@ function buildobservable_expression(sim::Simulation,o::Occupation)
 end
 
 
-function write_svec_to_observable!(o::Occupation,data::Vector{<:Real})
+function write_ensembledata_to_observable!(o::Occupation,data::Vector{<:Real})
 
     length(o.cbocc) != length(data) && throw(ArgumentError(
         """
         data must be same length as observable Occupation. Got lengths of \
         $(length(data)) and $(length(o.cbocc))"""))
 
-    for (i,d) in enumerate(data)
-        write_svec_timeslice_to_observable!(o,i,d)
-    end
+    o.cbocc .= data
 end
-
-function write_svec_timeslice_to_observable!(
-    o::Occupation,
-    timeindex::Integer,
-    data::Real)
-    
-    o.cbocc[timeindex] = data
-end
-
 
 function getfuncs(sim::Simulation,o::Occupation)
     return []

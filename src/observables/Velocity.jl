@@ -32,7 +32,7 @@ function Velocity(p::NumericalParameters{T}) where {T<:Real}
                     vyinter)
 end
 
-function resize(v::Velocity{T},p::NumericalParameters{T})  where {T<:Real}
+function resize(v::Velocity,p::NumericalParameters)
     return Velocity(p)
 end
 
@@ -41,13 +41,12 @@ function empty(v::Velocity)
 end
 
 
-getnames_obs(v::Velocity{T}) where {T<:Real} = ["vx","vxintra","vxinter","vy","vyintra",
-                                                "vyinter"]
-getparams(v::Velocity{T}) where {T<:Real}    = getnames_obs(v)
-arekresolved(v::Velocity{T}) where {T<:Real} = [false,false,false,false,false,false]
+getnames_obs(v::Velocity)   = ["vx","vxintra","vxinter","vy","vyintra","vyinter"]
+getparams(v::Velocity)      = getnames_obs(v)
+arekresolved(v::Velocity)   = [false,false,false,false,false,false]
 
 
-@inline function addto!(v::Velocity{T},vtotal::Velocity{T}) where {T<:Real}
+@inline function addto!(v::Velocity,vtotal::Velocity)
     vtotal.vx .= vtotal.vx .+ v.vx
     vtotal.vy .= vtotal.vy .+ v.vy
     vtotal.vxinter .= vtotal.vxinter .+ v.vxinter
@@ -65,7 +64,7 @@ end
     vdest.vyintra   .= vsrc.vyintra
 end
 
-@inline function normalize!(v::Velocity{T},norm::T) where {T<:Real}
+@inline function normalize!(v::Velocity,norm::Real)
     v.vx ./= norm
     v.vy ./= norm
     v.vxinter ./= norm
@@ -166,7 +165,7 @@ function buildobservable_expression(sim::Simulation,v::Velocity)
     return vel_expr
 end
 
-function write_svec_to_observable!(v::Velocity,data::Vector{<:SVector{4,<:Real}})
+function write_ensembledata_to_observable!(v::Velocity,data::Vector{<:SVector{4,<:Real}})
 
     length(v.vx) != length(data) && throw(ArgumentError(
         """
@@ -201,14 +200,14 @@ function getfuncs(sim::Simulation,v::Velocity)
 end
 
 
-@inline function vintra(kx::T,ky::T,ρcc::Complex{T},vcc,vvv) where {T<:Real}
+@inline function vintra(kx::Real,ky::Real,ρcc::Complex,vcc,vvv)
     return vintra(kx,ky,real(ρcc),vcc,vvv)
 end
 @inline function vintra(kx::T,ky::T,ρcc::T,vcc,vvv) where {T<:Real}
     return vcc(kx,ky)*ρcc + vvv(kx,ky)*(oneunit(T)-ρcc)
 end
 
-@inline function vinter(kx::T,ky::T,ρcv::Complex{T},vvc) where {T<:Real}
+@inline function vinter(kx::Real,ky::Real,ρcv::Complex,vvc)
     return 2 * real(vvc(kx,ky) * ρcv)
 end
 

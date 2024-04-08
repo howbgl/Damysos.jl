@@ -405,7 +405,7 @@ function plotbandstructure2d(sim::Simulation;plotkgrid=false,nk=2048)
 
     plotpath    = sim.plotpath
     p           = getparams(sim)
-    Δϵ          = getΔϵ(sim.hamiltonian)
+    Δϵ          = getΔϵ(sim.liouvillian.hamiltonian)
     kmax        = maximum([p.kxmax,p.kymax])
     dk          = 2kmax/nk
     ks          = -kmax:dk:kmax

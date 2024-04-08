@@ -12,6 +12,9 @@ end
 
 getparams(l::TwoBandDephasingLiouvillian) = (getparams(l.hamiltonian)...,t1=l.t1,t2=l.t2)
 getparamsonly(l::TwoBandDephasingLiouvillian) = (t1=l.t1,t2=l.t2)
+function getshortname(l::TwoBandDephasingLiouvillian)  
+    return "TwoBandDephasingLiouvillian($(getshortname(l.hamiltonian)))"
+end
 
 function getparamsSI(l::TwoBandDephasingLiouvillian,us::UnitScaling)
     t1 = timeSI(l.t1,us)

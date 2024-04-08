@@ -20,11 +20,6 @@ bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
 include("Velocity.jl")
 include("Occupation.jl")
 
-function buildbzmask(sim::Simulation)
-    expr = buildbzmask_expression(sim)
-    return @eval (kx,ky,t) -> $expr
-end
-
 function buildbzmask_expression_upt(sim::Simulation)
 
     bz = getbzbounds(sim)
@@ -44,7 +39,11 @@ function buildbzmask_expression(sim::Simulation)
 end
 
 function buildobservable(sim::Simulation)
-    return @eval (u,p,t) -> $(buildobservable_expression(sim))
+    return @eval (u,kx,ky,t) -> $(buildobservable_expression(sim))
+end
+
+function buildobservable_upt(sim::Simulation)
+    return @eval (u,p,t) -> $(buildobservable_expression_upt(sim))
 end
 
 function buildobservable_expression_upt(sim::Simulation)
@@ -75,7 +74,7 @@ function calculate_observables(
     return fetch.(obs)
 end
 
-function observable_from_ensemble_data!(sim::Simulation,data)
+function write_ensemblesols_to_observables!(sim::Simulation,data)
 
     resize_obs!(sim)
     observabledata = [empty([d]) for d in data[1]]
@@ -85,7 +84,7 @@ function observable_from_ensemble_data!(sim::Simulation,data)
         end
     end
     for (o,d) in zip(sim.observables,observabledata)
-        write_svec_to_observable!(o,d)
+        write_ensembledata_to_observable!(o,d)
     end
     return sim.observables
 end

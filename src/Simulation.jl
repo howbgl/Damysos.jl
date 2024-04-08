@@ -213,8 +213,8 @@ function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where T
     end
 end
 
-function getshortname(sim::Simulation)
-    return "Simulation{$T}($(sim.dimensions)d)" * getshortname(sim.hamiltonian) *"_"* 
+function getshortname(sim::Simulation{T}) where {T<:Real}
+    return "Simulation{$T}($(sim.dimensions)d)" * getshortname(sim.liouvillian) *"_"* 
             getshortname(sim.drivingfield)
 end
 

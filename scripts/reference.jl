@@ -7,6 +7,10 @@ using Distributed,BenchmarkTools
 
 import Damysos.getshortname
 import Damysos.ensurepath
+import Damysos.buildrhs_cc_cv_x_expression
+import Damysos.buildobservable_expression_upt
+import Damysos.buildbzmask_expression_upt
+
 
 function make_teelogger(logging_path::AbstractString,name::AbstractString)
 
@@ -57,26 +61,12 @@ const ppath   = "/home/how09898/phd/plots/hhgjl/expressions_test/reference"
 
 global_logger(make_teelogger(ppath,id))
 @info "Now saving logs to $ppath"
-
 const sim     = Simulation(l,df,pars,obs,us,2,id,dpath,ppath)
 
-@everywhere @eval rhscc(cc,cv,kx,ky,t)  = $rhsccex
-@everywhere @eval rhscv(cc,cv,kx,ky,t)  = $rhscvex
-@everywhere @eval fobs(u,p,t)           = $(buildobservable_expression_upt(sim))
-@everywhere @eval bzmask(p,t)           = $(buildbzmask_expression_upt(sim))
-
-const prob              = buildensemble_chunked_linear(sim,rhs,bzmask,fobs)
-const ts                = collect(gettsamples(sim.numericalparams))
-
+@everywhere const functions = define_functions(sim)
 @info "Solving differential equations"
-const observables,time,rest... = @timed solve(
-    prob,
-    nothing,
-    EnsembleThreads(),
-    saveat=ts,
-    trajectories=ntrajectories(sim),
-    batch_size=4_000)
-@info "Call to solve took $(time/60.)min"
+const observables,time,rest... = @timed run!(sim,functions,CPUEnsembleChunked(128))
+@info "Call to run! took $(time/60.)min"
 
 
 

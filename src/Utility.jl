@@ -113,6 +113,61 @@ function nestedcount(x::Vector)
 end
 
 
+function adjust_density(samples::Vector{<:Number}, desired_samples::Int) 
+    n = length(samples)
+
+    # Create an interpolation object for the original samples
+    itp = interpolate(samples, BSpline(Cubic))
+
+    # Calculate the interpolation positions for the desired number of samples
+    interpolation_positions = range(1, stop = n, length = desired_samples)
+
+    # Interpolate the values at the new positions
+    interpolated_values = itp[interpolation_positions]
+
+    return interpolated_values
+end
+
+function upsample!(a::Vector{<:Number},b::Vector{<:Number})
+    
+    la = length(a)
+    lb = length(b)
+    if la==lb
+        return
+    elseif la<lb
+        buf = adjust_density(a,lb)
+        resize!(a,lb)
+        a .= buf
+        return
+    else
+        buf = adjust_density(b,la)
+        resize!(b,la)
+        b .= buf
+        return
+    end
+end
+
+function downsample!(a::Vector{<:Number},b::Vector{<:Number})
+
+    la = length(a)
+    lb = length(b)
+
+    if la == lb
+        return
+    elseif la > lb
+        buf = adjust_density(a,lb)
+        resize!(a,lb)
+        a .= buf
+        return
+    else
+        buf = adjust_density(b,la)
+        resize!(b,la)
+        b .= buf
+        return
+    end
+end
+
+
 function find_files_with_name(root_dir::String, target_name::String)
     file_paths = Vector{String}()
     
@@ -239,10 +294,19 @@ end
 
 
 
-function parametersweep(sim::Simulation{T}, comp::SimulationComponent{T}, param::Symbol,
-    range::AbstractVector{T}; id="") where {T<:Real}
+function parametersweep(
+    sim::Simulation{T},
+    comp::SimulationComponent{T},
+    param::Symbol,
+    range::AbstractVector{T};
+    id="",
+    plotpath="",
+    datapath="") where {T<:Real}
 
-    return parametersweep(sim,comp,[param],[(r,) for r in range];id=id)
+    return parametersweep(sim,comp,[param],[(r,) for r in range];
+        id=id,
+        plotpath=plotpath,
+        datapath=datapath)
 end
 
 function parametersweep(

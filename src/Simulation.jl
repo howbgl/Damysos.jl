@@ -121,6 +121,7 @@ function wavenumberscaled(k::Unitful.Wavenumber,us::UnitScaling)
     return uconvert(Unitful.NoUnits,k*lc)
 end
 
+
 """
     Simulation{T}(l, df, p, obs, us, d[, id, datapath, plotpath])
 
@@ -230,6 +231,19 @@ function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where T
         end
     end
 end
+
+
+function isapprox(
+    s1::Simulation{T},
+    s2::Simulation{U};
+    atol::Real=0,
+    rtol=atol>0 ? 0 : √eps(promote_type(T,U)),
+    nans::Bool=false) where {T,U}
+    
+    coll = zip(s1.observables,s2.observables)
+    return all([Base.isapprox(o1,o2;atol=atol,rtol=rtol,nans=nans) for (o1,o2) in coll])
+end
+
 
 function getshortname(sim::Simulation{T}) where {T<:Real}
     return "Simulation{$T}($(sim.dimensions)d)" * getshortname(sim.liouvillian) *"_"* 

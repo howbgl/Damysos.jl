@@ -1,6 +1,13 @@
 export gauss
 export scaledriving_frequency
 
+
+export get_efieldx
+export get_efieldy
+export get_vecpotx
+export get_vecpoty
+export scaledriving_frequency
+
 gauss(t::T,σ::T) where {T<:Real} = exp(-t^2 / (2σ^2))
 
 function scaledriving_frequency(ufrequency,ufermivelocity)

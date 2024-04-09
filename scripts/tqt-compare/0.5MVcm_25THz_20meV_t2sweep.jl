@@ -44,7 +44,7 @@ function make_system(
       pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
       obs     = [Velocity(h),Occupation(h)]
 
-      id      = "0.5MVcm_25THz_20meV_t2_sweep"
+      id      = "0.5MVcm_25THz_20meV_t2_sweep2"
       name    = "Simulation(2d)"*getshortname(h)*"_"*getshortname(df)*"_$id"
       dpath   = joinpath(datapath_base,subpath,name)
       ppath   = joinpath(plotpath_base,subpath,name)
@@ -54,7 +54,7 @@ end
 
 const sim     = make_system("hhgjl/tqt-compare/")
 const γ2cyc   = getparams(sim).ν
-const γ2range = LinRange(0.0,2γ2cyc,10)
+const γ2range = LinRange(1e-4γ2cyc,1e-1γ2cyc,8)
 const ens     = parametersweep(sim,sim.hamiltonian,:t2,[1/γ2 for γ2 in γ2range])
 
 ensurepath(ens.plotpath)

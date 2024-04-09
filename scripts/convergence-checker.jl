@@ -1,9 +1,10 @@
 
-function adjust_density(samples::Vector{T}, desired_samples::Int) where T
+
+function adjust_density(samples::Vector{<:Number}, desired_samples::Int) 
     n = length(samples)
 
     # Create an interpolation object for the original samples
-    itp = interpolate(samples, BSpline(Linear()), OnGrid())
+    itp = interpolate(samples, BSpline(Cubic))
 
     # Calculate the interpolation positions for the desired number of samples
     interpolation_positions = range(1, stop = n, length = desired_samples)
@@ -14,66 +15,172 @@ function adjust_density(samples::Vector{T}, desired_samples::Int) where T
     return interpolated_values
 end
 
-function compare_spectra(s1::Simulation{T},s2::Simulaiont{T},
-        threshold::T,o::Observable{T}) where T<:Real
-
-    params1     = getparams(s1)
-    params2     = getparams(s2)
-
-    dt1         = params1.dt
-    dt2         = params2.dt
-    ν1          = params1.ν
-    ν2          = params2.ν
+function upsample!(a::Vector{<:Number},b::Vector{<:Number})
     
-    obs1       = filter(x -> x isa typeof(o))
-    
-    p1 = periodogram(data1,nfft=8*length(data1),fs=1/dt1)
-    p2 = periodogram(data2,nfft=8*length(data1),fs=1/dt2)
-
-    ydata1 = p1.power .* (p1.freq .^ 2)
-    ydata2 = p2.power .* (p2.freq .^ 2)
-    xdata1 = p1.freq ./ ν1
-    xdata2 = p2.freq ./ ν2
-
-
-    
-end
-
-function relative_deviation_L2(s1::Simulation{T},s2::Simulaiont{T}) where T<:Real
-    
-    deviations  = Vector{T}()
-    observables = Vector{Observable{T}}()
-
-    for (o1,o2) in zip(s1.observables,s2.observables)
-        push!(observables,o1)
-        push!(deviations,relative_deviation_L2(o1,o2))
+    la = length(a)
+    lb = length(b)
+    if la==lb
+        return
+    elseif la<lb
+        buf = adjust_density(a,lb)
+        resize!(a,lb)
+        a .= buf
+        return
+    else
+        buf = adjust_density(b,la)
+        resize!(b,la)
+        b .= buf
+        return
     end
 end
 
-function relative_deviation_L2(v1::Velocity{T},v2::Velocity{T}) where T<:Real
-    
+function downsample!(a::Vector{<:Number},b::Vector{<:Number})
+
+    la = length(a)
+    lb = length(b)
+
+    if la == lb
+        return
+    elseif la > lb
+        buf = adjust_density(a,lb)
+        resize!(a,lb)
+        a .= buf
+        return
+    else
+        buf = adjust_density(b,la)
+        resize!(b,la)
+        b .= buf
+        return
+    end
 end
 
-function relative_deviation_L2_vx(s1::Simulation{T},s2::Simulation{T}) where T<:Real
+function converged(
+    s1::Simulation,
+    s2::Simulation)
     
-    v1 = filter(x -> x isa Velocity,s1.observables)[1]
-    v2 = filter(x -> x isa Velocity,s2.observables)[1]
+    p1      = getparams(s1)
+    p2      = getparams(s2)
+    rtol    = maximum([p1.rtol,p2.rtol])
+    atol    = maximum([p1.atol,p2.atol])
 
-    return relative_deviation_L2(v1.vx,v2.vx)
+    res  = [converged(o1,o2,rtol=rtol,atol=atol) for (o1,o2) in zip(s1.observables,s2.observables)]
+
+    return all(res)
 end
 
-function relative_deviation_L2(data1::Vector,data2::Vector)
+function converged(
+    v1::Velocity,
+    v2::Velocity;
+    rtol::Real=1e-10,
+    atol::Real=1e-10)
+
+    vx1,vx2,vy1,vy2 = deepcopy.([v1.vx,v2.vx,v1.vy,v2.vy])
+    upsample!(vx1,vx2)
+    upsample!(vy1,vy2)
     
-    max_samples = maximum(length.([data1,data2]))
-    samples     = collect(range(1,max_samples))
-    data1       = adjust_density(data1,max_samples)
-    data2       = adjust_density(data2,max_samples)
-
-    l2norm      = trapz(samples,abs.(data1) .^2)
-    absdev      = trapz(samples,abs.(data1 .- data2) .^2)
-
-    return absdev / l2norm
+    return all([
+        isapprox(vx1,vx2,atol=atol,rtol=rtol),
+        isapprox(vy1,vy2,atol=atol,rtol=rtol)])
 end
+
+function converged(
+    o1::Occupation,
+    o2::Occupation;
+    rtol::Real=1e-10,
+    atol::Real=1e-10)
+
+    cb1,cb2 = deepcopy.([o1.cbocc,o2.cbocc])
+    upsample!(cb1,cb2)
+    
+    return isapprox(cb1,cb2,atol=atol,rtol=rtol)
+end
+
+function findminimum_precision(s1::Simulation,s2::Simulation;max_atol=0.1,max_rtol=0.1)
+
+    !isapprox(s1,s2;atol=max_atol,rtol=max_rtol) && return (Inf,Inf)
+    min_achieved_atol = max_atol
+    min_achieved_rtol = max_atol
+
+    p1 = getparams(s1)
+    p2 = getparams(s2)
+
+    min_possible_atol = maximum([p1.atol,p2.atol])
+    min_possible_rtol = maximum([p1.rtol,p2.rtol])
+
+    # Sweep the range of tolerance exponentially (i.e. like 1e-2,1e-3,1e-4,...)
+    atols = exp10.(log10(max_atol):-1.0:log10(min_possible_atol))
+    rtols = exp10.(log10(max_rtol):-1.0:log10(min_possible_rtol))
+
+    # First find the lowest atol, since that is usually less problematic
+    for atol in atols
+        if isapprox(s1,s2;atol=atol,rtol=rtols[1])
+            min_achieved_atol = atol
+        else
+            break
+        end
+    end
+    for rtol in rtols
+        if isapprox(s1,s2;atol=min_achieved_atol,rtol=rtol)
+            min_achieved_rtol = rtol
+        else
+            break
+        end
+    end
+
+    return (min_achieved_atol,min_achieved_rtol)
+end
+
+function findminimum_precision(
+    s1::Simulation,
+    s2::Simulation,
+    atols::AbstractVector{<:Real},
+    rtols::AbstractVector{<:Real})
+
+    !isapprox(s1,s2;atol=atols[1],rtol=rtols[1]) && return (Inf,Inf)
+
+    min_achieved_atol = atols[1]
+    min_achieved_rtol = rtols[1]
+
+    # First find the lowest atol, since that is usually less problematic
+    for atol in atols
+        if isapprox(s1,s2;atol=atol,rtol=rtols[1])
+            min_achieved_atol = atol
+        else
+            break
+        end
+    end
+    for rtol in rtols
+        if isapprox(s1,s2;atol=min_achieved_atol,rtol=rtol)
+            min_achieved_rtol = rtol
+        else
+            break
+        end
+    end
+
+    return (min_achieved_atol,min_achieved_rtol)
+end
+
+function findminimum_precision(s1::Simulation,s2::Simulation;max_atol=0.1,max_rtol=0.1)
+
+    p1 = getparams(s1)
+    p2 = getparams(s2)
+
+    min_possible_atol = maximum([p1.atol,p2.atol])
+    min_possible_rtol = maximum([p1.rtol,p2.rtol])
+
+    # Sweep the range of tolerance exponentially (i.e. like 1e-2,1e-3,1e-4,...)
+    atols = exp10.(log10(max_atol):-1.0:log10(min_possible_atol))
+    rtols = exp10.(log10(max_rtol):-1.0:log10(min_possible_rtol))
+
+    min_achieved_atol,min_achieved_rtol = findminimum_precision(s1,s2,atols,rtols)
+    
+    # Search the order of magnitude linearly to get a more precise estimate
+    atols = LinRange(min_achieved_atol,0.1min_achieved_atol,10)
+    rtols = LinRange(min_achieved_rtol,0.1min_achieved_rtol,10)
+
+    return findminimum_precision(s1,s2,atols,rtols)
+end
+
 
 function converge_dt_vx(s::Simulation{T};tol=1e-6) where T<:Real
     

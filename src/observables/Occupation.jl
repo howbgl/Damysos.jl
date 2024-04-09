@@ -53,11 +53,24 @@ end
 *(x::Number,o::Occupation)       = o*x
 zero(o::Occupation)              = Occupation(zero(o.cbocc))
 
-function buildobservable_expression_upt(sim::Simulation,::Occupation)
-    return :(real(u[1]))
+function isapprox(
+    o1::Occupation{T},
+    o2::Occupation{U};
+    atol::Real=0,
+    rtol=atol>0 ? 0 : √eps(promote_type(T,U)),
+    nans::Bool=false) where {T,U}
+    
+    cb1 = deepcopy(o1.cbocc)
+    cb2 = deepcopy(o2.cbocc)
+    upsample!(cb1,cb2)
+
+    return Base.isapprox(cb1,cb2;atol=atol,rtol=rtol,nans=nans)
 end
 
 function buildobservable_expression(sim::Simulation,o::Occupation) 
+    return :(real(u[1]))
+
+function buildobservable_expression_upt(sim::Simulation,::Occupation)
     return :(real(u[1]))
 end
 

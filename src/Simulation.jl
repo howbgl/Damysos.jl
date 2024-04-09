@@ -232,6 +232,9 @@ function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where T
     end
 end
 
+for func = (BAND_SYMBOLS...,DIPOLE_SYMBOLS...,VELOCITY_SYMBOLS...)
+    @eval(Damysos,$func(s::Simulation) = $func(s.liouvillian))
+end
 
 function isapprox(
     s1::Simulation{T},

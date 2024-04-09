@@ -8,6 +8,8 @@ export dy_cv
 export dy_vc
 export dy_vv
 
+const DIPOLE_SYMBOLS = (:dx_cc,:dx_cv,:dx_vc,:dx_vv,:dy_cc,:dy_cv,:dy_vc,:dy_vv)
+
 n2(h::SVector{3,<:Number})  = 2ϵ(h)*(ϵ(h) + h[3])
 n2(h::GeneralTwoBand)       = :(2*$(ϵ(h)) * ($(ϵ(h)) + $(hz(h))))
 

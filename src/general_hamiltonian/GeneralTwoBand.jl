@@ -6,6 +6,8 @@ export hvec
 export Δϵ
 export ϵ
 
+const BAND_SYMBOLS = (:ϵ,:Δϵ,:getϵ,:getΔϵ,:hvec)
+
 
 """
     GeneralTwoBand{T} <: Hamiltonian{T}

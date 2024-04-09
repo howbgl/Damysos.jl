@@ -41,9 +41,9 @@ abstract type NumericalParameters{T}    <: SimulationComponent{T} end
 const DEFAULT_K_CHUNK_SIZE = 256
 
 
+include("general_hamiltonian/GeneralTwoBand.jl")
 include("Simulation.jl")
 include("Ensemble.jl")
-include("general_hamiltonian/GeneralTwoBand.jl")
 include("hamiltonians/GappedDirac.jl")
 include("hamiltonians/HexWarpDirac.jl")
 include("hamiltonians/GappedDiracOld.jl")

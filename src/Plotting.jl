@@ -688,7 +688,7 @@ function plotbandstructure2d(sim::Simulation;plotkgrid=false,nk=2048)
     bzSI        = [ustrip(u"Å^-1",wavenumberSI(k,sim.unitscaling)) for k in p.bz]
     bzSI_kx     = [bzSI[1],bzSI[2],bzSI[2],bzSI[1],bzSI[1]] 
     bzSI_ky     = [bzSI[3],bzSI[3],bzSI[4],bzSI[4],bzSI[3]] 
-    Δϵ          = getΔϵ(sim.hamiltonian)
+    Δϵ          = getΔϵ(sim)
     kmax        = maximum([p.kxmax,p.kymax])
     dk          = 2kmax/nk
     ks          = -kmax:dk:kmax

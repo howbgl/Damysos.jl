@@ -18,6 +18,10 @@ export vy_vc
 export vy_vv
 
 
+const VELOCITY_SYMBOLS = (:vx_cc,:vx_cv,:vx_vc,:vx_vv,:vy_cc,:vy_cv,:vy_vc,:vy_vv,
+    :getvx_cc,:getvx_cv,:getvx_vc,:getvx_vv,:getvy_cc,:getvy_cv,:getvy_vc,:getvy_vv)
+
+
 function vμ_cv(h::SVector{3,<:Number},dh::SVector{3,<:Number})
     return dh[1]*σx_cv(h) + dh[2]*σy_cv(h) + dh[3]*σz_cv(h) 
 end

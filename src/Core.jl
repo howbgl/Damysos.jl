@@ -3,7 +3,7 @@
 export define_functions
 export run!
 
-include("solvers/CPULinearChunked.jl")
+include("solvers/LinearChunked.jl")
 
 """
     run!(sim, functions[, solver]; kwargs...)
@@ -29,7 +29,7 @@ The observables obtained from the simulation.
 function run!(
     sim::Simulation,
     functions,
-    solver::DamysosSolver=CPULinearChunked();
+    solver::DamysosSolver=LinearChunked();
     savedata=true,
     saveplots=true)
     
@@ -57,7 +57,7 @@ Vector of functions used by [`run!`](@ref).
 [`Simulation`](@ref), [`run!`](@ref), [`CPULinearChunked`](@ref)
 
 """
-define_functions(sim::Simulation) = define_functions(sim,CPULinearChunked())
+define_functions(sim::Simulation) = define_functions(sim,LinearChunked())
 
 function prerun!(sim::Simulation)
 
@@ -92,18 +92,5 @@ function postrun!(sim::Simulation;savedata=true,saveplots=true)
     end
     if saveplots
         plotdata(sim)
-    end
-end
-
-function choose_threaded_or_distributed()
-    if Threads.nthreads() > 1 && nworkers() == 1
-        return EnsembleThreads()
-    elseif Threads.nthreads() == 1 && nworkers() > 1
-        return EnsembleDistributed()
-    else
-        @warn """"
-        Multiple threads and processes detected. This might result in unexpected behavior.
-        Using EnsembleDistributed() nonetheless."""
-        return EnsembleDistributed()
     end
 end

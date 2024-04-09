@@ -2,22 +2,20 @@
 export LinearChunked
 
 """
-    CPULinearChunked{T}
+    LinearChunked{T}
 
 Represents an integration strategy for k-space via simple midpoint sum.
 
 # Fields
 - `kchunksize::T`: number of k-points in one chunk. Every task/worker gets one chunk. 
-- `algorithm::SciMLBase.BasicEnsembleAlgorithm`: algorithm for the [`EnsembleProblem`](@ref)
+- `algorithm::SciMLBase.BasicEnsembleAlgorithm`: algorithm for the `EnsembleProblem`
 
 # Examples
 ```jldoctest
-julia> solver = CPULinearChunked(256)
-CPULinearChunked{Int64}(256)
+julia> solver = LinearChunked(256,EnsembleThreads())
+LinearChunked{Int64}(256, EnsembleThreads())
 ```
 
-# See also
-[`EnsembleProblem`](@ref), [`EnsembleThreads`](@ref), [`EnsembleDistributed`](@ref)
 """
 struct LinearChunked{T<:Integer} <: DamysosSolver 
     kchunksize::T

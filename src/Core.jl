@@ -13,7 +13,7 @@ Run a simulation.
 # Arguments
 - `sim::Simulation`: contains physical & numerical information (see [`Simulation`](@ref))
 - `functions`: needed by the solver/integrator (see [`define_functions`](@ref)).
-- `solver`: strategy for integrating in k-space. Defaults to [`CPULinearChunked`](@ref))
+- `solver`: strategy for integrating in k-space. Defaults to [`LinearChunked`](@ref))
 
 # Keyword Arguments
 - `savedata::Bool`: save observables and simulation to disk after completion
@@ -23,7 +23,7 @@ Run a simulation.
 The observables obtained from the simulation.
 
 # See also
-[`Simulation`](@ref), [`define_functions`](@ref), [`CPULinearChunked`](@ref)
+[`Simulation`](@ref), [`define_functions`](@ref), [`LinearChunked`](@ref)
 
 """
 function run!(
@@ -48,13 +48,13 @@ Hardcode the functions needed to run the Simulation.
 
 # Arguments
 - `sim::Simulation`: contains physical & numerical information (see [`Simulation`](@ref))
-- `solver`: strategy for integrating in k-space. Defaults to [`CPULinearChunked`](@ref))
+- `solver`: strategy for integrating in k-space. Defaults to [`LinearChunked`](@ref))
 
 # Returns
 Vector of functions used by [`run!`](@ref).
 
 # See also
-[`Simulation`](@ref), [`run!`](@ref), [`CPULinearChunked`](@ref)
+[`Simulation`](@ref), [`run!`](@ref), [`LinearChunked`](@ref)
 
 """
 define_functions(sim::Simulation) = define_functions(sim,LinearChunked())

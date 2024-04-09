@@ -31,7 +31,7 @@ function run!(
 
     prerun!(sim)
 
-    @info "Using CPUEnsembleChunked with $(solver.kchunksize) k-chunks"
+    @info "Using CPUEnsembleChunked with k-chunks of size $(solver.kchunksize)"
 
     prob,kchunks = buildensemble_chunked_linear(sim,functions...;
         kchunk_size=solver.kchunksize)

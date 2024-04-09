@@ -73,7 +73,7 @@ global_logger(make_teelogger(ppath,id))
 
 @everywhere const functions = define_functions(sim)
 @info "Solving differential equations"
-const observables,time,rest... = @timed run!(sim,functions)
+const observables,time,rest... = @timed run!(sim,functions,CPULinearChunked(512))
 @info "Call to run! took $(time/60.)min"
 
 

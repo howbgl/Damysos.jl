@@ -18,7 +18,6 @@ using Reexport
 using SpecialFunctions
 using StaticArrays
 using TerminalLoggers
-using Trapz
 
 @reexport using DifferentialEquations
 @reexport using Unitful

@@ -122,9 +122,23 @@ function wavenumberscaled(k::Unitful.Wavenumber,us::UnitScaling)
 end
 
 """
-    Simulation{T}(hamiltonian, drivingfield, numericalparams, observables, unitscaling, dimensions, id, datapath, plotpath)
+    Simulation{T}(l, df, p, obs, us, d[, id, datapath, plotpath])
 
-A struct representing a simulation with various components.
+Represents a simulation with all physical and numerical parameters specified.
+
+# Fields
+- `l::Liouvillian{T}`: describes physical system via Liouville operator
+- `df::DrivingField{T}`: laser field driving the system
+- `p::NumericalParameters{T}`: all numerical parameters of the system
+- `obs::Vector{Observable{T}}`: physical observables to be computed
+- `us::UnitScaling{T}`: time- and lengthscale linking dimensionless units to SI units
+- `id::String`: identifier of the Simulation
+- `datapath::String`: path to save computed observables and simulation metadata
+- `plotpath::String`: path to savee automatically generated plots
+
+# See also
+[`Ensemble`](@ref), [`TwoBandDephasingLiouvillian`](@ref), [`UnitScaling`](@ref),
+[`Velocity`](@ref), [`Occupation`](@ref), [`GaussianAPulse`](@ref)
 """
 struct Simulation{T<:Real}
     liouvillian::Liouvillian{T}

@@ -1,5 +1,12 @@
 export TwoBandDephasingLiouvillian
+"""
+    TwoBandDephasingLiouvillian{T<:Real} <: Liouvillian{T}
 
+Represents a system with a two-band Hamiltonian and ``T_2`` dephasing.
+
+# See also
+[`GappedDirac`](@ref GappedDirac), [`GeneralTwoBand`](@ref GeneralTwoBand)
+"""
 struct TwoBandDephasingLiouvillian{T<:Real} <: Liouvillian{T}
     hamiltonian::GeneralTwoBand{T}
     t1::T

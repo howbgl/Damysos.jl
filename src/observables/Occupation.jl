@@ -67,12 +67,8 @@ function isapprox(
     return Base.isapprox(cb1,cb2;atol=atol,rtol=rtol,nans=nans)
 end
 
-function buildobservable_expression(sim::Simulation,o::Occupation) 
-    return :(real(u[1]))
-
-function buildobservable_expression_upt(sim::Simulation,::Occupation)
-    return :(real(u[1]))
-end
+buildobservable_expression(sim::Simulation,o::Occupation)    = :(real(cc))
+buildobservable_expression_upt(sim::Simulation,::Occupation) = :(real(u[1]))
 
 
 function write_ensembledata_to_observable!(o::Occupation,data::Vector{<:Real})

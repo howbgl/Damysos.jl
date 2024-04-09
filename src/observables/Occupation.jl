@@ -1,4 +1,18 @@
 export Occupation
+"""
+    Occupation{T<:Real} <: Observable{T}
+
+Holds time series data of the occupation computed from the density matrix.
+
+Only the conduction band occupation ``\\rho_{cc}(t)`` is stored since ``Tr\\rho(t)=1``
+
+
+# Fields
+- `cbocc::Vector{T}`: time-dependent conduction band occupation ``\\rho_{cc}(t)``
+
+# See also
+[`Velocity`](@ref Velocity)
+"""
 struct Occupation{T<:Real} <: Observable{T}
     cbocc::Vector{T}
 end
@@ -9,7 +23,7 @@ function Occupation(p::NumericalParameters{T}) where {T<:Real}
     return Occupation(zeros(T,getparams(p).nt))
 end
 
-function resize(o::Occupation{T},p::NumericalParameters{T}) where {T<:Real}
+function resize(o::Occupation,p::NumericalParameters)
     return Occupation(p)
 end
 
@@ -17,11 +31,11 @@ function empty(o::Occupation)
     return Occupation(o)
 end
 
-getnames_obs(occ::Occupation{T}) where {T<:Real} = ["cbocc", "cbocck"]
-getparams(occ::Occupation{T}) where {T<:Real}    = getnames_obs(occ)
-arekresolved(occ::Occupation{T}) where {T<:Real} = [false, true]
+getnames_obs(occ::Occupation)   = ["cbocc", "cbocck"]
+getparams(occ::Occupation)      = getnames_obs(occ)
+arekresolved(occ::Occupation)   = [false, true]
 
-@inline function addto!(o::Occupation{T},ototal::Occupation{T}) where {T<:Real}
+@inline function addto!(o::Occupation,ototal::Occupation)
     ototal.cbocc .= ototal.cbocc .+ o.cbocc
 end
 
@@ -29,7 +43,7 @@ end
     odest.cbocc .= osrc.cbocc
 end
 
-@inline function normalize!(o::Occupation{T},norm::T) where {T<:Real}
+@inline function normalize!(o::Occupation,norm::Real)
     o.cbocc ./= norm
 end
 
@@ -53,62 +67,20 @@ function isapprox(
     return Base.isapprox(cb1,cb2;atol=atol,rtol=rtol,nans=nans)
 end
 
+function buildobservable_expression(sim::Simulation,o::Occupation) 
+    return :(real(u[1]))
 
-function getfuncs(sim::Simulation,o::Occupation)
-    return []
+function buildobservable_expression_upt(sim::Simulation,::Occupation)
+    return :(real(u[1]))
 end
 
 
-function integrateobs_kxbatch_add!(
-    sim::Simulation{T},
-    o::Occupation{T},
-    sol,
-    kxsamples::AbstractVector{T},
-    ky::T,
-    moving_bz::AbstractMatrix{T},
-    funcs) where {T<:Real}
+function write_ensembledata_to_observable!(o::Occupation,data::Vector{<:Real})
 
-    ts    = getparams(sim).tsamples
-    nkx   = length(kxsamples)
+    length(o.cbocc) != length(data) && throw(ArgumentError(
+        """
+        data must be same length as observable Occupation. Got lengths of \
+        $(length(data)) and $(length(o.cbocc))"""))
 
-    for i in eachindex(ts)
-        ρcc             = @view sol[1:nkx,i]
-        o.cbocc[i]      += trapz(kxsamples,moving_bz[:,i] .* real.(ρcc))
-    end
-    return o
-end
-
-
-function integrateobs_kxbatch!(sim::Simulation{T},o::Occupation{T},sol,ky::T,
-                    moving_bz::Array{T}) where {T<:Real}
-
-    p           = getparams(sim)
-    nkx_bz      = Int(cld(2*p.bz[2],p.dkx))
-
-    occ_k_itp   = zeros(T,nkx_bz,length(sol.t))
-    occ_k       = zeros(T,p.nkx,length(sol.t))
-    occ         = zeros(T,length(sol.t))
-    
-    calcobs_k1d!(sim,o,sol,occ_k,occ_k_itp)
-
-    occ         = trapz((p.kxsamples,:),occ_k .* moving_bz)
-
-    return Occupation(occ)
-end
-
-function integrateobs(
-    occs::Vector{Occupation{T}},
-    vertices::Vector{T}) where {T<:Real}
-
-    cbocc  = trapz((:,hcat(vertices)),hcat([o.cbocc for o in occs]...))
-    return Occupation(cbocc)
-end
-
-
-function integrateobs!(
-    occs::Vector{Occupation{T}},
-    odest::Occupation{T},
-    vertices::Vector{T}) where {T<:Real}
-
-    odest.cbocc .= trapz((:,hcat(vertices)),hcat([o.cbocc for o in occs]...))
+    o.cbocc .= data
 end

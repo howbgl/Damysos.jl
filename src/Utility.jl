@@ -3,17 +3,89 @@ export ensurepath
 export find_files_with_name
 export parametersweep
 export random_word
+export replace_expression!
 
-function subdivide_vector(vec::AbstractVector{T}, basesize::U) where {T<:Real,U}
+@inline cartesianindex2dx(i,n) = 1 + ((i-1) % n)
+@inline cartesianindex2dy(i,n) = 1 + ((i-1) ÷ n)
+@inline caresianindex2d(i,n)   = (cartesianindex2dx(i,n),cartesianindex2dy(i,n))
 
-    batches = Vector{Vector{T}}(undef, 0)
-    buffer  = Vector{T}(undef,0)
+@inline function vector_of_svec_to_matrix(u::Vector{SVector{N,T}}) where {N,T}
+    return reshape(reinterpret(T,u),(N,:))
+end
+
+
+@inline function get_cartesianindices_kgrid(
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    return CartesianIndices((length(kxsamples),length(kysamples)))
+end
+
+@inline function getkgrid_index(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    return get_cartesianindices_kgrid(kxsamples,kysamples)[i]
+end
+
+@inline function getkgrid_index(i::Integer,nkx::Integer,nky::Integer)
+    return caresianindex2d(i,nkx)
+end
+
+@inline function getkgrid_point(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    idx = caresianindex2d(i,length(kxsamples))
+
+    return SA[kxsamples[idx[1]],kysamples[idx[2]]]
+end
+
+
+@inline function getkgrid_point_kx(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    idx = getkgrid_index(i,kxsamples,kysamples)
+
+    return kxsamples[idx[1]]
+end
+@inline function getkgrid_point_ky(
+    i::Integer,
+    kxsamples::AbstractVector{<:Real},
+    kysamples::AbstractVector{<:Real})
+
+    idx = getkgrid_index(i,kxsamples,kysamples)
+
+    return kysamples[idx[2]]
+end
+
+
+function replace_expression!(e, old, new)
+    for (i,a) in enumerate(e.args)
+        if a==old
+            e.args[i] = new
+        elseif a isa Expr
+            replace_expression!(a, old, new)
+        end
+        ## otherwise do nothing
+    end
+    e
+end
+
+function subdivide_vector(vec::AbstractVector,basesize::Integer)
+
+    batches = Vector{Vector{eltype(vec)}}(undef, 0)
+    buffer  = Vector{eltype(vec)}(undef,0)
 
     for (i,el) in enumerate(vec)
         push!(buffer,el)
         if length(buffer)==basesize || i==length(vec)
             push!(batches,deepcopy(buffer))
-            buffer  = Vector{T}(undef,0)
+            buffer  = Vector{eltype(vec)}(undef,0)
         end
     end
 
@@ -115,14 +187,24 @@ end
 stringexpand_vector(v::AbstractVector) = join(String.(v),"_")
 
 function stringexpand_nt(nt::NamedTuple)
-    str = ""
+    str = []
     for (k, v) in pairs(nt)
-        str *= "$k: $v\n"
+        push!(str,"$k: $v")
+    end
+    return join(str,'\n')
+end
+
+function stringexpand_2nt(nt1::NamedTuple,nt2::NamedTuple)
+    str = ""
+    for key in intersect(keys(nt1),keys(nt2))
+        v1  = getfield(nt1,key)
+        v2  = getfield(nt2,key)
+        str *= "$key: $v1 ($v2)\n"
     end
     return str
 end
 
-function prepend_spaces(str::AbstractString,n_spaces::Int64=4)
+function prepend_spaces(str::AbstractString,n_spaces::Int64=1)
     lines = split(str, '\n')
     indented_lines = [repeat(" ",n_spaces)*"$line" for line in lines]
     indented_str = join(indented_lines, '\n')

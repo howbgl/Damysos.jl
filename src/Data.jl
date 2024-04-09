@@ -1,4 +1,10 @@
 
+export load
+export loaddata
+export save
+export savedata
+export savemetadata
+
 function savedata(sim::Simulation)
 
     @info "Saving simulation data"

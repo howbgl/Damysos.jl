@@ -1,4 +1,4 @@
-using Damysos,Unitful,LoggingExtras,Dates,Folds
+using Damysos,Unitful,LoggingExtras,Dates
 
 const vf        = u"4.3e5m/s"
 const freq      = u"12THz"
@@ -17,7 +17,7 @@ ens     = parametersweep(sim,sim.numericalparams,:dkx,LinRange(0.001,0.0001,64))
 
 kpoints = [getparams(s).nkx for s in ens.simlist]
 
-times   = Folds.collect(@elapsed run_simulation!(s,
+times   = collect(@elapsed run_simulation!(s,
             saveplots=false,
             savedata=false) for s in ens.simlist)
 

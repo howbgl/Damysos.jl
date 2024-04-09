@@ -1,3 +1,22 @@
+
+export getkxsamples
+export getkysamples
+export getnkx
+export getnky
+export getnt
+export gettsamples
+export gettspan
+export NumericalParams1d
+export NumericalParams2d
+export NumericalParams2dSlice
+
+getnt(p::NumericalParameters)           = 2*Int(cld(abs(p.t0),p.dt))
+getnkx(p::NumericalParameters)          = 2*Int(cld(p.kxmax,p.dkx))
+gettsamples(p::NumericalParameters)     = LinRange(-abs(p.t0),abs(p.t0),getnt(p))
+getkxsamples(p::NumericalParameters)    = LinRange(-p.kxmax,p.kxmax,getnkx(p))
+gettspan(p::NumericalParameters)        = (gettsamples(p)[1],gettsamples(p)[end])
+
+
 struct NumericalParams2d{T<:Real} <: NumericalParameters{T}
     dkx::T
     dky::T
@@ -16,36 +35,26 @@ function NumericalParams2d(dkx::Real,dky::Real,kxmax::Real,kymax::Real,dt::Real,
     return NumericalParams2d(dkx,dky,kxmax,kymax,dt,t0,1e-12,1e-12)
 end
 
-struct NumericalParams2dSlice{T<:Real} <: NumericalParameters{T}
-    params::NumericalParams2d{T}
-    kxspan::Tuple{T,T}
-end
+getnky(p::NumericalParams2d)         = 2*Int(cld(p.kymax,p.dky))
+getkysamples(p::NumericalParameters) = LinRange(-p.kymax,p.kymax,getnky(p))
 
-function getparams(p::NumericalParams2dSlice{T}) where {T<:Real}
-    fullparams  = getparams(p.params)
-    kxs_full    = collect(fullparams.kxsamples)
-    kxsamples   = kxs_full[kxs_full .>= p.kxspan[1] .&& kxs_full .<= p.kxspan[2]]
-    nkx         = length(kxsamples)
-    return merge(fullparams,(nkx=nkx,kxsamples=kxsamples,))
-end
-
-
-function getparams(p::NumericalParams2d{T}) where {T<:Real} 
+function getparams(p::NumericalParams2d)
     return (
-    dkx=p.dkx,
-    dky=p.dky,
-    kxmax=p.kxmax,
-    kymax=p.kymax,
-    dt=p.dt,
-    t0=p.t0,
-    rtol=p.rtol,
-    atol=p.atol,
-    nkx=2*Int(cld(p.kxmax,p.dkx)),
-    nky=2*Int(cld(p.kymax,p.dky)),
-    nt=2*Int(cld(abs(p.t0),p.dt)),
-    tsamples=LinRange(-abs(p.t0),abs(p.t0),2*Int(cld(abs(p.t0),p.dt))),
-    kxsamples=LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx))),
-    kysamples=LinRange(-p.kymax,p.kymax,2*Int(cld(p.kymax,p.dky))))
+        dkx=p.dkx,
+        dky=p.dky,
+        kxmax=p.kxmax,
+        kymax=p.kymax,
+        dt=p.dt,
+        t0=p.t0,
+        rtol=p.rtol,
+        atol=p.atol,
+        nkx=getnkx(p),
+        nky=getnky(p),
+        nt=getnt(p),
+        tsamples=gettsamples(p),
+        tspan=gettspan(p),
+        kxsamples=getkxsamples(p),
+        kysamples=getkysamples(p))
 end
 
 function printparamsSI(p::NumericalParams2d,us::UnitScaling;digits=3)
@@ -100,10 +109,11 @@ function getparams(p::NumericalParams1d{T}) where {T<:Real}
     t0=p.t0,
     rtol=p.rtol,
     atol=p.atol,
-    nkx=2*Int(cld(p.kxmax,p.dkx)),
-    nt=2*Int(cld(abs(p.t0),p.dt)),
-    tsamples=LinRange(-abs(p.t0),abs(p.t0),2*Int(cld(abs(p.t0),p.dt))),
-    kxsamples=LinRange(-p.kxmax,p.kxmax,2*Int(cld(p.kxmax,p.dkx))))
+    nkx=getnkx(p),
+    nt=getnt(p),
+    tsamples=gettsamples(p),
+    tspan=gettspan(p),
+    kxsamples=getkxsamples(p))
 end
 
 function printparamsSI(p::NumericalParams1d,us::UnitScaling;digits=3)
@@ -130,3 +140,19 @@ function printparamsSI(p::NumericalParams1d,us::UnitScaling;digits=3)
     end
     return str
 end
+
+
+struct NumericalParams2dSlice{T<:Real} <: NumericalParameters{T}
+    params::NumericalParams2d{T}
+    kxspan::Tuple{T,T}
+end
+
+function getparams(p::NumericalParams2dSlice{T}) where {T<:Real}
+    fullparams  = getparams(p.params)
+    kxs_full    = collect(fullparams.kxsamples)
+    kxsamples   = kxs_full[kxs_full .>= p.kxspan[1] .&& kxs_full .<= p.kxspan[2]]
+    nkx         = length(kxsamples)
+    return merge(fullparams,(nkx=nkx,kxsamples=kxsamples,))
+end
+
+

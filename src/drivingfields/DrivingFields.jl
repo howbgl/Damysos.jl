@@ -1,3 +1,5 @@
+export gauss
+export scaledriving_frequency
 
 
 export get_efieldx

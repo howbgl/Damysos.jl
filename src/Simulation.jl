@@ -153,17 +153,16 @@ struct Simulation{T<:Real}
     plotpath::String
     function Simulation{T}(l,df,p,obs,us,d,id,dpath,ppath) where {T<:Real}
 
+        _d = d
         if p isa NumericalParams1d{T} && d!=1
             @warn "given dimensions ($d) not matching $p\nsetting dimensions to 1"
-            new(l,df,p,obs,us,UInt8(1),id,dpath,ppath)
-
+            _d = 1
         elseif p isa NumericalParams2d{T} && d!=2
             @warn "given dimensions ($d) not matching $p\nsetting dimensions to 2"
-            new(l,df,p,obs,us,UInt8(2),id,dpath,ppath)
-            
-        else
-            new(l,df,p,obs,us,d,id,dpath,ppath)
+            _d = 2
         end
+
+        new(l,df,p,obs,us,_d,id,dpath,ppath)
     end
 end
 

@@ -56,5 +56,6 @@ include("Data.jl")
 include("Plotting.jl")
 include("Core.jl")
 include("Utility.jl")
+include("ConvergenceTest.jl")
 
 end

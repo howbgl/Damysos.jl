@@ -36,7 +36,9 @@ function run!(
 
     prerun!(sim)
 
-    @info "Using CPUEnsembleChunked with k-chunks of size $(solver.kchunksize)"
+    @info """
+        Solver: $(repr(solver))
+    """
 
     prob,kchunks = buildensemble_chunked_linear(sim,functions...;
         kchunk_size=solver.kchunksize)
@@ -44,7 +46,7 @@ function run!(
     res = solve(
         prob,
         nothing,
-        choose_threaded_or_distributed();
+        solver.algorithm;
         trajectories = length(kchunks),
         saveat = gettsamples(sim.numericalparams),
         abstol = sim.numericalparams.atol,
@@ -86,3 +88,15 @@ function choose_threaded_or_distributed()
         return EnsembleDistributed()
     end
 end
+
+getserialsolver(solver::LinearChunked) = LinearChunked(solver.kchunksize,EnsembleSerial())
+
+function Base.show(io::IO,::MIME"text/plain",s::LinearChunked)
+    println(io,"LinearChunked:" |> escape_underscores)
+    str = """
+    - kchunksize: $(s.kchunksize)
+    - algorithm: $(s.algorithm)
+    """ |> escape_underscores
+    print(io,prepend_spaces(str,2))
+end
+

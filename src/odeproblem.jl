@@ -25,8 +25,8 @@ function buildensemble_chunked_linear(
 
     function f(du,u,p,t)
         for i in 1:length(p)
-            du[2i-1]    = rhs_cc(u[2i-1],u[2i],p[i][1],p[i][2],t)
-            du[2i]      = rhs_cv(u[2i-1],u[2i],p[i][1],p[i][2],t)
+            @inbounds du[2i-1]    = rhs_cc(u[2i-1],u[2i],p[i][1],p[i][2],t)
+            @inbounds du[2i]      = rhs_cv(u[2i-1],u[2i],p[i][1],p[i][2],t)
         end
     end
 
@@ -93,23 +93,6 @@ function buildensemble_linear(
     return ensprob
 end
 
-function buildensemble_plain_linear(sim::Simulation,rhs::Function)
-
-    kxs            = collect(getkxsamples(sim.numericalparams))
-    kys            = collect(getkysamples(sim.numericalparams))
-    tspan          = gettspan(sim.numericalparams)
-    u0             = SA[zero(Complex{eltype(kxs)}),zero(Complex{eltype(kxs)})]
-    prob           = ODEProblem{false}(rhs,u0,tspan,getkgrid_point(1,kxs,kys))
-
-    ensprob = EnsembleProblem(
-        prob,
-        prob_func   = (prob,i,repeat) -> remake(prob,p = getkgrid_point(i,kxs,kys)),
-        output_func = (sol,i) -> (sol.u, false),
-        u_init      = [],
-        safetycopy  = false)
-
-    return ensprob
-end
 
 function buildsimvector_linear(
     sim::Simulation,

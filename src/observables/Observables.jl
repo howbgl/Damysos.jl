@@ -1,5 +1,5 @@
 import LinearAlgebra: normalize!,copyto!
-import Base: +,-,*,zero,empty,isapprox
+import Base: +,-,*,zero,empty
 
 export buildbzmask
 export buildbzmask_expression

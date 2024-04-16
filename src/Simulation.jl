@@ -235,7 +235,7 @@ for func = (BAND_SYMBOLS...,DIPOLE_SYMBOLS...,VELOCITY_SYMBOLS...)
     @eval(Damysos,$func(s::Simulation) = $func(s.liouvillian))
 end
 
-function isapprox(
+function Base.isapprox(
     s1::Simulation{T},
     s2::Simulation{U};
     atol::Real=0,
@@ -287,7 +287,39 @@ getname(sim::Simulation)        = getshortname(sim)*'_'*sim.id
 getshortname(obs::Observable)           = split("$obs",'{')[1]
 getshortname(c::SimulationComponent)    = split("$c",'{')[1]
 
-include("bzbounds.jl")
+
+getbzbounds(sim::Simulation) = getbzbounds(sim.drivingfield,sim.numericalparams)
+function getbzbounds(df::DrivingField,p::NumericalParameters)
+    
+    # Fallback method by brute force, more specialized methods are more efficient!
+    ax      = get_vecpotx(df)
+    ts      = gettsamples(p)
+    axmax   = maximum(abs.(ax.(ts)))
+    kxmax   = maximum(getkxsamples(p))
+    
+    bztuple = (-kxmax + 1.3axmax,kxmax - 1.3axmax)
+    if sim.dimensions==2
+        ay      = get_vecpoty(df)
+        aymax   = maximum(abs.(ay.(ts)))
+        kymax   = maximum(getkysamples(p))
+        bztuple = (bztuple...,-kymax + 1.3aymax,kymax - 1.3aymax)
+    end
+    return bztuple
+end
+
+
+function checkbzbounds(sim::Simulation)
+    bz = getbzbounds(sim)
+    if bz[1] > bz[2] || bz[3] > bz[4]
+        @warn "Brillouin zone vanishes: $(bz)"
+    end
+end
+
+function resize_obs!(sim::Simulation{T}) where {T<:Real}
+
+    sim.observables .= [resize(o, sim.numericalparams) for o in sim.observables]
+end
+
 
 function Base.show(io::IO,::MIME"text/plain",c::Union{SimulationComponent,Hamiltonian})
     println(io,getshortname(c)*":")

@@ -53,7 +53,7 @@ end
 *(x::Number,o::Occupation)       = o*x
 zero(o::Occupation)              = Occupation(zero(o.cbocc))
 
-function isapprox(
+function Base.isapprox(
     o1::Occupation{T},
     o2::Occupation{U};
     atol::Real=0,

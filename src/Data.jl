@@ -33,6 +33,19 @@ function savedata(sim::Simulation)
     return nothing
 end
 
+function savedata(
+    result::ConvergenceTestResult,
+    path::String,
+    altpath=joinpath(pwd(),"testresult.txt"))
+    
+    dirpath,name   = splitdir(path)
+    (success,path) = ensurepath(dirname.([path,altpath]))
+    if success
+        save(joinpath(path,name),repr("text/plain",result))
+        @info "Saved convergence test result at $path"
+    end
+end
+
 function loaddata(sim::Simulation)
     return DataFrame(CSV.File(joinpath(sim.datapath,"data.csv")))
 end

@@ -40,6 +40,7 @@ abstract type NumericalParameters{T}    <: SimulationComponent{T} end
 const DEFAULT_K_CHUNK_SIZE = 256
 
 
+include("Utility.jl")
 include("general_hamiltonian/GeneralTwoBand.jl")
 include("Simulation.jl")
 include("Ensemble.jl")
@@ -49,13 +50,13 @@ include("hamiltonians/GappedDiracOld.jl")
 include("Liouvillian.jl")
 include("drivingfields/DrivingFields.jl")
 include("NumericalParams.jl")
+include("bzbounds.jl")
 include("observables/Observables.jl")
 include("equationsofmotion.jl")
 include("odeproblem.jl")
+include("ConvergenceTest.jl")
 include("Data.jl")
 include("Plotting.jl")
 include("Core.jl")
-include("Utility.jl")
-include("ConvergenceTest.jl")
 
 end

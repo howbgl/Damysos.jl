@@ -7,6 +7,22 @@ export reduction
 
 DEFAULT_REDUCTION(u, data, I) = (append!(u,sum(data)),false)
 
+function observables_out(sol,bzmask,obsfunction)
+
+    p       = sol.prob.p
+    weigths = zeros(eltype(p[1]),length(p))
+    obs     = []
+
+    for (i,u,t) in zip(1:length(sol.u),sol.u,sol.t)
+
+        weigths = bzmask.(p,t)
+        rho     = reinterpret(SVector{2,eltype(u)},reshape(u,(2,:)))' .* weigths
+        push!(obs,sum(obsfunction.(rho,p,t)))
+    end
+
+    return (obs,false)
+end
+
 
 function buildensemble_chunked_linear(
     sim::Simulation,
@@ -30,21 +46,7 @@ function buildensemble_chunked_linear(
         end
     end
 
-    function observables_out(sol,i)
-
-        p       = sol.prob.p
-        weigths = zeros(eltype(p[1]),length(p))
-        obs     = []
-
-        for (i,u,t) in zip(1:length(sol.u),sol.u,sol.t)
-
-            weigths = bzmask.(p,t)
-            rho     = reinterpret(SVector{2,eltype(u)},reshape(u,(2,:)))' .* weigths
-            push!(obs,sum(obsfunction.(rho,p,t)))
-        end
-
-        return (obs,false)
-    end
+    
 
     prob            = ODEProblem{true}(f,u0,tspan,kbatches[1])
     ensprob         = EnsembleProblem(
@@ -55,7 +57,7 @@ function buildensemble_chunked_linear(
                 p = kb[i],
                 u0 = zeros(Complex{eltype(kb[i][1])},2length(kb[i])))
         end,
-        output_func = observables_out,
+        output_func = (sol,i) -> observables_out(sol,bzmask,obsfunction),
         reduction   = (u, data, I) -> (append!(u,sum(data)),false),
         safetycopy  = false)
     

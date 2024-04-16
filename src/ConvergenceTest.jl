@@ -98,19 +98,6 @@ struct ConvergenceTestResult
 end
 
 
-
-function matchpaths(test::ConvergenceTest)
-    start = test.start
-    if start.datapath != test.datapath
-        @reset start.datapath = joinpath(test.datapath,"start")
-    end
-    if start.plotpath != test.plotpath
-        @reset start.plotpath = joinpath(test.plotpath,"start")
-    end
-    args = (test.method,test.atolgoal,test.rtolgoal,test.datapath,test.plotpath,test.id)
-    return ConvergenceTest(start,args...)
-end
-
 nextvalue(oldvalue::Real,method::PowerLawTest) = method.multiplier * oldvalue
 nextvalue(oldvalue::Real,method::LinearTest)   = oldvalue + method.shift
 
@@ -137,27 +124,18 @@ function next(sim::Simulation,method::Union{PowerLawTest,LinearTest})
 end
 
 function run!(
-    test::ConvergenceTest,
-    functions,
-    maxiterations::Integer=10,
-    maxtime::Real=30*60,
-    solver::DamysosSolver=LinearChunked();
-    sequentialsim=true,
+    test::ConvergenceTest;
     savealldata=true,
     savelastdata=true)
     
     @info "## Starting "*repr("text/plain",test)
 
     result = _run!(
-        matchpaths(test),
-        functions,
-        sequentialsim ? getserialsolver(solver) : solver,
-        test.method,
-        maxiterations,
-        maxtime;
+        test,
+        test.method;
         savesimdata=savealldata)
     
-    addhistory!(result.test)
+    # addhistory!(result.test)
 
     @show length(result.test.completedsims)
 
@@ -169,11 +147,7 @@ end
 
 function _run!(
     test::ConvergenceTest,
-    functions,
-    solver::DamysosSolver,
-    method::Union{PowerLawTest,LinearTest},
-    maxiterations::Integer,
-    maxduration::Real;
+    method::Union{PowerLawTest,LinearTest};
     savetestresult=true,
     savesimdata=true)
 
@@ -182,10 +156,10 @@ function _run!(
     currentiteration    = 0
     elapsedtime_seconds = 0.0
 
-    while currentiteration < maxiterations && elapsedtime_seconds < maxduration
+    while currentiteration < test.maxiterations && elapsedtime_seconds < test.maxtime
 
         elapsed_round       = round(elapsedtime_seconds/60,sigdigits=3)
-        max_round           = round(maxduration/60,sigdigits=3)
+        max_round           = round(test.maxtime/60,sigdigits=3)
 
         if isempty(test.completedsims)
             push!(test.completedsims,test.start)
@@ -195,25 +169,25 @@ function _run!(
         
         elapsedtime_seconds += @elapsed run!(
             test.completedsims[end],
-            functions,
-            solver;
+            test.allfunctions[currentiteration+1],
+            test.solver;
             saveplots=false,
             savedata=savesimdata)
         currentiteration    += 1
         @info """
         - $(elapsed_round)min of $(max_round)min elapsed 
-        - Iteration $currentiteration of maximum of $maxiterations
+        - Iteration $currentiteration of maximum of $(test.maxiterations)
         """
         converged(test) && break
     end
 
     if converged(test)
         @info """
-        ## Converged after $(round(elapsedtime_seconds/60,sigdigits=3))min and\
+        ## Converged after $(round(elapsedtime_seconds/60,sigdigits=3))min and \
         $currentiteration iterations"""
     elseif currentiteration > maxiterations
         @warn "Maximum number of iterations ($maxiterations) reached, aborting."
-    elseif elapsedtime_seconds > maxduration
+    elseif elapsedtime_seconds > test.maxtime
         @warn "Maximum duration exceeded, aborting."
     else
         @warn "Something very weird happened..."

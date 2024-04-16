@@ -134,6 +134,28 @@ function zero(v::Velocity)
         zero(v.vyinter))
 end
 
+
+function Base.isapprox(
+    v1::Velocity{T},
+    v2::Velocity{U};
+    atol::Real=0,
+    rtol=atol>0 ? 0 : √eps(promote_type(T,U)),
+    nans::Bool=false) where {T,U}
+    
+    vx1 = deepcopy(v1.vx)
+    vx2 = deepcopy(v2.vx)
+    vy1 = deepcopy(v1.vy)
+    vy2 = deepcopy(v2.vy)
+
+    upsample!(vx1,vx2)
+    upsample!(vy1,vy2)
+
+    return all([
+        isapprox(vx1,vx2;atol=atol,rtol=rtol,nans=nans),
+        isapprox(vy1,vy2;atol=atol,rtol=rtol,nans=nans)])
+end
+
+
 function buildobservable_expression_upt(sim::Simulation,::Velocity)
     
     h    = sim.liouvillian.hamiltonian
@@ -222,27 +244,6 @@ function getfuncs(sim::Simulation,v::Velocity)
     return [get_vecpotx(df),get_vecpoty(df),getvx_cc(h),getvx_vc(h),getvx_vv(h),
             getvy_cc(h),getvy_vc(h),getvy_vv(h)]
 end
-
-function isapprox(
-    v1::Velocity{T},
-    v2::Velocity{U};
-    atol::Real=0,
-    rtol=atol>0 ? 0 : √eps(promote_type(T,U)),
-    nans::Bool=false) where {T,U}
-    
-    vx1 = deepcopy(v1.vx)
-    vx2 = deepcopy(v2.vx)
-    vy1 = deepcopy(v1.vy)
-    vy2 = deepcopy(v2.vy)
-
-    upsample!(vx1,vx2)
-    upsample!(vy1,vy2)
-
-    return all([
-        Base.isapprox(vx1,vx2;atol=atol,rtol=rtol,nans=nans),
-        Base.isapprox(vy1,vy2;atol=atol,rtol=rtol,nans=nans)])
-end
-
 
 @inline function vintra(kx::Real,ky::Real,ρcc::Complex,vcc,vvv)
     return vintra(kx,ky,real(ρcc),vcc,vvv)

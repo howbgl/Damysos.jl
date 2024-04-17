@@ -42,19 +42,19 @@ function getparams(df::GaussianEPulse)
     return (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE,φ=df.φ,ħω=df.ω,ϕ=df.ϕ)
 end
 
-@inline function get_efieldx(df::GaussianEPulse)
+function get_efieldx(df::GaussianEPulse)
     return let σ=df.σ,eE=df.eE,ω=df.ω,φ=df.φ,ϕ=df.ϕ
         t -> cos(φ)*eE*sin(ω*t+ϕ)*gauss(t,σ)
     end 
 end
 
-@inline function get_efieldy(df::GaussianEPulse)
+function get_efieldy(df::GaussianEPulse)
     return let σ=df.σ,eE=df.eE,ω=df.ω,φ=df.φ,ϕ=df.ϕ
         t -> sin(φ)*eE*sin(ω*t+ϕ)*gauss(t,σ)
     end   
 end
 
-@inline function get_vecpotx(df::GaussianEPulse)
+function get_vecpotx(df::GaussianEPulse)
     factor1 = convert(typeof(df.σ),-df.σ*df.eE*cos(df.φ)*sqrt(π/2.) * exp(-df.σ^2*df.ω^2/2.))
     factor2 = exp(im*df.ϕ)
     return let σ=df.σ,ω=df.ω,a=factor1,b=factor2
@@ -62,7 +62,7 @@ end
     end 
 end
 
-@inline function get_vecpoty(df::GaussianEPulse)
+function get_vecpoty(df::GaussianEPulse)
     factor1 = convert(typeof(df.σ),-df.σ*df.eE*sin(df.φ)*sqrt(π/2.) * exp(-df.σ^2*df.ω^2/2.))
     factor2 = exp(im*df.ϕ)
     return let σ=df.σ,ω=df.ω,a=factor1,b=factor2
@@ -72,6 +72,58 @@ end
 
 function getfields(df::GaussianEPulse)
     return (get_vecpotx(df),get_vecpoty(df),get_efieldx(df),get_efieldy(df))
+end
+
+function efieldx(df::GaussianEPulse)
+    σ22 = 2df.σ^2
+    amp = cos(df.φ)*df.eE
+    return :($amp * sin($(df.ω)*t + $(df.ϕ)) * exp(-t^2 / $σ22))
+end
+
+function efieldx(df::GaussianEPulse,t::Real)
+    return cos(df.φ)*df.eE * sin(df.ω*t + df.ϕ) * exp(-t^2 / (2df.σ^2))
+end
+
+function efieldy(df::GaussianEPulse)
+    σ22 = 2df.σ^2
+    amp = sin(df.φ)*df.eE
+    return :($amp * sin($(df.ω)*t + $(df.ϕ)) * exp(-t^2 / $σ22))
+end
+
+function efieldy(df::GaussianEPulse,t::Real)
+    return sin(df.φ)*df.eE * sin(df.ω*t + df.ϕ) * exp(-t^2 / (2df.σ^2))
+end
+
+function vecpotx(df::GaussianEPulse)
+    amp    = convert(typeof(df.σ),-df.σ*df.eE*cos(df.φ)*sqrt(π/2.) * exp(-df.σ^2*df.ω^2/2.))
+    phase  = exp(im*df.ϕ)
+    c1     = df.σ^2 * df.ω
+    c2     = sqrt(2)*df.σ
+    return :($amp * imag($phase * erf( (t-im * $c1) / $c2 )))
+end
+
+function vecpotabs(df::GaussianEPulse,t::Real)
+    amp     = convert(typeof(df.σ),-df.σ*df.eE*sqrt(π/2.) * exp(-df.σ^2*df.ω^2/2.))
+    phase   = exp(im*df.ϕ)
+    c1      = df.σ^2 * df.ω
+    c2      = sqrt(2)*df.σ
+    return amp * imag(phase * erf( (t-im * c1) / c2 ))
+end
+
+function vecpotx(df::GaussianEPulse,t::Real)
+    return cos(df.φ) * vecpotabs(df,t)
+end
+
+function vecpoty(df::GaussianEPulse)
+    amp    = convert(typeof(df.σ),-df.σ*df.eE*sin(df.φ)*sqrt(π/2.) * exp(-df.σ^2*df.ω^2/2.))
+    phase  = exp(im*df.ϕ)
+    c1     = df.σ^2 * df.ω
+    c2     = sqrt(2)*df.σ
+    return :($amp * imag($phase * erf( (t-im * $c1) / $c2 )))
+end
+
+function vecpoty(df::GaussianEPulse,t::Real)
+    return sin(df.φ) * vecpotabs(df,t)
 end
 
 function printparamsSI(df::GaussianEPulse,us::UnitScaling;digits=4)

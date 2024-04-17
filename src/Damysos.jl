@@ -42,6 +42,7 @@ const DEFAULT_K_CHUNK_SIZE = 256
 
 include("Utility.jl")
 include("general_hamiltonian/GeneralTwoBand.jl")
+include("UnitScaling.jl")
 include("Simulation.jl")
 include("Ensemble.jl")
 include("hamiltonians/GappedDirac.jl")

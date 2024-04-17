@@ -45,23 +45,31 @@ end
 export GaussianPulse
 GaussianPulse = GaussianAPulse
 
-function getparams(df::GaussianAPulse{T}) where {T<:Real}  
+function getparams(df::GaussianAPulse)
     return (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE,φ=df.φ,ħω=df.ω)
 end
 
-@inline function get_efieldx(df::GaussianAPulse{T}) where {T<:Real}
+function getparamsSI(df::GaussianAPulse,us::UnitScaling)
+    σ   = timeSI(df.σ,us)
+    ν   = frequencySI(ν,us)
+    E   = electricfieldSI(df.eE,us)
+    φ   = df.φ
+    ħω  = energySI(df.ω,us)
+end
+
+@inline function get_efieldx(df::GaussianAPulse)
     return t-> cos(df.φ) * df.eE * (t*cos(df.ω*t) + df.σ^2*df.ω*sin(df.ω*t)) * 
                 gauss(t,df.σ) / (df.ω*df.σ^2)  
 end
-@inline function get_vecpotx(df::GaussianAPulse{T}) where {T<:Real}
+@inline function get_vecpotx(df::GaussianAPulse)
     return t -> cos(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
 end
 
-@inline function get_efieldy(df::GaussianAPulse{T}) where {T<:Real}
+@inline function get_efieldy(df::GaussianAPulse)
     return t-> sin(df.φ) * df.eE * (t*cos(df.ω*t) + df.σ^2*df.ω*sin(df.ω*t)) * 
                 gauss(t,df.σ) / (df.ω*df.σ^2)  
 end
-@inline function get_vecpoty(df::GaussianAPulse{T}) where {T<:Real}
+@inline function get_vecpoty(df::GaussianAPulse)
     return t -> sin(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
 end
 

@@ -28,6 +28,16 @@ struct GappedDirac{T<:Real} <: GeneralTwoBand{T}
     m::T
 end
 
+function GappedDirac(us::UnitScaling,m::Unitful.Energy,vf::Unitful.Velocity)
+    p = getparams(us)
+    delta = uconvert(Unitful.NoUnits,m*p.timescale/Unitful.ħ)
+    if velocityscaled(vf,us) ≈ 1.0
+        return GappedDirac(delta)
+    else
+        throw(ArgumentError("Scaled velocity must be equal to 1.0"))
+    end
+end
+
 hx(h::GappedDirac,kx,ky)    = kx
 hx(h::GappedDirac)          = quote kx end
 
@@ -89,8 +99,8 @@ end
 export getjac
 getjac(h::GappedDirac) = let m=h.m
     (kx,ky) -> SA[
-        one(h.m) zero(h.m)
-        zero(h.m) one(h.m)
-        zero(h.m) zero(h.m)]
+        one(m) zero(m)
+        zero(m) one(m)
+        zero(m) zero(m)]
 end
 

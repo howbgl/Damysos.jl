@@ -99,6 +99,23 @@ function vecpoty(df::GaussianAPulse)
     return :($c1 * cos($(df.ω)*t) * gauss(t,$(df.σ)))
 end
 
+function efieldx(df::GaussianAPulse,t::Real)
+    return cos(df.φ) * df.eE * (t*cos(df.ω*t) + df.σ^2*df.ω*sin(df.ω*t)) * 
+        gauss(t,df.σ) / (df.ω*df.σ^2) 
+end
+
+function vecpotx(df::GaussianAPulse,t::Real)
+    return cos(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
+end
+
+function efieldy(df::GaussianAPulse,t::Real)
+    return sin(df.φ) * df.eE * (t*cos(df.ω*t) + df.σ^2*df.ω*sin(df.ω*t)) * 
+        gauss(t,df.σ) / (df.ω*df.σ^2)  
+end
+
+function vecpoty(df::GaussianAPulse,t::Real)
+    return sin(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
+end
 
 function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)
 

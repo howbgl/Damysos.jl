@@ -1,4 +1,4 @@
-using Damysos,Unitful,LoggingExtras,Dates,Formatting,TerminalLoggers,ArgParse
+using Damysos,Unitful,LoggingExtras,Dates,TerminalLoggers,ArgParse
 
 import Damysos.getshortname
 
@@ -36,12 +36,13 @@ function make_system(
       emax      = uconvert(u"MV/cm",ω*m / (vf * e * γ))
       us        = scaledriving_frequency(freq,vf)
       df        = GaussianEPulse(us,σ,freq,emax)
-      h         = GappedDirac(us,m,vf,t1,t2)
+      h         = GappedDirac(us,m,vf)
+      l         = TwoBandDephasingLiouvillian(h,Inf,Inf)
 
       dt      = 0.005
       # ts      = -5df.σ:dt:5df.σ
       ts      = -5df.σ:dt:-df.σ
-      kxmax   = 10*maximum_kdisplacement(df,ts)[1]
+      kxmax   = 10*Damysos.maximum_kdisplacement(df,ts)[1]
       kymax   = 1.0
       dkx     = 2kxmax / 1_200
       dky     = 1.0
@@ -54,17 +55,21 @@ function make_system(
       dpath   = joinpath(datapath_base,subpath,name)
       ppath   = joinpath(plotpath_base,subpath,name)
 
-      return Simulation(h,df,pars,obs,us,2,id,dpath,ppath)
+      return Simulation(l,df,pars,obs,us,2,id,dpath,ppath)
 end
 
-function make_n_runtest(s)
-  method      = SequentialTest(
-      [PowerLawTest(:dt,0.5),
-      PowerLawTest(:dkx,0.5),
-      LinearTest(:kxmax,50.)])
-      test        = ConvergenceTest(s,method,1e-12,1e-3)
+function make_n_runtest(s;atolgoal=1e-12,rtolgoal=1e-5)
+      method      = PowerLawTest(:dt,0.5)
+      test        = ConvergenceTest(
+            s,
+            LinearChunked(128),
+            method,
+            atolgoal,
+            rtolgoal,
+            60*10,
+            32)
 
-      run!(test,100,4*60*60,savealldata=false)
+      run!(test)
 end
 
 function parse_cmdargs()
@@ -72,19 +77,19 @@ function parse_cmdargs()
       @add_arg_table! s begin
       "--multiphoton", "-m"
             help = "multiphoton parameter"
-            arg_type = Int
+            arg_type = Float64
       "--zeta", "-z"
             help = "zeta parameter"
-            arg_type = Int
+            arg_type = Float64
       end
       return parse_args(s)
 end
 
 const cmdargs  = parse_cmdargs()
-const ms       = LinRange(1.0,20.0,8)
-const zetas    = LinRange(1.0,5.0,8)
-const M        = ms[cmdargs["multiphoton"]]
-const z        = zetas[cmdargs["zeta"]]
+const M        = cmdargs["multiphoton"]
+const z        = cmdargs["zeta"]
+const atolgoal = 1e-12
+const rtolgoal = 1e-5
 
 @info "ζ = $z γ = $M"
 
@@ -92,8 +97,8 @@ const sim = make_system(
       z,
       M,
       "hhgjl/inter-intra-cancellation/multiphoton/longer";
-      rtol=1e-4,
-      atol=1e-12)
+      rtol=rtolgoal/2,
+      atol=atolgoal/2)
 
 const logpath  = dirname(sim.datapath)
 

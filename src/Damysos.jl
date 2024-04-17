@@ -15,12 +15,12 @@ using Interpolations
 using ProgressLogging
 using Random
 using Reexport
-using SpecialFunctions
 using StaticArrays
 using TerminalLoggers
 
 @reexport using DifferentialEquations
 @reexport using Unitful
+@reexport using SpecialFunctions
 
 import Base.promote_rule
 

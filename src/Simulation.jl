@@ -203,7 +203,7 @@ function Simulation(
     us::UnitScaling,
     d::Integer)
 
-    id = sprintf1("%x",hash([l,df,p,obs,us,d]))
+    id = string(hash([l,df,p,obs,us,d]),base=16)
     return Simulation(l,df,p,obs,us,d,id)
 end
 

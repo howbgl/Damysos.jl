@@ -20,12 +20,14 @@ struct ConvergenceTest
     allfunctions::Vector{Vector{<:Function}}
     function ConvergenceTest(
         start::Simulation,
-        solver::DamysosSolver,
-        method::ConvergenceTestMethod,
-        atolgoal::Real,
-        rtolgoal::Real,
-        maxtime::Real,
-        maxiterations::Integer)
+        solver::DamysosSolver=LinearChunked(),
+        method::ConvergenceTestMethod=PowerLawTest(:dt,0.5),
+        atolgoal::Real=1e-12,
+        rtolgoal::Real=1e-8,
+        maxtime::Union{Real,Unitful.Time}=600,
+        maxiterations::Integer=64)
+
+        maxtime = maxtime isa Real ? maxtime : ustrip(u"s",maxtime)
         
         fns = Vector{Vector{Function}}(undef,0)
         s   = deepcopy(start)
@@ -50,26 +52,6 @@ struct ConvergenceTest
     end
 end
 
-function ConvergenceTest(
-    start::Simulation,
-    solver::DamysosSolver=LinearChunked(),
-    method::ConvergenceTestMethod=PowerLawTest(:dt,0.5),
-    atolgoal::Real=1e-12,
-    rtolgoal::Real=1e-8,
-    maxtime::Real=3600,
-    maxiterations::Integer=64)
-
-    ConvergenceTest(
-        start,
-        solver,
-        method,
-        atolgoal,
-        rtolgoal,
-        maxtime,
-        maxiterations)
-end
-
-
 struct LinearTest{T<:Real} <: ConvergenceTestMethod
     parameter::Symbol
     shift::T
@@ -91,13 +73,14 @@ end
 nextvalue(oldvalue::Real,method::PowerLawTest) = method.multiplier * oldvalue
 nextvalue(oldvalue::Real,method::LinearTest)   = oldvalue + method.shift
 
-function getfilename(m::Union{PowerLawTest,LinearTest},sim::Simulation) 
-    return "$(m.parameter)=$(getvalue(m,sim))_$(round(now(),Dates.Second))"
+function currentvalue(m::Union{PowerLawTest,LinearTest},sim::Simulation)
+    return getproperty(sim.numericalparams,m.parameter)
 end
 
-function getvalue(m::Union{PowerLawTest,LinearTest},sim::Simulation)
-    return getproperty(sim.numericalparams,method.parameter)
+function getfilename(m::Union{PowerLawTest,LinearTest},sim::Simulation) 
+    return "$(m.parameter)=$(currentvalue(m,sim))_$(round(now(),Dates.Second))"
 end
+
 
 getname(t::ConvergenceTest) = "convergencetest_$(getname(t.start))_$(getname(t.method))"
 getname(m::PowerLawTest)    = "PowerLawTest_$(m.parameter)"

@@ -15,9 +15,6 @@ struct ConvergenceTest
     rtolgoal::Real
     maxtime::Real
     maxiterations::Integer
-    datapath::String
-    plotpath::String
-    id::String
     completedsims::Vector{Simulation}
     parameterhistory::DataFrame
     allfunctions::Vector{Vector{<:Function}}
@@ -28,18 +25,17 @@ struct ConvergenceTest
         atolgoal::Real,
         rtolgoal::Real,
         maxtime::Real,
-        maxiterations::Integer,
-        dpath::String,
-        ppath::String,
-        id::String)
+        maxiterations::Integer)
         
         fns = Vector{Vector{Function}}(undef,0)
         s   = deepcopy(start)
+
         for i in 1:maxiterations
             f = define_functions(s,solver)
             s = next(s,method)
             push!(fns,f)
         end
+
         return new(
             start,
             solver,
@@ -48,9 +44,6 @@ struct ConvergenceTest
             rtolgoal,
             maxtime,
             maxiterations,
-            dpath,
-            ppath,
-            id,
             empty([start]),
             DataFrame(),
             fns)
@@ -73,10 +66,7 @@ function ConvergenceTest(
         atolgoal,
         rtolgoal,
         maxtime,
-        maxiterations,
-        joinpath(start.datapath,"convergencetests"),
-        joinpath(start.plotpath,"convergencetests"),
-        "dt_"*start.id)
+        maxiterations)
 end
 
 
@@ -101,15 +91,29 @@ end
 nextvalue(oldvalue::Real,method::PowerLawTest) = method.multiplier * oldvalue
 nextvalue(oldvalue::Real,method::LinearTest)   = oldvalue + method.shift
 
-function next(sim::Simulation,method::Union{PowerLawTest,LinearTest})
+function getfilename(m::Union{PowerLawTest,LinearTest},sim::Simulation) 
+    return "$(m.parameter)=$(getvalue(m,sim))_$(round(now(),Dates.Second))"
+end
+
+function getvalue(m::Union{PowerLawTest,LinearTest},sim::Simulation)
+    return getproperty(sim.numericalparams,method.parameter)
+end
+
+getname(t::ConvergenceTest) = "convergencetest_$(getname(t.start))_$(getname(t.method))"
+getname(m::PowerLawTest)    = "PowerLawTest_$(m.parameter)"
+getname(m::LinearTest)      = "LinearTest_$(m.parameter)"
+
+function next(
+    sim::Simulation,
+    method::Union{PowerLawTest,LinearTest},
+    parentdatapath::String=droplast(sim.datapath),
+    parentplotpath::String=droplast(sim.plotpath))
     
     oldparam = getproperty(sim.numericalparams,method.parameter)
     opt      = PropertyLens(method.parameter)
     newparam = nextvalue(oldparam,method)
     params   = set(deepcopy(sim.numericalparams),opt,newparam)
     id       = "$(method.parameter)=$newparam"
-    dpath    = joinpath(droplast(sim.datapath),id)
-    ppath    = joinpath(droplast(sim.plotpath),id)
     
     Simulation(
         sim.liouvillian,
@@ -119,12 +123,13 @@ function next(sim::Simulation,method::Union{PowerLawTest,LinearTest})
         sim.unitscaling,
         sim.dimensions,
         id,
-        dpath,
-        ppath)
+        joinpath(parentdatapath,id),
+        joinpath(parentplotpath,id))
 end
 
 function run!(
     test::ConvergenceTest;
+    savetestresult=true,
     savealldata=true,
     savelastdata=true)
     
@@ -133,6 +138,7 @@ function run!(
     result = _run!(
         test,
         test.method;
+        savetestresult=savetestresult,
         savesimdata=savealldata)
     
     # addhistory!(result.test)
@@ -155,6 +161,7 @@ function _run!(
     
     currentiteration    = 0
     elapsedtime_seconds = 0.0
+    start               = test.start
 
     while currentiteration < test.maxiterations && elapsedtime_seconds < test.maxtime
 
@@ -162,7 +169,9 @@ function _run!(
         max_round           = round(test.maxtime/60,sigdigits=3)
 
         if isempty(test.completedsims)
-            push!(test.completedsims,test.start)
+            push!(test.completedsims,start)
+        elseif test.completedsims[end] == start # make sure subdir structure is correct
+            push!(test.completedsims,next(start,method,start.datapath,start.plotpath))
         else
             push!(test.completedsims,next(test.completedsims[end],method))
         end
@@ -199,7 +208,7 @@ function _run!(
     
     result = ConvergenceTestResult(test,converged(test),achieved_tol...)
     if savetestresult
-        savedata(result,joinpath(test.datapath,"$(method.parameter)-testresult.txt"))
+        savedata(result,joinpath(start.datapath,"$(getname(method))-testresult.txt"))
     end
     return result
 end
@@ -286,21 +295,21 @@ function findminimum_precision(s1::Simulation,s2::Simulation;max_atol=0.1,max_rt
 end
 
 function Base.show(io::IO,::MIME"text/plain",t::ConvergenceTest)
-    println(io,"Convergence Test ($(t.id)):" |> escape_underscores)
+    println(io,"Convergence Test" |> escape_underscores)
     methodstring = repr("text/plain",t.method)
     str = """
     - $(getshortname(t.start))
     - method: $(methodstring)
     - atolgoal: $(t.atolgoal)
     - rtolgoal: $(t.rtolgoal)
-    - datapath: $(t.datapath)
-    - plotpath: $(t.plotpath)
+    - datapath: $(t.start.datapath)
+    - plotpath: $(t.start.plotpath)
     """ |> escape_underscores
     print(io,prepend_spaces(str,2))
 end
 
 function Base.show(io::IO,::MIME"text/plain",r::ConvergenceTestResult)
-    println(io,"Convergence Test Result ($(r.test.id)):" |> escape_underscores)
+    println(io,"Convergence Test Result:" |> escape_underscores)
     startparams = "None"
     endparams = "None"
     if !isempty(r.test.completedsims)

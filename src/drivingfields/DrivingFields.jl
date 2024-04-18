@@ -1,7 +1,4 @@
 export gauss
-export scaledriving_frequency
-
-
 export get_efieldx
 export get_efieldy
 export get_vecpotx

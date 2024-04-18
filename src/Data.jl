@@ -100,6 +100,7 @@ function savemetadata(sim::Simulation)
             return
         end
     end
+    savemetadata(sim)
     
     @warn "Could not save simulation metadata."
 end

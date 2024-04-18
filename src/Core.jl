@@ -88,7 +88,6 @@ function postrun!(sim::Simulation;savedata=true,saveplots=true)
 
     if savedata
         Damysos.savedata(sim)
-        savemetadata(sim)
     end
     if saveplots
         plotdata(sim)

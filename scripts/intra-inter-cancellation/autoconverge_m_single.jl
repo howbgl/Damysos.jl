@@ -35,7 +35,7 @@ function make_system(
       σ         = uconvert(u"fs",1/freq)
       emax      = uconvert(u"MV/cm",ω*m / (vf * e * γ))
       us        = scaledriving_frequency(freq,vf)
-      df        = GaussianEPulse(us,σ,freq,emax)
+      df        = GaussianAPulse(us,σ,freq,emax)
       h         = GappedDirac(us,m,vf)
       l         = TwoBandDephasingLiouvillian(h,Inf,Inf)
 
@@ -58,7 +58,7 @@ function make_system(
       return Simulation(l,df,pars,obs,us,2,id,dpath,ppath)
 end
 
-function make_n_runtest(s;atolgoal=1e-12,rtolgoal=1e-5)
+function maketest(s;atolgoal=1e-12,rtolgoal=1e-5)
       method      = PowerLawTest(:dt,0.5)
       test        = ConvergenceTest(
             s,
@@ -68,8 +68,6 @@ function make_n_runtest(s;atolgoal=1e-12,rtolgoal=1e-5)
             rtolgoal,
             60*10,
             32)
-
-      run!(test)
 end
 
 function parse_cmdargs()
@@ -96,7 +94,7 @@ const rtolgoal = 1e-5
 const sim = make_system(
       z,
       M,
-      "hhgjl/inter-intra-cancellation/multiphoton/longer";
+      "hhgjl/inter-intra-cancellation/multiphoton/new";
       rtol=rtolgoal/2,
       atol=atolgoal/2)
 
@@ -106,7 +104,8 @@ ensurepath(logpath)
 global_logger(make_teelogger(logpath,"convergence-tests-z=$z-M=$M.log"))
 @info "Logging to \"$logpath\"/convergence-tests-z=$z-M=$M.log"
 
-res         = make_n_runtest(sim)
+test        = maketest(sim)
+res         = run!(test)
 str         = repr("text/plain",res)
 @info """
 Result for ζ = $z γ = $M

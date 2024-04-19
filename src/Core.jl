@@ -80,16 +80,16 @@ function prerun!(sim::Simulation)
 
     resize_obs!(sim)
     zero.(sim.observables)
+
+    return nothing
 end
 
 function postrun!(sim::Simulation;savedata=true,saveplots=true)
     
     normalize!.(sim.observables,(2π)^sim.dimensions)
 
-    if savedata
-        Damysos.savedata(sim)
-    end
-    if saveplots
-        plotdata(sim)
-    end
+    savedata && Damysos.savedata(sim)
+    saveplots && plotdata(sim)
+    
+    return nothing
 end

@@ -16,7 +16,7 @@ struct ConvergenceTest
     maxtime::Real
     maxiterations::Integer
     completedsims::Vector{Simulation}
-    parameterhistory::DataFrame
+    testdatafile::String
     allfunctions::Vector{Vector{<:Function}}
     function ConvergenceTest(
         start::Simulation,
@@ -25,7 +25,8 @@ struct ConvergenceTest
         atolgoal::Real=1e-12,
         rtolgoal::Real=1e-8,
         maxtime::Union{Real,Unitful.Time}=600,
-        maxiterations::Integer=64)
+        maxiterations::Integer=64;
+        altpath=joinpath(pwd(),start.datapath))
 
         maxtime = maxtime isa Real ? maxtime : ustrip(u"s",maxtime)
         
@@ -38,6 +39,21 @@ struct ConvergenceTest
             push!(fns,f)
         end
 
+        (success,path) = ensurepath([start.datapath,altpath])
+        !success && throw(ErrorException("could not create neceesary data directory"))
+
+        file = h5open(
+            joinpath(
+                path,
+                "convergencetest_$(getname(start))_$(getname(method)).hdf5"),
+            "cw")
+        filepath = file.filename
+        close(file)
+
+        @reset start.datapath = joinpath(start.datapath,"start")
+        @reset start.plotpath = joinpath(start.plotpath,"start")
+        @reset start.id       = "start_$(start.id)"
+
         return new(
             start,
             solver,
@@ -47,7 +63,7 @@ struct ConvergenceTest
             maxtime,
             maxiterations,
             empty([start]),
-            DataFrame(),
+            filepath,
             fns)
     end
 end
@@ -123,13 +139,10 @@ function run!(
         test.method;
         savetestresult=savetestresult,
         savesimdata=savealldata)
-    
-    # addhistory!(result.test)
-
-    @show length(result.test.completedsims)
 
     if !savealldata && savelastdata
-        savedata(result.test.completedsims[end])
+        savedata(test,test.completedsims[end])
+        savemetadata(test.completedsims[end])
     end
     return result
 end
@@ -145,31 +158,31 @@ function _run!(
     currentiteration    = 0
     elapsedtime_seconds = 0.0
     start               = test.start
+    done_sims           = test.completedsims
 
     while currentiteration < test.maxiterations && elapsedtime_seconds < test.maxtime
 
-        elapsed_round       = round(elapsedtime_seconds/60,sigdigits=3)
-        max_round           = round(test.maxtime/60,sigdigits=3)
-
-        if isempty(test.completedsims)
-            push!(test.completedsims,start)
-        elseif test.completedsims[end] == start # make sure subdir structure is correct
-            push!(test.completedsims,next(start,method,start.datapath,start.plotpath))
-        else
-            push!(test.completedsims,next(test.completedsims[end],method))
-        end
+        currentiteration += 1
+        currentsim    = isempty(done_sims) ? start : next(done_sims[end],method)
         
         elapsedtime_seconds += @elapsed run!(
-            test.completedsims[end],
-            test.allfunctions[currentiteration+1],
+            currentsim,
+            test.allfunctions[currentiteration],
             test.solver;
             saveplots=false,
-            savedata=savesimdata)
-        currentiteration    += 1
+            savedata=false)
+
+        elapsed_round = round(elapsedtime_seconds/60,sigdigits=3)
+        max_round     = round(test.maxtime/60,sigdigits=3)
         @info """
         - $(elapsed_round)min of $(max_round)min elapsed 
         - Iteration $currentiteration of maximum of $(test.maxiterations)
         """
+        if savesimdata
+            savedata(test,currentsim)
+            savemetadata(currentsim)
+        end
+        push!(done_sims,currentsim)
         converged(test) && break
     end
 
@@ -190,9 +203,7 @@ function _run!(
         test.completedsims[end])
     
     result = ConvergenceTestResult(test,converged(test),achieved_tol...)
-    if savetestresult
-        savedata(result,joinpath(start.datapath,"$(getname(method))-testresult.txt"))
-    end
+    savetestresult && savedata(result)
     return result
 end
 
@@ -211,20 +222,6 @@ function worst(results::Vector{ConvergenceTestResult},test::ConvergenceTest)
     ConvergenceTestResult(test,success,min_achieved_atol,min_achieved_rtol)
 end
 
-function addhistory!(test::ConvergenceTest)
-    
-    pars = []
-    for (s1,s2) in zip(test.completedsims[1:end-1],test.completedsims[2:end])
-        push!(pars,diffparams(s1.numericalparams,s2.numericalparams))
-    end
-    isempty(pars) && return DataFrame()
-    changed_parameters = union(pars...)
-    numericalparams    = [s.numericalparams for s in test.completedsims]
-    for s in changed_parameters
-        test.parameterhistory[!, s] = getproperty.(numericalparams,s)
-    end
-    return nothing
-end
 
 function findminimum_precision(
     s1::Simulation,
@@ -285,8 +282,7 @@ function Base.show(io::IO,::MIME"text/plain",t::ConvergenceTest)
     - method: $(methodstring)
     - atolgoal: $(t.atolgoal)
     - rtolgoal: $(t.rtolgoal)
-    - datapath: $(t.start.datapath)
-    - plotpath: $(t.start.plotpath)
+    - testdatafile: $(t.testdatafile)
     """ |> escape_underscores
     print(io,prepend_spaces(str,2))
 end
@@ -305,9 +301,6 @@ function Base.show(io::IO,::MIME"text/plain",r::ConvergenceTestResult)
         * atol: $(r.min_achieved_atol) 
         * rtol: $(r.min_achieved_rtol)
     - number of simulations: $(length(r.test.completedsims))
-
-    Parameter history:
-    $(r.test.parameterhistory)
 
     First simulation: 
     $(prepend_spaces(startparams,1))

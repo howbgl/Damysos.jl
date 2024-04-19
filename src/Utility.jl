@@ -244,6 +244,20 @@ function random_word()::String
     return selected_line
 end
 
+function appendtoname(filepath::String,s::String)
+    path,ext = splitext(filepath)
+    return path*s*ext
+end
+
+
+function rename_file_if_exists(filepath::String)
+    if isfile(filepath)
+        newpath = appendtoname(filepath,"_old_"*basename(tempname()))
+        mv(filepath,newpath)
+        @warn "Renamed $filepath to $newpath"
+    end
+end
+
 
 function try_execute_n_times(f::Function, n::Int, arg; wait_time::Real=10.0)
 

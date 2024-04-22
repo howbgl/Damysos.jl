@@ -5,8 +5,10 @@ using Accessors
 using CairoMakie
 using ColorSchemes
 using CSV
+using CUDA
 using Dagger
 using Dates
+using DiffEqGPU
 using Distributed
 using DataFrames
 using DSP

@@ -4,6 +4,7 @@ export define_functions
 export run!
 
 include("solvers/LinearChunked.jl")
+include("solvers/LinearCUDA.jl")
 
 """
     run!(sim, functions[, solver]; kwargs...)

@@ -202,6 +202,7 @@ end
 function buildobservable_expression_vec_upt(sim::Simulation,::Velocity)
 
     h   = sim.liouvillian.hamiltonian
+    df  = sim.drivingfield
     ax  = vecpotx(df)
     ay  = vecpoty(df)
 

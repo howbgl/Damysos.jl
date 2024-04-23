@@ -201,7 +201,9 @@ end
 
 function buildobservable_expression_vec_upt(sim::Simulation,::Velocity)
 
-    h = sim.liouvillian.hamiltonian
+    h   = sim.liouvillian.hamiltonian
+    ax  = vecpotx(df)
+    ay  = vecpoty(df)
 
     vxintra = build_expression_vxintra(h)
     vxinter = build_expression_vxinter(h)

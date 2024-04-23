@@ -10,9 +10,9 @@ export NumericalParams1d
 export NumericalParams2d
 export NumericalParams2dSlice
 
-getnt(p::NumericalParameters)           = 2*Int(cld(abs(p.t0),p.dt))
+getnt(p::NumericalParameters)           = length(gettsamples(p))
 getnkx(p::NumericalParameters)          = 2*Int(cld(p.kxmax,p.dkx))
-gettsamples(p::NumericalParameters)     = LinRange(-abs(p.t0),abs(p.t0),getnt(p))
+gettsamples(p::NumericalParameters)     = -abs(p.t0):p.dt:abs(p.t0)
 getkxsamples(p::NumericalParameters)    = LinRange(-p.kxmax,p.kxmax,getnkx(p))
 gettspan(p::NumericalParameters)        = (gettsamples(p)[1],gettsamples(p)[end])
 

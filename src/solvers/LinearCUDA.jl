@@ -78,7 +78,7 @@ function solvechunk(
 end
 
 function sum_observables!(
-    kchunk::Vector{SVector{2,T}},
+    kchunk::Vector{<:SVector{2,<:Real}},
     us::CuArray{<:SVector{2,<:Complex}},
     ts::CuArray{<:Real,2},
     bzmask::Function,

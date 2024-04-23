@@ -64,7 +64,7 @@ end
 end
 
 
-function replace_expression!(e, old, new)
+function replace_expression!(e::Expr, old::Union{Expr,Symbol}, new::Union{Expr,Symbol})
     for (i,a) in enumerate(e.args)
         if a==old
             e.args[i] = new
@@ -73,7 +73,14 @@ function replace_expression!(e, old, new)
         end
         ## otherwise do nothing
     end
-    e
+    return e
+end
+
+function replace_expressions!(e::Expr,rules::Dict)
+    for (old,new) in rules
+        replace_expression!(e,old,new)
+    end
+    return e
 end
 
 function subdivide_vector(vec::AbstractVector,basesize::Integer)

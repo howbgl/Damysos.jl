@@ -1,5 +1,6 @@
 
 export LinearChunked
+export ntrajectories
 
 """
     LinearChunked{T}
@@ -40,8 +41,7 @@ function run!(
         Solver: $(repr(solver))
     """
 
-    prob,kchunks = buildensemble_chunked_linear(sim,functions...;
-        kchunk_size=solver.kchunksize)
+    prob,kchunks = buildensemble(sim,solver,functions...)
     
     res = solve(
         prob,
@@ -67,6 +67,68 @@ function define_functions(sim::Simulation,::LinearChunked)
         (cc,cv,kx,ky,t) -> $cvex,
         (p,t) -> $(buildbzmask_expression_upt(sim)),
         (u,p,t) -> $(buildobservable_expression_upt(sim))]
+end
+
+function observables_out(sol,bzmask,obsfunction)
+
+    p       = sol.prob.p
+    weigths = zeros(eltype(p[1]),length(p))
+    obs     = []
+
+    for (i,u,t) in zip(1:length(sol.u),sol.u,sol.t)
+
+        weigths = bzmask.(p,t)
+        rho     = reinterpret(SVector{2,eltype(u)},reshape(u,(2,:)))' .* weigths
+        push!(obs,sum(obsfunction.(rho,p,t)))
+    end
+
+    return (obs,false)
+end
+
+
+function buildensemble(
+    sim::Simulation,
+    solver::LinearChunked,
+    rhs_cc::Function,
+    rhs_cv::Function,
+    bzmask::Function,
+    obsfunction::Function)
+
+    kbatches        = buildkgrid_batches(sim,solver.kchunksize)
+    prob            = buildode(sim,solver,kbatches[1],rhs_cc,rhs_cv)
+    ensprob         = EnsembleProblem(
+        prob,
+        prob_func   = let kb=kbatches
+            (prob,i,repeat) -> remake(
+                prob,
+                p = kb[i],
+                u0 = zeros(Complex{eltype(kb[i][1])},2length(kb[i])))
+        end,
+        output_func = (sol,i) -> observables_out(sol,bzmask,obsfunction),
+        reduction   = (u, data, I) -> (append!(u,sum(data)),false),
+        safetycopy  = false)
+    
+    return ensprob,kbatches
+end
+
+function buildode(
+    sim::Simulation{T},
+    ::LinearChunked,
+    kbatch::Vector{SVector{2,T}},
+    rhs_cc::Function,
+    rhs_cv::Function) where {T<:Real}
+
+    tspan   = gettspan(sim.numericalparams)
+    u0      = zeros(Complex{T},2length(kbatch))
+
+    function f(du,u,p,t)
+        for i in 1:length(p)
+            @inbounds du[2i-1]    = rhs_cc(u[2i-1],u[2i],p[i][1],p[i][2],t)
+            @inbounds du[2i]      = rhs_cv(u[2i-1],u[2i],p[i][1],p[i][2],t)
+        end
+    end
+
+    return ODEProblem{true}(f,u0,tspan,kbatches[1])
 end
 
 
@@ -100,3 +162,4 @@ function Base.show(io::IO,::MIME"text/plain",s::LinearChunked)
     print(io,prepend_spaces(str,2))
 end
 
+ntrajectories(sim) = getnkx(sim.numericalparams) * getnky(sim.numericalparams)

@@ -6,6 +6,9 @@ export run!
 include("solvers/LinearChunked.jl")
 include("solvers/LinearCUDA.jl")
 
+DEFAULT_REDUCTION(u, data, I) = (append!(u,sum(data)),false)
+
+
 """
     run!(sim, functions[, solver]; kwargs...)
 

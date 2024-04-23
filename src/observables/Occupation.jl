@@ -20,7 +20,7 @@ function Occupation(h::Hamiltonian{T}) where {T<:Real}
     return Occupation(Vector{T}(undef,0))
 end
 function Occupation(p::NumericalParameters{T}) where {T<:Real}
-    return Occupation(zeros(T,getparams(p).nt))
+    return Occupation(zeros(T,getnt(p)))
 end
 
 function resize(o::Occupation,p::NumericalParameters)
@@ -67,8 +67,26 @@ function Base.isapprox(
     return Base.isapprox(cb1,cb2;atol=atol,rtol=rtol,nans=nans)
 end
 
-buildobservable_expression(sim::Simulation,o::Occupation)    = :(real(cc))
-buildobservable_expression_upt(sim::Simulation,::Occupation) = :(real(u[1]))
+buildobservable_expression(sim::Simulation,o::Occupation)    = :(SA[real(cc)])
+buildobservable_expression_upt(sim::Simulation,::Occupation) = :(SA[real(u[1])])
+
+buildobservable_expression_vec_upt(sim::Simulation,::Occupation) = [:(real(u[1]))]
+
+
+function sum_observables!(
+    o::Occupation,
+    funcs::Vector,
+    d_kchunk::CuArray{<:SVector{2,<:Real}},
+    d_us::CuArray{<:SVector{2,<:Complex}},
+    d_ts::CuArray{<:Real,2},
+    buf::CuArray{<:Real,2})
+
+    cb          = funcs[1]
+    buf         .= cb.(d_us,d_kchunk',d_ts)
+    total       = reduce(+,buf;dims=2)
+    o.cbocc     .= Array(total)
+    return o
+end
 
 
 function write_ensembledata_to_observable!(o::Occupation,data::Vector{<:Real})

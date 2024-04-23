@@ -40,12 +40,29 @@ end
 
 function buildobservable_expression_upt(sim::Simulation)
     expressions = [buildobservable_expression_upt(sim,o) for o in sim.observables]
-    return :([$(expressions...)])
+    return :(SA[$(expressions...)])
 end
 
 function buildobservable_expression(sim::Simulation)
     expressions = [buildobservable_expression(sim,o) for o in sim.observables]
-    return :([$(expressions...)])
+    return :(SA[$(expressions...)])
+end
+
+function buildobservable_expression_vec_upt(sim::Simulation)
+    return [buildobservable_expression_vec_upt(sim,o) for o in sim.observables]
+end
+
+function define_observable_functions(sim::Simulation,o::Observable)
+    return [@eval (u,p,t) -> $ex for ex in buildobservable_expression_vec_upt(sim,o)]
+end
+
+function define_observable_functions(sim::Simulation)
+    return [define_observable_functions(sim,o) for o in sim.observables]
+end
+
+
+function define_bzmask(sim::Simulation)
+    @eval (p,t) -> $(buildbzmask_expression_upt(sim))
 end
 
 function write_ensemblesols_to_observables!(sim::Simulation,data)

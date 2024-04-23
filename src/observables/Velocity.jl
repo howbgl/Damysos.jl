@@ -38,8 +38,7 @@ end
 
 function Velocity(p::NumericalParameters{T}) where {T<:Real}
 
-    params      = getparams(p)
-    nt          = params.nt
+    nt          = getnt(p)
 
     vxintra     = zeros(T,nt)
     vxinter     = zeros(T,nt)
@@ -48,12 +47,13 @@ function Velocity(p::NumericalParameters{T}) where {T<:Real}
     vyinter     = zeros(T,nt)
     vy          = zeros(T,nt)
 
-    return Velocity(vx,
-                    vxintra,
-                    vxinter,
-                    vy,
-                    vyintra,
-                    vyinter)
+    return Velocity(
+        vx,
+        vxintra,
+        vxinter,
+        vy,
+        vyintra,
+        vyinter)
 end
 
 function resize(v::Velocity,p::NumericalParameters)
@@ -155,60 +155,87 @@ function Base.isapprox(
         isapprox(vy1,vy2;atol=atol,rtol=rtol,nans=nans)])
 end
 
+build_expression_vxintra(h::Hamiltonian) = :(real(cc) * ($(vx_cc(h)) - $(vx_vv(h))))
+build_expression_vxinter(h::Hamiltonian) = :(2real(cv * $(vx_vc(h))))
+build_expression_vyintra(h::Hamiltonian) = :(real(cc) * ($(vy_cc(h)) - $(vy_vv(h))))
+build_expression_vyinter(h::Hamiltonian) = :(2real(cv * $(vy_vc(h))))
+
+function build_expression_velocity_svec(h::Hamiltonian)
+
+    vxintra_expr = build_expression_vxintra(h)
+    vxinter_expr = build_expression_vxinter(h)
+    vyintra_expr = build_expression_vyintra(h)
+    vyinter_expr = build_expression_vyinter(h)
+
+    return :(SA[$vxintra_expr,$vxinter_expr,$vyintra_expr,$vyinter_expr])
+end
 
 function buildobservable_expression_upt(sim::Simulation,::Velocity)
     
-    h    = sim.liouvillian.hamiltonian
-    df   = sim.drivingfield
-
-    vxvc = vx_vc(h)
-    vxcc = vx_cc(h)
-    vxvv = vx_vv(h)
-    vyvc = vy_vc(h)
-    vycc = vy_cc(h)
-    vyvv = vy_vv(h)
-
+    h   = sim.liouvillian.hamiltonian
+    df  = sim.drivingfield
     ax  = vecpotx(df)
     ay  = vecpoty(df)
     
-    vxintra_expr = :(real(cc) * ($vxcc - $vxvv))
-    vxinter_expr = :(2real(cv * $vxvc))
-    vyintra_expr = :(real(cc) * ($vycc - $vyvv))
-    vyinter_expr = :(2real(cv * $vyvc))
-    vel_expr     = :(SA[$vxintra_expr,$vxinter_expr,$vyintra_expr,$vyinter_expr])
-
-    replace_expression!(vel_expr,:kx,:(kx-$ax))
-    replace_expression!(vel_expr,:cc,:(u[1]))
-    replace_expression!(vel_expr,:cv,:(u[2]))
-    replace_expression!(vel_expr,:kx,:(p[1]))
-    replace_expression!(vel_expr,:ky,:(p[2]))
+    vel_expr = build_expression_velocity_svec(h)
+    rules    = Dict(
+        :kx => :(p[1] - $ax),
+        :ky => :(p[2]),
+        :cc => :(u[1]),
+        :cv => :(u[2]))
     
-    return vel_expr
+    return replace_expressions!(vel_expr,rules)
 end
 
-function buildobservable_expression(sim::Simulation,v::Velocity)
+function buildobservable_expression(sim::Simulation,::Velocity)
     
-    h    = sim.liouvillian.hamiltonian
-    df   = sim.drivingfield
-
-    vxvc = vx_vc(h)
-    vxcc = vx_cc(h)
-    vxvv = vx_vv(h)
-    vyvc = vy_vc(h)
-    vycc = vy_cc(h)
-    vyvv = vy_vv(h)
-
+    h   = sim.liouvillian.hamiltonian
+    df  = sim.drivingfield
     ax  = vecpotx(df)
     ay  = vecpoty(df)
-    
-    vxintra_expr = :(real(u[1]) * ($vxcc - $vxvv))
-    vxinter_expr = :(2real(u[2] * $vxvc))
-    vyintra_expr = :(real(u[1]) * ($vycc - $vyvv))
-    vyinter_expr = :(2real(u[2] * $vyvc))
-    vel_expr     = :(SA[$vxintra_expr,$vxinter_expr,$vyintra_expr,$vyinter_expr])
 
-    replace_expression!(vel_expr,:kx,:(kx-$ax))
-    return vel_expr
+    vel_expr = build_expression_velocity_svec(h)
+
+    return replace_expression!(vel_expr,:kx,:(kx-$ax))
+end
+
+function buildobservable_expression_vec_upt(sim::Simulation,::Velocity)
+
+    h = sim.liouvillian.hamiltonian
+
+    vxintra = build_expression_vxintra(h)
+    vxinter = build_expression_vxinter(h)
+    vyintra = build_expression_vyintra(h)
+    vyinter = build_expression_vyinter(h)
+    rules   = Dict(
+        :kx => :(p[1] - $ax),
+        :ky => :(p[2]),
+        :cc => :(u[1]),
+        :cv => :(u[2]))
+    
+    for v in (vxintra,vxinter,vyintra,vyinter)
+        replace_expressions!(v,rules)
+    end
+    
+    return [vxintra,vxinter,vyintra,vyinter]
+end
+
+function sum_observables!(
+    v::Velocity,
+    funcs::Vector,
+    d_kchunk::CuArray{<:SVector{2,<:Real}},
+    d_us::CuArray{<:SVector{2,<:Complex}},
+    d_ts::CuArray{<:Real,2},
+    buf::CuArray{<:Real,2})
+
+    vcontributions = (v.vxintra,v.vxinter,v.vyintra,v.vyinter)
+
+    for (vm,f) in zip(vcontributions,funcs) 
+        buf     .= f.(d_us,d_kchunk',d_ts)
+        total   = reduce(+,buf;dims=2)
+        vm      .= Array(total)
+    end
+    return v
 end
 
 function write_ensembledata_to_observable!(v::Velocity,data::Vector{<:SVector{4,<:Real}})

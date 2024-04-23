@@ -51,6 +51,41 @@ function Base.show(io::IO,::MIME"text/plain",s::LinearCUDA)
 end
 
 
+function run!(
+    sim::Simulation,
+    functions,
+    solver::LinearCUDA;
+    savedata=true,
+    saveplots=true)
+
+    prerun!(sim;savedata=savedata,saveplots=saveplots)
+
+    @info """
+        Solver: $(repr(solver))
+    """
+    rhs,bzmask,obsfuncs = functions
+    totalobs            = Vector{Vector{Observable}}(undef,0)
+
+    @progress name="Simulation" for ks in buildkgrid_chunks(sim,solver.kchunksize)
+        d_ts,d_us = solvechunk(sim,solver,ks,rhs)
+        obs       = deepcopy(sim.observables)
+
+        sum_observables!(cu(ks),d_us,d_ts,bzmask,obs,obsfuncs)
+        push!(totalobs,obs)
+    end
+    
+    sim.observables .= sum(totalobs)
+
+    postrun!(sim;savedata=savedata,saveplots=saveplots)
+
+    return sim.observables 
+end
+
+function define_functions(sim::Simulation,::LinearCUDA)
+    return (define_rhs_x(sim),define_bzmask(sim),define_observable_functions(sim))
+end
+
+
 function solvechunk(
     sim::Simulation{T},
     solver::LinearCUDA,
@@ -78,12 +113,14 @@ function solvechunk(
 end
 
 function sum_observables!(
-    kchunk::Vector{<:SVector{2,<:Real}},
-    us::CuArray{<:SVector{2,<:Complex}},
-    ts::CuArray{<:Real,2},
+    d_kchunk::CuArray{<:SVector{2,<:Real}},
+    d_us::CuArray{<:SVector{2,<:Complex}},
+    d_ts::CuArray{<:Real,2},
     bzmask::Function,
-    obsfuncs::Vector{Vector{Function}})
+    obs::Vector{<:Observable},
+    obsfuncs::Vector{Vector})
 
-    d_kchunk    = cu(kchunk)
-    us          .*= bzmask.(d_kchunk',ts)
+    d_us          .*= bzmask.(d_kchunk',d_ts)
+    buf         = zero(d_ts)
+    return [sum_observables!(o,f,d_kchunk,d_us,d_ts,buf) for (o,f) in zip(obs,obsfuncs)]
 end

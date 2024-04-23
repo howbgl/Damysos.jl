@@ -63,7 +63,7 @@ Vector of functions used by [`run!`](@ref).
 """
 define_functions(sim::Simulation) = define_functions(sim,LinearChunked())
 
-function prerun!(sim::Simulation)
+function prerun!(sim::Simulation;savedata=true,saveplots=true)
 
     @info """
         ## $(getshortname(sim)) (id: $(sim.id))
@@ -79,8 +79,8 @@ function prerun!(sim::Simulation)
         """
 
     checkbzbounds(sim)
-    ensurepath(sim.datapath)
-    ensurepath(sim.plotpath)
+    savedata && ensurepath(sim.datapath)
+    saveplots && ensurepath(sim.plotpath)
 
     resize_obs!(sim)
     zero.(sim.observables)

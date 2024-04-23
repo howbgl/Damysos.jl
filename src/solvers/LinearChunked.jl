@@ -35,7 +35,7 @@ function run!(
     savedata=true,
     saveplots=true)
 
-    prerun!(sim)
+    prerun!(sim;savedata=savedata,saveplots=saveplots)
 
     @info """
         Solver: $(repr(solver))

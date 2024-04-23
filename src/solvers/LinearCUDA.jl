@@ -118,7 +118,7 @@ function sum_observables!(
     d_ts::CuArray{<:Real,2},
     bzmask::Function,
     obs::Vector{<:Observable},
-    obsfuncs::Vector{Vector})
+    obsfuncs::Vector{<:Vector})
 
     d_us          .*= bzmask.(d_kchunk',d_ts)
     buf         = zero(d_ts)

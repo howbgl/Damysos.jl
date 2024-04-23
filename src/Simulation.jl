@@ -199,7 +199,7 @@ function resize_obs!(sim::Simulation{T}) where {T<:Real}
     sim.observables .= [resize(o, sim.numericalparams) for o in sim.observables]
 end
 
-function buildkgrid_batches(sim::Simulation,kchunksize::Integer=DEFAULT_K_CHUNK_SIZE)
+function buildkgrid_chunks(sim::Simulation,kchunksize::Integer=DEFAULT_K_CHUNK_SIZE)
     kxs            = collect(getkxsamples(sim.numericalparams))
     kys            = collect(getkysamples(sim.numericalparams))
     ks             = [getkgrid_point(i,kxs,kys) for i in 1:ntrajectories(sim)]

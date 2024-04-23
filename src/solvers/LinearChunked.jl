@@ -94,7 +94,7 @@ function buildensemble(
     bzmask::Function,
     obsfunction::Function)
 
-    kbatches        = buildkgrid_batches(sim,solver.kchunksize)
+    kbatches        = buildkgrid_chunks(sim,solver.kchunksize)
     prob            = buildode(sim,solver,kbatches[1],rhs_cc,rhs_cv)
     ensprob         = EnsembleProblem(
         prob,

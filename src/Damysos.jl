@@ -8,7 +8,6 @@ using CSV
 using CUDA
 using Dagger
 using Dates
-using DiffEqGPU
 using Distributed
 using DataFrames
 using DSP
@@ -21,6 +20,7 @@ using StaticArrays
 using TerminalLoggers
 
 @reexport using DifferentialEquations
+@reexport using DiffEqGPU
 @reexport using Unitful
 @reexport using SpecialFunctions
 

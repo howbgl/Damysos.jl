@@ -194,7 +194,7 @@ function checkbzbounds(sim::Simulation)
     end
 end
 
-function resize_obs!(sim::Simulation{T}) where {T<:Real}
+function resize_obs!(sim::Simulation)
 
     sim.observables .= [resize(o, sim.numericalparams) for o in sim.observables]
 end

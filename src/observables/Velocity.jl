@@ -155,9 +155,9 @@ function Base.isapprox(
         isapprox(vy1,vy2;atol=atol,rtol=rtol,nans=nans)])
 end
 
-build_expression_vxintra(h::Hamiltonian) = :(real(cc) * ($(vx_cc(h)) - $(vx_vv(h))))
+build_expression_vxintra(h::Hamiltonian) = :(real(cc)*$(vx_cc(h))+(1-real(cc))* $(vx_vv(h)))
 build_expression_vxinter(h::Hamiltonian) = :(2real(cv * $(vx_vc(h))))
-build_expression_vyintra(h::Hamiltonian) = :(real(cc) * ($(vy_cc(h)) - $(vy_vv(h))))
+build_expression_vyintra(h::Hamiltonian) = :(real(cc)*$(vy_cc(h))+(1-real(cc))* $(vy_vv(h)))
 build_expression_vyinter(h::Hamiltonian) = :(2real(cv * $(vy_vc(h))))
 
 function build_expression_velocity_svec(h::Hamiltonian)

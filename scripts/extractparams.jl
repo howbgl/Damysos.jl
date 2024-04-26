@@ -11,16 +11,16 @@ function extract_values(input::AbstractString)
     return matches
 end
 
-function process(files::AbstractVector)
+function process(files::AbstractVector,args...)
     dicts = []
     for f in files
-        d = process(f)
+        d = process(f,args...)
         !isnothing(d) && push!(dicts,d)
     end
     return DataFrame(dicts)
 end
 
-function process(path::AbstractString)
+function process(path::AbstractString,rtolthresh=1e-4)
 
     filecontent = read(path,String)
     if length(filecontent)<500 # skip old files
@@ -31,18 +31,23 @@ function process(path::AbstractString)
 
     headvals = extract_values(head)
     pvals    = extract_values(p)
-    @show filecontent
 
-    if headvals["rtol"]<1e-4
+    if headvals["rtol"]<rtolthresh
         return Dict(
             "rtol"=>headvals["rtol"],
             "atol"=>headvals["atol"],
             "ζ"=>pvals["ζ"],
             "γ"=>pvals["γ"],
             "dt"=>pvals["dt"],
-            "dkx"=>pvals["dkx"])
+            "dkx"=>pvals["dkx"],
+            "M"=>pvals["M"],
+            "kxmax"=>pvals["kxmax"],
+            "nkx"=>pvals["nkx"],
+            "eE"=>pvals["eE"],
+            "ω"=>pvals["ω"],
+            "amax"=>pvals["eE"] ./ pvals["ω"])
     else
-        @warn "rtol > 1e-4"
+        @warn "rtol > $rtolthresh"
         return
     end
 

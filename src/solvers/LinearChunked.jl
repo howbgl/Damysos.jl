@@ -128,7 +128,7 @@ function buildode(
         end
     end
 
-    return ODEProblem{true}(f,u0,tspan,kbatches[1])
+    return ODEProblem{true}(f,u0,tspan,kbatch)
 end
 
 

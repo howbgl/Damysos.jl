@@ -206,6 +206,12 @@ function buildkgrid_chunks(sim::Simulation,kchunksize::Integer=DEFAULT_K_CHUNK_S
     return subdivide_vector(ks,kchunksize)
 end
 
+function define_functions(sim::Simulation,solver::DamysosSolver)
+    return (
+        define_rhs_x(sim,solver),
+        define_bzmask(sim,solver),
+        define_observable_functions(sim,solver))
+end
 
 
 function Base.show(io::IO,::MIME"text/plain",c::Union{SimulationComponent,Hamiltonian})

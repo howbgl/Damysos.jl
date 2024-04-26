@@ -170,7 +170,7 @@ function build_expression_velocity_svec(h::Hamiltonian)
     return :(SA[$vxintra_expr,$vxinter_expr,$vyintra_expr,$vyinter_expr])
 end
 
-function buildobservable_expression_upt(sim::Simulation,::Velocity)
+function buildobservable_expression_svec_upt(sim::Simulation,::Velocity)
     
     h   = sim.liouvillian.hamiltonian
     df  = sim.drivingfield
@@ -187,19 +187,7 @@ function buildobservable_expression_upt(sim::Simulation,::Velocity)
     return replace_expressions!(vel_expr,rules)
 end
 
-function buildobservable_expression(sim::Simulation,::Velocity)
-    
-    h   = sim.liouvillian.hamiltonian
-    df  = sim.drivingfield
-    ax  = vecpotx(df)
-    ay  = vecpoty(df)
-
-    vel_expr = build_expression_velocity_svec(h)
-
-    return replace_expression!(vel_expr,:kx,:(kx-$ax))
-end
-
-function buildobservable_expression_vec_upt(sim::Simulation,::Velocity)
+function buildobservable_vec_of_expr(sim::Simulation,::Velocity)
 
     h   = sim.liouvillian.hamiltonian
     df  = sim.drivingfield

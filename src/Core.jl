@@ -46,7 +46,7 @@ function run!(
 end
 
 """
-    define_functions(sim[, solver])
+    define_functions(sim,solver)
 
 Hardcode the functions needed to run the Simulation. 
 
@@ -61,7 +61,7 @@ Vector of functions used by [`run!`](@ref).
 [`Simulation`](@ref), [`run!`](@ref), [`LinearChunked`](@ref)
 
 """
-define_functions(sim::Simulation) = define_functions(sim,LinearChunked())
+function define_functions end
 
 function prerun!(sim::Simulation;savedata=true,saveplots=true)
 

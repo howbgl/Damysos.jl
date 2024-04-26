@@ -67,10 +67,8 @@ function Base.isapprox(
     return Base.isapprox(cb1,cb2;atol=atol,rtol=rtol,nans=nans)
 end
 
-buildobservable_expression(sim::Simulation,o::Occupation)    = :(SA[real(cc)])
-buildobservable_expression_upt(sim::Simulation,::Occupation) = :(SA[real(u[1])])
-
-buildobservable_expression_vec_upt(sim::Simulation,::Occupation) = [:(real(u[1]))]
+buildobservable_expression_svec_upt(sim::Simulation,::Occupation) = :(SA[real(u[1])])
+buildobservable_vec_of_expr(sim::Simulation,::Occupation)         = [:(real(u[1]))]
 
 
 function sum_observables!(

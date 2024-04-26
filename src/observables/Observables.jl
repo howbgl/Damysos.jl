@@ -1,10 +1,6 @@
 import LinearAlgebra: normalize!,copyto!
 import Base: +,-,*,zero,empty
 
-export buildbzmask
-export buildbzmask_expression
-export buildobservable
-export buildobservable_expression
 export bzmask1d
 export getnames_obs
 export Observable
@@ -20,49 +16,13 @@ bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
 include("Velocity.jl")
 include("Occupation.jl")
 
-function buildbzmask_expression_upt(sim::Simulation)
-
-    bz = getbzbounds(sim)
-    ax = vecpotx(sim.drivingfield)
-    dkx = sim.numericalparams.dkx
-
-    return :(bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2])))
-end
-
-function buildbzmask_expression(sim::Simulation)
-
-    bz = getbzbounds(sim)
-    ax = vecpotx(sim.drivingfield)
-    dkx = sim.numericalparams.dkx
-
-    return :(bzmask1d(kx - $ax,$dkx,$(bz[1]),$(bz[2])))
-end
-
-function buildobservable_expression_upt(sim::Simulation)
-    expressions = [buildobservable_expression_upt(sim,o) for o in sim.observables]
-    return :(SA[$(expressions...)])
-end
-
-function buildobservable_expression(sim::Simulation)
-    expressions = [buildobservable_expression(sim,o) for o in sim.observables]
-    return :(SA[$(expressions...)])
-end
-
-function buildobservable_expression_vec_upt(sim::Simulation)
-    return [buildobservable_expression_vec_upt(sim,o) for o in sim.observables]
-end
-
-function define_observable_functions(sim::Simulation,o::Observable)
-    return [@eval (u,p,t) -> $ex for ex in buildobservable_expression_vec_upt(sim,o)]
-end
-
-function define_observable_functions(sim::Simulation)
-    return [define_observable_functions(sim,o) for o in sim.observables]
-end
-
-
 function define_bzmask(sim::Simulation)
-    @eval (p,t) -> $(buildbzmask_expression_upt(sim))
+
+    bz = getbzbounds(sim)
+    ax = vecpotx(sim.drivingfield)
+    dkx = sim.numericalparams.dkx
+
+    @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2]))
 end
 
 function write_ensemblesols_to_observables!(sim::Simulation,data)
@@ -97,4 +57,27 @@ function getmovingbz(sim::Simulation{T},kxsamples::AbstractVector{T}) where {T<:
         moving_bz[:,i] .= bzmask1d.(kxsamples .- ax(p.tsamples[i]))
     end
     return moving_bz    
+end
+
+
+function getbzbounds(df::GaussianAPulse,p::NumericalParams1d)
+    kxmax = p.kxmax
+    axmax = df.eE / df.ω
+    return (-kxmax + 1.3axmax,kxmax - 1.3axmax)
+end
+
+function getbzbounds(df::GaussianAPulse,p::NumericalParams2d)
+
+    amax = 1.3df.eE / df.ω
+    return (
+        -p.kxmax + cos(df.φ)*amax,
+        p.kxmax - cos(df.φ)*amax,
+        -p.kymax + sin(df.φ)*amax,
+        p.kymax - sin(df.φ)*amax)
+end
+
+function maximum_kdisplacement(df::DrivingField,ts::AbstractVector{<:Real})
+    axmax = maximum(abs.(map(t -> vecpotx(df,t),ts)))
+    aymax = maximum(abs.(map(t -> vecpoty(df,t),ts)))
+    return maximum((axmax,aymax))
 end

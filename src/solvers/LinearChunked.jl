@@ -41,7 +41,11 @@ function run!(
         Solver: $(repr(solver))
     """
 
-    prob,kchunks = buildensemble(sim,solver,functions...)
+    rhscc,rhscv = functions[1]
+    fns = (rhscc,rhscv,functions[2:end]...)
+    @show fns
+
+    prob,kchunks = buildensemble(sim,solver,fns...)
     
     res = solve(
         prob,
@@ -59,14 +63,17 @@ function run!(
     return sim.observables 
 end
 
-function define_functions(sim::Simulation,::LinearChunked)
-
+function define_rhs_x(sim::Simulation,::LinearChunked)
+    
     ccex,cvex = buildrhs_cc_cv_x_expression(sim)
-    return @eval [
-        (cc,cv,kx,ky,t) -> $ccex,
-        (cc,cv,kx,ky,t) -> $cvex,
-        (p,t) -> $(buildbzmask_expression_upt(sim)),
-        (u,p,t) -> $(buildobservable_expression_upt(sim))]
+    return (@eval (cc,cv,kx,ky,t) -> $ccex, @eval (cc,cv,kx,ky,t) -> $cvex)
+end
+
+define_bzmask(sim::Simulation,::LinearChunked) = define_bzmask(sim)
+
+function define_observable_functions(sim::Simulation,::LinearChunked)
+    expressions = [buildobservable_expression_svec_upt(sim,o) for o in sim.observables]
+    return @eval (u,p,t) -> SA[$(expressions...)]
 end
 
 function observables_out(sol,bzmask,obsfunction)

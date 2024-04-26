@@ -81,10 +81,19 @@ function run!(
     return sim.observables 
 end
 
-function define_functions(sim::Simulation,::LinearCUDA)
-    return (define_rhs_x(sim),define_bzmask(sim),define_observable_functions(sim))
+function define_rhs_x(sim::Simulation,::LinearCUDA)
+    return @eval (u,p,t) -> $(buildrhs_x_expression(sim.liouvillian,sim.drivingfield))
 end
 
+define_bzmask(sim::Simulation,::LinearCUDA) = define_bzmask(sim)
+
+function define_observable_functions(sim::Simulation,solver::LinearCUDA)
+    return [define_observable_functions(sim,solver,o) for o in sim.observables]
+end
+
+function define_observable_functions(sim::Simulation,::LinearCUDA,o::Observable)
+    return [@eval (u,p,t) -> $ex for ex in buildobservable_vec_of_expr(sim,o)]
+end
 
 function solvechunk(
     sim::Simulation{T},

@@ -16,13 +16,13 @@ using Interpolations
 using ProgressLogging
 using Random
 using Reexport
-using StaticArrays
 using TerminalLoggers
 
 @reexport using DifferentialEquations
 @reexport using DiffEqGPU
 @reexport using Unitful
 @reexport using SpecialFunctions
+@reexport using StaticArrays
 
 import Base.promote_rule
 

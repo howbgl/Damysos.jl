@@ -16,7 +16,8 @@ k points are computed concurrently on a CUDA GPU
 julia> solver = LinearCUDA(256,GPUVern9())
 LinearCUDA{Int64}(256, GPUVern9())
 ```
-
+# See also
+[`LinearChunked`](@ref LinearChunked), [`SingleMode`](@ref SingleMode)
 """
 struct LinearCUDA{T<:Integer} <: DamysosSolver 
     kchunksize::T
@@ -37,7 +38,7 @@ end
 
 function LinearCUDA(
     kchunksize::Integer=DEFAULT_K_CHUNK_SIZE,
-    algorithm::DiffEqGPU.GPUODEAlgorithm=GPUTsit5())
+    algorithm::DiffEqGPU.GPUODEAlgorithm=GPUVern7())
     return LinearCUDA{typeof(kchunksize)}(kchunksize,algorithm)
 end
 
@@ -81,9 +82,7 @@ function run!(
     return sim.observables 
 end
 
-function define_rhs_x(sim::Simulation,::LinearCUDA)
-    return @eval (u,p,t) -> $(buildrhs_x_expression(sim.liouvillian,sim.drivingfield))
-end
+define_rhs_x(sim::Simulation,::LinearCUDA) = @eval (u,p,t) -> $(buildrhs_x_expression(sim))
 
 define_bzmask(sim::Simulation,::LinearCUDA) = define_bzmask(sim)
 

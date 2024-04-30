@@ -15,6 +15,7 @@ Represents a simulation with all physical and numerical parameters specified.
 - `id::String`: identifier of the Simulation
 - `datapath::String`: path to save computed observables and simulation metadata
 - `plotpath::String`: path to savee automatically generated plots
+- `dimensions::UInt8`: system can be 0d (single mode),1d or 2d
 
 # See also
 [`Ensemble`](@ref), [`TwoBandDephasingLiouvillian`](@ref), [`UnitScaling`](@ref),
@@ -26,22 +27,12 @@ struct Simulation{T<:Real}
     numericalparams::NumericalParameters{T}
     observables::Vector{Observable{T}}
     unitscaling::UnitScaling{T}
-    dimensions::UInt8
     id::String
     datapath::String
     plotpath::String
-    function Simulation{T}(l,df,p,obs,us,d,id,dpath,ppath) where {T<:Real}
-
-        _d = d
-        if p isa NumericalParams1d{T} && d!=1
-            @warn "given dimensions ($d) not matching $p\nsetting dimensions to 1"
-            _d = 1
-        elseif p isa NumericalParams2d{T} && d!=2
-            @warn "given dimensions ($d) not matching $p\nsetting dimensions to 2"
-            _d = 2
-        end
-
-        new(l,df,p,obs,us,_d,id,dpath,ppath)
+    dimensions::UInt8
+    function Simulation{T}(l,df,p,obs,us,id,dpath,ppath) where {T<:Real}
+        new(l,df,p,obs,us,id,dpath,ppath,getdimension(p))
     end
 end
 
@@ -84,6 +75,24 @@ function Simulation(
 
     id = string(hash([l,df,p,obs,us,d]),base=16)
     return Simulation(l,df,p,obs,us,d,id)
+end
+
+function Simulation(
+    l::Liouvillian,
+    df::DrivingField,
+    p::NumericalParameters,
+    obs::Vector{O} where {O<:Observable},
+    us::UnitScaling)
+    
+    d = 0
+    if p isa NumericalParamsSingleMode
+        d = 0
+    elseif p isa NumericalParams1d
+        d = 1
+    elseif p isa NumericalParams2d
+        d = 2
+    end
+    return Simulation(l,df,p,obs,us,d)
 end
 
 function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where T
@@ -168,21 +177,23 @@ getshortname(c::SimulationComponent)    = split("$c",'{')[1]
 
 
 getbzbounds(sim::Simulation) = getbzbounds(sim.drivingfield,sim.numericalparams)
+
+# Fallback method by brute force, more specialized methods are more efficient!
 function getbzbounds(df::DrivingField,p::NumericalParameters)
     
-    # Fallback method by brute force, more specialized methods are more efficient!
     ax      = get_vecpotx(df)
     ts      = gettsamples(p)
     axmax   = maximum(abs.(ax.(ts)))
     kxmax   = maximum(getkxsamples(p))
+    ay      = get_vecpoty(df)
+    aymax   = maximum(abs.(ay.(ts)))
+    kymax   = maximum(getkysamples(p))
     
-    bztuple = (-kxmax + 1.3axmax,kxmax - 1.3axmax)
-    if sim.dimensions==2
-        ay      = get_vecpoty(df)
-        aymax   = maximum(abs.(ay.(ts)))
-        kymax   = maximum(getkysamples(p))
-        bztuple = (bztuple...,-kymax + 1.3aymax,kymax - 1.3aymax)
-    end
+    bztuple = (
+        -kxmax + 1.3axmax,
+        kxmax - 1.3axmax,
+        -kymax + 1.3aymax,
+        kymax - 1.3aymax)
     return bztuple
 end
 
@@ -226,18 +237,14 @@ function printparamsSI(sim::Simulation;digits=3)
     M   = round(2*p.m / p.ω,sigdigits=digits)           # Multi-photon number
     ζ   = round(M/γ,sigdigits=digits)                   # My dimless asymptotic ζ
     plz = round(exp(-π*p.m^2 / p.eE),sigdigits=digits)  # Maximal LZ tunnel prob
-    bzSI  = [wavenumberSI(k,sim.unitscaling) for k in p.bz]
-    bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
-    bz    = [round(x,sigdigits=digits) for x in p.bz]
 
     str = """
         ζ = $ζ
         γ = $γ
         M = $M
-        plz = $plz
-        BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])
-        BZ(ky) = [$(bzSI[3]),$(bzSI[4])] ([$(bz[3]),$(bz[4])])\n"""
-
+        plz = $plz\n"""
+    
+    str *= printBZSI(sim.drivingfield,sim.numericalparams,sim.unitscaling,digits=digits)
     str *= printparamsSI(sim.liouvillian,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.drivingfield,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.numericalparams,sim.unitscaling;digits=digits)

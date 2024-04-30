@@ -56,6 +56,14 @@ function Velocity(p::NumericalParameters{T}) where {T<:Real}
         vyinter)
 end
 
+function Velocity(
+    vxintra::Vector{T},
+    vxinter::Vector{T},
+    vyintra::Vector{T},
+    vyinter::Vector{T}) where {T<:Real}
+    return Velocity(vxintra .+ vxinter,vxintra,vxinter,vyintra .+ vyinter,vyintra,vyinter)
+end
+
 function resize(v::Velocity,p::NumericalParameters)
     return Velocity(p)
 end
@@ -226,8 +234,22 @@ function sum_observables!(
         total   = reduce(+,buf;dims=2)
         vm      .= Array(total)
     end
+    v.vx .= v.vxintra .+ v.vxinter
+    v.vy .= v.vyintra .+ v.vyinter
     return v
 end
+
+function calculate_observable_singlemode!(sim::Simulation,v::Velocity,f,res::ODESolution)
+    funcs = [(u,t) -> func(u,res.prob.p,t) for func in f]
+    vs    = (v.vxintra,v.vxinter,v.vyintra,v.vyinter)
+    for (vv,ff) in zip(vs,funcs)
+        vv .= ff.(res.u,res.t)
+    end
+    v.vx .= v.vxintra .+ v.vxinter
+    v.vy .= v.vyintra .+ v.vyinter
+    return nothing
+end
+
 
 function write_ensembledata_to_observable!(v::Velocity,data::Vector{<:SVector{4,<:Real}})
 

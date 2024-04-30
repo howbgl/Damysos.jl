@@ -81,3 +81,30 @@ function maximum_kdisplacement(df::DrivingField,ts::AbstractVector{<:Real})
     aymax = maximum(abs.(map(t -> vecpoty(df,t),ts)))
     return maximum((axmax,aymax))
 end
+
+function printBZSI(df::DrivingField,p::NumericalParams2d,us::UnitScaling;digits=3)
+    
+    bz    = getbzbounds(df,p)
+    bzSI  = [wavenumberSI(k,us) for k in bz]
+    bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
+    bz    = [round(x,sigdigits=digits) for x in bz]
+
+    return """
+        BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])
+        BZ(ky) = [$(bzSI[3]),$(bzSI[4])] ([$(bz[3]),$(bz[4])])\n"""
+end
+
+function printBZSI(df::DrivingField,p::NumericalParams1d,us::UnitScaling;digits=3)
+    
+    bz    = getbzbounds(df,p)
+    bzSI  = [wavenumberSI(k,us) for k in bz]
+    bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
+    bz    = [round(x,sigdigits=digits) for x in bz]
+
+    return """
+        BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])\n"""
+end
+
+function printBZSI(df::DrivingField,p::NumericalParamsSingleMode,us::UnitScaling;digits=3)
+    return ""
+end

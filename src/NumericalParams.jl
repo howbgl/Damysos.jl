@@ -8,15 +8,18 @@ export gettsamples
 export gettspan
 export NumericalParams1d
 export NumericalParams2d
-export NumericalParams2dSlice
+export NumericalParamsSingleMode
 
-getnt(p::NumericalParameters)           = length(gettsamples(p))
-getnkx(p::NumericalParameters)          = 2*Int(cld(p.kxmax,p.dkx))
+const DEFAULT_ATOL = 1e-12
+const DEFAULT_RTOL = 1e-10
+
 gettsamples(p::NumericalParameters)     = -abs(p.t0):p.dt:abs(p.t0)
-getkxsamples(p::NumericalParameters)    = LinRange(-p.kxmax,p.kxmax,getnkx(p))
+getnt(p::NumericalParameters)           = length(gettsamples(p))
 gettspan(p::NumericalParameters)        = (gettsamples(p)[1],gettsamples(p)[end])
+getnkx(p::NumericalParameters)          = length(getkxsamples(p))
+getnky(p::NumericalParameters)          = length(getkysamples(p))
 
-for func = (:getnt,:getnkx,:gettsamples,:getkxsamples,:gettspan)
+for func = (:getnt,:gettsamples,:gettspan,:getkxsamples,:getnkx,:getkysamples,:getnky)
     @eval(Damysos,$func(s::Simulation) = $func(s.numericalparams))
 end
 struct NumericalParams2d{T<:Real} <: NumericalParameters{T}
@@ -30,15 +33,12 @@ struct NumericalParams2d{T<:Real} <: NumericalParameters{T}
     atol::T
 end
 function NumericalParams2d(dkx::Real,dky::Real,kxmax::Real,kymax::Real,dt::Real,t0::Real,
-                            rtol::Real,atol::Real)  
+    rtol::Real=DEFAULT_RTOL,
+    atol::Real=DEFAULT_ATOL)  
     return NumericalParams2d(promote(dkx,dky,kxmax,kymax,dt,t0,rtol,atol)...)
 end
-function NumericalParams2d(dkx::Real,dky::Real,kxmax::Real,kymax::Real,dt::Real,t0::Real)
-    return NumericalParams2d(dkx,dky,kxmax,kymax,dt,t0,1e-12,1e-12)
-end
 
-getnky(p::NumericalParams2d)         = 2*Int(cld(p.kymax,p.dky))
-getkysamples(p::NumericalParameters) = LinRange(-p.kymax,p.kymax,getnky(p))
+getdimension(::NumericalParams2d) = UInt8(2)
 
 function getparams(p::NumericalParams2d)
     return (
@@ -87,35 +87,42 @@ function printparamsSI(p::NumericalParams2d,us::UnitScaling;digits=3)
     return str
 end
 
+getkysamples(p::NumericalParams2d)      = -p.kymax:p.dky:p.kymax
 
 struct NumericalParams1d{T<:Real} <: NumericalParameters{T}
     dkx::T
     kxmax::T
+    ky::T
     dt::T
     t0::T
     rtol::T
     atol::T
 end
-function NumericalParams1d(dkx::Real,kxmax::Real,dt::Real,t0::Real,rtol::Real,atol::Real)     
-    return NumericalParams1d(promote(dkx,kxmax,dt,t0,rtol,atol)...)
-end
-function NumericalParams1d(dkx::Real,kxmax::Real,dt::Real,t0::Real)
-    return NumericalParams1d(dkx,kxmax,dt,t0,1e-12,1e-12)
+function NumericalParams1d(dkx::Real,kxmax::Real,ky::Real,dt::Real,t0::Real,
+    rtol::Real=DEFAULT_RTOL,
+    atol::Real=DEFAULT_ATOL)
+    return NumericalParams1d(promote(dkx,kxmax,ky,dt,t0,rtol,atol)...)
 end
 
-function getparams(p::NumericalParams1d{T}) where {T<:Real} 
+getdimension(::NumericalParams1d) = UInt8(1)
+
+function getparams(p::NumericalParams1d)
     return (
-    dkx=p.dkx,
-    kxmax=p.kxmax,
-    dt=p.dt,
-    t0=p.t0,
-    rtol=p.rtol,
-    atol=p.atol,
-    nkx=getnkx(p),
-    nt=getnt(p),
-    tsamples=gettsamples(p),
-    tspan=gettspan(p),
-    kxsamples=getkxsamples(p))
+        dkx=p.dkx,
+        kxmax=p.kxmax,
+        kymax=p.ky,
+        ky=p.ky,
+        dt=p.dt,
+        t0=p.t0,
+        rtol=p.rtol,
+        atol=p.atol,
+        nkx=getnkx(p),
+        nky=getnky(p),
+        nt=getnt(p),
+        tsamples=gettsamples(p),
+        tspan=gettspan(p),
+        kxsamples=getkxsamples(p),
+        kysamples=getkysamples(p))
 end
 
 function printparamsSI(p::NumericalParams1d,us::UnitScaling;digits=3)
@@ -144,17 +151,80 @@ function printparamsSI(p::NumericalParams1d,us::UnitScaling;digits=3)
 end
 
 
-struct NumericalParams2dSlice{T<:Real} <: NumericalParameters{T}
-    params::NumericalParams2d{T}
-    kxspan::Tuple{T,T}
-end
-
-function getparams(p::NumericalParams2dSlice{T}) where {T<:Real}
-    fullparams  = getparams(p.params)
-    kxs_full    = collect(fullparams.kxsamples)
-    kxsamples   = kxs_full[kxs_full .>= p.kxspan[1] .&& kxs_full .<= p.kxspan[2]]
-    nkx         = length(kxsamples)
-    return merge(fullparams,(nkx=nkx,kxsamples=kxsamples,))
+function getkxsamples(p::Union{NumericalParams1d,NumericalParams2d})    
+    return -p.kxmax:p.dkx:p.kxmax
 end
 
 
+struct NumericalParamsSingleMode{T<:Real} <: NumericalParameters{T}
+    kx::T
+    ky::T
+    dt::T
+    t0::T
+    rtol::T
+    atol::T
+end
+
+function NumericalParamsSingleMode(
+    kx::Real,
+    ky::Real,
+    dt::Real,
+    t0::Real,
+    rtol::Real=DEFAULT_RTOL,
+    atol::Real=DEFAULT_ATOL)
+    args = promote(
+        kx,
+        ky,
+        dt,
+        t0,
+        rtol,
+        atol)
+    return NumericalParamsSingleMode(args...)
+end
+
+getdimension(::NumericalParamsSingleMode) = UInt8(0)
+
+function getparams(p::NumericalParamsSingleMode)
+    return (
+        kx=p.kx,
+        ky=p.ky,
+        kxmax=p.kx,
+        kymax=p.ky,
+        kxsamples=[p.kx],
+        kysamples=[p.ky],
+        dt=p.dt,
+        t0=p.t0,
+        rtol=p.rtol,
+        atol=p.atol,
+        tsamples=gettsamples(p),
+        tspan=gettspan(p),
+        nt=getnt(p))
+end
+
+
+function printparamsSI(p::NumericalParamsSingleMode,us::UnitScaling;digits=3)
+    
+    pnt     = getparams(p)
+    kx      = wavenumberSI(p.kx,us)
+    ky      = wavenumberSI(p.ky,us)
+    t0      = timeSI(p.t0,us)
+    dt      = timeSI(p.dt,us)
+    rtol    = pnt.rtol
+    atol    = pnt.atol
+    nt      = getparams(p).nt
+    
+    symbols     = [:kx,:ky,:t0,:dt,:nt,:rtol,:atol]
+    valuesSI    = [kx,ky,t0,dt,nt,rtol,atol]
+    values      = [getproperty(pnt,s) for s in symbols]
+    str         = ""
+
+    for (s,v,vsi) in zip(symbols,values,valuesSI)
+        valSI   = round(typeof(vsi),vsi,sigdigits=digits)
+        val     = round(v,sigdigits=digits)
+        str     *= "$s = $valSI ($val)\n"
+    end
+    return str
+end
+
+getkxsamples(p::NumericalParamsSingleMode) = [p.kx]
+getkysamples(p::Union{NumericalParams1d,NumericalParamsSingleMode}) = [p.ky]

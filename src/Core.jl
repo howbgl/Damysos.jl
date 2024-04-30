@@ -5,6 +5,7 @@ export run!
 
 include("solvers/LinearChunked.jl")
 include("solvers/LinearCUDA.jl")
+include("solvers/SingleMode.jl")
 
 DEFAULT_REDUCTION(u, data, I) = (append!(u,sum(data)),false)
 

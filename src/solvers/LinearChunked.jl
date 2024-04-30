@@ -37,6 +37,10 @@ function run!(
     savedata=true,
     saveplots=true)
 
+    iszero(sim.dimensions) && throw(ArgumentError(
+        "LinearChunked solver is only supported for 1d and 2d simulations"
+    ))
+
     prerun!(sim;savedata=savedata,saveplots=saveplots)
 
     @info """

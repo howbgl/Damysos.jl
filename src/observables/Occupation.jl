@@ -86,6 +86,11 @@ function sum_observables!(
     return o
 end
 
+function calculate_observable_singlemode!(sim::Simulation,o::Occupation,f,res::ODESolution)
+    cbocc(u,t) = f[1](u,res.prob.p,t)
+    o.cbocc .= cbocc.(res.u,res.t)
+    return nothing
+end
 
 function write_ensembledata_to_observable!(o::Occupation,data::Vector{<:Real})
 

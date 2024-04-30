@@ -17,6 +17,8 @@ julia> solver = LinearChunked(256,EnsembleThreads())
 LinearChunked{Int64}(256, EnsembleThreads())
 ```
 
+# See also
+[`LinearChunked`](@ref LinearChunked), [`SingleMode`](@ref SingleMode)
 """
 struct LinearChunked{T<:Integer} <: DamysosSolver 
     kchunksize::T

@@ -29,7 +29,7 @@ const us      = scaledriving_frequency(freq,vf)
 const h       = GappedDirac(us,m,vf,t1,t2)
 const df      = GaussianPulse(us,σ,freq,emax)
 const pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
-const obs     = [Velocity(h)]
+const obs     = [Velocity(h),Occupation(h)]
 
 # const id      = sprintf1("%x",hash([h,df,pars,obs,us]))
 const id      = "ref"

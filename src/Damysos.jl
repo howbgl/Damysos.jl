@@ -6,7 +6,6 @@ using CairoMakie
 using ColorSchemes
 using CSV
 using CUDA
-using Dagger
 using Dates
 using Distributed
 using DataFrames

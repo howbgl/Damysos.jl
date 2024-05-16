@@ -61,7 +61,7 @@ global_logger(TerminalLogger())
     dpath   = "/home/how09898/phd/data/hhgjl/expressions_test/reference"
     ppath   = "/home/how09898/phd/plots/hhgjl/expressions_test/reference"
 
-    return Simulation(l,df,pars,obs,us,2,id,dpath,ppath)
+    return Simulation(l,df,pars,obs,us,id,dpath,ppath)
 end
 
 
@@ -70,8 +70,8 @@ const id      = "ref"
 global_logger(make_teelogger(ppath,id))
 @info "Now saving logs to $ppath"
 @everywhere sim     = make_system()
-
-@everywhere const functions = define_functions(sim)
+const solver = LinearChunked()
+@everywhere const functions = define_functions(sim,solver)
 @info "Solving differential equations"
 const observables,time,rest... = @timed run!(sim,functions,LinearChunked(512))
 @info "Call to run! took $(time/60.)min"

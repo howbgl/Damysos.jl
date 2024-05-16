@@ -11,11 +11,6 @@ k points are computed concurrently on a CUDA GPU
 - `kchunksize::T`: number of k-points in one concurrently executed chunk. 
 - `algorithm::GPUODEAlgorithm`: algorithm for solving differential equations
 
-# Examples
-```jldoctest
-julia> solver = LinearCUDA(256,GPUVern9())
-LinearCUDA{Int64}(256, GPUVern9())
-```
 # See also
 [`LinearChunked`](@ref LinearChunked), [`SingleMode`](@ref SingleMode)
 """

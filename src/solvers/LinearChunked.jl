@@ -14,7 +14,10 @@ Represents an integration strategy for k-space via simple midpoint sum.
 # Examples
 ```jldoctest
 julia> solver = LinearChunked(256,EnsembleThreads())
-LinearChunked{Int64}(256, EnsembleThreads())
+LinearChunked:
+  - kchunksize: 256
+  - algorithm: EnsembleThreads()
+  
 ```
 
 # See also
@@ -90,9 +93,14 @@ function observables_out(sol,bzmask,obsfunction)
 
     for (i,u,t) in zip(1:length(sol.u),sol.u,sol.t)
 
-        weigths = bzmask.(p,t)
-        rho     = reinterpret(SVector{2,eltype(u)},reshape(u,(2,:)))' .* weigths
-        push!(obs,sum(obsfunction.(rho,p,t)))
+        weigths .= bzmask.(p,t)
+
+        # this reinterpret code somehow produces wrong results, maybe post to 
+        # stackexchange
+        # rho     = reinterpret(SVector{2,eltype(u)},reshape(u,(2,:)))'
+
+        rho     = [SA[cc,cv] for (cc,cv) in zip(u[1:2:end],u[2:2:end])]
+        push!(obs,sum(weigths .* obsfunction.(rho,p,t)))
     end
 
     return (obs,false)

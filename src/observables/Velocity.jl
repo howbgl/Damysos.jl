@@ -18,7 +18,7 @@ The velocity is computed via
 - `vxinter::Vector{T}`: ``\\rho_{cv}(t) v^{x}_{vc}(t)  + \\rho_{vc}(t) v^{x}_{cv}(t) ``
 - `vy::Vector{T}`: total velocity in y-direction. 
 - `vyintra::Vector{T}`: ``\\rho_{cc}(t) v^{y}_{cc}(t)  + \\rho_{vv}(t) v^{y}_{vv}(t) ``
-- `vyinter::Vector{T}`: ``\\rho_{cv}(t) v^{y}_{vc}(t)  + \\rho_{vc}(t) v^{y}(t) _{cv}(t) ``
+- `vyinter::Vector{T}`: ``\\rho_{cv}(t) v^{y}_{vc}(t)  + \\rho_{vc}(t) v^{y}_{cv}(t) ``
 
 # See also
 [`Occupation`](@ref Occupation)
@@ -163,9 +163,9 @@ function Base.isapprox(
         isapprox(vy1,vy2;atol=atol,rtol=rtol,nans=nans)])
 end
 
-build_expression_vxintra(h::Hamiltonian) = :(real(cc)*$(vx_cc(h))+(1-real(cc))* $(vx_vv(h)))
+build_expression_vxintra(h::Hamiltonian) = :(real(cc) * $(vx_cc(h)) + (1-real(cc)) * $(vx_vv(h)))
 build_expression_vxinter(h::Hamiltonian) = :(2real(cv * $(vx_vc(h))))
-build_expression_vyintra(h::Hamiltonian) = :(real(cc)*$(vy_cc(h))+(1-real(cc))* $(vy_vv(h)))
+build_expression_vyintra(h::Hamiltonian) = :(real(cc) * $(vy_cc(h)) + (1-real(cc)) * $(vy_vv(h)))
 build_expression_vyinter(h::Hamiltonian) = :(2real(cv * $(vy_vc(h))))
 
 function build_expression_velocity_svec(h::Hamiltonian)
@@ -245,8 +245,10 @@ function calculate_observable_singlemode!(sim::Simulation,v::Velocity,f,res::ODE
     for (vv,ff) in zip(vs,funcs)
         vv .= ff.(res.u,res.t)
     end
+    
     v.vx .= v.vxintra .+ v.vxinter
     v.vy .= v.vyintra .+ v.vyinter
+
     return nothing
 end
 
@@ -268,14 +270,12 @@ function write_svec_timeslice_to_observable!(
     timeindex::Integer,
     data::SVector{4,<:Real})
     
-    for i in 1:4
-        v.vxintra[timeindex] = data[1]
-        v.vxinter[timeindex] = data[2]
-        v.vyintra[timeindex] = data[3]
-        v.vyinter[timeindex] = data[4]
-        v.vx[timeindex] = v.vxinter[timeindex] + v.vxintra[timeindex]
-        v.vy[timeindex] = v.vyinter[timeindex] + v.vyintra[timeindex]
-    end
+    v.vxintra[timeindex] = data[1]
+    v.vxinter[timeindex] = data[2]
+    v.vyintra[timeindex] = data[3]
+    v.vyinter[timeindex] = data[4]
+    v.vx[timeindex] = v.vxinter[timeindex] + v.vxintra[timeindex]
+    v.vy[timeindex] = v.vyinter[timeindex] + v.vyintra[timeindex]
 end
 
 function getfuncs(sim::Simulation,v::Velocity)

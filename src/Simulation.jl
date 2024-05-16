@@ -36,11 +36,17 @@ struct Simulation{T<:Real}
     end
 end
 
-function Simulation(l::Liouvillian{T},df::DrivingField{T},p::NumericalParameters{T},
-    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer,
-    id::String,dpath::String,ppath::String) where {T<:Real} 
+function Simulation(
+    l::Liouvillian{T},
+    df::DrivingField{T},
+    p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},
+    us::UnitScaling{T},
+    id::String,
+    dpath::String,
+    ppath::String) where {T<:Real} 
 
-    return Simulation{T}(l,df,p,obs,us,UInt8(abs(d)),id,dpath,ppath)
+    return Simulation{T}(l,df,p,obs,us,id,dpath,ppath)
 end
 
 function Simulation(
@@ -49,8 +55,7 @@ function Simulation(
     p::NumericalParameters{T},
     obs::Vector{O} where {O<:Observable{T}},
     us::UnitScaling{T},
-    d::Integer,
-    id) where {T<:Real}
+    id::String) where {T<:Real}
 
     name = "Simulation{$T}($(d)d)" * getshortname(l) *"_"*  getshortname(df) * "_$id"
     return Simulation(
@@ -70,30 +75,12 @@ function Simulation(
     df::DrivingField,
     p::NumericalParameters,
     obs::Vector{O} where {O<:Observable},
-    us::UnitScaling,
-    d::Integer)
-
-    id = string(hash([l,df,p,obs,us,d]),base=16)
-    return Simulation(l,df,p,obs,us,d,id)
-end
-
-function Simulation(
-    l::Liouvillian,
-    df::DrivingField,
-    p::NumericalParameters,
-    obs::Vector{O} where {O<:Observable},
     us::UnitScaling)
-    
-    d = 0
-    if p isa NumericalParamsSingleMode
-        d = 0
-    elseif p isa NumericalParams1d
-        d = 1
-    elseif p isa NumericalParams2d
-        d = 2
-    end
-    return Simulation(l,df,p,obs,us,d)
+
+    id = string(hash([l,df,p,obs,us]),base=16)
+    return Simulation(l,df,p,obs,us,id)
 end
+
 
 function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where T
 

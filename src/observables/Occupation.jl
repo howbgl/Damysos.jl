@@ -101,3 +101,17 @@ function write_ensembledata_to_observable!(o::Occupation,data::Vector{<:Real})
 
     o.cbocc .= data
 end
+
+function write_ensembledata_to_observable!(
+    o::Occupation,
+    data::Vector{<:SVector{1,<:Real}})
+
+    length(o.cbocc) != length(data) && throw(ArgumentError(
+        """
+        data must be same length as observable Occupation. Got lengths of \
+        $(length(data)) and $(length(o.cbocc))"""))
+
+    for (i,oi) in enumerate(data)
+        o.cbocc[i] = oi[1]
+    end
+end

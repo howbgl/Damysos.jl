@@ -41,9 +41,31 @@ function make_test_simulation1()
     return Simulation(l,df,pars,obs,us,id,dpath,ppath)
 end
 
+function checkvelocity(sim::Simulation,solver::DamysosSolver,fns,vref::Velocity;
+    atol=1e-10,
+    rtol=1e-2)
+    res = run!(sim,fns,solver;saveplots=false)
+    v   = sim1.observables[1]
+    return isapprox(v,vref,atol=atol,rtol=rtol)
+end
+
 const sim1 = make_test_simulation1()
+
 const linchunked = LinearChunked()
-const fns = define_functions(sim1,linchunked)
+const fns_linchunked = define_functions(sim1,linchunked)
+
+skipcuda = false
+
+try
+    LinearCUDA()
+catch err
+    if err == ErrorException("CUDA.jl is not functional, cannot use LinearCUDA solver.")
+        global skipcuda = true
+    end
+end
+const lincuda = skipcuda ? nothing : LinearCUDA()
+const fns_lincuda = skipcuda ? nothing : define_functions(sim1,lincuda)
+
 const referencedata = DataFrame(CSV.File("referencedata.csv"))
 const vref = Velocity(
     referencedata.vx,
@@ -55,8 +77,11 @@ const vref = Velocity(
 
 @testset "Damysos.jl" begin
     @testset "Simulation 1" begin
-        res = run!(sim1,fns,linchunked)
-        v   = sim1.observables[1]
-        @test isapprox(v,vref,atol=1e-10,rtol=1e-2)
+        @testset "LinearCUDA" begin
+            @test checkvelocity(sim1,lincuda,fns_lincuda,vref) skip=skipcuda
+        end
+        @testset "LinearChunked" begin
+            @test checkvelocity(sim1,linchunked,fns_linchunked,vref)
+        end
     end
 end

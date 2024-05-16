@@ -25,6 +25,7 @@ using TerminalLoggers
 
 import Base.promote_rule
 
+export DamysosSolver
 export DrivingField
 export Hamiltonian
 export Liouvillian

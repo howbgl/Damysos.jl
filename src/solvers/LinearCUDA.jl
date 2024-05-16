@@ -127,7 +127,8 @@ function sum_observables!(
     obs::Vector{<:Observable},
     obsfuncs::Vector{<:Vector})
 
-    d_us        .*= bzmask.(d_kchunk',d_ts)
+    d_weigths   = bzmask.(d_kchunk',d_ts)
     buf         = zero(d_ts)
-    return [sum_observables!(o,f,d_kchunk,d_us,d_ts,buf) for (o,f) in zip(obs,obsfuncs)]
+    obsnfns     = zip(obs,obsfuncs)
+    return [sum_observables!(o,f,d_kchunk,d_us,d_ts,d_weigths,buf) for (o,f) in obsnfns]
 end

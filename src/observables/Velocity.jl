@@ -225,12 +225,13 @@ function sum_observables!(
     d_kchunk::CuArray{<:SVector{2,<:Real}},
     d_us::CuArray{<:SVector{2,<:Complex}},
     d_ts::CuArray{<:Real,2},
+    d_weigths::CuArray{<:Real,2},
     buf::CuArray{<:Real,2})
 
     vcontributions = (v.vxintra,v.vxinter,v.vyintra,v.vyinter)
 
     for (vm,f) in zip(vcontributions,funcs) 
-        buf     .= f.(d_us,d_kchunk',d_ts)
+        buf     .= f.(d_us,d_kchunk',d_ts) .* d_weigths
         total   = reduce(+,buf;dims=2)
         vm      .= Array(total)
     end

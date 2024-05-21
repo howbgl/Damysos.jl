@@ -63,7 +63,8 @@ function run!(
         trajectories = length(kchunks),
         saveat = gettsamples(sim.numericalparams),
         abstol = sim.numericalparams.atol,
-        reltol = sim.numericalparams.rtol)
+        reltol = sim.numericalparams.rtol,
+        progress = true)
 
     write_ensemblesols_to_observables!(sim,res.u)
 

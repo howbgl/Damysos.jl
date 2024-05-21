@@ -31,7 +31,12 @@ struct Simulation{T<:Real}
     datapath::String
     plotpath::String
     dimensions::UInt8
-    function Simulation{T}(l,df,p,obs,us,id,dpath,ppath) where {T<:Real}
+    function Simulation{T}(l,df,p,obs,us,id,dpath,ppath,d) where {T<:Real}
+        if d != getdimension(p)
+            @warn """
+            The dimension d=$d does not match the the NumericalParameters.
+            Overwriting to d=$(getdimension(p)) instead."""
+        end
         new(l,df,p,obs,us,id,dpath,ppath,getdimension(p))
     end
 end
@@ -44,9 +49,10 @@ function Simulation(
     us::UnitScaling{T},
     id::String,
     dpath::String,
-    ppath::String) where {T<:Real} 
+    ppath::String,
+    d::Integer=getdimension(p)) where {T<:Real} 
 
-    return Simulation{T}(l,df,p,obs,us,id,dpath,ppath)
+    return Simulation{T}(l,df,p,obs,us,id,dpath,ppath,UInt8(d))
 end
 
 function Simulation(

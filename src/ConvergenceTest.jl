@@ -17,7 +17,7 @@ struct ConvergenceTest
     maxiterations::Integer
     completedsims::Vector{Simulation}
     testdatafile::String
-    allfunctions::Vector{Vector{<:Function}}
+    allfunctions::Vector{Any}
     function ConvergenceTest(
         start::Simulation,
         solver::DamysosSolver=LinearChunked(),
@@ -30,7 +30,7 @@ struct ConvergenceTest
 
         maxtime = maxtime isa Real ? maxtime : ustrip(u"s",maxtime)
         
-        fns = Vector{Vector{Function}}(undef,0)
+        fns = []
         s   = deepcopy(start)
 
         for i in 1:maxiterations
@@ -120,7 +120,6 @@ function next(
         params,
         zero.(sim.observables),
         sim.unitscaling,
-        sim.dimensions,
         id,
         joinpath(parentdatapath,id),
         joinpath(parentplotpath,id))

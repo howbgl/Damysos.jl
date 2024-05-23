@@ -52,7 +52,6 @@ function run!(
 
     rhscc,rhscv = functions[1]
     fns = (rhscc,rhscv,functions[2:end]...)
-    @show fns
 
     prob,kchunks = buildensemble(sim,solver,fns...)
     

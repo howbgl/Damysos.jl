@@ -42,11 +42,11 @@ struct ConvergenceTest
         (success,path) = ensurepath([start.datapath,altpath])
         !success && throw(ErrorException("could not create neceesary data directory"))
 
-        file = h5open(
-            joinpath(
-                path,
-                "convergencetest_$(getname(start))_$(getname(method)).hdf5"),
-            "cw")
+        filename = "convergencetest_$(getname(start))_$(getname(method)).hdf5"
+        filepath = joinpath(path,filename)
+
+        rename_file_if_exists(filepath)
+        file = h5open(filepath,"cw")
         filepath = file.filename
         close(file)
 
@@ -189,8 +189,8 @@ function _run!(
         @info """
         ## Converged after $(round(elapsedtime_seconds/60,sigdigits=3))min and \
         $currentiteration iterations"""
-    elseif currentiteration > maxiterations
-        @warn "Maximum number of iterations ($maxiterations) reached, aborting."
+    elseif currentiteration > test.maxiterations
+        @warn "Maximum number of iterations ($(test.maxiterations)) reached, aborting."
     elseif elapsedtime_seconds > test.maxtime
         @warn "Maximum duration exceeded, aborting."
     else
@@ -274,39 +274,43 @@ function findminimum_precision(s1::Simulation,s2::Simulation;max_atol=0.1,max_rt
 end
 
 function Base.show(io::IO,::MIME"text/plain",t::ConvergenceTest)
-    println(io,"Convergence Test" |> escape_underscores)
+    println(io,"Convergence Test")
     methodstring = repr("text/plain",t.method)
     str = """
-    - $(getshortname(t.start))
-    - method: $(methodstring)
-    - atolgoal: $(t.atolgoal)
-    - rtolgoal: $(t.rtolgoal)
-    - testdatafile: $(t.testdatafile)
-    """ |> escape_underscores
+    $(getshortname(t.start))
+    method: $(methodstring)
+    atolgoal: $(t.atolgoal)
+    rtolgoal: $(t.rtolgoal)
+    testdatafile: $(t.testdatafile)
+    """
     print(io,prepend_spaces(str,2))
 end
 
 function Base.show(io::IO,::MIME"text/plain",r::ConvergenceTestResult)
-    println(io,"Convergence Test Result:" |> escape_underscores)
+
+    println(io,"Convergence Test Result:")
+
     startparams = "None"
     endparams = "None"
     if !isempty(r.test.completedsims)
-        startparams = r.test.completedsims[1] |> printparamsSI |> escape_underscores
-        endparams = r.test.completedsims[end] |> printparamsSI |> escape_underscores 
+        startparams = r.test.completedsims[1] |> printparamsSI
+        endparams = r.test.completedsims[end] |> printparamsSI 
     end
+
     str = """
-    - success: $(r.success)
-    - achieved tolerances:
-        * atol: $(r.min_achieved_atol) 
-        * rtol: $(r.min_achieved_rtol)
-    - number of simulations: $(length(r.test.completedsims))
+    success: $(r.success)
+    achieved tolerances:
+      atol: $(r.min_achieved_atol) 
+      rtol: $(r.min_achieved_rtol)
+    number of simulations: $(length(r.test.completedsims))
 
     First simulation: 
     $(prepend_spaces(startparams,1))
 
     Last simulation:  
     $(prepend_spaces(endparams,1))
-    """ |> escape_underscores
+    """
+    
     print(io,prepend_spaces(str,1))
 end
 

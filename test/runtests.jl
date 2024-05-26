@@ -64,6 +64,7 @@ try
 catch err
 	if err == ErrorException("CUDA.jl is not functional, cannot use LinearCUDA solver.")
 		global skipcuda = true
+		@warn "Skipping CUDA tests, CUDA.jl is not functional."
 	end
 end
 const lincuda = skipcuda ? nothing : LinearCUDA()

@@ -52,12 +52,16 @@ function run!(
 
     rhscc,rhscv = functions[1]
     fns = (rhscc,rhscv,functions[2:end]...)
-
+    
     prob,kchunks = buildensemble(sim,solver,fns...)
+
+    # At DifferentialEquations.jl > 7.10 auto-detection of ode alg throws error due to
+    # ForwardDiff of ComplexF64, so use ode_alg workaround
+    ode_alg = AutoVern7(KenCarp47(autodiff = false), lazy = true)
     
     res = solve(
         prob,
-        nothing,
+        ode_alg,
         solver.algorithm;
         trajectories = length(kchunks),
         saveat = gettsamples(sim.numericalparams),

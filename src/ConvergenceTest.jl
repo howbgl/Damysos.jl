@@ -151,19 +151,17 @@ function _run!(
     method::Union{PowerLawTest,LinearTest};
     savesimdata=true)
 
-    if length(test.completedsims) > 1
-        @warn """
-        It seems this test has already been run, since length(completedsims) > 1
-        Saving results and aborting..."""
-        return ConvergenceTestResult(test,converged(test),achieved_tol...)
-    end
-
     @info repr("text/plain",method)
     
     currentiteration    = 0
     elapsedtime_seconds = 0.0
     start               = test.start
     done_sims           = test.completedsims
+
+    if length(test.completedsims) > 1
+        throw(ErrorException("
+        It seems this test has already been run, since length(completedsims) > 1"))
+    end
 
     while currentiteration < test.maxiterations && elapsedtime_seconds < test.maxtime
 

@@ -136,9 +136,9 @@ function run!(
     result = _run!(
         test,
         test.method;
-        savetestresult=savetestresult,
         savesimdata=savealldata)
 
+    savetestresult && savedata(result)
     if !savealldata && savelastdata
         savedata(test,test.completedsims[end])
         savemetadata(test.completedsims[end])
@@ -149,8 +149,14 @@ end
 function _run!(
     test::ConvergenceTest,
     method::Union{PowerLawTest,LinearTest};
-    savetestresult=true,
     savesimdata=true)
+
+    if length(test.completedsims) > 1
+        @warn """
+        It seems this test has already been run, since length(completedsims) > 1
+        Saving results and aborting..."""
+        return ConvergenceTestResult(test,converged(test),achieved_tol...)
+    end
 
     @info repr("text/plain",method)
     
@@ -201,9 +207,7 @@ function _run!(
         test.completedsims[end-1],
         test.completedsims[end])
     
-    result = ConvergenceTestResult(test,converged(test),achieved_tol...)
-    savetestresult && savedata(result)
-    return result
+    return ConvergenceTestResult(test,converged(test),achieved_tol...)
 end
 
 function converged(test::ConvergenceTest)

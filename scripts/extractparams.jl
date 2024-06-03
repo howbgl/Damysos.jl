@@ -5,7 +5,7 @@ function extract_values(input::AbstractString)
     pattern = r"(\w+)\s*(?:=|:)\s*([\d\.eE+-]+)(?:\s*.*?\(([\d\.eE+-]+)\))?"
     for match in eachmatch(pattern, input)
         name = match.captures[1]
-        value = match.captures[end] == nothing ? parse(Float64, match.captures[2]) : parse(Float64, match.captures[3])
+        value = isnothing(match.captures[end]) ? parse(Float64, match.captures[2]) : parse(Float64, match.captures[3])
         matches[name] = value
     end
     return matches

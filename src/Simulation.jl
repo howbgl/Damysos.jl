@@ -63,6 +63,7 @@ function Simulation(
     us::UnitScaling{T},
     id::String) where {T<:Real}
 
+    d    = getdimension(p)
     name = "Simulation{$T}($(d)d)" * getshortname(l) *"_"*  getshortname(df) * "_$id"
     return Simulation(
         l,
@@ -70,7 +71,6 @@ function Simulation(
         p,
         obs,
         us,
-        d,
         String(id),
         "/home/how09898/phd/data/hhgjl/"*name*"/",
         "/home/how09898/phd/plots/hhgjl/"*name*"/")
@@ -192,6 +192,7 @@ end
 
 
 function checkbzbounds(sim::Simulation)
+    sim.numericalparams isa NumericalParamsSingleMode && return
     bz = getbzbounds(sim)
     if bz[1] > bz[2] || bz[3] > bz[4]
         @warn "Brillouin zone vanishes: $(bz)"
@@ -211,10 +212,20 @@ function buildkgrid_chunks(sim::Simulation,kchunksize::Integer=DEFAULT_K_CHUNK_S
 end
 
 function define_functions(sim::Simulation,solver::DamysosSolver)
+    !solver_compatible(sim,solver) && throw(incompatible_solver_exception(sim,solver))
     return (
         define_rhs_x(sim,solver),
         define_bzmask(sim,solver),
         define_observable_functions(sim,solver))
+end
+
+function incompatible_solver_exception(sim::Simulation,solver::DamysosSolver)
+    return ErrorException("""
+        Solver $solver is incompatible with simulation. Compatible pairs are:
+            LinearChunked => 1d & 2d Simulation
+            LinearCUDA    => 1d & 2d Simulation
+            SingleMode    => 0d Simulation
+        Your Simulation has the dimension $(sim.dimensions)""")
 end
 
 

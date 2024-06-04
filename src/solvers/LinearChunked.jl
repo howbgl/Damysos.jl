@@ -32,6 +32,9 @@ function LinearChunked(kchunksize::Integer)
     LinearChunked(kchunksize,choose_threaded_or_distributed())
 end
 
+function solver_compatible(sim::Simulation,::LinearChunked)
+    return sim.dimensions == 2 || sim.dimensions == 1
+end
 
 function run!(
     sim::Simulation,
@@ -40,11 +43,7 @@ function run!(
     savedata=true,
     saveplots=true)
 
-    iszero(sim.dimensions) && throw(ArgumentError(
-        "LinearChunked solver is only supported for 1d and 2d simulations"
-    ))
-
-    prerun!(sim;savedata=savedata,saveplots=saveplots)
+    prerun!(sim,solver;savedata=savedata,saveplots=saveplots)
 
     @info """
         Solver: $(repr(solver))

@@ -37,6 +37,10 @@ function LinearCUDA(
     return LinearCUDA{typeof(kchunksize)}(kchunksize,algorithm)
 end
 
+function solver_compatible(sim::Simulation,::LinearCUDA)
+    return sim.dimensions == 2 || sim.dimensions == 1
+end
+
 function Base.show(io::IO,::MIME"text/plain",s::LinearCUDA)
     println(io,"LinearCUDA:" |> escape_underscores)
     str = """
@@ -54,11 +58,7 @@ function run!(
     savedata=true,
     saveplots=true)
 
-    iszero(sim.dimensions) && throw(ArgumentError(
-        "LinearCUDA solver is only supported for 1d and 2d simulations"
-    ))
-
-    prerun!(sim;savedata=savedata,saveplots=saveplots)
+    prerun!(sim,solver;savedata=savedata,saveplots=saveplots)
 
     @info """
         Solver: $(repr(solver))

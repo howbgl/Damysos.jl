@@ -13,6 +13,10 @@ Represents the solver for a single point in k-space.
 struct SingleMode <: DamysosSolver 
 end
 
+function solver_compatible(sim::Simulation,::SingleMode)
+    return sim.dimensions == 0
+end
+
 
 function run!(
     sim::Simulation,
@@ -21,11 +25,7 @@ function run!(
     savedata=true,
     saveplots=true)
 
-    !(sim.numericalparams isa NumericalParamsSingleMode) && throw(ArgumentError(
-        "SingleMode solver is only supported for 0d (single mode) simulations"
-    ))
-
-    prerun!(sim;savedata=savedata,saveplots=saveplots)
+    prerun!(sim,solver;savedata=savedata,saveplots=saveplots)
 
     @info """
         Solver: $(repr(solver))

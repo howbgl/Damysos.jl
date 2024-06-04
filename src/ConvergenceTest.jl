@@ -183,7 +183,6 @@ function _run!(
         """
         if savesimdata
             savedata(test,currentsim)
-            savemetadata(currentsim)
         end
         push!(done_sims,currentsim)
         converged(test) && break

@@ -3,6 +3,7 @@ export ConvergenceTestMethod
 export ConvergenceTestResult
 export LinearTest
 export PowerLawTest
+export successful_retcode
 
 abstract type ConvergenceTestMethod end
 
@@ -78,13 +79,23 @@ struct PowerLawTest{T<:Real} <: ConvergenceTestMethod
     multiplier::T
 end
 
-struct ConvergenceTestResult
-    test::ConvergenceTest
-    success::Bool
-    min_achieved_atol::Real
-    min_achieved_rtol::Real
+@enumx ReturnCode success maxtime maxiter running failed
+
+function successful_retcode(retcode::ReturnCode.T)
+    retcode == ReturnCode.success
 end
 
+struct ConvergenceTestResult
+    test::ConvergenceTest
+    retcode::ReturnCode.T
+    min_achieved_atol::Real
+    min_achieved_rtol::Real
+    elapsed_time_sec::Real
+    iterations::Integer
+    last_params::NumericalParameters
+end
+
+successful_retcode(ctr::ConvergenceTestResult) = successful_retcode(ctr.retcode)
 
 nextvalue(oldvalue::Real,method::PowerLawTest) = method.multiplier * oldvalue
 nextvalue(oldvalue::Real,method::LinearTest)   = oldvalue + method.shift
@@ -154,57 +165,70 @@ function _run!(
     @info repr("text/plain",method)
     
     currentiteration    = 0
-    elapsedtime_seconds = 0.0
     start               = test.start
     done_sims           = test.completedsims
-
+    retcode             = ReturnCode.running
+    
     if length(test.completedsims) > 1
         throw(ErrorException("
         It seems this test has already been run, since length(completedsims) > 1"))
     end
-
+    
+    elapsedtime_seconds = 0.0
     while currentiteration < test.maxiterations && elapsedtime_seconds < test.maxtime
 
-        currentiteration += 1
-        currentsim    = isempty(done_sims) ? start : next(done_sims[end],method)
-        
-        elapsedtime_seconds += @elapsed run!(
-            currentsim,
-            test.allfunctions[currentiteration],
-            test.solver;
-            saveplots=false,
-            savedata=false)
+        elapsedtime_seconds += @elapsed begin 
+            currentiteration += 1
+            currentsim    = isempty(done_sims) ? start : next(done_sims[end],method)
+            
+            run!(
+                currentsim,
+                test.allfunctions[currentiteration],
+                test.solver;
+                saveplots=false,
+                savedata=false)
 
-        elapsed_round = round(elapsedtime_seconds/60,sigdigits=3)
-        max_round     = round(test.maxtime/60,sigdigits=3)
-        @info """
-        - $(elapsed_round)min of $(max_round)min elapsed 
-        - Iteration $currentiteration of maximum of $(test.maxiterations)
-        """
-        if savesimdata
-            savedata(test,currentsim)
+            elapsed_round = round(elapsedtime_seconds/60,sigdigits=3)
+            max_round     = round(test.maxtime/60,sigdigits=3)
+            @info """
+            - $(elapsed_round)min of $(max_round)min elapsed 
+            - Iteration $currentiteration of maximum of $(test.maxiterations)
+            """
+            if savesimdata
+                savedata(test,currentsim)
+            end
+            push!(done_sims,currentsim)
+            converged(test) && break
         end
-        push!(done_sims,currentsim)
-        converged(test) && break
     end
 
     if converged(test)
         @info """
         ## Converged after $(round(elapsedtime_seconds/60,sigdigits=3))min and \
         $currentiteration iterations"""
+        retcode = ReturnCode.success
     elseif currentiteration > test.maxiterations
         @warn "Maximum number of iterations ($(test.maxiterations)) reached, aborting."
+        retcode = ReturnCode.maxiter
     elseif elapsedtime_seconds > test.maxtime
         @warn "Maximum duration exceeded, aborting."
+        retcode = ReturnCode.maxtime
     else
         @warn "Something very weird happened..."
+        retcode = ReturnCode.failed
     end
 
     achieved_tol = length(test.completedsims) < 2 ? (Inf,Inf) : findminimum_precision(
         test.completedsims[end-1],
         test.completedsims[end])
     
-    return ConvergenceTestResult(test,converged(test),achieved_tol...)
+    return ConvergenceTestResult(
+        test,
+        retcode,
+        achieved_tol...,
+        elapsedtime_seconds,
+        currentiteration,
+        test.completedsims[end].numericalparams)
 end
 
 function converged(test::ConvergenceTest)
@@ -213,13 +237,6 @@ function converged(test::ConvergenceTest)
         test.completedsims[end];
         atol=test.atolgoal,
         rtol=test.rtolgoal)
-end
-
-function worst(results::Vector{ConvergenceTestResult},test::ConvergenceTest)
-    min_achieved_atol = maximum([r.min_achieved_atol for r in results])
-    min_achieved_rtol = maximum([r.min_achieved_rtol for r in results])
-    success           = all([r.success for r in results])
-    ConvergenceTestResult(test,success,min_achieved_atol,min_achieved_rtol)
 end
 
 
@@ -299,20 +316,17 @@ function Base.show(io::IO,::MIME"text/plain",r::ConvergenceTestResult)
     end
 
     str = """
-    success: $(r.success)
+    return code: $(r.retcode)
     achieved tolerances:
       atol: $(r.min_achieved_atol) 
       rtol: $(r.min_achieved_rtol)
-    number of simulations: $(length(r.test.completedsims))
+    elapsed time: $(r.elapsed_time_sec)s
+    number of simulations: $(r.iterations)
 
-    First simulation: 
-    $(prepend_spaces(startparams,1))
-
-    Last simulation:  
-    $(prepend_spaces(endparams,1))
     """
     
     print(io,prepend_spaces(str,1))
+    Base.show(io,"text/plain",r.test)
 end
 
 function Base.show(io::IO,::MIME"text/plain",m::LinearTest)

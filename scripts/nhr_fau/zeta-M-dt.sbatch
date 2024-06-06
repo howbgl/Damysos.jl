@@ -1,7 +1,7 @@
 #!/bin/bash -l
 #SBATCH --gres=gpu:a100:1
 #SBATCH --time=02:30:00
-#SBATCH --array=1-32
+#SBATCH --array=4,9,10,24,26
 #SBATCH -e /home/atuin/b228da/b228da10/zeta-M-sweep/slurm-%A_%a.err
 #SBATCH -o /home/atuin/b228da/b228da10/zeta-M-sweep/slurm-%A_%a.out
 

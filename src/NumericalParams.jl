@@ -38,6 +38,13 @@ function NumericalParams2d(dkx::Real,dky::Real,kxmax::Real,kymax::Real,dt::Real,
     return NumericalParams2d(promote(dkx,dky,kxmax,kymax,dt,t0,rtol,atol)...)
 end
 
+function NumericalParams2d(p::Dict{String,Any})
+
+    names = String.(fieldnames(NumericalParams2d))
+    args  = [p[n] for n in names]
+    return NumericalParams2d(args...)
+end
+
 getdimension(::NumericalParams2d) = UInt8(2)
 
 function getparams(p::NumericalParams2d)
@@ -98,11 +105,20 @@ struct NumericalParams1d{T<:Real} <: NumericalParameters{T}
     rtol::T
     atol::T
 end
+
 function NumericalParams1d(dkx::Real,kxmax::Real,ky::Real,dt::Real,t0::Real,
     rtol::Real=DEFAULT_RTOL,
     atol::Real=DEFAULT_ATOL)
     return NumericalParams1d(promote(dkx,kxmax,ky,dt,t0,rtol,atol)...)
 end
+
+function NumericalParams1d(p::Dict{String,Any})
+
+    names = String.(fieldnames(NumericalParams1d))
+    args  = [p[n] for n in names]
+    return NumericalParams1d(args...)
+end
+
 
 getdimension(::NumericalParams1d) = UInt8(1)
 
@@ -181,6 +197,15 @@ function NumericalParamsSingleMode(
         atol)
     return NumericalParamsSingleMode(args...)
 end
+
+
+function NumericalParamsSingleMode(p::Dict{String,Any})
+
+    names = String.(fieldnames(NumericalParamsSingleMode))
+    args  = [p[n] for n in names]
+    return NumericalParamsSingleMode(args...)
+end
+
 
 getdimension(::NumericalParamsSingleMode) = UInt8(0)
 

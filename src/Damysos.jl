@@ -10,6 +10,7 @@ using Dates
 using Distributed
 using DataFrames
 using DSP
+using EnumX
 using HDF5
 using Interpolations
 using ProgressLogging

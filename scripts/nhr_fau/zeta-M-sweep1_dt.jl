@@ -54,7 +54,7 @@ function make_dt_test(sim::Simulation,altpath::String=pwd())
 	method = PowerLawTest(:dt,0.5)
 	atolgoal = 1e-12
 	rtolgoal = 1e-5
-	maxtime = u"5minute"
+	maxtime = u"10minute"
 	maxiter = 32 # min dt = 0.01/2^31 ≈ 5e-12
 	return ConvergenceTest(sim,solver,method,atolgoal,rtolgoal,maxtime,maxiter;
 		altpath = altpath)

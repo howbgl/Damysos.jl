@@ -71,14 +71,14 @@ const alldrivingfield_fns = getfield_functions.(alldrivingfields)
 			convergence_test =
 				ConvergenceTest(sim_dt, linchunked, PowerLawTest(:dt, 0.5), 1e-10, 1e-3)
 			res = run!(convergence_test)
-			@test res.success
+			@test successful_retcode(res)
 		end
 		@testset "LinearTest (kxmax)" begin
 			sim_kxmax = make_test_simulation1(0.01, 1.0, 1.0, 150, 2)
 			convergence_test =
 				ConvergenceTest(sim_kxmax, linchunked, LinearTest(:kxmax, 10), 1e-10, 1e-3)
 			res = run!(convergence_test)
-			@test res.success			
+			@test successful_retcode(res)			
 		end
 	end
 end

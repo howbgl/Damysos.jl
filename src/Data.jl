@@ -34,13 +34,13 @@ function savedata(result::ConvergenceTestResult)
 	h5open(result.test.testdatafile, "cw") do file
 		g = create_group(file, "testresult")
 
-		g["retcode"]            = Integer(result.retcode)
-		g["achieved_atol"]      = result.min_achieved_atol
-		g["achieved_rtol"]      = result.min_achieved_rtol
-		g["elapsed_time_sec"]   = result.elapsed_time_sec
-		g["iterations"]         = result.iterations
+		g["retcode"]          = Integer(result.retcode)
+		g["achieved_atol"]    = result.min_achieved_atol
+		g["achieved_rtol"]    = result.min_achieved_rtol
+		g["elapsed_time_sec"] = result.elapsed_time_sec
+		g["iterations"]       = result.iterations
 
-		generic_save_hdf5(result.last_params,g,"last_params")
+		generic_save_hdf5(result.last_params, g, "last_params")
 		savedata_hdf5(result.test.method, result.test, g)
 	end
 end
@@ -158,9 +158,9 @@ function loaddata(sim::Simulation)
 	return DataFrame(CSV.File(joinpath(sim.datapath, "data.csv")))
 end
 
-function loadlastparams(filepath::String,::Type{T}) where {T<:NumericalParameters}
-	h5open(filepath,"r") do file
-		return T(read(file["testresult"],"last_params"))
+function loadlastparams(filepath::String, ::Type{T}) where {T <: NumericalParameters}
+	h5open(filepath, "r") do file
+		return T(read(file["testresult"], "last_params"))
 	end
 end
 
@@ -193,7 +193,10 @@ function generic_save_hdf5(object, parent::Union{HDF5.File, HDF5.Group})
 	end
 end
 
-function add_drivingfield!(dat::DataFrame, df::DrivingField, tsamples::AbstractVector{<:Real})
+function add_drivingfield!(
+	dat::DataFrame,
+	df::DrivingField, 
+	tsamples::AbstractVector{<:Real})
 
 	fx = get_efieldx(df)
 	fy = get_efieldy(df)
@@ -206,13 +209,25 @@ function add_drivingfield!(dat::DataFrame, df::DrivingField, tsamples::AbstractV
 	dat.ay = ay.(tsamples)
 end
 
-function savemetadata(sim::Simulation)
+function savemetadata(sim::Simulation;
+	save_observables = false,
+	altpath = joinpath(pwd(), basename(sim.datapath)),
+	filename = "simulation.meta")
 
-	filename            = "simulation.meta"
-	altpath             = joinpath(pwd(), basename(sim.datapath))
+
 	(success, datapath) = ensurepath([sim.datapath, altpath])
+	_sim = save_observables ? sim : Simulation(
+		sim.liouvillian,
+		sim.drivingfield,
+		sim.numericalparams,
+		empty(sim.observables),
+		sim.unitscaling,
+		sim.id,
+		sim.datapath,
+		sim.plotpath,
+		sim.dimensions)
 	if success
-		if save(joinpath(datapath, filename), sim)
+		if save(joinpath(datapath, filename), _sim)
 			@debug "Simulation metadata saved at \"" * joinpath(datapath, filename) * "\""
 			return
 		end

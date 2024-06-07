@@ -97,6 +97,12 @@ end
 
 successful_retcode(ctr::ConvergenceTestResult) = successful_retcode(ctr.retcode)
 
+function successful_retcode(path::String)
+    h5open(path,"r") do file
+        return successful_retcode(ReturnCode.T(read(file["testresult"],"retcode")))
+    end
+end
+
 nextvalue(oldvalue::Real,method::PowerLawTest) = method.multiplier * oldvalue
 nextvalue(oldvalue::Real,method::LinearTest)   = oldvalue + method.shift
 
@@ -140,6 +146,7 @@ function run!(
     test::ConvergenceTest;
     savetestresult=true,
     savealldata=true,
+    savecsv=false,
     savelastdata=true)
     
     @info "## Starting "*repr("text/plain",test)
@@ -152,7 +159,7 @@ function run!(
     savetestresult && savedata(result)
     if !savealldata && savelastdata
         savedata(test,test.completedsims[end])
-        savemetadata(test.completedsims[end])
+        savedata(test.completedsims[end])
     end
     return result
 end
@@ -196,6 +203,7 @@ function _run!(
             """
             if savesimdata
                 savedata(test,currentsim)
+                savedata(currentsim)
             end
             push!(done_sims,currentsim)
             converged(test) && break

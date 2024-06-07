@@ -68,6 +68,20 @@ function resize(v::Velocity,p::NumericalParameters)
     return Velocity(p)
 end
 
+function resize(::Velocity{T},nt::Integer) where {T<:Real}
+    return Velocity(zeros(T,nt),zeros(T,nt),zeros(T,nt),zeros(T,nt),zeros(T,nt),zeros(T,nt))
+end
+
+function Base.append!(v1::Velocity,v2::Velocity)
+    append!(v1.vx,v2.vx)
+    append!(v1.vxintra,v2.vxintra)
+    append!(v1.vxinter,v2.vxinter)
+    append!(v1.vy,v2.vy)
+    append!(v1.vyintra,v2.vyintra)
+    append!(v1.vyinter,v2.vyinter)
+    return v1
+end
+
 function empty(v::Velocity) 
     return Velocity(v)
 end

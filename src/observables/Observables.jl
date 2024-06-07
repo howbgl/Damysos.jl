@@ -16,6 +16,20 @@ bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
 include("Velocity.jl")
 include("Occupation.jl")
 
+function timesplit_obs(obs::Vector{<:Observable},ts::Vector{<:Vector{<:Real}})
+    return [[resize(o,length(t)) for o in obs] for t in ts]
+end
+
+function timemerge_obs(obsvec::Vector{<:Vector{<:Observable}})
+    firstobs = obsvec[1]
+    for obs in obsvec[2:end]
+        for (o1,o2) in zip(firstobs,obs)
+            append!(o1,o2)
+        end        
+    end
+    return firstobs
+end
+
 function define_bzmask(sim::Simulation)
 
     bz = getbzbounds(sim)

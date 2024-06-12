@@ -31,9 +31,14 @@ struct Velocity{T<:Real} <: Observable{T}
     vyintra::Vector{T}
     vyinter::Vector{T}
 end
+
 function Velocity(h::Hamiltonian{T}) where {T<:Real}
     return Velocity(Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0),
                     Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0))
+end
+
+function Velocity(v::Dict{String,Any})
+    Velocity(v["vx"],v["vxintra"],v["vxinter"],v["vy"],v["vyintra"],v["vyinter"])
 end
 
 function Velocity(p::NumericalParameters{T}) where {T<:Real}

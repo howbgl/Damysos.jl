@@ -69,6 +69,11 @@ function run!(
         progress = true)
 
     write_ensemblesols_to_observables!(sim,res.u)
+    p   = sim.numericalparams
+    Δk  = sim.dimensions == 2 ? p.dkx*p.dky : p.dkx  
+    for o in sim.observables
+        normalize!(o,1 / Δk)
+    end
 
     postrun!(sim;savedata=savedata,saveplots=saveplots)
 

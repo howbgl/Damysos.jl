@@ -75,6 +75,11 @@ function run!(
     end
     
     sim.observables .= sum(totalobs)
+    p   = sim.numericalparams
+    Δk  = sim.dimensions == 2 ? p.dkx*p.dky : p.dkx  
+    for o in sim.observables
+        normalize!(o,1 / Δk)
+    end
 
     postrun!(sim;savedata=savedata,saveplots=saveplots)
 

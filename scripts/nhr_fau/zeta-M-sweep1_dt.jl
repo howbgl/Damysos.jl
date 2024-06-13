@@ -37,7 +37,7 @@ function make_simulation(M = 0.5, ζ = 4.0, datapath = "~/data", plotpath = data
 
 	dt    = 0.1
 	kxmax = 3axmax
-	dkx   = 2kxmax / 1_000
+	dkx   = 2kxmax / 500
 	kymax = 1.0
 	dky   = 1.0
 
@@ -53,8 +53,8 @@ function make_dt_test(sim::Simulation,altpath::String=pwd())
 	solver = LinearCUDA(10_000)
 	method = PowerLawTest(:dt,0.5)
 	atolgoal = 1e-12
-	rtolgoal = 1e-5
-	maxtime = u"10minute"
+	rtolgoal = 1e-8
+	maxtime = u"6minute"
 	maxiter = 32 # min dt = 0.01/2^31 ≈ 5e-12
 	return ConvergenceTest(sim,solver,method,atolgoal,rtolgoal,maxtime,maxiter;
 		altpath = altpath)

@@ -18,7 +18,7 @@ struct LinearCUDA{T <: Integer} <: DamysosSolver
 	kchunksize::T
 	algorithm::DiffEqGPU.GPUODEAlgorithm
 	function LinearCUDA{T}(
-		kchunksize::T = DEFAULT_K_CHUNK_SIZE,
+		kchunksize::T = default_kchunk_size(LinearCUDA),
 		algorithm::DiffEqGPU.GPUODEAlgorithm = GPUTsit5()) where {T}
 
 		if CUDA.functional()
@@ -32,10 +32,12 @@ end
 
 
 function LinearCUDA(
-	kchunksize::Integer = DEFAULT_K_CHUNK_SIZE,
+	kchunksize::Integer = default_kchunk_size(LinearCUDA),
 	algorithm::DiffEqGPU.GPUODEAlgorithm = GPUVern7())
 	return LinearCUDA{typeof(kchunksize)}(kchunksize, algorithm)
 end
+
+default_kchunk_size(::Type{LinearCUDA}) = 10_000
 
 function solver_compatible(sim::Simulation, ::LinearCUDA)
 	return sim.dimensions == 2 || sim.dimensions == 1
@@ -74,6 +76,7 @@ function run!(
 	sim.observables .= sum(totalobs)
 
 	postrun!(sim; savedata = savedata, saveplots = saveplots)
+	CUDA.reclaim()
 
 	return sim.observables
 end
@@ -92,7 +95,7 @@ function runkchunk!(
 
 		sum_observables!(cu(kchunk), d_us, d_ts, bzmask, o, obsfuncs)
 
-		# it seems that sometimes, the GC is too slow, so to be safe free GPU arrays
+		# it seems that sometimes the GC is too slow, so to be safe free GPU arrays
 		CUDA.unsafe_free!(d_ts)
 		CUDA.unsafe_free!(d_us)
 	end
@@ -117,7 +120,7 @@ function solvechunk(
 	solver::LinearCUDA,
 	kchunk::Vector{SVector{2, T}},
 	rhs::Function,
-	tsamples::Vector{T} = collect(gettsamples(sim))) where {T <: Real}
+	tsamples::AbstractVector{T} = collect(gettsamples(sim))) where {T <: Real}
 
 	prob = ODEProblem{false}(
 		rhs,
@@ -169,8 +172,10 @@ function build_tchunks_if_necessary(sim::Simulation, solver::LinearCUDA, nk::Int
         Subdividing tsamples into $(length(ts)) timeslices. 
         This may impact runtime negatively. If sensible, try to choose a smaller
         kchunksize (=$nk) in the LinearCUDA solver instead."""
+		return ts, obs
+	else
+		return ts, [obs]
 	end
-	return ts, obs
 end
 
 function memory_estimate(sim::Simulation, solver::LinearCUDA)

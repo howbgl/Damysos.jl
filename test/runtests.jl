@@ -1,3 +1,4 @@
+using CUDA
 using CSV
 using Damysos
 using DataFrames
@@ -8,7 +9,7 @@ using Test
 include("testsims.jl")
 include("fieldtests.jl")
 
-global_logger(TerminalLogger(stderr,Logging.Warn))
+global_logger(TerminalLogger(stderr,Logging.Info))
 
 function checkvelocity(sim::Simulation, solver::DamysosSolver, fns, vref::Velocity;
 	atol = 1e-10,

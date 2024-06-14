@@ -27,10 +27,12 @@ struct LinearChunked{T<:Integer} <: DamysosSolver
     kchunksize::T
     algorithm::SciMLBase.BasicEnsembleAlgorithm
 end
-LinearChunked() = LinearChunked(DEFAULT_K_CHUNK_SIZE)
+LinearChunked() = LinearChunked(default_kchunk_size(LinearChunked))
 function LinearChunked(kchunksize::Integer) 
     LinearChunked(kchunksize,choose_threaded_or_distributed())
 end
+
+default_kchunk_size(::Type{LinearChunked}) = 256
 
 function solver_compatible(sim::Simulation,::LinearChunked)
     return sim.dimensions == 2 || sim.dimensions == 1

@@ -40,8 +40,6 @@ abstract type Liouvillian{T}            <: SimulationComponent{T} end
 abstract type DrivingField{T}           <: SimulationComponent{T} end
 abstract type NumericalParameters{T}    <: SimulationComponent{T} end
 
-const DEFAULT_K_CHUNK_SIZE = 256
-
 
 include("Utility.jl")
 include("general_hamiltonian/GeneralTwoBand.jl")

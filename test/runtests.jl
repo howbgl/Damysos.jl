@@ -9,9 +9,9 @@ using Test
 include("testsims.jl")
 include("fieldtests.jl")
 
-rm("testresults/",force=true,recursive=true)
+rm("testresults/", force = true, recursive = true)
 
-global_logger(TerminalLogger(stderr,Logging.Info))
+global_logger(TerminalLogger(stderr, Logging.Info))
 
 function checkvelocity(sim::Simulation, solver::DamysosSolver, fns, vref::Velocity;
 	atol = 1e-10,
@@ -21,19 +21,23 @@ function checkvelocity(sim::Simulation, solver::DamysosSolver, fns, vref::Veloci
 	return isapprox(v, vref, atol = atol, rtol = rtol)
 end
 
-function makectest(sim::Simulation,m::ConvergenceTestMethod,s::DamysosSolver;
-	atol::Real=1e-10,
-	rtol::Real=1e-3)
-	return ConvergenceTest(sim,s,m,atol,rtol)
+function makectest(sim::Simulation, m::ConvergenceTestMethod, s::DamysosSolver;
+	atol::Real = 1e-10,
+	rtol::Real = 1e-3)
+	return ConvergenceTest(sim, s, m, atol, rtol)
 end
 
-const sim1 			= make_test_simulation1()
-const sim1_dt 		= make_test_simulation1(0.08, 1.0, 1.0, 175, 2)
+const sim1 = make_test_simulation1()
+const sim1_dt = make_test_simulation1(0.08, 1.0, 1.0, 175, 2)
 const sim1_kxmax = make_test_simulation1(0.01, 1.0, 1.0, 150, 2)
 
 const linchunked = LinearChunked()
 const fns_linchunked = define_functions(sim1, linchunked)
-
+const solver_autovern7 = LinearChunked(
+	Damysos.default_kchunk_size(LinearChunked),
+	Damysos.choose_threaded_or_distributed(),
+	AutoVern7(KenCarp47(autodiff = false), lazy = true))
+const fns_autovern7 = define_functions(sim1, solver_autovern7)
 skipcuda = false
 
 try
@@ -75,32 +79,34 @@ const alldrivingfield_fns = getfield_functions.(alldrivingfields)
 		@testset "LinearChunked" begin
 			@test checkvelocity(sim1, linchunked, fns_linchunked, vref)
 		end
-	end
 
-	
+		@testset "AutoVern7" begin
+			@test checkvelocity(sim1, solver_autovern7, fns_autovern7, vref)
+		end
+	end
 
 	@testset "ConvergenceTest" begin
 		@testset "LinearChunked" begin
 			@testset "PowerLawTest (dt)" begin
-				ctest = makectest(sim1_dt,PowerLawTest(:dt,0.5),linchunked)
+				ctest = makectest(sim1_dt, PowerLawTest(:dt, 0.5), linchunked)
 				@test successful_retcode(run!(ctest)) skip = skipcuda
 			end
 			@testset "LinearTest (kxmax)" begin
-				ctest = makectest(sim1_kxmax,LinearTest(:kxmax,10),linchunked)
+				ctest = makectest(sim1_kxmax, LinearTest(:kxmax, 10), linchunked)
 				@test successful_retcode(run!(ctest)) skip = skipcuda
 			end
 		end
-		@testset "LinearCUDA" begin 
+		@testset "LinearCUDA" begin
 			@testset "PowerLawTest (dt)" begin
-				ctest = makectest(sim1_dt,PowerLawTest(:dt,0.5),lincuda)
+				ctest = makectest(sim1_dt, PowerLawTest(:dt, 0.5), lincuda)
 				@test successful_retcode(run!(ctest)) skip = skipcuda
 			end
 			@testset "LinearTest (kxmax)" begin
-				ctest = makectest(sim1_kxmax,LinearTest(:kxmax,10),lincuda)
+				ctest = makectest(sim1_kxmax, LinearTest(:kxmax, 10), lincuda)
 				@test successful_retcode(run!(ctest)) skip = skipcuda
 			end
 		end
 	end
 end
 
-rm("testresults/",force=true,recursive=true)
+rm("testresults/", force = true, recursive = true)

@@ -2,11 +2,16 @@
 export σvec_cv
 export σvec_vc
 export σx_cv
+export σx_cv_i
+export σx_cv_r
 export σx_vc
 export σy_cv
 export σy_vc
 export σz_cv
 export σz_vc
+
+pone(x::Vararg{<:Real}) = one(eltype(promote(x...)))
+pone(x::AbstractArray)  = one(eltype(x))
 
 σx_cv(h::GeneralTwoBand,kx,ky)          = σx_cv(hx(h,kx,ky),hy(h,kx,ky),hz(h,kx,ky))
 σx_cv(hx::Number,hy::Number,hz::Number) = (im * hy + hx*hz/ϵ(hx,hy,hz)) / (hx + im*hy)
@@ -14,6 +19,24 @@ export σz_vc
 function σx_cv(h::GeneralTwoBand) 
     numerator       = :(im*$(hy(h)) + $(hx(h))*$(hz(h)) / $(ϵ(h)))
     denominator     = :($(hx(h)) + im * $(hy(h))) 
+    return :($numerator / $denominator)
+end
+
+σx_cv_r(h::GeneralTwoBand,kx,ky)        = σx_cv_r(hx(h,kx,ky),hy(h,kx,ky),hz(h,kx,ky))
+σx_cv_r(hx::Real,hy::Real,hz::Real)     = (hy^2 + hx*hz/ϵ(hx,hy,hz)) / (hx^2 + hy^2)
+σx_cv_r(h::SVector{3,<:Real})           = (h[1]^2 + h[1]*h[3]/ϵ(h)) / (h[1]^2 + h[2]^2)
+function σx_cv_r(h::GeneralTwoBand)
+    numerator   = :( ($hy(h))^2 + $(hx(h))*$(hz(h)) / $(ϵ(h)) )
+    denominator = :( ($(hx(h)))^2 +  ($(hy(h)))^2)
+    return :($numerator / $denominator)
+end
+
+σx_cv_i(h::GeneralTwoBand,kx,ky)        = σx_cv_i(hx(h,kx,ky),hy(h,kx,ky),hz(h,kx,ky))
+σx_cv_i(hx::Real,hy::Real,hz::Real)     = hx*hy*(pone(hx,hy,hz) - hz/ϵ(hx,hy,hz)) / (hx^2 + hy^2)
+σx_cv_i(h::SVector{3,<:Real})           = h[1]*h[2]*(pone(h) - h[3]/ϵ(h)) / (h[1]^2 + h[2]^2)
+function σx_cv_i(h::GeneralTwoBand)
+    numerator   = :( $(hx(h)) * $(hy(h)) - $(hx(h)) * $(hy(h)) * $(hz(h)) / $(ϵ(h)) )
+    denominator = :( ($(hx(h)))^2 +  ($(hy(h)))^2)
     return :($numerator / $denominator)
 end
 
@@ -25,6 +48,9 @@ function σy_cv(h::GeneralTwoBand)
     denominator     = :($(hx(h)) + im * $(hy(h))) 
     return :($numerator / $denominator)
 end
+
+σy_cv_r(h::GeneralTwoBand,kx,ky)          = σy_cv_r(hx(h,kx,ky),hy(h,kx,ky),hz(h,kx,ky))
+σy_cv_r(hx::Number,hy::Number,hz::Number) = (-im * hx + hy*hz/ϵ(hx,hy,hz)) / (hx + im*hy)
 
 σz_cv(h::GeneralTwoBand,kx,ky)          = σz_cv(hx(h,kx,ky),hy(h,kx,ky),hz(h,kx,ky))
 σz_cv(hx::Number,hy::Number,hz::Number) = (-hx + im*hy) / ϵ(hx,hy,hz)

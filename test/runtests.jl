@@ -15,11 +15,12 @@ function checkvelocity(sim::Simulation, solver::DamysosSolver, fns, vref::Veloci
 	atol = 1e-10,
 	rtol = 1e-2)
 	res = run!(sim, fns, solver; saveplots = false)
-	v   = sim1.observables[1]
+	v   = filter(o -> o isa Velocity,res)[1]
 	return isapprox(v, vref, atol = atol, rtol = rtol)
 end
 
 const sim1 = make_test_simulation1()
+const sim2 = make_test_simulation1(1e-3)
 
 const linchunked = LinearChunked()
 const fns_linchunked = define_functions(sim1, linchunked)
@@ -36,6 +37,7 @@ catch err
 end
 const lincuda = skipcuda ? nothing : LinearCUDA()
 const fns_lincuda = skipcuda ? nothing : define_functions(sim1, lincuda)
+const fns_lincuda2 = skipcuda ? nothing : define_functions(sim2, lincuda)
 
 const referencedata = DataFrame(CSV.File("referencedata.csv"))
 const vref = Velocity(
@@ -64,6 +66,13 @@ const alldrivingfield_fns = getfield_functions.(alldrivingfields)
 		@testset "LinearChunked" begin
 			@test checkvelocity(sim1, linchunked, fns_linchunked, vref)
 		end
+	end
+
+	@testset "Timesplit LinearCUDA" begin
+		sim1_small 	= make_test_simulation1(0.01,1,1,175,1)
+		res1 		= run!(sim1_small,fns_lincuda,lincuda;savedata=false,saveplots=false)
+		sim1_dt 	= make_test_simulation1(1e-4,1,1,175,1)
+		@test checkvelocity(sim1_dt, lincuda, fns_lincuda2, res1[1])
 	end
 
 	@testset "ConvergenceTest" begin

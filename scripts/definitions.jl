@@ -9,7 +9,7 @@ l       = TwoBandDephasingLiouvillian(h,Inf,Inf)
 df      = GaussianAPulse(1.0,2π,0.1)
 pars    = NumericalParams2d(1.0,2.0,100,100,0.01,-5)
 us      = UnitScaling(1.,1.)
-sim     = Simulation(l,df,pars,[Velocity(pars)],us,2)
+sim     = Simulation(l,df,pars,[Velocity(pars)],us)
 fns     = define_functions(sim,LinearChunked(128))
 
 rhsccex,rhscvex = buildrhs_cc_cv_x_expression(sim)

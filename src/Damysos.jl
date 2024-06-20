@@ -6,11 +6,11 @@ using CairoMakie
 using ColorSchemes
 using CSV
 using CUDA
-using Dagger
 using Dates
 using Distributed
 using DataFrames
 using DSP
+using EnumX
 using HDF5
 using Interpolations
 using ProgressLogging
@@ -26,6 +26,7 @@ using TerminalLoggers
 
 import Base.promote_rule
 
+export DamysosSolver
 export DrivingField
 export Hamiltonian
 export Liouvillian
@@ -38,8 +39,6 @@ abstract type Hamiltonian{T} end
 abstract type Liouvillian{T}            <: SimulationComponent{T} end
 abstract type DrivingField{T}           <: SimulationComponent{T} end
 abstract type NumericalParameters{T}    <: SimulationComponent{T} end
-
-const DEFAULT_K_CHUNK_SIZE = 256
 
 
 include("Utility.jl")

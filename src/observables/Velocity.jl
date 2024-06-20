@@ -18,7 +18,7 @@ The velocity is computed via
 - `vxinter::Vector{T}`: ``\\rho_{cv}(t) v^{x}_{vc}(t)  + \\rho_{vc}(t) v^{x}_{cv}(t) ``
 - `vy::Vector{T}`: total velocity in y-direction. 
 - `vyintra::Vector{T}`: ``\\rho_{cc}(t) v^{y}_{cc}(t)  + \\rho_{vv}(t) v^{y}_{vv}(t) ``
-- `vyinter::Vector{T}`: ``\\rho_{cv}(t) v^{y}_{vc}(t)  + \\rho_{vc}(t) v^{y}(t) _{cv}(t) ``
+- `vyinter::Vector{T}`: ``\\rho_{cv}(t) v^{y}_{vc}(t)  + \\rho_{vc}(t) v^{y}_{cv}(t) ``
 
 # See also
 [`Occupation`](@ref Occupation)
@@ -56,8 +56,30 @@ function Velocity(p::NumericalParameters{T}) where {T<:Real}
         vyinter)
 end
 
+function Velocity(
+    vxintra::Vector{T},
+    vxinter::Vector{T},
+    vyintra::Vector{T},
+    vyinter::Vector{T}) where {T<:Real}
+    return Velocity(vxintra .+ vxinter,vxintra,vxinter,vyintra .+ vyinter,vyintra,vyinter)
+end
+
 function resize(v::Velocity,p::NumericalParameters)
     return Velocity(p)
+end
+
+function resize(::Velocity{T},nt::Integer) where {T<:Real}
+    return Velocity(zeros(T,nt),zeros(T,nt),zeros(T,nt),zeros(T,nt),zeros(T,nt),zeros(T,nt))
+end
+
+function Base.append!(v1::Velocity,v2::Velocity)
+    append!(v1.vx,v2.vx)
+    append!(v1.vxintra,v2.vxintra)
+    append!(v1.vxinter,v2.vxinter)
+    append!(v1.vy,v2.vy)
+    append!(v1.vyintra,v2.vyintra)
+    append!(v1.vyinter,v2.vyinter)
+    return v1
 end
 
 function empty(v::Velocity) 
@@ -155,9 +177,9 @@ function Base.isapprox(
         isapprox(vy1,vy2;atol=atol,rtol=rtol,nans=nans)])
 end
 
-build_expression_vxintra(h::Hamiltonian) = :(real(cc)*$(vx_cc(h))+(1-real(cc))* $(vx_vv(h)))
+build_expression_vxintra(h::Hamiltonian) = :(real(cc) * $(vx_cc(h)) + (1-real(cc)) * $(vx_vv(h)))
 build_expression_vxinter(h::Hamiltonian) = :(2real(cv * $(vx_vc(h))))
-build_expression_vyintra(h::Hamiltonian) = :(real(cc)*$(vy_cc(h))+(1-real(cc))* $(vy_vv(h)))
+build_expression_vyintra(h::Hamiltonian) = :(real(cc) * $(vy_cc(h)) + (1-real(cc)) * $(vy_vv(h)))
 build_expression_vyinter(h::Hamiltonian) = :(2real(cv * $(vy_vc(h))))
 
 function build_expression_velocity_svec(h::Hamiltonian)
@@ -217,17 +239,34 @@ function sum_observables!(
     d_kchunk::CuArray{<:SVector{2,<:Real}},
     d_us::CuArray{<:SVector{2,<:Complex}},
     d_ts::CuArray{<:Real,2},
+    d_weigths::CuArray{<:Real,2},
     buf::CuArray{<:Real,2})
 
     vcontributions = (v.vxintra,v.vxinter,v.vyintra,v.vyinter)
 
     for (vm,f) in zip(vcontributions,funcs) 
-        buf     .= f.(d_us,d_kchunk',d_ts)
+        buf     .= f.(d_us,d_kchunk',d_ts) .* d_weigths
         total   = reduce(+,buf;dims=2)
         vm      .= Array(total)
     end
+    v.vx .= v.vxintra .+ v.vxinter
+    v.vy .= v.vyintra .+ v.vyinter
     return v
 end
+
+function calculate_observable_singlemode!(sim::Simulation,v::Velocity,f,res::ODESolution)
+    funcs = [(u,t) -> func(u,res.prob.p,t) for func in f]
+    vs    = (v.vxintra,v.vxinter,v.vyintra,v.vyinter)
+    for (vv,ff) in zip(vs,funcs)
+        vv .= ff.(res.u,res.t)
+    end
+    
+    v.vx .= v.vxintra .+ v.vxinter
+    v.vy .= v.vyintra .+ v.vyinter
+
+    return nothing
+end
+
 
 function write_ensembledata_to_observable!(v::Velocity,data::Vector{<:SVector{4,<:Real}})
 
@@ -246,14 +285,12 @@ function write_svec_timeslice_to_observable!(
     timeindex::Integer,
     data::SVector{4,<:Real})
     
-    for i in 1:4
-        v.vxintra[timeindex] = data[1]
-        v.vxinter[timeindex] = data[2]
-        v.vyintra[timeindex] = data[3]
-        v.vyinter[timeindex] = data[4]
-        v.vx[timeindex] = v.vxinter[timeindex] + v.vxintra[timeindex]
-        v.vy[timeindex] = v.vyinter[timeindex] + v.vyintra[timeindex]
-    end
+    v.vxintra[timeindex] = data[1]
+    v.vxinter[timeindex] = data[2]
+    v.vyintra[timeindex] = data[3]
+    v.vyinter[timeindex] = data[4]
+    v.vx[timeindex] = v.vxinter[timeindex] + v.vxintra[timeindex]
+    v.vy[timeindex] = v.vyinter[timeindex] + v.vyintra[timeindex]
 end
 
 function getfuncs(sim::Simulation,v::Velocity)

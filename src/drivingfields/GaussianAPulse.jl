@@ -13,7 +13,7 @@ Represents spacially homogeneous, linearly polarized pulse with Gaussian envelop
 # Mathematical form
 The form of the vector potential is given by
 ```math
-\\vec{A}(t) = \\vec{A}_0 \\cos(\\omega t) e^{-t^2 / \\sigma^2}
+\\vec{A}(t) = \\vec{A}_0 \\cos(\\omega t + \\theta) e^{-t^2 / \\sigma^2}
 ``` 
 where ``\\vec{A}_0=A_0(\\cos\\varphi\\,\\vec{e}_x + \\sin\\varphi\\,\\vec{e}_y``). 
 
@@ -23,22 +23,25 @@ struct GaussianAPulse{T<:Real} <: DrivingField{T}
     ω::T
     eE::T
     φ::T
-    GaussianAPulse{T}(σ,ω,eE,φ) where {T<:Real} = new(σ,ω,eE,φ)
+    θ::T
+    GaussianAPulse{T}(σ,ω,eE,φ,θ) where {T<:Real} = new(σ,ω,eE,φ,θ)
 end
-GaussianAPulse(σ::T,ω::T,eE::T,φ::T) where {T<:Real} = GaussianAPulse{T}(σ,ω,eE,φ)
-GaussianAPulse(σ::Real,ω::Real,eE::Real,φ::Real)     = GaussianAPulse(promote(σ,ω,eE,φ)...)
-GaussianAPulse(σ::Real,ω::Real,eE::Real)             = GaussianAPulse(σ,ω,eE,0)
+GaussianAPulse(σ::T,ω::T,eE::T,φ::T,θ::T) where {T<:Real} = GaussianAPulse{T}(σ,ω,eE,φ,θ)
+function GaussianAPulse(σ::Real,ω::Real,eE::Real,φ::Real=0,θ::Real=0)     
+    return GaussianAPulse(promote(σ,ω,eE,φ,θ)...)
+end
 function GaussianAPulse(us::UnitScaling,
                     standard_dev::Unitful.Time,
                     frequency::Unitful.Frequency,
                     fieldstrength::Unitful.EField,
-                    φ=0)
+                    φ=0,
+                    θ=0)
     p   = getparams(us)
     σ   = uconvert(Unitful.NoUnits,standard_dev/p.timescale)
     ω   = uconvert(Unitful.NoUnits,2π*frequency*p.timescale)
     e   = uconvert(u"C",1u"eV"/1u"V")
     eE  = uconvert(Unitful.NoUnits,e*p.timescale*p.lengthscale*fieldstrength/Unitful.ħ)
-    return GaussianAPulse(promote(σ,ω,eE,φ)...)
+    return GaussianAPulse(promote(σ,ω,eE,φ,θ)...)
 end
 
 # type alias for backwards compatibility
@@ -46,31 +49,23 @@ export GaussianPulse
 GaussianPulse = GaussianAPulse
 
 function getparams(df::GaussianAPulse)
-    return (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE,φ=df.φ,ħω=df.ω)
-end
-
-function getparamsSI(df::GaussianAPulse,us::UnitScaling)
-    σ   = timeSI(df.σ,us)
-    ν   = frequencySI(ν,us)
-    E   = electricfieldSI(df.eE,us)
-    φ   = df.φ
-    ħω  = energySI(df.ω,us)
+    return (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE,φ=df.φ,ħω=df.ω,θ=df.θ)
 end
 
 @inline function get_efieldx(df::GaussianAPulse)
-    return t-> cos(df.φ) * df.eE * (t*cos(df.ω*t) + df.σ^2*df.ω*sin(df.ω*t)) * 
+    return t-> cos(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
                 gauss(t,df.σ) / (df.ω*df.σ^2)  
 end
 @inline function get_vecpotx(df::GaussianAPulse)
-    return t -> cos(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
+    return t -> cos(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
 end
 
 @inline function get_efieldy(df::GaussianAPulse)
-    return t-> sin(df.φ) * df.eE * (t*cos(df.ω*t) + df.σ^2*df.ω*sin(df.ω*t)) * 
+    return t-> sin(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
                 gauss(t,df.σ) / (df.ω*df.σ^2)  
 end
 @inline function get_vecpoty(df::GaussianAPulse)
-    return t -> sin(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
+    return t -> sin(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
 end
 
 function getfields(df::GaussianAPulse)
@@ -80,41 +75,41 @@ end
 function efieldx(df::GaussianAPulse)
     c1 = cos(df.φ) * df.eE / (df.ω*df.σ^2)
     c2 = df.σ^2*df.ω
-    return  :($c1 *(t*cos($(df.ω)*t) + $c2 * sin($(df.ω)*t)) * gauss(t,$(df.σ)))
+    return  :($c1 *(t*cos($(df.ω)*t+$(df.θ)) + $c2 * sin($(df.ω)*t+$(df.θ))) * gauss(t,$(df.σ)))
 end
 
 function efieldy(df::GaussianAPulse)
     c1 = sin(df.φ) * df.eE / (df.ω*df.σ^2)
     c2 = df.σ^2*df.ω
-    return  :($c1 *(t*cos($(df.ω)*t) + $c2 * sin($(df.ω)*t)) * gauss(t,$(df.σ)))
+    return  :($c1 *(t*cos($(df.ω)*t+$(df.θ)) + $c2 * sin($(df.ω)*t+$(df.θ))) * gauss(t,$(df.σ)))
 end
 
 function vecpotx(df::GaussianAPulse)
     c1 = cos(df.φ) * df.eE / df.ω
-    return :($c1 * cos($(df.ω)*t) * gauss(t,$(df.σ)))
+    return :($c1 * cos($(df.ω)*t+$(df.θ)) * gauss(t,$(df.σ)))
 end
 
 function vecpoty(df::GaussianAPulse)
     c1 = sin(df.φ) * df.eE / df.ω
-    return :($c1 * cos($(df.ω)*t) * gauss(t,$(df.σ)))
+    return :($c1 * cos($(df.ω)*t+$(df.θ)) * gauss(t,$(df.σ)))
 end
 
 function efieldx(df::GaussianAPulse,t::Real)
-    return cos(df.φ) * df.eE * (t*cos(df.ω*t) + df.σ^2*df.ω*sin(df.ω*t)) * 
+    return cos(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
         gauss(t,df.σ) / (df.ω*df.σ^2) 
 end
 
 function vecpotx(df::GaussianAPulse,t::Real)
-    return cos(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
+    return cos(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
 end
 
 function efieldy(df::GaussianAPulse,t::Real)
-    return sin(df.φ) * df.eE * (t*cos(df.ω*t) + df.σ^2*df.ω*sin(df.ω*t)) * 
+    return sin(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
         gauss(t,df.σ) / (df.ω*df.σ^2)  
 end
 
 function vecpoty(df::GaussianAPulse,t::Real)
-    return sin(df.φ) * df.eE * cos(df.ω*t) * gauss(t,df.σ) / df.ω
+    return sin(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
 end
 
 function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)

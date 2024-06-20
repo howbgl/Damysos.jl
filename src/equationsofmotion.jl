@@ -43,5 +43,5 @@ function buildrhs_cc_cv_x_expression(l::TwoBandDephasingLiouvillian,df::DrivingF
 end
 
 function buildrhs_cc_cv_x_expression(s::Simulation)
-    buildrhs_cc_cv_x_expression(s.liouvillian,s.drivingfield)
+    return buildrhs_cc_cv_x_expression(s.liouvillian,s.drivingfield)
 end

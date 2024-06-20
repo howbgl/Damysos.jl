@@ -15,6 +15,7 @@ Represents a simulation with all physical and numerical parameters specified.
 - `id::String`: identifier of the Simulation
 - `datapath::String`: path to save computed observables and simulation metadata
 - `plotpath::String`: path to savee automatically generated plots
+- `dimensions::UInt8`: system can be 0d (single mode),1d or 2d
 
 # See also
 [`Ensemble`](@ref), [`TwoBandDephasingLiouvillian`](@ref), [`UnitScaling`](@ref),
@@ -26,30 +27,18 @@ struct Simulation{T<:Real}
     numericalparams::NumericalParameters{T}
     observables::Vector{Observable{T}}
     unitscaling::UnitScaling{T}
-    dimensions::UInt8
     id::String
     datapath::String
     plotpath::String
-    function Simulation{T}(l,df,p,obs,us,d,id,dpath,ppath) where {T<:Real}
-
-        _d = d
-        if p isa NumericalParams1d{T} && d!=1
-            @warn "given dimensions ($d) not matching $p\nsetting dimensions to 1"
-            _d = 1
-        elseif p isa NumericalParams2d{T} && d!=2
-            @warn "given dimensions ($d) not matching $p\nsetting dimensions to 2"
-            _d = 2
+    dimensions::UInt8
+    function Simulation{T}(l,df,p,obs,us,id,dpath,ppath,d) where {T<:Real}
+        if d != getdimension(p)
+            @warn """
+            The dimension d=$d does not match the the NumericalParameters.
+            Overwriting to d=$(getdimension(p)) instead."""
         end
-
-        new(l,df,p,obs,us,_d,id,dpath,ppath)
+        new(l,df,p,obs,us,id,dpath,ppath,getdimension(p))
     end
-end
-
-function Simulation(l::Liouvillian{T},df::DrivingField{T},p::NumericalParameters{T},
-    obs::Vector{O} where {O<:Observable{T}},us::UnitScaling{T},d::Integer,
-    id::String,dpath::String,ppath::String) where {T<:Real} 
-
-    return Simulation{T}(l,df,p,obs,us,UInt8(abs(d)),id,dpath,ppath)
 end
 
 function Simulation(
@@ -58,9 +47,23 @@ function Simulation(
     p::NumericalParameters{T},
     obs::Vector{O} where {O<:Observable{T}},
     us::UnitScaling{T},
-    d::Integer,
-    id) where {T<:Real}
+    id::String,
+    dpath::String,
+    ppath::String,
+    d::Integer=getdimension(p)) where {T<:Real} 
 
+    return Simulation{T}(l,df,p,obs,us,id,dpath,ppath,UInt8(d))
+end
+
+function Simulation(
+    l::Liouvillian{T},
+    df::DrivingField{T},
+    p::NumericalParameters{T},
+    obs::Vector{O} where {O<:Observable{T}},
+    us::UnitScaling{T},
+    id::String) where {T<:Real}
+
+    d    = getdimension(p)
     name = "Simulation{$T}($(d)d)" * getshortname(l) *"_"*  getshortname(df) * "_$id"
     return Simulation(
         l,
@@ -68,7 +71,6 @@ function Simulation(
         p,
         obs,
         us,
-        d,
         String(id),
         "/home/how09898/phd/data/hhgjl/"*name*"/",
         "/home/how09898/phd/plots/hhgjl/"*name*"/")
@@ -79,12 +81,12 @@ function Simulation(
     df::DrivingField,
     p::NumericalParameters,
     obs::Vector{O} where {O<:Observable},
-    us::UnitScaling,
-    d::Integer)
+    us::UnitScaling)
 
-    id = string(hash([l,df,p,obs,us,d]),base=16)
-    return Simulation(l,df,p,obs,us,d,id)
+    id = string(hash([l,df,p,obs,us]),base=16)
+    return Simulation(l,df,p,obs,us,id)
 end
+
 
 function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where T
 
@@ -168,26 +170,29 @@ getshortname(c::SimulationComponent)    = split("$c",'{')[1]
 
 
 getbzbounds(sim::Simulation) = getbzbounds(sim.drivingfield,sim.numericalparams)
+
+# Fallback method by brute force, more specialized methods are more efficient!
 function getbzbounds(df::DrivingField,p::NumericalParameters)
     
-    # Fallback method by brute force, more specialized methods are more efficient!
     ax      = get_vecpotx(df)
     ts      = gettsamples(p)
     axmax   = maximum(abs.(ax.(ts)))
     kxmax   = maximum(getkxsamples(p))
+    ay      = get_vecpoty(df)
+    aymax   = maximum(abs.(ay.(ts)))
+    kymax   = maximum(getkysamples(p))
     
-    bztuple = (-kxmax + 1.3axmax,kxmax - 1.3axmax)
-    if sim.dimensions==2
-        ay      = get_vecpoty(df)
-        aymax   = maximum(abs.(ay.(ts)))
-        kymax   = maximum(getkysamples(p))
-        bztuple = (bztuple...,-kymax + 1.3aymax,kymax - 1.3aymax)
-    end
+    bztuple = (
+        -kxmax + 1.3axmax,
+        kxmax - 1.3axmax,
+        -kymax + 1.3aymax,
+        kymax - 1.3aymax)
     return bztuple
 end
 
 
 function checkbzbounds(sim::Simulation)
+    sim.numericalparams isa NumericalParamsSingleMode && return
     bz = getbzbounds(sim)
     if bz[1] > bz[2] || bz[3] > bz[4]
         @warn "Brillouin zone vanishes: $(bz)"
@@ -199,7 +204,7 @@ function resize_obs!(sim::Simulation)
     sim.observables .= [resize(o, sim.numericalparams) for o in sim.observables]
 end
 
-function buildkgrid_chunks(sim::Simulation,kchunksize::Integer=DEFAULT_K_CHUNK_SIZE)
+function buildkgrid_chunks(sim::Simulation,kchunksize::Integer)
     kxs            = collect(getkxsamples(sim.numericalparams))
     kys            = collect(getkysamples(sim.numericalparams))
     ks             = [getkgrid_point(i,kxs,kys) for i in 1:ntrajectories(sim)]
@@ -207,10 +212,20 @@ function buildkgrid_chunks(sim::Simulation,kchunksize::Integer=DEFAULT_K_CHUNK_S
 end
 
 function define_functions(sim::Simulation,solver::DamysosSolver)
+    !solver_compatible(sim,solver) && throw(incompatible_solver_exception(sim,solver))
     return (
         define_rhs_x(sim,solver),
         define_bzmask(sim,solver),
         define_observable_functions(sim,solver))
+end
+
+function incompatible_solver_exception(sim::Simulation,solver::DamysosSolver)
+    return ErrorException("""
+        Solver $solver is incompatible with simulation. Compatible pairs are:
+            LinearChunked => 1d & 2d Simulation
+            LinearCUDA    => 1d & 2d Simulation
+            SingleMode    => 0d Simulation
+        Your Simulation has the dimension $(sim.dimensions)""")
 end
 
 
@@ -226,18 +241,14 @@ function printparamsSI(sim::Simulation;digits=3)
     M   = round(2*p.m / p.ω,sigdigits=digits)           # Multi-photon number
     ζ   = round(M/γ,sigdigits=digits)                   # My dimless asymptotic ζ
     plz = round(exp(-π*p.m^2 / p.eE),sigdigits=digits)  # Maximal LZ tunnel prob
-    bzSI  = [wavenumberSI(k,sim.unitscaling) for k in p.bz]
-    bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
-    bz    = [round(x,sigdigits=digits) for x in p.bz]
 
     str = """
         ζ = $ζ
         γ = $γ
         M = $M
-        plz = $plz
-        BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])
-        BZ(ky) = [$(bzSI[3]),$(bzSI[4])] ([$(bz[3]),$(bz[4])])\n"""
-
+        plz = $plz\n"""
+    
+    str *= printBZSI(sim.drivingfield,sim.numericalparams,sim.unitscaling,digits=digits)
     str *= printparamsSI(sim.liouvillian,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.drivingfield,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.numericalparams,sim.unitscaling;digits=digits)

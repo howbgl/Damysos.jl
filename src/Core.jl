@@ -5,8 +5,11 @@ export run!
 
 include("solvers/LinearChunked.jl")
 include("solvers/LinearCUDA.jl")
+include("solvers/SingleMode.jl")
 
 DEFAULT_REDUCTION(u, data, I) = (append!(u,sum(data)),false)
+
+default_kchunk_size(::Type{T}) where {T<:DamysosSolver} = 256
 
 
 """
@@ -63,8 +66,9 @@ Vector of functions used by [`run!`](@ref).
 """
 function define_functions end
 
-function prerun!(sim::Simulation;savedata=true,saveplots=true)
+function prerun!(sim::Simulation,solver::DamysosSolver;savedata=true,saveplots=true)
 
+    !solver_compatible(sim,solver) && throw(incompatible_solver_exception(sim,solver))
     @info """
         ## $(getshortname(sim)) (id: $(sim.id))
 
@@ -77,7 +81,7 @@ function prerun!(sim::Simulation;savedata=true,saveplots=true)
 
         $(markdown_paramsSI(sim))
         """
-
+    
     checkbzbounds(sim)
     savedata && ensurepath(sim.datapath)
     saveplots && ensurepath(sim.plotpath)

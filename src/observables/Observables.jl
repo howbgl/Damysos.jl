@@ -16,6 +16,20 @@ bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
 include("Velocity.jl")
 include("Occupation.jl")
 
+function timesplit_obs(obs::Vector{<:Observable},ts::Vector{<:Vector{<:Real}})
+    return [[resize(o,length(t)) for o in obs] for t in ts]
+end
+
+function timemerge_obs(obsvec::Vector{<:Vector{<:Observable}})
+    firstobs = obsvec[1]
+    for obs in obsvec[2:end]
+        for (o1,o2) in zip(firstobs,obs)
+            append!(o1,o2)
+        end        
+    end
+    return firstobs
+end
+
 function define_bzmask(sim::Simulation)
 
     bz = getbzbounds(sim)
@@ -80,4 +94,31 @@ function maximum_kdisplacement(df::DrivingField,ts::AbstractVector{<:Real})
     axmax = maximum(abs.(map(t -> vecpotx(df,t),ts)))
     aymax = maximum(abs.(map(t -> vecpoty(df,t),ts)))
     return maximum((axmax,aymax))
+end
+
+function printBZSI(df::DrivingField,p::NumericalParams2d,us::UnitScaling;digits=3)
+    
+    bz    = getbzbounds(df,p)
+    bzSI  = [wavenumberSI(k,us) for k in bz]
+    bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
+    bz    = [round(x,sigdigits=digits) for x in bz]
+
+    return """
+        BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])
+        BZ(ky) = [$(bzSI[3]),$(bzSI[4])] ([$(bz[3]),$(bz[4])])\n"""
+end
+
+function printBZSI(df::DrivingField,p::NumericalParams1d,us::UnitScaling;digits=3)
+    
+    bz    = getbzbounds(df,p)
+    bzSI  = [wavenumberSI(k,us) for k in bz]
+    bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
+    bz    = [round(x,sigdigits=digits) for x in bz]
+
+    return """
+        BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])\n"""
+end
+
+function printBZSI(df::DrivingField,p::NumericalParamsSingleMode,us::UnitScaling;digits=3)
+    return ""
 end

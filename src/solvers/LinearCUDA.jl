@@ -58,22 +58,32 @@ function run!(
 	functions,
 	solver::LinearCUDA;
 	savedata = true,
-	saveplots = true)
+	saveplots = true,
+	bypass_memcheck = false)
 
 	prerun!(sim, solver; savedata = savedata, saveplots = saveplots)
 
 	@info """
 		Solver: $(repr(solver))
 	"""
-	totalobs = Vector{Vector{Observable}}(undef, 0)
 
-	@progress name = "Simulation" for ks in buildkgrid_chunks(sim, solver.kchunksize)
+	obs_kchunks = Vector{Vector{Observable}}(undef, 0)
 
-		obs = runkchunk!(sim, functions, solver, ks)
-		push!(totalobs, obs)
+	ts, obs = ([gettsamples(sim)], [sim.observables])
+	if !bypass_memcheck
+		ts, obs = build_tchunks_if_necessary(sim, functions, solver, solver.kchunksize)
 	end
 
-	sim.observables .= sum(totalobs)
+
+	@progress name = "Simulation" for ks in buildkgrid_chunks(sim, solver.kchunksize)
+		obs_timeslice = deepcopy(obs)
+		for (t, o) in zip(ts, obs_timeslice)
+			runkchunk!(sim, functions, solver, ks, t, o)
+		end
+		push!(obs_kchunks, timemerge_obs(obs_timeslice))
+	end
+
+	sim.observables .= sum(obs_kchunks)
 
 	postrun!(sim; savedata = savedata, saveplots = saveplots)
 	CUDA.reclaim()
@@ -85,22 +95,20 @@ function runkchunk!(
 	sim::Simulation,
 	functions,
 	solver::LinearCUDA,
-	kchunk::Vector{<:SVector{2, <:Real}})
+	kchunk::Vector{<:SVector{2, <:Real}},
+	ts::AbstractVector{<:Real} = gettsamples(sim),
+	obs::Vector{<:Observable} = sim.observables)
 
 	rhs, bzmask, obsfuncs = functions
-    ts, obs  = build_tchunks_if_necessary(sim,solver,length(kchunk))
+	d_ts, d_us = solvechunk(sim, solver, kchunk, rhs, ts)
 
-	for (t, o) in zip(ts, obs)
-		d_ts, d_us = solvechunk(sim, solver, kchunk, rhs, t)
+	sum_observables!(cu(kchunk), d_us, d_ts, bzmask, obs, obsfuncs)
 
-		sum_observables!(cu(kchunk), d_us, d_ts, bzmask, o, obsfuncs)
+	# it seems that sometimes the GC is too slow, so to be safe free GPU arrays
+	CUDA.unsafe_free!(d_ts)
+	CUDA.unsafe_free!(d_us)
 
-		# it seems that sometimes the GC is too slow, so to be safe free GPU arrays
-		CUDA.unsafe_free!(d_ts)
-		CUDA.unsafe_free!(d_us)
-	end
-
-	return timemerge_obs(obs)
+	return obs
 end
 
 define_rhs_x(sim::Simulation, ::LinearCUDA) = @eval (u, p, t) -> $(buildrhs_x_expression(sim))
@@ -149,50 +157,94 @@ function sum_observables!(
 	d_ts::CuArray{<:Real, 2},
 	bzmask::Function,
 	obs::Vector{<:Observable},
-	obsfuncs::Vector{<:Vector})
+	obsfuncs::Vector{<:Vector};
+	free_memory = true)
 
+	@debug "Summing observables"
+
+	@debug "Allocating weigths"
 	d_weigths = bzmask.(d_kchunk', d_ts)
-	buf       = zero(d_ts)
-	obsnfns   = zip(obs, obsfuncs)
-	return [sum_observables!(o, f, d_kchunk, d_us, d_ts, d_weigths, buf) for (o, f) in obsnfns]
+	@debug "Allocating buffer"
+	buf     = zero(d_ts)
+	obsnfns = zip(obs, obsfuncs)
+	@debug "Summing"
+	res = [sum_observables!(o, f, d_kchunk, d_us, d_ts, d_weigths, buf) for (o, f) in obsnfns]
+
+	if free_memory
+		CUDA.unsafe_free!(d_weigths)
+		CUDA.unsafe_free!(buf)
+	end
+
+	@debug "Finished summing observables"
+	return res
 end
 
-function build_tchunks_if_necessary(sim::Simulation, solver::LinearCUDA, nk::Integer)
+function build_tchunks_if_necessary(sim::Simulation, fns, solver::LinearCUDA, nk::Integer)
 
-	obs          = deepcopy(sim.observables)
-	ts           = [gettsamples(sim)]
-	cuda_ctx_mem = CUDA.total_memory()
+	obs = deepcopy(sim.observables)
+	ts = [gettsamples(sim)]
+	mem_est = cuda_memory_estimate_linear(sim, fns, solver)
+	nt = getnt(sim)
+	estimate = nk * mem_est(nt)
 
-	if memory_estimate(sim, solver) > cuda_ctx_mem
-		nt = adjust_tsamples_memory(getnt(sim), nk, cuda_ctx_mem)
+	@info "Memory estimate: $(100*estimate) %"
+
+	if nk * mem_est(nt) > 0.9
+		nt = adjust_tsamples_memory(getnt(sim), nk, mem_est)
 		ts = subdivide_vector(gettsamples(sim), nt)
 		obs = timesplit_obs(obs, ts)
 		@warn """
-        Memory estimate > available mem of CUDA context ($(bytes_to_gb(cuda_ctx_mem)) GB).
-        Subdividing tsamples into $(length(ts)) timeslices. 
-        This may impact runtime negatively. If sensible, try to choose a smaller
-        kchunksize (=$nk) in the LinearCUDA solver instead."""
+		Memory estimate > available mem of CUDA context. Subdividing tsamples into
+		$(length(ts)) timeslices. This may impact runtime negatively. If sensible, try to 
+		choose a smaller kchunksize (=$nk) in the LinearCUDA solver instead."""
 		return ts, obs
 	else
 		return ts, [obs]
 	end
 end
 
-function memory_estimate(sim::Simulation, solver::LinearCUDA)
-	return memory_estimate(getnt(sim.numericalparams), solver.kchunksize)
+function cuda_memory_estimate_linear(sim::Simulation, fns, solver::LinearCUDA,
+	nkchunk::Integer = 8_000)
+
+	@info "Running small simulation test-chunk to estimate memory consumption"
+
+	mem_fractions = Float64[]
+
+	GC.gc(true)
+	CUDA.reclaim()
+	maxnt = minimum((getnt(sim),5_000))
+	nts = div.(maxnt,4:-1:1)
+
+	for nt in nts
+		kchunk = buildkgrid_chunks(sim, nkchunk)[1]
+		nk = length(kchunk) # account for possible nk < nkchunk
+		obs = deepcopy(sim.observables)
+		ts = subdivide_vector(gettsamples(sim), nt)
+		obs = timesplit_obs(obs, ts)[1]
+
+		rhs, bzmask, obsfuncs = fns
+		d_ts, d_us = solvechunk(sim, solver, kchunk, rhs, ts[1])
+		sum_observables!(cu(kchunk), d_us, d_ts, bzmask, obs, obsfuncs; free_memory = false)
+
+		free, tot = CUDA.memory_info()
+		push!(mem_fractions, (tot - free) / (tot * nk) )
+
+		CUDA.unsafe_free!(d_ts)
+		CUDA.unsafe_free!(d_us)
+		GC.gc(true)
+		CUDA.reclaim()
+
+	end
+
+	return linear_fit(nts,mem_fractions)
 end
 
-function memory_estimate(nt::Integer, nkchunk::Integer)
-	# The raw data takes about 5 * kchunksize * nt * 8 bytes, but allow for some
-	# wiggle room for the solver etc.
-	return 6 * nt * nkchunk * 8
-end
 
-function adjust_tsamples_memory(nt::Integer, nkchunk::Integer, memory_available::Integer)
-	if memory_estimate(nt, nkchunk) < memory_available
+function adjust_tsamples_memory(nt::Integer, nkchunk::Integer, memory_est)
+	if memory_est(nt) * nkchunk < 0.9
 		return nt
 	else
-		return adjust_tsamples_memory(div(nt, 2), nkchunk, memory_available)
+		return adjust_tsamples_memory(div(nt, 2), nkchunk, memory_est)
 	end
 end
 

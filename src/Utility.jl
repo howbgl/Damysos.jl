@@ -320,4 +320,29 @@ function ensurepath(path::String; n_tries::Int=3, wait_time::Real=10.0)
 end
 
 
+"Fits a straight line through a set of points and returns an anonymous fit-function"
+function linear_fit(x, y)
+
+    
+    sx = sum(x)
+    sy = sum(y)
+
+    m = length(x)
+
+    sx2 = zero(sx.*sx)
+    sy2 = zero(sy.*sy)
+    sxy = zero(sx*sy)
+
+    for i = 1:m
+        sx2 += x[i]*x[i]
+        sy2 += y[i]*y[i]
+        sxy += x[i]*y[i]
+    end
+
+    a0 = (sx2*sy - sxy*sx) / ( m*sx2 - sx*sx )
+    a1 = (m*sxy - sx*sy) / (m*sx2 - sx*sx)
+
+    # return (a0, a1)
+    return x -> a0 + a1*x
+end
 

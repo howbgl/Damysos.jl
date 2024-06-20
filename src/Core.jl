@@ -9,6 +9,8 @@ include("solvers/SingleMode.jl")
 
 DEFAULT_REDUCTION(u, data, I) = (append!(u,sum(data)),false)
 
+default_kchunk_size(::Type{T}) where {T<:DamysosSolver} = 256
+
 
 """
     run!(sim, functions[, solver]; kwargs...)

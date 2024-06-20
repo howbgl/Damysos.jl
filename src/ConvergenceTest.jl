@@ -144,22 +144,19 @@ end
 
 function run!(
     test::ConvergenceTest;
-    savetestresult=true,
-    savealldata=true,
-    savecsv=false,
-    savelastdata=true)
+    savedata=true,
+    savecsv=false)
     
     @info "## Starting "*repr("text/plain",test)
 
     result = _run!(
         test,
         test.method;
-        savesimdata=savealldata)
+        savecsv=savecsv)
 
-    savetestresult && savedata(result)
-    if !savealldata && savelastdata
-        savedata(test,test.completedsims[end])
-        savedata(test.completedsims[end])
+    if savedata
+        Damysos.savedata(result)
+        savecsv && Damysos.savedata(test.completedsims[end])
     end
     return result
 end
@@ -167,7 +164,8 @@ end
 function _run!(
     test::ConvergenceTest,
     method::Union{PowerLawTest,LinearTest};
-    savesimdata=true)
+    savecsv=false,
+    savedata=true)
 
     @info repr("text/plain",method)
     
@@ -201,10 +199,11 @@ function _run!(
             - $(elapsed_round)min of $(max_round)min elapsed 
             - Iteration $currentiteration of maximum of $(test.maxiterations)
             """
-            if savesimdata
-                savedata(test,currentsim)
-                savedata(currentsim)
+            if savedata
+                Damysos.savedata(test,currentsim)
+                savecsv && Damysos.savedata(currentsim)
             end
+            
             push!(done_sims,currentsim)
             converged(test) && break
         end

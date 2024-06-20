@@ -9,6 +9,8 @@ using Test
 include("testsims.jl")
 include("fieldtests.jl")
 
+rm("testresults/",force=true,recursive=true)
+
 global_logger(TerminalLogger(stderr,Logging.Info))
 
 function checkvelocity(sim::Simulation, solver::DamysosSolver, fns, vref::Velocity;
@@ -31,9 +33,6 @@ const sim1_kxmax = make_test_simulation1(0.01, 1.0, 1.0, 150, 2)
 
 const linchunked = LinearChunked()
 const fns_linchunked = define_functions(sim1, linchunked)
-const ctests_linchunked = [
-	makectest(sim1_dt,PowerLawTest(:dt,0.5),linchunked),
-	makectest(sim1_kxmax,LinearTest(:kxmax,10),linchunked)]
 
 skipcuda = false
 
@@ -47,9 +46,6 @@ catch err
 end
 const lincuda = skipcuda ? nothing : LinearCUDA()
 const fns_lincuda = skipcuda ? nothing : define_functions(sim1, lincuda)
-const ctests_lincuda = [
-	skipcuda ? nothing : makectest(sim1_dt,PowerLawTest(:dt,0.5),lincuda),
-	skipcuda ? nothing : makectest(sim1_kxmax,LinearTest(:kxmax,10),lincuda)]
 
 
 const referencedata = DataFrame(CSV.File("referencedata.csv"))
@@ -86,19 +82,25 @@ const alldrivingfield_fns = getfield_functions.(alldrivingfields)
 	@testset "ConvergenceTest" begin
 		@testset "LinearChunked" begin
 			@testset "PowerLawTest (dt)" begin
-				@test successful_retcode(run!(ctests_linchunked[1])) skip = skipcuda
+				ctest = makectest(sim1_dt,PowerLawTest(:dt,0.5),linchunked)
+				@test successful_retcode(run!(ctest)) skip = skipcuda
 			end
 			@testset "LinearTest (kxmax)" begin
-				@test successful_retcode(run!(ctests_linchunked[2])) skip = skipcuda
+				ctest = makectest(sim1_kxmax,LinearTest(:kxmax,10),linchunked)
+				@test successful_retcode(run!(ctest)) skip = skipcuda
 			end
 		end
 		@testset "LinearCUDA" begin 
 			@testset "PowerLawTest (dt)" begin
-				@test successful_retcode(run!(ctests_lincuda[1])) skip = skipcuda
+				ctest = makectest(sim1_dt,PowerLawTest(:dt,0.5),lincuda)
+				@test successful_retcode(run!(ctest)) skip = skipcuda
 			end
 			@testset "LinearTest (kxmax)" begin
-				@test successful_retcode(run!(ctests_lincuda[2])) skip = skipcuda	
+				ctest = makectest(sim1_kxmax,LinearTest(:kxmax,10),lincuda)
+				@test successful_retcode(run!(ctest)) skip = skipcuda
 			end
 		end
 	end
 end
+
+rm("testresults/",force=true,recursive=true)

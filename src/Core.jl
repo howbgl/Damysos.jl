@@ -101,3 +101,33 @@ function postrun!(sim::Simulation;savedata=true,saveplots=true)
     
     return nothing
 end
+
+function runtimeout!(timeout,sim::Simulation,fns,solver::DamysosSolver;savedata=true,saveplots=true)
+
+    _run = let sim=sim,fns=fns,solver=solver,sd=savedata,sp=saveplots
+        c -> begin
+            try
+                put!(c,run!(sim,fns,solver;savedata=sd,saveplots=sp))
+                return nothing
+            catch e
+                if e isa InterruptException
+                    @warn "run interrupted!"
+                end
+            end
+        end 
+    end
+
+    runtask = @async begin
+        try
+            run!(sim,fns,solver;savedata=savedata,saveplots=saveplots)
+        catch e
+            if e isa InterruptException
+                @warn "run interrupted!"
+            end
+        end
+    end
+
+    sig = timedwait(()->istaskdone(runtask),timeout)
+    sig == :timed_out && schedule(runtask,InterruptException(),error=true)
+    return sim.observables
+end

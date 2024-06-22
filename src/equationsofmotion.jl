@@ -1,5 +1,4 @@
 
-export define_rhs_x
 export get_rhs_x
 export buildrhs_x_expression
 

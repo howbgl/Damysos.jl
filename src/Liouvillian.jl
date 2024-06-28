@@ -2,7 +2,7 @@ export TwoBandDephasingLiouvillian
 """
     TwoBandDephasingLiouvillian{T<:Real} <: Liouvillian{T}
 
-Represents a system with a two-band Hamiltonian and ``T_2`` dephasing.
+Represents a system with a two-band Hamiltonian and ``T_2`` dephasing and ``T_1`` relaxation
 
 # See also
 [`GappedDirac`](@ref GappedDirac), [`GeneralTwoBand`](@ref GeneralTwoBand)

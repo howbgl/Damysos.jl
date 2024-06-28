@@ -9,7 +9,8 @@ Represents an integration strategy for k-space via simple midpoint sum.
 
 # Fields
 - `kchunksize::T`: number of k-points in one chunk. Every task/worker gets one chunk. 
-- `algorithm::SciMLBase.BasicEnsembleAlgorithm`: algorithm for the `EnsembleProblem`
+- `algorithm::SciMLBase.BasicEnsembleAlgorithm`: algorithm for the `EnsembleProblem`.
+- `odesolver::SciMLBase.AbstractODEAlgorithm`: ODE algorithm
 
 # Examples
 ```jldoctest
@@ -17,6 +18,7 @@ julia> solver = LinearChunked(256,EnsembleThreads())
 LinearChunked:
   - kchunksize: 256
   - algorithm: EnsembleThreads()
+  - odesolver: Vern7(; stage_limiter! = trivial_limiter!, step_limiter! = trivial_limiter!, thread = static(false), lazy = true,)
   
 ```
 
@@ -26,10 +28,13 @@ LinearChunked:
 struct LinearChunked{T<:Integer} <: DamysosSolver 
     kchunksize::T
     algorithm::SciMLBase.BasicEnsembleAlgorithm
+    odesolver::SciMLBase.AbstractODEAlgorithm
 end
-LinearChunked() = LinearChunked(default_kchunk_size(LinearChunked))
-function LinearChunked(kchunksize::Integer) 
-    LinearChunked(kchunksize,choose_threaded_or_distributed())
+function LinearChunked(
+    kchunksize::Integer=default_kchunk_size(LinearChunked),
+    algorithm=choose_threaded_or_distributed(),
+    odesolver=Vern7()) 
+    LinearChunked(kchunksize,algorithm,odesolver)
 end
 
 default_kchunk_size(::Type{LinearChunked}) = 256
@@ -62,7 +67,7 @@ function run!(
     
     res = solve(
         prob,
-        ode_alg,
+        solver.odesolver,
         solver.algorithm;
         trajectories = length(kchunks),
         saveat = gettsamples(sim.numericalparams),
@@ -180,11 +185,12 @@ end
 getserialsolver(solver::LinearChunked) = LinearChunked(solver.kchunksize,EnsembleSerial())
 
 function Base.show(io::IO,::MIME"text/plain",s::LinearChunked)
-    println(io,"LinearChunked:" |> escape_underscores)
+    println(io,"LinearChunked:")
     str = """
     - kchunksize: $(s.kchunksize)
     - algorithm: $(s.algorithm)
-    """ |> escape_underscores
+    - odesolver: $(s.odesolver)
+    """
     print(io,prepend_spaces(str,2))
 end
 

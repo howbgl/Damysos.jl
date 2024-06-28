@@ -93,8 +93,16 @@ function prerun!(sim::Simulation,solver::DamysosSolver;savedata=true,saveplots=t
 end
 
 function postrun!(sim::Simulation;savedata=true,saveplots=true)
-    
-    normalize!.(sim.observables,(2π)^sim.dimensions)
+
+    p   = sim.numericalparams
+    Δk  = if sim.dimensions == 2
+            p.dkx * p.dky
+        elseif sim.dimensions == 1
+            p.dkx 
+        elseif sim.dimensions == 0
+            1.0
+        end
+    normalize!.(sim.observables,(2π)^sim.dimensions / Δk)
 
     savedata && Damysos.savedata(sim)
     saveplots && plotdata(sim)

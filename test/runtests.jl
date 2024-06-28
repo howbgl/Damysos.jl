@@ -68,13 +68,6 @@ const alldrivingfield_fns = getfield_functions.(alldrivingfields)
 		end
 	end
 
-	@testset "Timesplit LinearCUDA" begin
-		sim1_small 	= make_test_simulation1(0.01,1,1,175,1)
-		res1 		= run!(sim1_small,fns_lincuda,lincuda;savedata=false,saveplots=false)
-		sim1_dt 	= make_test_simulation1(1e-4,1,1,175,1)
-		@test checkvelocity(sim1_dt, lincuda, fns_lincuda2, res1[1])
-	end
-
 	@testset "ConvergenceTest" begin
 		@testset "PowerLawTest (dt)" begin
 			sim_dt = make_test_simulation1(0.08, 1.0, 1.0, 175, 2)

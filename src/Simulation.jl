@@ -237,7 +237,7 @@ end
 function printparamsSI(sim::Simulation;digits=3)
 
     p   = getparams(sim)
-    γ   = round(p.m*p.ω / p.eE,sigdigits=digits)        # Keldysh parameter
+    γ   = round(p.m*p.ω / (2p.eE),sigdigits=digits)        # Keldysh parameter
     M   = round(2*p.m / p.ω,sigdigits=digits)           # Multi-photon number
     ζ   = round(M/γ,sigdigits=digits)                   # My dimless asymptotic ζ
     plz = round(exp(-π*p.m^2 / p.eE),sigdigits=digits)  # Maximal LZ tunnel prob

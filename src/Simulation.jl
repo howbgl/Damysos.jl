@@ -171,30 +171,10 @@ getshortname(c::SimulationComponent)    = split("$c",'{')[1]
 
 getbzbounds(sim::Simulation) = getbzbounds(sim.drivingfield,sim.numericalparams)
 
-# Fallback method by brute force, more specialized methods are more efficient!
-function getbzbounds(df::DrivingField,p::NumericalParameters)
-    
-    ax      = get_vecpotx(df)
-    ts      = gettsamples(p)
-    axmax   = maximum(abs.(ax.(ts)))
-    kxmax   = maximum(getkxsamples(p))
-    ay      = get_vecpoty(df)
-    aymax   = maximum(abs.(ay.(ts)))
-    kymax   = maximum(getkysamples(p))
-    
-    bztuple = (
-        -kxmax + 1.3axmax,
-        kxmax - 1.3axmax,
-        -kymax + 1.3aymax,
-        kymax - 1.3aymax)
-    return bztuple
-end
-
-
 function checkbzbounds(sim::Simulation)
     sim.numericalparams isa NumericalParamsSingleMode && return
     bz = getbzbounds(sim)
-    if bz[1] > bz[2] || bz[3] > bz[4]
+    if bz[1] > bz[2] || (sim.dimensions == 2 && bz[3] > bz[4])
         @warn "Brillouin zone vanishes: $(bz)"
     end
 end
@@ -254,6 +234,8 @@ function printparamsSI(sim::Simulation;digits=3)
     str *= printparamsSI(sim.numericalparams,sim.unitscaling;digits=digits)
     return str
 end
+
+printdimless_paramsSI(l::Liouvillian,df::DrivingField) = ""
 
 
 function markdown_paramsSI(sim::Simulation)

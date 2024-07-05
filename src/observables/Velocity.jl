@@ -31,7 +31,7 @@ struct Velocity{T<:Real} <: Observable{T}
     vyintra::Vector{T}
     vyinter::Vector{T}
 end
-function Velocity(h::Hamiltonian{T}) where {T<:Real}
+function Velocity(::SimulationComponent{T}) where {T<:Real}
     return Velocity(Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0),
                     Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0))
 end

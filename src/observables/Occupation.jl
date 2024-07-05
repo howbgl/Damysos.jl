@@ -16,7 +16,7 @@ Only the conduction band occupation ``\\rho_{cc}(t)`` is stored since ``Tr\\rho(
 struct Occupation{T<:Real} <: Observable{T}
     cbocc::Vector{T}
 end
-function Occupation(::Hamiltonian{T}) where {T<:Real}
+function Occupation(::SimulationComponent{T}) where {T<:Real}
     return Occupation(Vector{T}(undef,0))
 end
 function Occupation(p::NumericalParameters{T}) where {T<:Real}

@@ -214,20 +214,12 @@ function Base.show(io::IO,::MIME"text/plain",c::Union{SimulationComponent,Hamilt
     print(io,c |> getparams |> stringexpand_nt |> prepend_spaces)
 end
 
+
+printdimless_params(l::Liouvillian,df::DrivingField) = ""
+
 function printparamsSI(sim::Simulation;digits=3)
-
-    p   = getparams(sim)
-    γ   = round(p.m*p.ω / p.eE,sigdigits=digits)        # Keldysh parameter
-    M   = round(2*p.m / p.ω,sigdigits=digits)           # Multi-photon number
-    ζ   = round(M/γ,sigdigits=digits)                   # My dimless asymptotic ζ
-    plz = round(exp(-π*p.m^2 / p.eE),sigdigits=digits)  # Maximal LZ tunnel prob
-
-    str = """
-        ζ = $ζ
-        γ = $γ
-        M = $M
-        plz = $plz\n"""
-    
+   
+    str  = printdimless_params(sim.liouvillian,sim.drivingfield)
     str *= printBZSI(sim.drivingfield,sim.numericalparams,sim.unitscaling,digits=digits)
     str *= printparamsSI(sim.liouvillian,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.drivingfield,sim.unitscaling;digits=digits)
@@ -235,7 +227,6 @@ function printparamsSI(sim::Simulation;digits=3)
     return str
 end
 
-printdimless_paramsSI(l::Liouvillian,df::DrivingField) = ""
 
 
 function markdown_paramsSI(sim::Simulation)

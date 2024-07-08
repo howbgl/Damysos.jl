@@ -126,6 +126,8 @@ function vecpoty(df::GaussianEPulse,t::Real)
     return sin(df.φ) * vecpotabs(df,t)
 end
 
+central_angular_frequency(df::GaussianEPulse) = df.ω
+
 function printparamsSI(df::GaussianEPulse,us::UnitScaling;digits=4)
 
     p       = getparams(df)

@@ -68,14 +68,16 @@ function run!(
 	"""
 
 	obs_kchunks = Vector{Vector{Observable}}(undef, 0)
+	kchunks 	= buildkgrid_chunks(sim,solver.kchunksize)
 
 	ts, obs = ([gettsamples(sim)], [sim.observables])
 	if !bypass_memcheck
-		ts, obs = build_tchunks_if_necessary(sim, functions, solver, solver.kchunksize)
+		actual_n_kchunk = minimum((solver.kchunksize,length(kchunks[1])))
+		ts, obs = build_tchunks_if_necessary(sim, functions, solver, actual_n_kchunk)
 	end
 
 
-	@progress name = "Simulation" for ks in buildkgrid_chunks(sim, solver.kchunksize)
+	@progress name = "Simulation" for ks in kchunks
 		obs_timeslice = deepcopy(obs)
 		for (t, o) in zip(ts, obs_timeslice)
 			runkchunk!(sim, functions, solver, ks, t, o)
@@ -241,11 +243,13 @@ end
 
 
 function adjust_tsamples_memory(nt::Integer, nkchunk::Integer, memory_est)
-	if memory_est(nt) * nkchunk < 0.9
-		return nt
-	else
-		return adjust_tsamples_memory(div(nt, 2), nkchunk, memory_est)
+	current_nt = nt
+	while memory_est(current_nt) * nkchunk > 0.9
+		current_nt -= 10
+		current_nt < 10 && throw(ErrorException(
+			"Simulation needs extremly small time-chunks (<10)!"))
 	end
+	return current_nt
 end
 
 bytes_to_gb(x::Real) = x / 1073741824

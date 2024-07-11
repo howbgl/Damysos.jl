@@ -4,6 +4,7 @@
 /Manifest.toml
 /logs/
 *.out
+*.err
 *.log
 *_old_*.hdf
 *_old_*.hdf5

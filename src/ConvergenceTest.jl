@@ -26,7 +26,7 @@ struct ConvergenceTest
 		atolgoal::Real = 1e-12,
 		rtolgoal::Real = 1e-8,
 		maxtime::Union{Real, Unitful.Time} = 600,
-		maxiterations::Integer = 64;
+		maxiterations::Integer = 16;
 		altpath = joinpath(pwd(), start.datapath))
 
 		maxtime = maxtime isa Real ? maxtime : ustrip(u"s", maxtime)

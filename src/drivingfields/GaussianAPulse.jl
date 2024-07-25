@@ -112,6 +112,13 @@ function vecpoty(df::GaussianAPulse,t::Real)
     return sin(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
 end
 
+# Specialized methods for efficiency
+maximum_vecpot(df::GaussianAPulse)  = abs(df.eE) / df.ω
+maximum_vecpotx(df::GaussianAPulse) = cos(df.φ) * abs(df.eE) / df.ω
+maximum_vecpoty(df::GaussianAPulse) = sin(df.φ) * abs(df.eE) / df.ω
+
+central_angular_frequency(df::GaussianAPulse) = df.ω
+
 function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)
 
     p       = getparams(df)

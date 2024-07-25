@@ -171,30 +171,10 @@ getshortname(c::SimulationComponent)    = split("$c",'{')[1]
 
 getbzbounds(sim::Simulation) = getbzbounds(sim.drivingfield,sim.numericalparams)
 
-# Fallback method by brute force, more specialized methods are more efficient!
-function getbzbounds(df::DrivingField,p::NumericalParameters)
-    
-    ax      = get_vecpotx(df)
-    ts      = gettsamples(p)
-    axmax   = maximum(abs.(ax.(ts)))
-    kxmax   = maximum(getkxsamples(p))
-    ay      = get_vecpoty(df)
-    aymax   = maximum(abs.(ay.(ts)))
-    kymax   = maximum(getkysamples(p))
-    
-    bztuple = (
-        -kxmax + 1.3axmax,
-        kxmax - 1.3axmax,
-        -kymax + 1.3aymax,
-        kymax - 1.3aymax)
-    return bztuple
-end
-
-
 function checkbzbounds(sim::Simulation)
     sim.numericalparams isa NumericalParamsSingleMode && return
     bz = getbzbounds(sim)
-    if bz[1] > bz[2] || bz[3] > bz[4]
+    if bz[1] > bz[2] || (sim.dimensions == 2 && bz[3] > bz[4])
         @warn "Brillouin zone vanishes: $(bz)"
     end
 end
@@ -234,26 +214,19 @@ function Base.show(io::IO,::MIME"text/plain",c::Union{SimulationComponent,Hamilt
     print(io,c |> getparams |> stringexpand_nt |> prepend_spaces)
 end
 
+
+printdimless_params(l::Liouvillian,df::DrivingField) = ""
+
 function printparamsSI(sim::Simulation;digits=3)
-
-    p   = getparams(sim)
-    γ   = round(p.m*p.ω / (2p.eE),sigdigits=digits)        # Keldysh parameter
-    M   = round(2*p.m / p.ω,sigdigits=digits)           # Multi-photon number
-    ζ   = round(M/γ,sigdigits=digits)                   # My dimless asymptotic ζ
-    plz = round(exp(-π*p.m^2 / p.eE),sigdigits=digits)  # Maximal LZ tunnel prob
-
-    str = """
-        ζ = $ζ
-        γ = $γ
-        M = $M
-        plz = $plz\n"""
-    
+   
+    str  = printdimless_params(sim.liouvillian,sim.drivingfield)
     str *= printBZSI(sim.drivingfield,sim.numericalparams,sim.unitscaling,digits=digits)
     str *= printparamsSI(sim.liouvillian,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.drivingfield,sim.unitscaling;digits=digits)
     str *= printparamsSI(sim.numericalparams,sim.unitscaling;digits=digits)
     return str
 end
+
 
 
 function markdown_paramsSI(sim::Simulation)

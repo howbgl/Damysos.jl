@@ -136,8 +136,10 @@ function savedata_hdf5(
 	parent::Union{HDF5.File, HDF5.Group})
 
 	g = create_group(parent, "convergence_parameters")
-	params = [currentvalue(m, s) for s in t.completedsims]
-	g[string(m.parameter)] = params
+	if !isempty(t.completedsims)
+		params = [currentvalue(m, s) for s in t.completedsims]
+		g[string(m.parameter)] = params
+	end
 	close(g)
 end
 

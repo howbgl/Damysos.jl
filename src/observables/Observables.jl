@@ -74,27 +74,21 @@ function getmovingbz(sim::Simulation{T},kxsamples::AbstractVector{T}) where {T<:
 end
 
 
-function getbzbounds(df::GaussianAPulse,p::NumericalParams1d)
-    kxmax = p.kxmax
-    axmax = df.eE / df.ω
+getbzbounds(::DrivingField,::NumericalParamsSingleMode) = ()
+
+function getbzbounds(df::DrivingField,p::NumericalParams1d)
+    axmax   = maximum_vecpotx(df)
+    kxmax   = maximum(getkxsamples(p))
     return (-kxmax + 1.3axmax,kxmax - 1.3axmax)
 end
 
-function getbzbounds(df::GaussianAPulse,p::NumericalParams2d)
-
-    amax = 1.3df.eE / df.ω
-    return (
-        -p.kxmax + cos(df.φ)*amax,
-        p.kxmax - cos(df.φ)*amax,
-        -p.kymax + sin(df.φ)*amax,
-        p.kymax - sin(df.φ)*amax)
+function getbzbounds(df::DrivingField,p::NumericalParams2d)
+    bz_1d = getbzbounds(df,NumericalParams1d(p.dkx,p.kxmax,0.0,p.dt,p.t0,p.rtol,p.atol))
+    aymax   = maximum_vecpoty(df)
+    kymax   = maximum(getkysamples(p))
+    return (bz_1d...,-kymax + 1.3aymax,kymax - 1.3aymax)
 end
 
-function maximum_kdisplacement(df::DrivingField,ts::AbstractVector{<:Real})
-    axmax = maximum(abs.(map(t -> vecpotx(df,t),ts)))
-    aymax = maximum(abs.(map(t -> vecpoty(df,t),ts)))
-    return maximum((axmax,aymax))
-end
 
 function printBZSI(df::DrivingField,p::NumericalParams2d,us::UnitScaling;digits=3)
     

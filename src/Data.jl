@@ -5,6 +5,37 @@ export save
 export savedata
 export savemetadata
 
+const LOADABLES = Dict(
+	"Simulation"					=> Simulation,
+	"NumericalParams2d" 			=> NumericalParams2d,
+	"NumericalParams1d" 			=> NumericalParams1d,
+	"NumericalParamsSingleMode" 	=> NumericalParamsSingleMode,
+	"TwoBandDephasingLiouvillian" 	=> TwoBandDephasingLiouvillian,
+	"GappedDirac" 					=> GappedDirac,
+	"UnitScaling"					=> UnitScaling,
+	"GaussianAPulse" 				=> GaussianAPulse,
+	"GaussianEPulse" 				=> GaussianEPulse,
+	"GaussianPulse"					=> GaussianPulse,
+	"Vector{Observable{.*?}}"		=> Vector{Observable},
+	"Velocity" 						=> Velocity,
+	"Occupation"					=> Occupation
+)
+
+isloadable(s::String) = [match(Regex(n),s) for n in keys(LOADABLES)] .|> !isnothing |> any
+isloadable(object) 	  = isloadable("$(typeof(object))")
+
+function loadable_datatype(s::String)
+	for n in keys(LOADABLES) 
+		m = match(Regex(n),s)
+		if isnothing(m)
+			continue
+		else
+			return LOADABLES[n]
+		end
+	end
+	throw(ArgumentError("No equivalent for $t found in LOADABLES."))
+end
+
 function savedata(
 	sim::Simulation;
 	altpath = joinpath(pwd(), basename(sim.datapath)),
@@ -73,13 +104,14 @@ function savedata_hdf5(
 	for (f, n) in zip(
 		(t -> efieldx(df, t), t -> efieldy(df, t), t -> vecpotx(df, t), t -> vecpoty(df, t)),
 		("fx", "fy", "ax", "ay"))
-
+		
 		gdf[n] = f.(ts)
 	end
+	generic_save_hdf5(sim.drivingfield,gdf)
 	close(gdf)
 	@debug "Saved driving field"
 
-	gobs = create_group(parent, "observables")
+	gobs 		= create_group(parent, "observables")
 	for o in sim.observables
 		savedata_hdf5(o, gobs)
 	end
@@ -88,8 +120,12 @@ function savedata_hdf5(
 	savedata_hdf5(sim.numericalparams, parent)
 	savedata_hdf5(sim.liouvillian, parent)
 	savedata_hdf5(sim.unitscaling, parent)
-	parent["dim"] = sim.dimensions
-	parent["id"]  = sim.id
+
+	parent["dim"] 		= sim.dimensions
+	parent["id"]  		= sim.id
+	parent["datapath"] 	= sim.datapath
+	parent["plotpath"] 	= sim.plotpath
+	parent["T"]   		= "Simulation"
 end
 
 function savedata_hdf5(
@@ -112,6 +148,7 @@ end
 
 function savedata_hdf5(l::TwoBandDephasingLiouvillian, parent::Union{HDF5.File, HDF5.Group})
 	g = create_group(parent, "liouvillian")
+	g["T"]  = "TwoBandDephasingLiouvillian"
 	g["t1"] = l.t1
 	g["t2"] = l.t2
 	savedata_hdf5(l.hamiltonian, g)
@@ -160,10 +197,69 @@ function loaddata(sim::Simulation)
 	return DataFrame(CSV.File(joinpath(sim.datapath, "data.csv")))
 end
 
+function loadsimulation_hdf5(path::String)
+	h5open(path, "r") do file
+		ldict 	= read(file,"liouvillian")
+		dfdict 	= read(file,"drivingfield")
+		pdict 	= read(file,"numericalparams")
+		usdict 	= read(file,"unitscaling")
+		odict  	= read(file,"observables")
+
+		l  = construct_type_from_dict(ldict["T"],ldict)
+		df = construct_type_from_dict(dfdict["T"],dfdict)
+		p  = construct_type_from_dict(pdict["T"],pdict)
+		us = construct_type_from_dict(usdict["T"],usdict)
+
+		obs = Vector{Observable}(l)
+		
+		for o in values(odict)
+			push!(obs,construct_type_from_dict(o["T"],o))
+		end
+		return Simulation(
+			l,
+			df,
+			p,
+			obs,
+			us,
+			read(file,"id"),
+			read(file,"datapath"),
+			read(file,"plotpath"),
+			read(file,"dim"))
+	end
+end
+
 function loadlastparams(filepath::String, ::Type{T}) where {T <: NumericalParameters}
 	h5open(filepath, "r") do file
 		return T(read(file["testresult"], "last_params"))
 	end
+end
+
+function construct_type_from_dict(t::String,d::Dict{String})
+	for k in keys(LOADABLES)
+		m = match(Regex(k),t)
+		if !isnothing(m)
+			return construct_type_from_dict(LOADABLES[k],d)
+		end
+	end
+	throw(ArgumentError("No equivalent for $t found in LOADABLES."))
+end
+
+function construct_type_from_dict(t::Union{DataType,UnionAll},d::Dict{String})
+    names = String.(fieldnames(t))
+    args = []
+    for n in names
+        if n ∈ keys(d)
+            field = d[n]
+            if field isa Dict
+                push!(args,construct_type_from_dict(field["T"],field))
+            else
+                push!(args,d[n])
+            end
+        else
+            throw(KeyError(n))
+        end
+    end
+    return t(args...)
 end
 
 function add_observable!(dat::DataFrame, v::Velocity)
@@ -190,6 +286,9 @@ function generic_save_hdf5(object, parent::Union{HDF5.File, HDF5.Group}, grpname
 end
 
 function generic_save_hdf5(object, parent::Union{HDF5.File, HDF5.Group})
+	if isloadable(object)
+		parent["T"] = "$(typeof(object))"
+	end
 	for n in fieldnames(typeof(object))
 		parent["$n"] = getproperty(object, n)
 	end

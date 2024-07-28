@@ -17,6 +17,8 @@ function TwoBandDephasingLiouvillian(h::GeneralTwoBand,t1::Real,t2::Real)
     TwoBandDephasingLiouvillian(h,promote(t1,t2)...)
 end
 
+TwoBandDephasingLiouvillian(l::Dict) = construct_type_from_dict(TwoBandDephasingLiouvillian,l)
+
 for func = (BAND_SYMBOLS...,DIPOLE_SYMBOLS...,VELOCITY_SYMBOLS...)
     @eval(Damysos,$func(l::Liouvillian) = $func(l.hamiltonian))
 end

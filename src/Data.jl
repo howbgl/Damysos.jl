@@ -71,6 +71,9 @@ function savedata(result::ConvergenceTestResult)
 		g["elapsed_time_sec"] = result.elapsed_time_sec
 		g["iterations"]       = result.iterations
 
+		start = create_group(file,"start")
+		savedata_hdf5(result.test.start,start)
+
 		generic_save_hdf5(result.last_params, g, "last_params")
 		savedata_hdf5(result.test, g)
 	end
@@ -168,10 +171,6 @@ function savedata_hdf5(o::Occupation, parent::Union{HDF5.File, HDF5.Group})
 end
 
 function savedata_hdf5(t::ConvergenceTest,parent::Union{HDF5.File, HDF5.Group})
-
-	gstart = create_group(parent,"start")
-	savedata_hdf5(t.start,gstart)
-	close(gstart)
 
 	g = create_group(parent, "convergence_parameters")
 	if !isempty(t.completedsims)

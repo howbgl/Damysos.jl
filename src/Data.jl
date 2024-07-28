@@ -72,14 +72,14 @@ function savedata(result::ConvergenceTestResult)
 		g["iterations"]       = result.iterations
 
 		generic_save_hdf5(result.last_params, g, "last_params")
-		savedata_hdf5(result.test.method, result.test, g)
+		savedata_hdf5(result.test, g)
 	end
 end
 
 function savedata(test::ConvergenceTest, sim::Simulation)
 
 	h5open(test.testdatafile, "cw") do file
-		savedata_hdf5(sim, create_group(file, sim.id))
+		savedata_hdf5(sim, create_group(file["completedsims"], sim.id))
 	end
 end
 
@@ -167,15 +167,16 @@ function savedata_hdf5(o::Occupation, parent::Union{HDF5.File, HDF5.Group})
 	generic_save_hdf5(o, parent, "occupation")
 end
 
-function savedata_hdf5(
-	m::Union{PowerLawTest, LinearTest},
-	t::ConvergenceTest,
-	parent::Union{HDF5.File, HDF5.Group})
+function savedata_hdf5(t::ConvergenceTest,parent::Union{HDF5.File, HDF5.Group})
+
+	gstart = create_group(parent,"start")
+	savedata_hdf5(t.start,gstart)
+	close(gstart)
 
 	g = create_group(parent, "convergence_parameters")
 	if !isempty(t.completedsims)
-		params = [currentvalue(m, s) for s in t.completedsims]
-		g[string(m.parameter)] = params
+		params = [currentvalue(t.method, s) for s in t.completedsims]
+		g[string(t.method.parameter)] = params
 	end
 	close(g)
 end
@@ -198,34 +199,39 @@ function loaddata(sim::Simulation)
 end
 
 function loadsimulation_hdf5(path::String)
-	h5open(path, "r") do file
-		ldict 	= read(file,"liouvillian")
-		dfdict 	= read(file,"drivingfield")
-		pdict 	= read(file,"numericalparams")
-		usdict 	= read(file,"unitscaling")
-		odict  	= read(file,"observables")
-
-		l  = construct_type_from_dict(ldict["T"],ldict)
-		df = construct_type_from_dict(dfdict["T"],dfdict)
-		p  = construct_type_from_dict(pdict["T"],pdict)
-		us = construct_type_from_dict(usdict["T"],usdict)
-
-		obs = Vector{Observable}(l)
-		
-		for o in values(odict)
-			push!(obs,construct_type_from_dict(o["T"],o))
-		end
-		return Simulation(
-			l,
-			df,
-			p,
-			obs,
-			us,
-			read(file,"id"),
-			read(file,"datapath"),
-			read(file,"plotpath"),
-			read(file,"dim"))
+	h5open(path,"r") do file
+		loadsimulation_hdf5(file)
 	end
+end
+
+function loadsimulation_hdf5(parent::Union{HDF5.File, HDF5.Group})
+
+	ldict 	= read(parent,"liouvillian")
+	dfdict 	= read(parent,"drivingfield")
+	pdict 	= read(parent,"numericalparams")
+	usdict 	= read(parent,"unitscaling")
+	odict  	= read(parent,"observables")
+
+	l  = construct_type_from_dict(ldict["T"],ldict)
+	df = construct_type_from_dict(dfdict["T"],dfdict)
+	p  = construct_type_from_dict(pdict["T"],pdict)
+	us = construct_type_from_dict(usdict["T"],usdict)
+
+	obs = Vector{Observable}(l)
+	
+	for o in values(odict)
+		push!(obs,construct_type_from_dict(o["T"],o))
+	end
+	return Simulation(
+		l,
+		df,
+		p,
+		obs,
+		us,
+		read(parent,"id"),
+		read(parent,"datapath"),
+		read(parent,"plotpath"),
+		read(parent,"dim"))
 end
 
 function loadlastparams(filepath::String, ::Type{T}) where {T <: NumericalParameters}

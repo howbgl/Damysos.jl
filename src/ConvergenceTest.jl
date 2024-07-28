@@ -47,15 +47,15 @@ struct ConvergenceTest
 		filepath = joinpath(path, filename)
 
 		rename_file_if_exists(filepath)
-		file = h5open(filepath, "cw")
-		filepath = file.filename
-		close(file)
+		h5open(filepath,"cw") do file
+			create_group(file,"completedsims")
+		end
 
 		@reset start.datapath = joinpath(start.datapath, "start")
 		@reset start.plotpath = joinpath(start.plotpath, "start")
 		@reset start.id = "start_$(start.id)"
 
-		return new(
+		c = new(
 			start,
 			solver,
 			method,
@@ -82,7 +82,15 @@ end
 @enumx ReturnCode success maxtime maxiter running failed
 
 function successful_retcode(retcode::ReturnCode.T)
-	retcode == ReturnCode.success
+	return retcode == ReturnCode.success
+end
+
+function terminated_retcode(retcode::ReturnCode.T)
+	return any(retcode .== [
+		ReturnCode.success,
+		ReturnCode.maxtime,
+		ReturnCode.maxiter,
+		ReturnCode.failed])
 end
 
 struct ConvergenceTestResult
@@ -264,6 +272,18 @@ function converged(test::ConvergenceTest)
 		rtol = test.rtolgoal)
 end
 
+function resume(
+	start::Simulation,
+	m::ConvergenceTestMethod,
+	last_params::NumericalParameters,
+	solver::DamysosSolver = LinearChunked(),
+	atolgoal::Real = 1e-12,
+	rtolgoal::Real = 1e-8,
+	maxtime::Union{Real, Unitful.Time} = 600,
+	maxiterations::Integer = 16;
+	altpath = joinpath(pwd(), start.datapath))
+	!terminated_retcode()
+end
 
 function findminimum_precision(
 	s1::Simulation,

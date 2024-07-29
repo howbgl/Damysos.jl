@@ -116,12 +116,8 @@ function savedata_hdf5(
 	close(gdf)
 	@debug "Saved driving field"
 
-	gobs 		= create_group(parent, "observables")
-	for o in sim.observables
-		savedata_hdf5(o, gobs)
-	end
-	close(gobs)
-
+	
+	savedata_hdf5(sim.observables, parent)
 	savedata_hdf5(sim.numericalparams, parent)
 	savedata_hdf5(sim.liouvillian, parent)
 	savedata_hdf5(sim.unitscaling, parent)
@@ -131,6 +127,18 @@ function savedata_hdf5(
 	parent["datapath"] 	= sim.datapath
 	parent["plotpath"] 	= sim.plotpath
 	parent["T"]   		= "Simulation"
+end
+
+function savedata_hdf5(
+	obs::Vector{<:Observable},
+	parent::Union{HDF5.File, HDF5.Group})
+	
+	gobs = create_group(parent, "observables")
+	gobs["T"] = "$(typeof(obs))"
+	for o in obs
+		savedata_hdf5(o, gobs)
+	end
+	close(gobs)
 end
 
 function savedata_hdf5(
@@ -226,36 +234,6 @@ function loadsimulation_hdf5(path::String)
 	end
 end
 
-function loadsimulation_hdf5(parent::Union{HDF5.File, HDF5.Group})
-
-	ldict 	= read(parent,"liouvillian")
-	dfdict 	= read(parent,"drivingfield")
-	pdict 	= read(parent,"numericalparams")
-	usdict 	= read(parent,"unitscaling")
-	odict  	= read(parent,"observables")
-
-	l  = construct_type_from_dict(ldict["T"],ldict)
-	df = construct_type_from_dict(dfdict["T"],dfdict)
-	p  = construct_type_from_dict(pdict["T"],pdict)
-	us = construct_type_from_dict(usdict["T"],usdict)
-
-	obs = Vector{Observable}(l)
-	
-	for o in values(odict)
-		push!(obs,construct_type_from_dict(o["T"],o))
-	end
-	return Simulation(
-		l,
-		df,
-		p,
-		obs,
-		us,
-		read(parent,"id"),
-		read(parent,"datapath"),
-		read(parent,"plotpath"),
-		read(parent,"dim"))
-end
-
 function load_obj_hdf5(object::Union{HDF5.File, HDF5.Group})
 	return construct_type_from_dict(read(object))
 end
@@ -274,7 +252,12 @@ function construct_type_from_dict(t::String,d::Dict{String})
 	throw(ArgumentError("No equivalent for $t found in LOADABLES."))
 end
 
-function construct_type_from_dict(t::Union{DataType,UnionAll},d::Dict{String})
+# Generic method simply extracts primitive numeric values (or Dicts if substructure exists)
+# from fieldnames(...)
+function construct_type_from_dict(
+	t::Type{<:Union{SimulationComponent,Observable,Hamiltonian}},
+	d::Dict{String})
+
     names = String.(fieldnames(t))
     args = []
     for n in names
@@ -290,6 +273,36 @@ function construct_type_from_dict(t::Union{DataType,UnionAll},d::Dict{String})
         end
     end
     return t(args...)
+end
+
+function construct_type_from_dict(::Type{<:Simulation},d::Dict{String})
+	return Simulation(
+		construct_type_from_dict(d["liouvillian"]),
+		construct_type_from_dict(d["drivingfield"]),
+		construct_type_from_dict(d["numericalparams"]),
+		[construct_type_from_dict(d["observables"])...], # Vector{Obs} => Vector{Obs{T}}
+		construct_type_from_dict(d["unitscaling"]),
+		d["id"],
+		d["datapath"],
+		d["plotpath"],
+		d["dim"])
+end
+
+function construct_type_from_dict(::Type{Vector{Observable}},d::Dict{String})
+	obs = Observable[]
+	for o in values(d)
+		# avoid trying to load obs["T"] = "Vector{Observable{...}}"
+		o isa Dict && push!(obs,construct_type_from_dict(o["T"],o))
+	end
+	return obs
+end
+
+function construct_type_from_dict(::Type{<:PowerLawTest},d::Dict{String})
+	return PowerLawTest(Symbol(d["parameter"]),d["multiplier"])
+end
+
+function construct_type_from_dict(::Type{<:LinearTest},d::Dict{String})
+	return LinearTest(Symbol(d["parameter"]),d["shift"])
 end
 
 function add_observable!(dat::DataFrame, v::Velocity)

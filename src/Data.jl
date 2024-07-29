@@ -18,7 +18,9 @@ const LOADABLES = Dict(
 	"GaussianPulse"					=> GaussianPulse,
 	"Vector{Observable{.*?}}"		=> Vector{Observable},
 	"Velocity" 						=> Velocity,
-	"Occupation"					=> Occupation
+	"Occupation"					=> Occupation,
+	"PowerLawTest"					=> PowerLawTest,
+	"LinearTest"					=> LinearTest
 )
 
 isloadable(s::String) = [match(Regex(n),s) for n in keys(LOADABLES)] .|> !isnothing |> any
@@ -180,6 +182,27 @@ function savedata_hdf5(t::ConvergenceTest,parent::Union{HDF5.File, HDF5.Group})
 	close(g)
 end
 
+function savedata_hdf5(m::ConvergenceTestMethod,parent::Union{HDF5.File, HDF5.Group})
+	return generic_save_hdf5(m,parent,"method")
+end
+
+function savedata_hdf5(
+	m::Union{PowerLawTest,LinearTest},
+	parent::Union{HDF5.File, HDF5.Group})
+	
+	g = create_group(parent,"method")
+	g["T"] 			= "$(typeof(m))"
+	g["parameter"] 	= string(m.parameter)
+
+	if m isa PowerLawTest
+		g["multiplier"] = m.multiplier
+	else # isa LinearTest
+		g["shift"] = m.shift
+	end
+
+	close(g)
+end
+
 function savedata_csv(sim::Simulation, datapath::String)
 
 	tsamples = getparams(sim).tsamples
@@ -233,10 +256,12 @@ function loadsimulation_hdf5(parent::Union{HDF5.File, HDF5.Group})
 		read(parent,"dim"))
 end
 
-function loadlastparams(filepath::String, ::Type{T}) where {T <: NumericalParameters}
-	h5open(filepath, "r") do file
-		return T(read(file["testresult"], "last_params"))
-	end
+function load_obj_hdf5(object::Union{HDF5.File, HDF5.Group})
+	return construct_type_from_dict(read(object))
+end
+
+function construct_type_from_dict(d::Dict{String})
+	return construct_type_from_dict(d["T"],d)
 end
 
 function construct_type_from_dict(t::String,d::Dict{String})

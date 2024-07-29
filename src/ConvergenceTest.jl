@@ -49,6 +49,7 @@ struct ConvergenceTest
 		rename_file_if_exists(filepath)
 		h5open(filepath,"cw") do file
 			create_group(file,"completedsims")
+			savedata_hdf5(method,file)
 		end
 
 		@reset start.datapath = joinpath(start.datapath, "start")
@@ -272,17 +273,19 @@ function converged(test::ConvergenceTest)
 		rtol = test.rtolgoal)
 end
 
-function resume(
-	start::Simulation,
-	m::ConvergenceTestMethod,
-	last_params::NumericalParameters,
-	solver::DamysosSolver = LinearChunked(),
-	atolgoal::Real = 1e-12,
-	rtolgoal::Real = 1e-8,
-	maxtime::Union{Real, Unitful.Time} = 600,
-	maxiterations::Integer = 16;
-	altpath = joinpath(pwd(), start.datapath))
-	!terminated_retcode()
+function resume_convergence_test(filepath_hdf5::String)
+	h5open(filepath_hdf5,"r") do file
+		return resume_convergence_test(file)
+	end
+end
+
+function resume_convergence_test(file::Union{HDF5.File, HDF5.Group})
+	
+	d_last_params 	= read(file,"lastparams")
+	d_method 		= read(file,"method")
+	last_params 	= construct_type_from_dict(d_last_params["T"],d_last_params)
+	method 			= construct_type_from_dict(d_)
+	start 			= loadsimulation_hdf5(file["start"])
 end
 
 function findminimum_precision(

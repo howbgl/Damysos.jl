@@ -1,91 +1,40 @@
-export ConvergenceTest
-export ConvergenceTestMethod
-export ConvergenceTestResult
-export LinearTest
-export PowerLawTest
 export successful_retcode
+export terminated_retcode
+export resume
 
-abstract type ConvergenceTestMethod end
+"""
+    successful_retcode(x)
 
+Returns true if x terminated with a successful return code.
 
-struct ConvergenceTest
-	start::Simulation
-	solver::DamysosSolver
-	method::ConvergenceTestMethod
-	atolgoal::Real
-	rtolgoal::Real
-	maxtime::Real
-	maxiterations::Integer
-	completedsims::Vector{Simulation}
-	testdatafile::String
-	allfunctions::Vector{Any}
-	function ConvergenceTest(
-		start::Simulation,
-		solver::DamysosSolver = LinearChunked(),
-		method::ConvergenceTestMethod = PowerLawTest(:dt, 0.5),
-		atolgoal::Real = 1e-12,
-		rtolgoal::Real = 1e-8,
-		maxtime::Union{Real, Unitful.Time} = 600,
-		maxiterations::Integer = 16;
-		altpath = joinpath(pwd(), start.datapath))
-
-		maxtime = maxtime isa Real ? maxtime : ustrip(u"s", maxtime)
-
-		fns = []
-		s = deepcopy(start)
-
-		for i in 1:maxiterations
-			f = define_functions(s, solver)
-			s = next(s, method)
-			push!(fns, f)
-		end
-
-		(success, path) = ensurepath([start.datapath, altpath])
-		!success && throw(ErrorException("could not create neceesary data directory"))
-
-		filename = "convergencetest_$(getname(start))_$(getname(method)).hdf5"
-		filepath = joinpath(path, filename)
-
-		rename_file_if_exists(filepath)
-		h5open(filepath,"cw") do file
-			create_group(file,"completedsims")
-			savedata_hdf5(method,file)
-		end
-
-		@reset start.datapath = joinpath(start.datapath, "start")
-		@reset start.plotpath = joinpath(start.plotpath, "start")
-		@reset start.id = "start_$(start.id)"
-
-		c = new(
-			start,
-			solver,
-			method,
-			atolgoal,
-			rtolgoal,
-			maxtime,
-			maxiterations,
-			empty([start]),
-			filepath,
-			fns)
-	end
-end
-
-struct LinearTest{T <: Real} <: ConvergenceTestMethod
-	parameter::Symbol
-	shift::T
-end
-
-struct PowerLawTest{T <: Real} <: ConvergenceTestMethod
-	parameter::Symbol
-	multiplier::T
-end
-
-@enumx ReturnCode success maxtime maxiter running failed
+"""
+successful_retcode(ctr::ConvergenceTestResult) = successful_retcode(ctr.retcode)
 
 function successful_retcode(retcode::ReturnCode.T)
 	return retcode == ReturnCode.success
 end
 
+
+"""
+    successful_retcode(path::String)
+
+Loads .hdf5 file of convergence test and returns true if it was successful.
+
+# See also
+[`ConvergenceTest`](@ref), [`ConvergenceTestResult`](@ref)
+"""
+function successful_retcode(path::String)
+	h5open(path, "r") do file
+		return successful_retcode(ReturnCode.T(read(file["testresult"], "retcode")))
+	end
+end
+
+"""
+    terminated_retcode(x)
+
+Returns true if x terminated regularly.
+
+"""
 function terminated_retcode(retcode::ReturnCode.T)
 	return any(retcode .== [
 		ReturnCode.success,
@@ -94,21 +43,18 @@ function terminated_retcode(retcode::ReturnCode.T)
 		ReturnCode.failed])
 end
 
-struct ConvergenceTestResult
-	test::ConvergenceTest
-	retcode::ReturnCode.T
-	min_achieved_atol::Real
-	min_achieved_rtol::Real
-	elapsed_time_sec::Real
-	iterations::Integer
-	last_params::NumericalParameters
-end
+terminated_retcode(x::ConvergenceTestResult) = successful_retcode(x.retcode)
+"""
+    terminated_retcode(path::String)
 
-successful_retcode(ctr::ConvergenceTestResult) = successful_retcode(ctr.retcode)
+Loads .hdf5 file of convergence test and returns true if it terminated regularly.
 
-function successful_retcode(path::String)
+# See also
+[`ConvergenceTest`](@ref), [`ConvergenceTestResult`](@ref)
+"""
+function terminated_retcode(path::String)
 	h5open(path, "r") do file
-		return successful_retcode(ReturnCode.T(read(file["testresult"], "retcode")))
+		return terminated_retcode(ReturnCode.T(read(file["testresult"], "retcode")))
 	end
 end
 
@@ -234,7 +180,7 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, timedout::Bo
 	elseif timedout
 		@info "Maximum runtime exceeded"
 		retcode = ReturnCode.maxtime
-	elseif length(test.completedsims) > test.maxiterations
+	elseif length(test.completedsims) >= test.maxiterations
 		@warn "Maximum number of iterations ($(test.maxiterations)) exceeded."
 		retcode = ReturnCode.maxiter
 	else
@@ -273,19 +219,53 @@ function converged(test::ConvergenceTest)
 		rtol = test.rtolgoal)
 end
 
-function resume_convergence_test(filepath_hdf5::String)
+"""
+    resume(filepath_hdf5::String,solver::DamysosSolver)
+
+Returns true if x terminated with a successful return code.
+
+"""
+function resume(
+	filepath_hdf5::String,
+	solver::DamysosSolver,
+	args...;
+	kwargs...)
 	h5open(filepath_hdf5,"r") do file
-		return resume_convergence_test(file)
+		return resume(file,solver,args...;kwargs...)
 	end
 end
 
-function resume_convergence_test(file::Union{HDF5.File, HDF5.Group})
+function resume(
+	file::Union{HDF5.File, HDF5.Group},
+	solver::DamysosSolver,
+	method::ConvergenceTestMethod = load_obj_hdf5(file["method"]),
+	atolgoal::Real = read(file,"atolgoal"),
+	rtolgoal::Real = read(file,"rtolgoal"),
+	maxtime::Union{Real, Unitful.Time} = read(file,"maxtime"),
+	maxiterations::Integer = read(file,"maxiterations");
+	altpath = joinpath(pwd(), read(file,"testdatafile")))
 	
-	d_last_params 	= read(file,"lastparams")
-	d_method 		= read(file,"method")
-	last_params 	= construct_type_from_dict(d_last_params["T"],d_last_params)
-	method 			= construct_type_from_dict(d_)
-	start 			= loadsimulation_hdf5(file["start"])
+	last_params 	= load_obj_hdf5(file["testresult/last_params"])
+	oldstart		= load_obj_hdf5(file["start"])
+	start 			= Simulation(
+		oldstart.liouvillian,
+		oldstart.drivingfield,
+		last_params,
+		zero.(oldstart.observables),
+		oldstart.unitscaling,
+		oldstart.id,
+		dirname(read(file,"testdatafile")),
+		dirname(read(file,"testdatafile")))
+	
+	return ConvergenceTest(
+		start,
+		solver,
+		method,
+		atolgoal,
+		rtolgoal,
+		maxtime,
+		maxiterations;
+		altpath = altpath)
 end
 
 function findminimum_precision(

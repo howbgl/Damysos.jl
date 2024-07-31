@@ -225,7 +225,7 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, timedout::Bo
 	elseif timedout
 		@info "Maximum runtime exceeded"
 		retcode = ReturnCode.maxtime
-	elseif length(test.completedsims) > test.maxiterations
+	elseif length(test.completedsims) >= test.maxiterations
 		@warn "Maximum number of iterations ($(test.maxiterations)) exceeded."
 		retcode = ReturnCode.maxiter
 	else

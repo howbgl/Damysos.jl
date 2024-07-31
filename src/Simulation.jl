@@ -45,21 +45,21 @@ function Simulation(
     l::Liouvillian{T},
     df::DrivingField{T},
     p::NumericalParameters{T},
-    obs::Vector{O} where {O<:Observable{T}},
+    obs::Vector{<:Observable{T}},
     us::UnitScaling{T},
     id::String,
     dpath::String,
     ppath::String,
     d::Integer=getdimension(p)) where {T<:Real} 
 
-    return Simulation{T}(l,df,p,obs,us,id,dpath,ppath,UInt8(d))
+    return Simulation{T}(l,df,p,[obs...],us,id,dpath,ppath,UInt8(d))
 end
 
 function Simulation(
     l::Liouvillian{T},
     df::DrivingField{T},
     p::NumericalParameters{T},
-    obs::Vector{O} where {O<:Observable{T}},
+    obs::Vector{<:Observable{T}},
     us::UnitScaling{T},
     id::String) where {T<:Real}
 
@@ -69,7 +69,7 @@ function Simulation(
         l,
         df,
         p,
-        obs,
+        [obs...],
         us,
         String(id),
         "/home/how09898/phd/data/hhgjl/"*name*"/",
@@ -80,11 +80,11 @@ function Simulation(
     l::Liouvillian,
     df::DrivingField,
     p::NumericalParameters,
-    obs::Vector{O} where {O<:Observable},
+    obs::Vector{<:Observable},
     us::UnitScaling)
 
     id = string(hash([l,df,p,obs,us]),base=16)
-    return Simulation(l,df,p,obs,us,id)
+    return Simulation(l,df,p,[obs...],us,id)
 end
 
 

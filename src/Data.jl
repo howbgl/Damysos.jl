@@ -5,6 +5,39 @@ export save
 export savedata
 export savemetadata
 
+const LOADABLES = Dict(
+	"Simulation"					=> Simulation,
+	"NumericalParams2d" 			=> NumericalParams2d,
+	"NumericalParams1d" 			=> NumericalParams1d,
+	"NumericalParamsSingleMode" 	=> NumericalParamsSingleMode,
+	"TwoBandDephasingLiouvillian" 	=> TwoBandDephasingLiouvillian,
+	"GappedDirac" 					=> GappedDirac,
+	"UnitScaling"					=> UnitScaling,
+	"GaussianAPulse" 				=> GaussianAPulse,
+	"GaussianEPulse" 				=> GaussianEPulse,
+	"GaussianPulse"					=> GaussianPulse,
+	"Vector{Observable{.*?}}"		=> Vector{Observable},
+	"Velocity" 						=> Velocity,
+	"Occupation"					=> Occupation,
+	"PowerLawTest"					=> PowerLawTest,
+	"LinearTest"					=> LinearTest
+)
+
+isloadable(s::String) = [match(Regex(n),s) for n in keys(LOADABLES)] .|> !isnothing |> any
+isloadable(object) 	  = isloadable("$(typeof(object))")
+
+function loadable_datatype(s::String)
+	for n in keys(LOADABLES) 
+		m = match(Regex(n),s)
+		if isnothing(m)
+			continue
+		else
+			return LOADABLES[n]
+		end
+	end
+	throw(ArgumentError("No equivalent for $t found in LOADABLES."))
+end
+
 function savedata(
 	sim::Simulation;
 	altpath = joinpath(pwd(), basename(sim.datapath)),
@@ -40,15 +73,18 @@ function savedata(result::ConvergenceTestResult)
 		g["elapsed_time_sec"] = result.elapsed_time_sec
 		g["iterations"]       = result.iterations
 
+		start = create_group(file,"start")
+		savedata_hdf5(result.test.start,start)
+
 		generic_save_hdf5(result.last_params, g, "last_params")
-		savedata_hdf5(result.test.method, result.test, g)
+		savedata_hdf5(result.test, g)
 	end
 end
 
 function savedata(test::ConvergenceTest, sim::Simulation)
 
 	h5open(test.testdatafile, "cw") do file
-		savedata_hdf5(sim, create_group(file, sim.id))
+		savedata_hdf5(sim, create_group(file["completedsims"], sim.id))
 	end
 end
 
@@ -73,23 +109,36 @@ function savedata_hdf5(
 	for (f, n) in zip(
 		(t -> efieldx(df, t), t -> efieldy(df, t), t -> vecpotx(df, t), t -> vecpoty(df, t)),
 		("fx", "fy", "ax", "ay"))
-
+		
 		gdf[n] = f.(ts)
 	end
+	generic_save_hdf5(sim.drivingfield,gdf)
 	close(gdf)
 	@debug "Saved driving field"
 
-	gobs = create_group(parent, "observables")
-	for o in sim.observables
-		savedata_hdf5(o, gobs)
-	end
-	close(gobs)
-
+	
+	savedata_hdf5(sim.observables, parent)
 	savedata_hdf5(sim.numericalparams, parent)
 	savedata_hdf5(sim.liouvillian, parent)
 	savedata_hdf5(sim.unitscaling, parent)
-	parent["dim"] = sim.dimensions
-	parent["id"]  = sim.id
+
+	parent["dim"] 		= sim.dimensions
+	parent["id"]  		= sim.id
+	parent["datapath"] 	= sim.datapath
+	parent["plotpath"] 	= sim.plotpath
+	parent["T"]   		= "Simulation"
+end
+
+function savedata_hdf5(
+	obs::Vector{<:Observable},
+	parent::Union{HDF5.File, HDF5.Group})
+	
+	gobs = create_group(parent, "observables")
+	gobs["T"] = "$(typeof(obs))"
+	for o in obs
+		savedata_hdf5(o, gobs)
+	end
+	close(gobs)
 end
 
 function savedata_hdf5(
@@ -112,6 +161,7 @@ end
 
 function savedata_hdf5(l::TwoBandDephasingLiouvillian, parent::Union{HDF5.File, HDF5.Group})
 	g = create_group(parent, "liouvillian")
+	g["T"]  = "TwoBandDephasingLiouvillian"
 	g["t1"] = l.t1
 	g["t2"] = l.t2
 	savedata_hdf5(l.hamiltonian, g)
@@ -130,16 +180,34 @@ function savedata_hdf5(o::Occupation, parent::Union{HDF5.File, HDF5.Group})
 	generic_save_hdf5(o, parent, "occupation")
 end
 
-function savedata_hdf5(
-	m::Union{PowerLawTest, LinearTest},
-	t::ConvergenceTest,
-	parent::Union{HDF5.File, HDF5.Group})
+function savedata_hdf5(t::ConvergenceTest,parent::Union{HDF5.File, HDF5.Group})
 
 	g = create_group(parent, "convergence_parameters")
 	if !isempty(t.completedsims)
-		params = [currentvalue(m, s) for s in t.completedsims]
-		g[string(m.parameter)] = params
+		params = [currentvalue(t.method, s) for s in t.completedsims]
+		g[string(t.method.parameter)] = params
 	end
+	close(g)
+end
+
+function savedata_hdf5(m::ConvergenceTestMethod,parent::Union{HDF5.File, HDF5.Group})
+	return generic_save_hdf5(m,parent,"method")
+end
+
+function savedata_hdf5(
+	m::Union{PowerLawTest,LinearTest},
+	parent::Union{HDF5.File, HDF5.Group})
+	
+	g = create_group(parent,"method")
+	g["T"] 			= "$(typeof(m))"
+	g["parameter"] 	= string(m.parameter)
+
+	if m isa PowerLawTest
+		g["multiplier"] = m.multiplier
+	else # isa LinearTest
+		g["shift"] = m.shift
+	end
+
 	close(g)
 end
 
@@ -160,10 +228,81 @@ function loaddata(sim::Simulation)
 	return DataFrame(CSV.File(joinpath(sim.datapath, "data.csv")))
 end
 
-function loadlastparams(filepath::String, ::Type{T}) where {T <: NumericalParameters}
-	h5open(filepath, "r") do file
-		return T(read(file["testresult"], "last_params"))
+function loadsimulation_hdf5(path::String)
+	h5open(path,"r") do file
+		loadsimulation_hdf5(file)
 	end
+end
+
+function load_obj_hdf5(object::Union{HDF5.File, HDF5.Group})
+	return construct_type_from_dict(read(object))
+end
+
+function construct_type_from_dict(d::Dict{String})
+	return construct_type_from_dict(d["T"],d)
+end
+
+function construct_type_from_dict(t::String,d::Dict{String})
+	for k in keys(LOADABLES)
+		m = match(Regex(k),t)
+		if !isnothing(m)
+			return construct_type_from_dict(LOADABLES[k],d)
+		end
+	end
+	throw(ArgumentError("No equivalent for $t found in LOADABLES."))
+end
+
+# Generic method simply extracts primitive numeric values (or Dicts if substructure exists)
+# from fieldnames(...)
+function construct_type_from_dict(
+	t::Type{<:Union{SimulationComponent,Observable,Hamiltonian}},
+	d::Dict{String})
+
+    names = String.(fieldnames(t))
+    args = []
+    for n in names
+        if n ∈ keys(d)
+            field = d[n]
+            if field isa Dict
+                push!(args,construct_type_from_dict(field["T"],field))
+            else
+                push!(args,d[n])
+            end
+        else
+            throw(KeyError(n))
+        end
+    end
+    return t(args...)
+end
+
+function construct_type_from_dict(::Type{<:Simulation},d::Dict{String})
+	return Simulation(
+		construct_type_from_dict(d["liouvillian"]),
+		construct_type_from_dict(d["drivingfield"]),
+		construct_type_from_dict(d["numericalparams"]),
+		[construct_type_from_dict(d["observables"])...], # Vector{Obs} => Vector{Obs{T}}
+		construct_type_from_dict(d["unitscaling"]),
+		d["id"],
+		d["datapath"],
+		d["plotpath"],
+		d["dim"])
+end
+
+function construct_type_from_dict(::Type{Vector{Observable}},d::Dict{String})
+	obs = Observable[]
+	for o in values(d)
+		# avoid trying to load obs["T"] = "Vector{Observable{...}}"
+		o isa Dict && push!(obs,construct_type_from_dict(o["T"],o))
+	end
+	return obs
+end
+
+function construct_type_from_dict(::Type{<:PowerLawTest},d::Dict{String})
+	return PowerLawTest(Symbol(d["parameter"]),d["multiplier"])
+end
+
+function construct_type_from_dict(::Type{<:LinearTest},d::Dict{String})
+	return LinearTest(Symbol(d["parameter"]),d["shift"])
 end
 
 function add_observable!(dat::DataFrame, v::Velocity)
@@ -190,6 +329,9 @@ function generic_save_hdf5(object, parent::Union{HDF5.File, HDF5.Group}, grpname
 end
 
 function generic_save_hdf5(object, parent::Union{HDF5.File, HDF5.Group})
+	if isloadable(object)
+		parent["T"] = "$(typeof(object))"
+	end
 	for n in fieldnames(typeof(object))
 		parent["$n"] = getproperty(object, n)
 	end

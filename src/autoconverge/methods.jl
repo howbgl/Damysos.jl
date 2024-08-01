@@ -21,7 +21,7 @@ end
 Loads .hdf5 file of convergence test and returns true if it was successful.
 
 # See also
-[`ConvergenceTest`](@ref), [`ConvergenceTestResult`](@ref)
+[`ConvergenceTest`](@ref)
 """
 function successful_retcode(path::String)
 	h5open(path, "r") do file
@@ -50,7 +50,7 @@ terminated_retcode(x::ConvergenceTestResult) = successful_retcode(x.retcode)
 Loads .hdf5 file of convergence test and returns true if it terminated regularly.
 
 # See also
-[`ConvergenceTest`](@ref), [`ConvergenceTestResult`](@ref)
+[`ConvergenceTest`](@ref)
 """
 function terminated_retcode(path::String)
 	h5open(path, "r") do file

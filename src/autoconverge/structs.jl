@@ -8,6 +8,32 @@ abstract type ConvergenceTestMethod end
 
 @enumx ReturnCode success maxtime maxiter running failed
 
+
+"""
+    ConvergenceTest(start::Simulation,
+		solver::DamysosSolver = LinearChunked(),
+		method::ConvergenceTestMethod = PowerLawTest(:dt, 0.5),
+		atolgoal::Real = 1e-12,
+		rtolgoal::Real = 1e-8,
+		maxtime::Union{Real, Unitful.Time} = 600,
+		maxiterations::Integer = 16;
+		altpath = joinpath(pwd(), start.datapath)))
+
+A convergence test based on a Simulation and a ConvergenceTestMethod.
+
+# Arguments
+- `start::Simulation`: the Simulation to be converged
+- `method::ConvergenceTestMethod`: specifies the convergence parmeter & iteration method
+- `atolgoal::Real`: desired absolute tolerance
+- `rtolgoal::Real`: desired relative tolerance
+- `maxtime::Union{Real,Unitful.Time}`: test guaranteed to stop after maxtime
+- `maxiterations::Integer`: test stops after maxiterations Simulations were performed
+- `altpath`: path to try inf start.datapath throws an error
+
+
+# See also
+[`LinearTest`](@ref), [`PowerLawTest`](@ref), [`Simulation`](@ref)
+"""
 struct ConvergenceTest
 	start::Simulation
 	solver::DamysosSolver
@@ -75,17 +101,33 @@ struct ConvergenceTest
 	end
 end
 
+"""
+    LinearTest{T<:Real}(parameter::Symbol,shift{T})
+
+A convergence method where `parameter` is changed by adding `shift` each iteration.
+
+# See also
+[`ConvergenceTest`](@ref), [`PowerLawTest`](@ref)
+"""
 struct LinearTest{T <: Real} <: ConvergenceTestMethod
 	parameter::Symbol
 	shift::T
 end
 
+"""
+    PowerLawTest{T<:Real}(parameter::Symbol,multiplier{T})
+
+A convergence method multiplying `parameter` by `multiplier` each iteration.
+
+# See also
+[`ConvergenceTest`](@ref), [`LinearTest`](@ref)
+"""
 struct PowerLawTest{T <: Real} <: ConvergenceTestMethod
 	parameter::Symbol
 	multiplier::T
 end
 
-
+"Result of a ConvergenceTest"
 struct ConvergenceTestResult
 	test::ConvergenceTest
 	retcode::ReturnCode.T

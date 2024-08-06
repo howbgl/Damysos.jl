@@ -62,7 +62,7 @@ jac(h::QuadraticToy,kx,ky) = SA[
     h.ζ * kx zero(h.Δ)
     zero(h.Δ) h.ζ * ky
     zero(h.Δ) zero(h.Δ)]
-jac(h::QuadraticToy) = SA[
+jac(h::QuadraticToy) = [
     :($(h.ζ)*kx) zero(h.Δ)
     zero(h.Δ) :($(h.ζ)*ky)
     zero(h.Δ) zero(h.Δ)]
@@ -87,24 +87,21 @@ function getparamsSI(h::QuadraticToy,us::UnitScaling)
     return (m=m,Δ=Δ)
 end
 
-export gethvec
 gethvec(h::QuadraticToy) = let Δ=h.Δ,ζ=h.ζ
     (kx,ky) -> SA[ζ*kx^2 / 2,ζ *ky^2 / 2,Δ/2]
 end
 
-export getdhdx,getdhdy
-getdhdx(h::QuadraticToy) = let Δ=h.Δ,ζ=h.ζ
-    (kx,ky) -> SA[ζ*kx,zero(m),zero(m)]
+getdhdkx(h::QuadraticToy) = let Δ=h.Δ,ζ=h.ζ
+    (kx,ky) -> SA[ζ*kx,zero(Δ),zero(Δ)]
 end
-getdhdy(h::QuadraticToy) = let Δ=h.Δ,ζ=h.ζ
-    (kx,ky) -> SA[zero(m),ζ*ky,zero(m)]
+getdhdky(h::QuadraticToy) = let Δ=h.Δ,ζ=h.ζ
+    (kx,ky) -> SA[zero(Δ),ζ*ky,zero(Δ)]
 end
 
-export getjac
 getjac(h::QuadraticToy) = let Δ=h.Δ,ζ=h.ζ
     (kx,ky) -> SA[
-        ζ*kx zero(m)
-        zero(m) ζ*ky
-        zero(m) zero(m)]
+        ζ*kx zero(Δ)
+        zero(Δ) ζ*ky
+        zero(Δ) zero(Δ)]
 end
 

@@ -42,7 +42,7 @@ end
 
 function getdμ_cc(hvec::Function,dhxdkμ::Function,dhydkμ::Function)
     return let Δϵ_loc=getΔϵ(hvec)
-        (kx,kky) -> (dhxdkμ(kx,ky))
+        (kx,ky) -> (dhxdkμ(kx,ky))
     end
 end
 

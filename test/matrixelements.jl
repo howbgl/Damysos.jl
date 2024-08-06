@@ -18,6 +18,7 @@ import Damysos.getdhdkx
 import Damysos.dhdky
 import Damysos.getdhdky
 import Damysos.gethvec
+import Damysos.eigvecs_numeric
 
 function sample(f, krange)
 	return [f(kx, ky) for kx in krange, ky in krange]
@@ -104,6 +105,18 @@ function vy_melements_dispatch(h::GeneralTwoBand,kx,ky)
             vy_vc(h,kx,ky) vy_vv(h,kx,ky)]
 end
 
+function deigvecs_dkx(h::GeneralTwoBand,kx,ky)
+	fd = central_fdm(5,1)
+	return fd(x -> eigvecs_numeric(h,x,ky),kx)
+end
+
+function deigvecs_dky(h::GeneralTwoBand,kx,ky)
+	fd = central_fdm(5,1)
+	return fd(y -> eigvecs_numeric(h,kx,y),ky)
+end
+
+hconj(x::AbstractMatrix) = transpose(conj(x))
+
 const ALL_HAMILTONIANS = [GappedDirac(rand()), QuadraticToy(rand(2)...)]
 
 @testset "Pauli matrixelements" begin
@@ -163,13 +176,37 @@ end
 				@test check_tensor(
 					(kx,ky) -> [vx_cc(h,kx,ky) vx_cv(h,kx,ky)
 						vx_vc(h,kx,ky) vx_vv(h,kx,ky)],
-					(kx,ky) -> adiabatic_melements_numeric(h, vx_op_fdm(h,kx,ky), kx, ky))
+					(kx,ky) -> adiabatic_melements_numeric(h, vx_op_fdm(h,kx,ky), kx, ky);
+					atol = estimate_atol(h))
 			end
 			@testset "vy" begin
 				@test check_tensor(
 					(kx,ky) -> [vy_cc(h,kx,ky) vy_cv(h,kx,ky)
 						vy_vc(h,kx,ky) vy_vv(h,kx,ky)],
-					(kx,ky) -> adiabatic_melements_numeric(h, vy_op_fdm(h,kx,ky), kx, ky))
+					(kx,ky) -> adiabatic_melements_numeric(h, vy_op_fdm(h,kx,ky), kx, ky);
+					atol = estimate_atol(h))
+			end
+			
+        end
+    end
+end
+
+@testset "Dipole matrixelements" begin
+    for h in ALL_HAMILTONIANS
+        @testset "$(getshortname(h))" begin
+			@testset "dx" begin
+				@test check_tensor(
+					(kx,ky) -> [dx_cc(h,kx,ky) dx_cv(h,kx,ky)
+						dx_vc(h,kx,ky) dx_vv(h,kx,ky)],
+					(kx,ky) -> im*hconj(eigvecs_numeric(h,kx,ky)) * deigvecs_dkx(h,kx,ky);
+					atol = estimate_atol(h))
+			end
+			@testset "dy" begin
+				@test check_tensor(
+					(kx,ky) -> [dy_cc(h,kx,ky) dy_cv(h,kx,ky)
+						dy_vc(h,kx,ky) dy_vv(h,kx,ky)],
+					(kx,ky) -> im*hconj(eigvecs_numeric(h,kx,ky)) * deigvecs_dky(h,kx,ky);
+					atol = estimate_atol(h))
 			end
 			
         end

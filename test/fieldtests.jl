@@ -1,3 +1,12 @@
+using CUDA
+using CSV
+using Damysos
+using DataFrames
+using LoggingExtras
+using TerminalLoggers
+using Test
+
+
 function getfield_functions(df::DrivingField)
 
     field_expressions = [efieldx(df),efieldy(df),vecpotx(df),vecpoty(df)]
@@ -25,4 +34,15 @@ function getall_drivingfields()
     return (
         GaussianAPulse(σ,f,strength,θ,φ),
         GaussianEPulse(σ,f,strength,θ,φ))
+end
+
+
+@testset "Driving fields" begin
+    
+    alldrivingfields    = getall_drivingfields()
+    alldrivingfield_fns = getfield_functions.(alldrivingfields)
+
+    for fns in alldrivingfield_fns
+        @test check_drivingfield_functions(fns...)
+    end
 end

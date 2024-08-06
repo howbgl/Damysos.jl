@@ -3,7 +3,7 @@ export GappedDirac
 """
     GappedDirac{T<:Real} <: GeneralTwoBand{T}
 
-Holds the parameter of a dimensionless massive Dirac Hamiltonian.
+Massive Dirac Hamiltonian (two-band model).
 
 The Hamiltonian reads 
 ```math
@@ -22,7 +22,7 @@ GappedDirac:
 ```
 
 # See also
-[`GeneralTwoBand`](@ref GeneralTwoBand)
+[`GeneralTwoBand`](@ref GeneralTwoBand) [`QuadraticToy`](@ref QuadraticToy)
 """
 struct GappedDirac{T<:Real} <: GeneralTwoBand{T} 
     m::T

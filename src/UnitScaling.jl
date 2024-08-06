@@ -35,7 +35,11 @@ UnitScaling:
 ```
 
 # Further information
+Internally, the fields timescale & lengthscale of UnitScaling are saved in femtoseconds 
+and nanometers, but never used for numerical calculations. They are only needed to convert
+to dimensionful quantities again (Unitful package used, supports SI,cgs,... units)
 See [here](https://en.wikipedia.org/w/index.php?title=Nondimensionalization&oldid=1166582079)
+for more information on non-dimensionalization.
 """
 struct UnitScaling{T<:Real} <: SimulationComponent{T}
     timescale::T
@@ -121,4 +125,16 @@ end
 function wavenumberscaled(k::Unitful.Wavenumber,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(Unitful.NoUnits,k*lc)
+end
+
+function massSI(m::Real,us::UnitScaling)
+    tc,lc = getparams(us)
+    ħ     = Unitful.ħ
+    return uconvert(Unitful.NoUnits,m*ħ*tc/lc^2)
+end
+
+function massscaled(m::Unitful.Mass,us::UnitScaling)
+    tc,lc = getparams(us)
+    ħ     = Unitful.ħ
+    return uconvert(u"kg",m * lc^2 / (ħ*tc))
 end

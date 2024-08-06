@@ -23,14 +23,14 @@ function sample(f, krange)
 	return [f(kx, ky) for kx in krange, ky in krange]
 end
 
-function check_scalar(data1, data2; atol = 1e-12, rtol = 1e-12)
+function check_scalar_data(data1, data2; atol = 1e-12, rtol = 1e-12)
 	ia(a, b) = Base.isapprox(a, b, atol = atol, rtol = rtol)
 
 	# skip any NaNs occuring at e.g. Dirac point
 	return all([any(isnan.([a, b])) ? true : ia(a, b) for (a, b) in zip(data1, data2)])
 end
 
-function check_tensor(data1, data2; atol = 1e-12, rtol = 1e-12)
+function check_tensor_data(data1, data2; atol = 1e-12, rtol = 1e-12)
 	ia(a, b) = Base.isapprox(a, b, atol = atol, rtol = rtol)
 
 	isanynan(x::AbstractArray) = any([isnan(x[i]) for i in eachindex(x)])
@@ -39,10 +39,13 @@ function check_tensor(data1, data2; atol = 1e-12, rtol = 1e-12)
 	return all([any(isanynan.([a, b])) ? true : ia(a, b) for (a, b) in zip(data1, data2)])
 end
 
-function check_melements(a, b; krange = -1:0.02:1, atol = 1e-12, rtol = 1e-12)
-	check_scalar(sample(a, krange), sample(b, krange); atol = atol, rtol = rtol)
+function check_scalar(a, b; krange = -1:0.02:1, atol = 1e-12, rtol = 1e-12)
+	check_scalar_data(sample(a, krange), sample(b, krange); atol = atol, rtol = rtol)
 end
 
+function check_tensor(a, b; krange = -1:0.02:1, atol = 1e-12, rtol = 1e-12)
+	check_tensor_data(sample(a, krange), sample(b, krange); atol = atol, rtol = rtol)
+end
 
 function check_dhdkm(fn, dfn, kindex; krange = -1:0.02:1, atol = 1e-12, rtol = 1e-12)
 	fd = central_fdm(5, 1)
@@ -50,10 +53,8 @@ function check_dhdkm(fn, dfn, kindex; krange = -1:0.02:1, atol = 1e-12, rtol = 1
 	data     = sample(dfn, krange)
 	data_fdm = sample((kx, ky) -> jacobian(fd, fn, [kx, ky])[1][:, kindex], krange)
 
-	return check_tensor(data, data_fdm; atol = atol, rtol = rtol)
+	return check_tensor_data(data, data_fdm; atol = atol, rtol = rtol)
 end
-
-
 
 function check_jacobian(fn, dfn; krange = -1:0.02:1, atol = 1e-12, rtol = 1e-12)
 	fd       = central_fdm(5, 1)
@@ -61,7 +62,7 @@ function check_jacobian(fn, dfn; krange = -1:0.02:1, atol = 1e-12, rtol = 1e-12)
 	data     = sample(dfn,krange)
 	data_fdm = sample((kx,ky)->jacobian(fd, fn, [kx, ky])[1],krange)
 
-	return check_tensor(data, data_fdm; atol = atol, rtol = rtol)
+	return check_tensor_data(data, data_fdm; atol = atol, rtol = rtol)
 end
 
 function check_pauli_melements(h::GeneralTwoBand{T};
@@ -74,13 +75,13 @@ function check_pauli_melements(h::GeneralTwoBand{T};
 
 	for (pauli_symb, pauli_op) in zip(pauli_symbolic, paulivector(T))
 		cv_symb, vc_symb = pauli_symb
-		push!(check_results, check_melements(
+		push!(check_results, check_scalar(
 			(kx, ky) -> cv_symb(h, kx, ky),
 			(kx, ky) -> adiabatic_melements_numeric(h, pauli_op, kx, ky)[1, 2],
 			krange = krange,
 			atol = atol,
 			rtol = rtol))
-		push!(check_results, check_melements(
+		push!(check_results, check_scalar(
 			(kx, ky) -> vc_symb(h, kx, ky),
 			(kx, ky) -> adiabatic_melements_numeric(h, pauli_op, kx, ky)[2, 1],
 			krange = krange,
@@ -90,8 +91,20 @@ function check_pauli_melements(h::GeneralTwoBand{T};
 	return all(check_results)
 end
 
+vx_op_fdm(h::GeneralTwoBand,kx,ky) = central_fdm(5,1)(x -> hmat(h,x,ky),kx)
+vy_op_fdm(h::GeneralTwoBand,kx,ky) = central_fdm(5,1)(y -> hmat(h,kx,y),ky)
+
+function vx_melements_dispatch(h::GeneralTwoBand,kx,ky)
+    return (kx,ky) -> [vx_cc(h,kx,ky) vx_cv(h,kx,ky)
+            vx_vc(h,kx,ky) vx_vv(h,kx,ky)]
+end
+
+function vy_melements_dispatch(h::GeneralTwoBand,kx,ky)
+    return (kx,ky) -> [vy_cc(h,kx,ky) vy_cv(h,kx,ky)
+            vy_vc(h,kx,ky) vy_vv(h,kx,ky)]
+end
+
 const ALL_HAMILTONIANS = [GappedDirac(rand()), QuadraticToy(rand(2)...)]
-const ALL_JACOBIANS    = [(kx, ky) -> @eval $(jac(h)) for h in ALL_HAMILTONIANS]
 
 @testset "Pauli matrixelements" begin
 	for h in ALL_HAMILTONIANS
@@ -102,8 +115,8 @@ const ALL_JACOBIANS    = [(kx, ky) -> @eval $(jac(h)) for h in ALL_HAMILTONIANS]
 				vc_sym = @eval (kx, ky) -> $(pauli_expr[2](h))
 				cv_num = (kx, ky) -> adiabatic_melements_numeric(h, pauli_op, kx, ky)[1, 2]
 				vc_num = (kx, ky) -> adiabatic_melements_numeric(h, pauli_op, kx, ky)[2, 1]
-				@test check_melements(cv_sym, cv_num; atol = estimate_atol(h))
-				@test check_melements(vc_sym, vc_num; atol = estimate_atol(h))
+				@test check_scalar(cv_sym, cv_num; atol = estimate_atol(h))
+				@test check_scalar(vc_sym, vc_num; atol = estimate_atol(h))
 			end
 		end
 		@testset "$(getshortname(h)) dispatch" begin
@@ -131,6 +144,34 @@ end
                 @test check_dhdkm(k -> hvec(h, k[1], k[2]),f,1;atol=estimate_atol(h))
             end
 		end
+
+        @testset "$(getshortname(h)) dhdky" begin
+			fns = [@eval (kx, ky) -> $ex for ex in dhdky(h)]
+			sym = (kx, ky) -> [f(kx, ky) for f in fns]
+
+            for f in (sym,(kx, ky) -> dhdky(h, kx, ky),getdhdky(h))
+                @test check_dhdkm(k -> hvec(h, k[1], k[2]),f,2;atol=estimate_atol(h))
+            end
+		end
 	end
 end
 
+@testset "Velocity matrixelements" begin
+    for h in ALL_HAMILTONIANS
+        @testset "$(getshortname(h))" begin
+			@testset "vx" begin
+				@test check_tensor(
+					(kx,ky) -> [vx_cc(h,kx,ky) vx_cv(h,kx,ky)
+						vx_vc(h,kx,ky) vx_vv(h,kx,ky)],
+					(kx,ky) -> adiabatic_melements_numeric(h, vx_op_fdm(h,kx,ky), kx, ky))
+			end
+			@testset "vy" begin
+				@test check_tensor(
+					(kx,ky) -> [vy_cc(h,kx,ky) vy_cv(h,kx,ky)
+						vy_vc(h,kx,ky) vy_vv(h,kx,ky)],
+					(kx,ky) -> adiabatic_melements_numeric(h, vy_op_fdm(h,kx,ky), kx, ky))
+			end
+			
+        end
+    end
+end

@@ -13,6 +13,7 @@ using DSP
 using EnumX
 using HDF5
 using Interpolations
+using LinearAlgebra
 using ProgressLogging
 using Random
 using Reexport
@@ -47,7 +48,7 @@ include("UnitScaling.jl")
 include("Simulation.jl")
 include("Ensemble.jl")
 include("hamiltonians/GappedDirac.jl")
-include("hamiltonians/HexWarpDirac.jl")
+include("hamiltonians/QuadraticToy.jl")
 include("Liouvillian.jl")
 include("drivingfields/DrivingFields.jl")
 include("NumericalParams.jl")

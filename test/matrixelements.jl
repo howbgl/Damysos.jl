@@ -95,15 +95,48 @@ end
 vx_op_fdm(h::GeneralTwoBand,kx,ky) = central_fdm(5,1)(x -> hmat(h,x,ky),kx)
 vy_op_fdm(h::GeneralTwoBand,kx,ky) = central_fdm(5,1)(y -> hmat(h,kx,y),ky)
 
-function vx_melements_dispatch(h::GeneralTwoBand,kx,ky)
+function vx_melements_dispatch(h::GeneralTwoBand)
     return (kx,ky) -> [vx_cc(h,kx,ky) vx_cv(h,kx,ky)
             vx_vc(h,kx,ky) vx_vv(h,kx,ky)]
 end
 
-function vy_melements_dispatch(h::GeneralTwoBand,kx,ky)
+function vy_melements_dispatch(h::GeneralTwoBand)
     return (kx,ky) -> [vy_cc(h,kx,ky) vy_cv(h,kx,ky)
             vy_vc(h,kx,ky) vy_vv(h,kx,ky)]
 end
+
+function vx_melements_closure(h::GeneralTwoBand)
+	closures = [
+		getvx_cc(h) getvx_cv(h)
+		getvx_vc(h) getvx_vv(h)]
+				
+	return (kx,ky) -> [f(kx,ky) for f in closures]
+end
+
+function vy_melements_closure(h::GeneralTwoBand)
+	closures = [
+		getvy_cc(h) getvy_cv(h)
+		getvy_vc(h) getvy_vv(h)]
+				
+	return (kx,ky) -> [f(kx,ky) for f in closures]
+end
+
+function vx_melements_eval(h::GeneralTwoBand)
+	evalfns = [@eval (kx,ky) -> $ex for ex in [
+					vx_cc(h) vx_cv(h)
+					vx_vc(h) vx_vv(h)]]
+
+	return (kx,ky) -> [f(kx,ky) for f in evalfns]
+end
+
+function vy_melements_eval(h::GeneralTwoBand)
+	evalfns = [@eval (kx,ky) -> $ex for ex in [
+					vy_cc(h) vy_cv(h)
+					vy_vc(h) vy_vv(h)]]
+
+	return (kx,ky) -> [f(kx,ky) for f in evalfns]
+end
+
 
 function deigvecs_dkx(h::GeneralTwoBand,kx,ky)
 	fd = central_fdm(5,1)
@@ -173,18 +206,30 @@ end
     for h in ALL_HAMILTONIANS
         @testset "$(getshortname(h))" begin
 			@testset "vx" begin
-				@test check_tensor(
-					(kx,ky) -> [vx_cc(h,kx,ky) vx_cv(h,kx,ky)
-						vx_vc(h,kx,ky) vx_vv(h,kx,ky)],
-					(kx,ky) -> adiabatic_melements_numeric(h, vx_op_fdm(h,kx,ky), kx, ky);
-					atol = estimate_atol(h))
+
+				fns = (
+					vx_melements_dispatch(h),
+					vx_melements_dispatch(h),
+					vx_melements_eval(h))
+				for fn in fns
+					@test check_tensor(
+						fn,
+						(kx,ky) -> adiabatic_melements_numeric(h, vx_op_fdm(h,kx,ky), kx, ky);
+						atol = estimate_atol(h))
+				end
 			end
 			@testset "vy" begin
-				@test check_tensor(
-					(kx,ky) -> [vy_cc(h,kx,ky) vy_cv(h,kx,ky)
-						vy_vc(h,kx,ky) vy_vv(h,kx,ky)],
-					(kx,ky) -> adiabatic_melements_numeric(h, vy_op_fdm(h,kx,ky), kx, ky);
-					atol = estimate_atol(h))
+
+				fns = (
+					vy_melements_dispatch(h),
+					vy_melements_dispatch(h),
+					vy_melements_eval(h))
+				for fn in fns
+					@test check_tensor(
+						fn,
+						(kx,ky) -> adiabatic_melements_numeric(h, vy_op_fdm(h,kx,ky), kx, ky);
+						atol = estimate_atol(h))
+				end
 			end
 			
         end

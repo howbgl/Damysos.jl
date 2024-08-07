@@ -57,13 +57,13 @@ function vμ_vv(h::GeneralTwoBand,dh::SVector{3,<:Any})
 end
 
 function getvμ_cc(hvec::Function,dhdμ::Function)
-    return let Δϵ_loc = getΔϵ(hvec)
-        (kx,ky) -> sum(hvec(kx,ky) .* dhdμ(kx,ky)) / Δϵ_loc(kx,ky)
+    return let ϵ_loc = getϵ(hvec)
+        (kx,ky) -> sum(hvec(kx,ky) .* dhdμ(kx,ky)) / ϵ_loc(kx,ky)
     end
 end
 function getvμ_vv(hvec::Function,dhdμ::Function)
-    return let Δϵ_loc = getΔϵ(hvec)
-        (kx,ky) -> sum(hvec(kx,ky) .* dhdμ(kx,ky)) / Δϵ_loc(kx,ky)
+    return let ϵ_loc = getϵ(hvec)
+        (kx,ky) -> -sum(hvec(kx,ky) .* dhdμ(kx,ky)) / ϵ_loc(kx,ky)
     end
 end
 

@@ -71,18 +71,7 @@ struct ConvergenceTest
 
 		filename = "convergencetest_$(getname(start))_$(getname(method)).hdf5"
 		filepath = joinpath(path, filename)
-
-		rename_file_if_exists(filepath)
-		h5open(filepath,"cw") do file
-			create_group(file,"completedsims")
-			savedata_hdf5(method,file)
-			file["atolgoal"] 		= atolgoal
-			file["rtolgoal"] 		= rtolgoal
-			file["maxtime"]  		= maxtime
-			file["maxiterations"] 	= maxiterations
-			file["testdatafile"] 	= filepath
-		end
-
+		
 		@reset start.datapath = joinpath(start.datapath, "start")
 		@reset start.plotpath = joinpath(start.plotpath, "start")
 		@reset start.id = "start_$(start.id)"

@@ -33,19 +33,16 @@ The observables obtained from the simulation.
 [`Simulation`](@ref), [`define_functions`](@ref), [`LinearChunked`](@ref)
 
 """
-function run!(
-    sim::Simulation,
-    functions,
-    solver::DamysosSolver=LinearChunked();
+function run!(sim::Simulation,functions,solver::DamysosSolver=LinearChunked();
     savedata=true,
-    saveplots=true)
-    
-    run!(
-        sim,
-        functions,
-        solver,
-        savedata=savedata,
-        saveplots=saveplots)
+    saveplots=true,
+    showinfo=true)
+
+    prerun!(sim,solver;savedata=savedata,saveplots=saveplots,showinfo=showinfo)
+    _run!(sim,functions,solver)
+    postrun!(sim;savedata=savedata,saveplots=saveplots)
+
+    return sim.observables
 end
 
 """
@@ -66,21 +63,13 @@ Vector of functions used by [`run!`](@ref).
 """
 function define_functions end
 
-function prerun!(sim::Simulation,solver::DamysosSolver;savedata=true,saveplots=true)
+function prerun!(sim::Simulation,solver::DamysosSolver;
+    savedata=true,
+    saveplots=true,
+    showinfo=true)
 
     !solver_compatible(sim,solver) && throw(incompatible_solver_exception(sim,solver))
-    @info """
-        ## $(getshortname(sim)) (id: $(sim.id))
-
-        Starting on **$(gethostname())** at **$(now())**:
-        
-        * threads: $(Threads.nthreads())
-        * processes: $(Distributed.nprocs())
-        * plotpath: $(sim.plotpath)
-        * datapath: $(sim.datapath)
-
-        $(markdown_paramsSI(sim))
-        """
+    showinfo && printinfo(sim,solver)
     
     checkbzbounds(sim)
     savedata && ensurepath(sim.datapath)
@@ -138,4 +127,20 @@ function runtimeout!(timeout,sim::Simulation,fns,solver::DamysosSolver;savedata=
     sig = timedwait(()->istaskdone(runtask),timeout)
     sig == :timed_out && schedule(runtask,InterruptException(),error=true)
     return sim.observables
+end
+
+function printinfo(sim::Simulation,solver::DamysosSolver)
+    @info """
+        ## $(getshortname(sim)) (id: $(sim.id))
+
+        Starting on **$(gethostname())** at **$(now())**:
+        
+        * threads: $(Threads.nthreads())
+        * processes: $(Distributed.nprocs())
+        * Solver: $(repr(solver))
+        * plotpath: $(sim.plotpath)
+        * datapath: $(sim.datapath)
+
+        $(markdown_paramsSI(sim))
+        """
 end

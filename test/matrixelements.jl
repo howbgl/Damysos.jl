@@ -117,7 +117,7 @@ end
 
 hconj(x::AbstractMatrix) = transpose(conj(x))
 
-const ALL_HAMILTONIANS = [GappedDirac(rand()), QuadraticToy(rand(2)...)]
+const ALL_HAMILTONIANS = [GappedDirac(0.2), QuadraticToy(1.6,0.4)]
 
 @testset "Pauli matrixelements" begin
 	for h in ALL_HAMILTONIANS
@@ -199,14 +199,14 @@ end
 					(kx,ky) -> [dx_cc(h,kx,ky) dx_cv(h,kx,ky)
 						dx_vc(h,kx,ky) dx_vv(h,kx,ky)],
 					(kx,ky) -> im*hconj(eigvecs_numeric(h,kx,ky)) * deigvecs_dkx(h,kx,ky);
-					atol = estimate_atol(h))
+						atol = estimate_atol(h))
 			end
 			@testset "dy" begin
 				@test check_tensor(
 					(kx,ky) -> [dy_cc(h,kx,ky) dy_cv(h,kx,ky)
 						dy_vc(h,kx,ky) dy_vv(h,kx,ky)],
 					(kx,ky) -> im*hconj(eigvecs_numeric(h,kx,ky)) * deigvecs_dky(h,kx,ky);
-					atol = estimate_atol(h))
+						atol = estimate_atol(h))
 			end
 			
         end

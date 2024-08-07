@@ -78,7 +78,7 @@ end
 
 "Estimate the largest numeric scale in a Hamiltonian"
 function estimate_atol(h::GeneralTwoBand)
-    return 1e-10*maximum([getproperty(h,s) for s in fieldnames(typeof(h))])
+    return 1e-8*maximum([getproperty(h,s) for s in fieldnames(typeof(h))])
 end
 
 """

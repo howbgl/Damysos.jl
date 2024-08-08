@@ -53,19 +53,11 @@ function Base.show(io::IO, ::MIME"text/plain", s::LinearCUDA)
 end
 
 
-function run!(
+function _run!(
 	sim::Simulation,
 	functions,
 	solver::LinearCUDA;
-	savedata = true,
-	saveplots = true,
 	bypass_memcheck = false)
-
-	prerun!(sim, solver; savedata = savedata, saveplots = saveplots)
-
-	@info """
-		Solver: $(repr(solver))
-	"""
 
 	obs_kchunks = Vector{Vector{Observable}}(undef, 0)
 	kchunks 	= buildkgrid_chunks(sim,solver.kchunksize)
@@ -86,8 +78,6 @@ function run!(
 	end
 
 	sim.observables .= sum(obs_kchunks)
-
-	postrun!(sim; savedata = savedata, saveplots = saveplots)
 	CUDA.reclaim()
 
 	return sim.observables

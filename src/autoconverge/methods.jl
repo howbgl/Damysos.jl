@@ -1,105 +1,60 @@
-export ConvergenceTest
-export ConvergenceTestMethod
-export ConvergenceTestResult
-export LinearTest
-export PowerLawTest
 export successful_retcode
+export terminated_retcode
+export resume
 
-abstract type ConvergenceTestMethod end
+"""
+    successful_retcode(x)
 
+Returns true if x terminated with a successful return code.
 
-struct ConvergenceTest
-	start::Simulation
-	solver::DamysosSolver
-	method::ConvergenceTestMethod
-	atolgoal::Real
-	rtolgoal::Real
-	maxtime::Real
-	maxiterations::Integer
-	completedsims::Vector{Simulation}
-	testdatafile::String
-	allfunctions::Vector{Any}
-	function ConvergenceTest(
-		start::Simulation,
-		solver::DamysosSolver = LinearChunked(),
-		method::ConvergenceTestMethod = PowerLawTest(:dt, 0.5),
-		atolgoal::Real = 1e-12,
-		rtolgoal::Real = 1e-8,
-		maxtime::Union{Real, Unitful.Time} = 600,
-		maxiterations::Integer = 16;
-		altpath = joinpath(pwd(), start.datapath))
-
-		maxtime = maxtime isa Real ? maxtime : ustrip(u"s", maxtime)
-
-		fns = []
-		s = deepcopy(start)
-
-		for i in 1:maxiterations
-			f = define_functions(s, solver)
-			s = next(s, method)
-			push!(fns, f)
-		end
-
-		(success, path) = ensurepath([start.datapath, altpath])
-		!success && throw(ErrorException("could not create neceesary data directory"))
-
-		filename = "convergencetest_$(getname(start))_$(getname(method)).hdf5"
-		filepath = joinpath(path, filename)
-
-		rename_file_if_exists(filepath)
-		file = h5open(filepath, "cw")
-		filepath = file.filename
-		close(file)
-
-		@reset start.datapath = joinpath(start.datapath, "start")
-		@reset start.plotpath = joinpath(start.plotpath, "start")
-		@reset start.id = "start_$(start.id)"
-
-		return new(
-			start,
-			solver,
-			method,
-			atolgoal,
-			rtolgoal,
-			maxtime,
-			maxiterations,
-			empty([start]),
-			filepath,
-			fns)
-	end
-end
-
-struct LinearTest{T <: Real} <: ConvergenceTestMethod
-	parameter::Symbol
-	shift::T
-end
-
-struct PowerLawTest{T <: Real} <: ConvergenceTestMethod
-	parameter::Symbol
-	multiplier::T
-end
-
-@enumx ReturnCode success maxtime maxiter running failed
-
-function successful_retcode(retcode::ReturnCode.T)
-	retcode == ReturnCode.success
-end
-
-struct ConvergenceTestResult
-	test::ConvergenceTest
-	retcode::ReturnCode.T
-	min_achieved_atol::Real
-	min_achieved_rtol::Real
-	elapsed_time_sec::Real
-	iterations::Integer
-	last_params::NumericalParameters
-end
-
+"""
 successful_retcode(ctr::ConvergenceTestResult) = successful_retcode(ctr.retcode)
 
+function successful_retcode(retcode::ReturnCode.T)
+	return retcode == ReturnCode.success
+end
+
+
+"""
+    successful_retcode(path::String)
+
+Loads .hdf5 file of convergence test and returns true if it was successful.
+
+# See also
+[`ConvergenceTest`](@ref)
+"""
 function successful_retcode(path::String)
 	h5open(path, "r") do file
 		return successful_retcode(ReturnCode.T(read(file["testresult"], "retcode")))
+	end
+end
+
+"""
+    terminated_retcode(x)
+
+Returns true if x terminated regularly.
+
+"""
+function terminated_retcode(retcode::ReturnCode.T)
+	return any(retcode .== [
+		ReturnCode.success,
+		ReturnCode.maxtime,
+		ReturnCode.maxiter,
+		ReturnCode.failed])
+end
+
+terminated_retcode(x::ConvergenceTestResult) = successful_retcode(x.retcode)
+"""
+    terminated_retcode(path::String)
+
+Loads .hdf5 file of convergence test and returns true if it terminated regularly.
+
+# See also
+[`ConvergenceTest`](@ref)
+"""
+function terminated_retcode(path::String)
+	h5open(path, "r") do file
+		return terminated_retcode(ReturnCode.T(read(file["testresult"], "retcode")))
 	end
 end
 
@@ -145,13 +100,30 @@ end
 function run!(
 	test::ConvergenceTest;
 	savedata = true,
-	savecsv = false)
+	saveplots = false)
 
-	@info "## Starting " * repr("text/plain", test)
+	if savedata
+		rename_file_if_exists(test.testdatafile)
+		h5open(test.testdatafile,"w") do file
+			create_group(file,"completedsims")
+			savedata_hdf5(test.method,file)
+			file["atolgoal"] 		= test.atolgoal
+			file["rtolgoal"] 		= test.rtolgoal
+			file["maxtime"]  		= test.maxtime
+			file["maxiterations"] 	= test.maxiterations
+			file["testdatafile"] 	= test.testdatafile
+		end
+	end
+
+	@info """
+	## Starting "  $(repr("text/plain", test))
+	$(repr("text/plain", test.method))
+	"""
+	printinfo(test.start,test.solver)
 
 	runtask = @async begin
 		try
-			_run!(test, test.method; savedata = savedata, savecsv = savecsv)
+			_run!(test, test.method; savedata = savedata, saveplots = saveplots)
 		catch e
 			if e isa InterruptException
 				@warn "Convergence test interrupted!"
@@ -178,9 +150,7 @@ function _run!(
 	test::ConvergenceTest,
 	method::Union{PowerLawTest, LinearTest};
 	savedata = true,
-	savecsv = false)
-
-	@info repr("text/plain", method)
+	saveplots = false)
 
 	currentiteration = 0
 	start            = test.start
@@ -196,19 +166,21 @@ function _run!(
 		currentiteration += 1
 		currentsim = isempty(done_sims) ? start : next(done_sims[end], method)
 
-		run!(
-			currentsim,
-			test.allfunctions[currentiteration],
-			test.solver;
-			saveplots = false,
-			savedata = false)
-
+		run!(currentsim,test.allfunctions[currentiteration],test.solver;
+			showinfo=false,
+			savedata=false,
+			saveplots=saveplots)
 
 		savedata && Damysos.savedata(test, currentsim)
-		savecsv && Damysos.savedata(currentsim)
-		@info " - Iteration $currentiteration of maximum of $(test.maxiterations)"
-
+		saveplots && Damysos.savedata(currentsim)
+		
 		push!(done_sims, currentsim)
+		achieved_tol = findminimum_precision(test)
+		@info """ 
+			- Iteration $currentiteration of maximum of $(test.maxiterations)
+			- Current atol: $(achieved_tol[1])
+			- Current rtol: $(achieved_tol[2])
+		"""
 		converged(test) && break
 	end
 	return nothing
@@ -225,7 +197,7 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, timedout::Bo
 	elseif timedout
 		@info "Maximum runtime exceeded"
 		retcode = ReturnCode.maxtime
-	elseif length(test.completedsims) > test.maxiterations
+	elseif length(test.completedsims) >= test.maxiterations
 		@warn "Maximum number of iterations ($(test.maxiterations)) exceeded."
 		retcode = ReturnCode.maxiter
 	else
@@ -233,11 +205,7 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, timedout::Bo
 		retcode = ReturnCode.failed
 	end
 
-	achieved_tol =
-		length(test.completedsims) < 2 ? (Inf, Inf) :
-		findminimum_precision(
-			test.completedsims[end-1],
-			test.completedsims[end])
+	achieved_tol = findminimum_precision(test)
 
 	last_params =
 		isempty(test.completedsims) ? test.start.numericalparams :
@@ -252,6 +220,9 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, timedout::Bo
 		last_params)
 
 	savedata && Damysos.savedata(result)
+
+	@info "$(repr("text/plain", result))"
+
 	return result
 end
 
@@ -264,6 +235,60 @@ function converged(test::ConvergenceTest)
 		rtol = test.rtolgoal)
 end
 
+"""
+    resume(filepath_hdf5::String,solver::DamysosSolver)
+
+Returns true if x terminated with a successful return code.
+
+"""
+function resume(
+	filepath_hdf5::String,
+	solver::DamysosSolver,
+	args...;
+	kwargs...)
+	h5open(filepath_hdf5,"r") do file
+		return resume(file,solver,args...;kwargs...)
+	end
+end
+
+function resume(
+	file::Union{HDF5.File, HDF5.Group},
+	solver::DamysosSolver,
+	method::ConvergenceTestMethod = load_obj_hdf5(file["method"]),
+	atolgoal::Real = read(file,"atolgoal"),
+	rtolgoal::Real = read(file,"rtolgoal"),
+	maxtime::Union{Real, Unitful.Time} = read(file,"maxtime"),
+	maxiterations::Integer = read(file,"maxiterations");
+	altpath = joinpath(pwd(), read(file,"testdatafile")))
+	
+	last_params 	= load_obj_hdf5(file["testresult/last_params"])
+	oldstart		= load_obj_hdf5(file["start"])
+	start 			= Simulation(
+		oldstart.liouvillian,
+		oldstart.drivingfield,
+		last_params,
+		zero.(oldstart.observables),
+		oldstart.unitscaling,
+		oldstart.id,
+		dirname(read(file,"testdatafile")),
+		dirname(read(file,"testdatafile")))
+	
+	return ConvergenceTest(
+		start,
+		solver,
+		method,
+		atolgoal,
+		rtolgoal,
+		maxtime,
+		maxiterations;
+		altpath = altpath)
+end
+
+function findminimum_precision(test::ConvergenceTest)
+	return	length(test.completedsims) < 2 ? (Inf, Inf) : findminimum_precision(
+			test.completedsims[end-1],
+			test.completedsims[end])
+end
 
 function findminimum_precision(
 	s1::Simulation,
@@ -298,8 +323,8 @@ end
 function findminimum_precision(
 	s1::Simulation,
 	s2::Simulation;
-	max_atol = 0.1,
-	max_rtol = 0.1,
+	max_atol = 10.0,
+	max_rtol = 10.0,
 )
 
 	p1 = getparams(s1)

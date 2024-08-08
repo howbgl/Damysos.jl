@@ -18,18 +18,11 @@ function solver_compatible(sim::Simulation,::SingleMode)
 end
 
 
-function run!(
+function _run!(
     sim::Simulation,
     functions,
-    solver::SingleMode;
-    savedata=true,
-    saveplots=true)
+    solver::SingleMode)
 
-    prerun!(sim,solver;savedata=savedata,saveplots=saveplots)
-
-    @info """
-        Solver: $(repr(solver))
-    """
     rhscc,rhscv = functions[1]
     k           = SA[sim.numericalparams.kx,sim.numericalparams.ky]
     prob        = buildode(sim,solver,k,rhscc,rhscv)

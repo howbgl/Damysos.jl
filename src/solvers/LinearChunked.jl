@@ -43,18 +43,10 @@ function solver_compatible(sim::Simulation,::LinearChunked)
     return sim.dimensions == 2 || sim.dimensions == 1
 end
 
-function run!(
+function _run!(
     sim::Simulation,
     functions,
-    solver::LinearChunked;
-    savedata=true,
-    saveplots=true)
-
-    prerun!(sim,solver;savedata=savedata,saveplots=saveplots)
-
-    @info """
-        Solver: $(repr(solver))
-    """
+    solver::LinearChunked)
 
     rhscc,rhscv = functions[1]
     fns = (rhscc,rhscv,functions[2:end]...)
@@ -76,8 +68,6 @@ function run!(
         progress = true)
 
     write_ensemblesols_to_observables!(sim,res.u)
-
-    postrun!(sim;savedata=savedata,saveplots=saveplots)
 
     return sim.observables 
 end

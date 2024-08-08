@@ -1,4 +1,13 @@
 
+export getdx_cc
+export getdx_cv
+export getdx_vc
+export getdx_vc
+export getdx_vv
+export getdy_cc
+export getdy_cv
+export getdy_vc
+export getdy_vv
 export dx_cc
 export dx_cv
 export dx_vc
@@ -16,14 +25,14 @@ n2(h::GeneralTwoBand)       = :(2*$(ϵ(h)) * ($(ϵ(h)) + $(hz(h))))
 function dμ_cv(h::SVector{3,<:Number},dh::SVector{3,<:Number})
     return -im*vμ_cv(h,dh) / Δϵ(h)
 end
-function dμ_cv(h::GeneralTwoBand,dh::SVector{3,<:Any})
+function dμ_cv(h::GeneralTwoBand,dh::SVector{3})
     return :(-im * $(vμ_cv(h,dh)) / $(Δϵ(h)))
 end
 
 function dμ_vc(h::SVector{3,<:Number},dh::SVector{3,<:Number})
     return im*vμ_vc(h,dh) / Δϵ(h)
 end
-function dμ_vc(h::GeneralTwoBand,dh::SVector{3,<:Any})
+function dμ_vc(h::GeneralTwoBand,dh::SVector{3})
     return :(im * $(vμ_vc(h,dh)) / $(Δϵ(h)))
 end
 
@@ -40,17 +49,34 @@ function getdμ_vc(hvec::Function,dhdμ::Function)
     end
 end
 
-function getdμ_cc(hvec::Function,dhxdkμ::Function,dhydkμ::Function)
-    return let Δϵ_loc=getΔϵ(hvec)
-        (kx,ky) -> (dhxdkμ(kx,ky))
+function getdμ_cc(hvec::Function,dhdμ::Function)
+
+    Ω = SA{eltype(hvec(rand(2)...))}[
+        0 1 0
+        -1 0 0 
+        0 0 0]
+    return let Ω=Ω,hvec=hvec,dhdμ=dhdμ
+        (kx,ky) -> dot(dhdμ(kx,ky),Ω,hvec(kx,ky)) / n2(hvec(kx,ky))
     end
 end
+
+function getdμ_vv(hvec::Function,dhdμ::Function)
+
+    Ω = SA{eltype(hvec(rand(2)...))}[
+        0 1 0
+        -1 0 0 
+        0 0 0]
+    return let Ω=Ω,hvec=hvec,dhdμ=dhdμ
+        (kx,ky) -> -dot(dhdμ(kx,ky),Ω,hvec(kx,ky)) / n2(hvec(kx,ky))
+    end
+end
+
 
 
 function dx_cc(h::SVector{3,<:Number},jac::SMatrix{3,2,<:Number})
     return (jac[1,1]*h[2] - h[1]*jac[2,1]) / n2(h)
 end
-function dx_cc(h::GeneralTwoBand,jac::SMatrix{3,2,<:Any})
+function dx_cc(h::GeneralTwoBand,jac::SMatrix{3,2})
     hv = hvec(h)
     return :(($(jac[1,1]) * $(hv[2]) - $(hv[1]) * $(jac[2,1])) / $(n2(h)))
 end
@@ -58,7 +84,7 @@ end
 function dx_vv(h::SVector{3,<:Number},jac::SMatrix{3,2,<:Number})
     return -(jac[1,1]*h[2] - h[1]*jac[2,1]) / n2(h)
 end
-function dx_vv(h::GeneralTwoBand,jac::SMatrix{3,2,<:Any})
+function dx_vv(h::GeneralTwoBand,jac::SMatrix{3,2})
     hv = hvec(h)
     return :(-($(jac[1,1]) * $(hv[2]) - $(hv[1]) * $(jac[2,1])) / $(n2(h)))
 end
@@ -66,7 +92,7 @@ end
 function dy_cc(h::SVector{3,<:Number},jac::SMatrix{3,2,<:Number})
     return (jac[1,2]*h[2] - h[1]*jac[2,2]) / n2(h)
 end
-function dy_cc(h::GeneralTwoBand,jac::SMatrix{3,2,<:Any})
+function dy_cc(h::GeneralTwoBand,jac::SMatrix{3,2})
     hv = hvec(h)
     return :(($(jac[1,2]) * $(hv[2]) - $(hv[1]) * $(jac[2,2])) / $(n2(h)))    
 end
@@ -74,7 +100,7 @@ end
 function dy_vv(h::SVector{3,<:Number},jac::SMatrix{3,2,<:Number})
     return -(jac[1,2]*h[2] - h[1]*jac[2,2]) / n2(h)
 end
-function dy_vv(h::GeneralTwoBand,jac::SMatrix{3,2,<:Any})
+function dy_vv(h::GeneralTwoBand,jac::SMatrix{3,2})
     hv = hvec(h)
     return :(-($(jac[1,2]) * $(hv[2]) - $(hv[1]) * $(jac[2,2])) / $(n2(h)))
 end
@@ -192,4 +218,12 @@ julia> h = GappedDirac(1.0); dy_vv(h,1.0,-1.0)
 dy_vv(h::GeneralTwoBand,kx,ky)  = dy_vv(hvec(h,kx,ky),jac(h,kx,ky))
 dy_vv(h::GeneralTwoBand)        = dy_vv(h,jac(h))
 
+getdx_cc(h::GeneralTwoBand) = getdμ_cc(gethvec(h),getdhdkx(h))
+getdx_cv(h::GeneralTwoBand) = getdμ_cv(gethvec(h),getdhdkx(h))
+getdx_vc(h::GeneralTwoBand) = getdμ_vc(gethvec(h),getdhdkx(h))
+getdx_vv(h::GeneralTwoBand) = getdμ_vv(gethvec(h),getdhdkx(h))
+getdy_cc(h::GeneralTwoBand) = getdμ_cc(gethvec(h),getdhdky(h))
+getdy_cv(h::GeneralTwoBand) = getdμ_cv(gethvec(h),getdhdky(h))
+getdy_vc(h::GeneralTwoBand) = getdμ_vc(gethvec(h),getdhdky(h))
+getdy_vv(h::GeneralTwoBand) = getdμ_vv(gethvec(h),getdhdky(h))
 

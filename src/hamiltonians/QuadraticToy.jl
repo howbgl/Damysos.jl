@@ -62,10 +62,10 @@ jac(h::QuadraticToy,kx,ky) = SA[
     h.ζ * kx zero(h.Δ)
     zero(h.Δ) h.ζ * ky
     zero(h.Δ) zero(h.Δ)]
-jac(h::QuadraticToy) = [
-    :($(h.ζ)*kx) zero(h.Δ)
-    zero(h.Δ) :($(h.ζ)*ky)
-    zero(h.Δ) zero(h.Δ)]
+jac(h::QuadraticToy) = @SMatrix [
+    :($(h.ζ)*kx)            quote zero($(h.Δ)) end
+    quote zero($(h.Δ)) end     :($(h.ζ)*ky)
+    quote zero($(h.Δ)) end     quote zero($(h.Δ)) end]
 
 
 function printparamsSI(h::QuadraticToy,us::UnitScaling;digits=3)

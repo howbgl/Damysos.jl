@@ -95,48 +95,27 @@ end
 vx_op_fdm(h::GeneralTwoBand,kx,ky) = central_fdm(5,1)(x -> hmat(h,x,ky),kx)
 vy_op_fdm(h::GeneralTwoBand,kx,ky) = central_fdm(5,1)(y -> hmat(h,kx,y),ky)
 
-function vx_melements_dispatch(h::GeneralTwoBand)
-    return (kx,ky) -> [vx_cc(h,kx,ky) vx_cv(h,kx,ky)
-            vx_vc(h,kx,ky) vx_vv(h,kx,ky)]
+function getfunc_melements_dispatch(h::Hamiltonian,op::Symbol)
+	return @eval (kx,ky) -> [
+		$(Symbol(op,"_cc"))($h,kx,ky) 	$(Symbol(op,"_cv"))($h,kx,ky)
+		$(Symbol(op,"_vc"))($h,kx,ky) 	$(Symbol(op,"_vv"))($h,kx,ky)]
 end
 
-function vy_melements_dispatch(h::GeneralTwoBand)
-    return (kx,ky) -> [vy_cc(h,kx,ky) vy_cv(h,kx,ky)
-            vy_vc(h,kx,ky) vy_vv(h,kx,ky)]
-end
-
-function vx_melements_closure(h::GeneralTwoBand)
-	closures = [
-		getvx_cc(h) getvx_cv(h)
-		getvx_vc(h) getvx_vv(h)]
+function getfunc_melements_closure(h::Hamiltonian,op::Symbol)
+	closures = @eval [
+		$(Symbol("get",op,"_cc"))($h) 	$(Symbol("get",op,"_cv"))($h)
+		$(Symbol("get",op,"_vc"))($h) 	$(Symbol("get",op,"_vv"))($h)]
 				
 	return (kx,ky) -> [f(kx,ky) for f in closures]
 end
 
-function vy_melements_closure(h::GeneralTwoBand)
-	closures = [
-		getvy_cc(h) getvy_cv(h)
-		getvy_vc(h) getvy_vv(h)]
-				
-	return (kx,ky) -> [f(kx,ky) for f in closures]
-end
-
-function vx_melements_eval(h::GeneralTwoBand)
-	evalfns = [@eval (kx,ky) -> $ex for ex in [
-					vx_cc(h) vx_cv(h)
-					vx_vc(h) vx_vv(h)]]
+function getfunc_melements_eval(h::Hamiltonian,op::Symbol)
+	evalfns = [@eval (kx,ky) -> $ex for ex in @eval [
+		$(Symbol(op,"_cc"))($h) 	$(Symbol(op,"_cv"))($h)
+		$(Symbol(op,"_vc"))($h) 	$(Symbol(op,"_vv"))($h)]]
 
 	return (kx,ky) -> [f(kx,ky) for f in evalfns]
 end
-
-function vy_melements_eval(h::GeneralTwoBand)
-	evalfns = [@eval (kx,ky) -> $ex for ex in [
-					vy_cc(h) vy_cv(h)
-					vy_vc(h) vy_vv(h)]]
-
-	return (kx,ky) -> [f(kx,ky) for f in evalfns]
-end
-
 
 function deigvecs_dkx(h::GeneralTwoBand,kx,ky)
 	fd = central_fdm(5,1)
@@ -171,6 +150,7 @@ const ALL_HAMILTONIANS = [GappedDirac(0.2), QuadraticToy(1.6,0.4)]
 	end
 end
 
+# TODO make this more elegant/concise
 @testset "Gradients & Jacobian" begin
 	for h in ALL_HAMILTONIANS
 		@testset "$(getshortname(h)) jacobians" begin
@@ -202,58 +182,28 @@ end
 	end
 end
 
-@testset "Velocity matrixelements" begin
+@testset "Velocity & Dipole matrixelements" begin
     for h in ALL_HAMILTONIANS
+		fdiff_melems = [
+			(kx,ky) -> adiabatic_melements_numeric(h, vx_op_fdm(h,kx,ky), kx, ky),
+			(kx,ky) -> adiabatic_melements_numeric(h, vy_op_fdm(h,kx,ky), kx, ky),
+			(kx,ky) -> im*hconj(eigvecs_numeric(h,kx,ky)) * deigvecs_dkx(h,kx,ky),
+			(kx,ky) -> im*hconj(eigvecs_numeric(h,kx,ky)) * deigvecs_dky(h,kx,ky)
+		]
         @testset "$(getshortname(h))" begin
-			@testset "vx" begin
-
-				fns = (
-					vx_melements_dispatch(h),
-					vx_melements_dispatch(h),
-					vx_melements_eval(h))
-				for fn in fns
-					@test check_tensor(
-						fn,
-						(kx,ky) -> adiabatic_melements_numeric(h, vx_op_fdm(h,kx,ky), kx, ky);
-						atol = estimate_atol(h))
-				end
-			end
-			@testset "vy" begin
-
-				fns = (
-					vy_melements_dispatch(h),
-					vy_melements_dispatch(h),
-					vy_melements_eval(h))
-				for fn in fns
-					@test check_tensor(
-						fn,
-						(kx,ky) -> adiabatic_melements_numeric(h, vy_op_fdm(h,kx,ky), kx, ky);
-						atol = estimate_atol(h))
-				end
-			end
 			
-        end
-    end
-end
-
-@testset "Dipole matrixelements" begin
-    for h in ALL_HAMILTONIANS
-        @testset "$(getshortname(h))" begin
-			@testset "dx" begin
-				@test check_tensor(
-					(kx,ky) -> [dx_cc(h,kx,ky) dx_cv(h,kx,ky)
-						dx_vc(h,kx,ky) dx_vv(h,kx,ky)],
-					(kx,ky) -> im*hconj(eigvecs_numeric(h,kx,ky)) * deigvecs_dkx(h,kx,ky);
-						atol = estimate_atol(h))
-			end
-			@testset "dy" begin
-				@test check_tensor(
-					(kx,ky) -> [dy_cc(h,kx,ky) dy_cv(h,kx,ky)
-						dy_vc(h,kx,ky) dy_vv(h,kx,ky)],
-					(kx,ky) -> im*hconj(eigvecs_numeric(h,kx,ky)) * deigvecs_dky(h,kx,ky);
-						atol = estimate_atol(h))
-			end
-			
+			for (str,symb,fdm) in zip(["vx","vy","dx","dy"],[:vx,:vy,:dx,:dy],fdiff_melems)
+				@testset "$str" begin
+					fns = (
+						getfunc_melements_closure(h,symb),
+						getfunc_melements_dispatch(h,symb),
+						getfunc_melements_eval(h,symb)
+						)
+					for fn in fns
+						@test check_tensor(fn,fdm;atol = estimate_atol(h))
+					end
+				end
+			end			
         end
     end
 end

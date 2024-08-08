@@ -70,8 +70,9 @@ jac(h::QuadraticToy) = @SMatrix [
 
 function printparamsSI(h::QuadraticToy,us::UnitScaling;digits=3)
 
-    Δ = energySI(h.Δ,us)
-    m = massSI(1/h.ζ,us)
+    tc,lc   = getparams(us)
+    Δ       = energySI(h.Δ,us)
+    m       = uconvert(u"kg",ħ*tc / (h.Δ*lc^2))
     
     return """
         Δ  = $(round(typeof(Δ),Δ,sigdigits=digits)) ($(h.Δ))

@@ -2,6 +2,9 @@
 
 export UnitScaling
 
+export q_e
+export m_e
+export ħ
 export electricfield_scaled
 export electricfieldSI
 export energyscaled
@@ -18,6 +21,14 @@ export velocitySI
 export wavenumberscaled
 export wavenumberSI
 
+"Elementary charge as Quantity (Unitful.jl package) equal to 1.602176634e-19C"
+const q_e = u"1.602176634e-19C"
+
+"Rest mass of an electron as Quantity (Unitful.jl package) equal to 9.1093837139(28)e-31kg"
+const m_e = u"9.1093837139e-31kg"
+
+"Reduced Planck constant as Quantity (Unitful.jl package) equal to 6.582119569...e-16 eV⋅s"
+const ħ = Unitful.ħ
 
 """
     UnitScaling(timescale,lengthscale)
@@ -60,21 +71,18 @@ end
 
 function energyscaled(energy::Unitful.Energy,us::UnitScaling)
     tc,lc = getparams(us)
-    ħ     = Unitful.ħ
     return uconvert(Unitful.NoUnits,tc*energy/ħ)
 end
 
 function electricfieldSI(field::Real,us::UnitScaling)
     tc,lc   = getparams(us)
     e       = uconvert(u"C",1u"eV"/1u"V")
-    ħ       = Unitful.ħ
     return uconvert(u"MV/cm",field*ħ/(e*tc*lc))
 end
 
 function electricfield_scaled(field::Unitful.EField,us::UnitScaling)
     tc,lc   = getparams(us)
     e       = uconvert(u"C",1u"eV"/1u"V")
-    ħ       = Unitful.ħ
     return uconvert(Unitful.NoUnits,e*tc*lc*field/ħ)
 end
 
@@ -125,16 +133,4 @@ end
 function wavenumberscaled(k::Unitful.Wavenumber,us::UnitScaling)
     tc,lc = getparams(us)
     return uconvert(Unitful.NoUnits,k*lc)
-end
-
-function massSI(m::Real,us::UnitScaling)
-    tc,lc = getparams(us)
-    ħ     = Unitful.ħ
-    return uconvert(Unitful.NoUnits,m*ħ*tc/lc^2)
-end
-
-function massscaled(m::Unitful.Mass,us::UnitScaling)
-    tc,lc = getparams(us)
-    ħ     = Unitful.ħ
-    return uconvert(u"kg",m * lc^2 / (ħ*tc))
 end

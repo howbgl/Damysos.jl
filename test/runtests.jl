@@ -6,7 +6,6 @@ using LoggingExtras
 using TerminalLoggers
 using Test
 
-include("testsims.jl")
 
 rm("testresults/", force = true, recursive = true)
 

@@ -39,8 +39,7 @@ function GaussianAPulse(us::UnitScaling,
     p   = getparams(us)
     σ   = uconvert(Unitful.NoUnits,standard_dev/p.timescale)
     ω   = uconvert(Unitful.NoUnits,2π*frequency*p.timescale)
-    e   = uconvert(u"C",1u"eV"/1u"V")
-    eE  = uconvert(Unitful.NoUnits,e*p.timescale*p.lengthscale*fieldstrength/Unitful.ħ)
+    eE  = uconvert(Unitful.NoUnits,q_e*p.timescale*p.lengthscale*fieldstrength/Unitful.ħ)
     return GaussianAPulse(promote(σ,ω,eE,φ,θ)...)
 end
 

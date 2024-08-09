@@ -57,13 +57,13 @@ function vμ_vv(h::GeneralTwoBand,dh::SVector{3,<:Any})
 end
 
 function getvμ_cc(hvec::Function,dhdμ::Function)
-    return let Δϵ_loc = getΔϵ(hvec)
-        (kx,ky) -> sum(hvec(kx,ky) .* dhdμ(kx,ky)) / Δϵ_loc(kx,ky)
+    return let ϵ_loc = getϵ(hvec)
+        (kx,ky) -> sum(hvec(kx,ky) .* dhdμ(kx,ky)) / ϵ_loc(kx,ky)
     end
 end
 function getvμ_vv(hvec::Function,dhdμ::Function)
-    return let Δϵ_loc = getΔϵ(hvec)
-        (kx,ky) -> sum(hvec(kx,ky) .* dhdμ(kx,ky)) / Δϵ_loc(kx,ky)
+    return let ϵ_loc = getϵ(hvec)
+        (kx,ky) -> -sum(hvec(kx,ky) .* dhdμ(kx,ky)) / ϵ_loc(kx,ky)
     end
 end
 
@@ -180,11 +180,11 @@ vy_vv(h::GeneralTwoBand,kx,ky)  = vμ_vv(hvec(h,kx,ky),dhdky(h,kx,ky))
 vy_vv(h::GeneralTwoBand)        = vμ_vv(h,dhdky(h))
 
 
-getvx_cc(h::GeneralTwoBand) = getvμ_cc(gethvec(h),getdhdx(h))
-getvx_cv(h::GeneralTwoBand) = getvμ_cv(gethvec(h),getdhdx(h))
-getvx_vc(h::GeneralTwoBand) = getvμ_vc(gethvec(h),getdhdx(h))
-getvx_vv(h::GeneralTwoBand) = getvμ_vv(gethvec(h),getdhdx(h))
-getvy_cc(h::GeneralTwoBand) = getvμ_cc(gethvec(h),getdhdy(h))
-getvy_cv(h::GeneralTwoBand) = getvμ_cv(gethvec(h),getdhdy(h))
-getvy_vc(h::GeneralTwoBand) = getvμ_vc(gethvec(h),getdhdy(h))
-getvy_vv(h::GeneralTwoBand) = getvμ_vv(gethvec(h),getdhdy(h))
+getvx_cc(h::GeneralTwoBand) = getvμ_cc(gethvec(h),getdhdkx(h))
+getvx_cv(h::GeneralTwoBand) = getvμ_cv(gethvec(h),getdhdkx(h))
+getvx_vc(h::GeneralTwoBand) = getvμ_vc(gethvec(h),getdhdkx(h))
+getvx_vv(h::GeneralTwoBand) = getvμ_vv(gethvec(h),getdhdkx(h))
+getvy_cc(h::GeneralTwoBand) = getvμ_cc(gethvec(h),getdhdky(h))
+getvy_cv(h::GeneralTwoBand) = getvμ_cv(gethvec(h),getdhdky(h))
+getvy_vc(h::GeneralTwoBand) = getvμ_vc(gethvec(h),getdhdky(h))
+getvy_vv(h::GeneralTwoBand) = getvμ_vv(gethvec(h),getdhdky(h))

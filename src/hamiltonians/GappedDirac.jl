@@ -3,7 +3,7 @@ export GappedDirac
 """
     GappedDirac{T<:Real} <: GeneralTwoBand{T}
 
-Holds the parameter of a dimensionless massive Dirac Hamiltonian.
+Massive Dirac Hamiltonian (two-band model).
 
 The Hamiltonian reads 
 ```math
@@ -22,7 +22,7 @@ GappedDirac:
 ```
 
 # See also
-[`GeneralTwoBand`](@ref GeneralTwoBand)
+[`GeneralTwoBand`](@ref GeneralTwoBand) [`QuadraticToy`](@ref QuadraticToy)
 """
 struct GappedDirac{T<:Real} <: GeneralTwoBand{T} 
     m::T
@@ -83,20 +83,17 @@ function getparamsSI(h::GappedDirac,us::UnitScaling)
     return (m=m,vF=vF)
 end
 
-export gethvec
 gethvec(h::GappedDirac) = let m=h.m
     (kx,ky) -> SA[kx,ky,m]
 end
 
-export getdhdx,getdhdy
-getdhdx(h::GappedDirac) = let m=h.m
+getdhdkx(h::GappedDirac) = let m=h.m
     (kx,ky) -> SA[one(m),zero(m),zero(m)]
 end
-getdhdy(h::GappedDirac) = let m=h.m
+getdhdky(h::GappedDirac) = let m=h.m
     (kx,ky) -> SA[zero(m),one(m),zero(m)]
 end
 
-export getjac
 getjac(h::GappedDirac) = let m=h.m
     (kx,ky) -> SA[
         one(m) zero(m)

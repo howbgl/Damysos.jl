@@ -38,8 +38,6 @@ function _run!(
         calculate_observable_singlemode!(sim,o,f,res)
     end
 
-    postrun!(sim;savedata=savedata,saveplots=saveplots)
-
     return sim.observables 
 end
 

@@ -454,11 +454,12 @@ function plotdata(
     kwargs...)
 
     p           = getparams(sim)
-    lc_in_nm    = ustrip(u"nm",p.lengthscale)
     d           = sim.dimensions
     ts_in_cyc   = collect(p.tsamples) .* p.ν
     plotpath    = sim.plotpath
-    timeseriesx = [p.vF * x ./ lc_in_nm^d for x in [vel.vx,vel.vxintra,vel.vxinter]]
+    velocities  = [vel.vx,vel.vxintra,vel.vxinter]
+    v_nm_per_s  = v -> ustrip(u"nm/s",velocitySI(v,sim.unitscaling))
+    timeseriesx = [v_nm_per_s.(x) for x in velocities]
     tsamplesx   = [ts_in_cyc,ts_in_cyc,ts_in_cyc]
     timestepsx  = [p.dt,p.dt,p.dt]
     frequenciesx = [p.ν,p.ν,p.ν]
@@ -471,7 +472,8 @@ function plotdata(
     labels      = [labelsx]
 
     if sim.dimensions==2
-        timeseriesy = [x ./ lc_in_nm^d for x in [vel.vy,vel.vyintra,vel.vyinter]]
+        velocities  = [vel.vy,vel.vyintra,vel.vyinter]
+        timeseriesy = [v_nm_per_s.(x) for x in velocities]
         push!(timeseries,timeseriesy)
         push!(tsamples,tsamplesx)
         push!(timesteps,timestepsx)

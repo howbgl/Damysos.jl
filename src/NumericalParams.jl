@@ -157,7 +157,6 @@ end
 
 
 function getkxsamples(p::Union{NumericalParams1d,NumericalParams2d})    
-    @debug @show p.dkx,p.kxmax,typeof(p.dkx),typeof(p.kxmax)
     return -p.kxmax:p.dkx:p.kxmax
 end
 

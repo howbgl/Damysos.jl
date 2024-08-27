@@ -116,6 +116,10 @@ maximum_vecpot(df::GaussianAPulse)  = abs(df.eE) / df.ω
 maximum_vecpotx(df::GaussianAPulse) = cos(df.φ) * abs(df.eE) / df.ω
 maximum_vecpoty(df::GaussianAPulse) = sin(df.φ) * abs(df.eE) / df.ω
 
+maximum_efield(df::GaussianAPulse)  = abs(df.eE) 
+maximum_efieldx(df::GaussianAPulse) = cos(df.φ) * abs(df.eE) 
+maximum_efieldy(df::GaussianAPulse) = sin(df.φ) * abs(df.eE) 
+
 central_angular_frequency(df::GaussianAPulse) = df.ω
 
 function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)

@@ -3,6 +3,70 @@ export terminated_retcode
 export resume
 
 """
+    ConvergenceTest(
+		file,
+		solver::DamysosSolver = LinearChunked(),
+		method::ConvergenceTestMethod = PowerLawTest(:dt, 0.5),
+		atolgoal::Real = 1e-12,
+		rtolgoal::Real = 1e-8,
+		maxtime::Union{Real, Unitful.Time} = 600,
+		maxiterations::Integer = 16;
+		altpath = joinpath(pwd(), start.datapath)))
+
+Continues a convergence test saved to an .hdf5 file, re-using the file.
+
+# Arguments
+- `file`: the unfinished convergence test. Can be a path, HDF5.File or HDF5.Group
+- `method::ConvergenceTestMethod`: specifies the convergence parmeter & iteration method
+- `atolgoal::Real`: desired absolute tolerance
+- `rtolgoal::Real`: desired relative tolerance
+- `maxtime::Union{Real,Unitful.Time}`: test guaranteed to stop after maxtime
+- `maxiterations::Integer`: test stops after maxiterations Simulations were performed
+- `path::String`: path to save data of convergence test
+- `altpath`: path to try inf start.datapath throws an error
+
+
+# See also
+[`LinearTest`](@ref), [`PowerLawTest`](@ref), [`Simulation`](@ref)
+"""
+function ConvergenceTest(
+	filepath_hdf5::String,
+	solver::DamysosSolver = LinearChunked(),
+	args...;
+	kwargs...)
+	h5open(filepath_hdf5,"r") do file
+		return ConvergenceTest(file,solver,args...;kwargs...)
+	end
+end
+
+function ConvergenceTest(
+	file::Union{HDF5.File, HDF5.Group},
+	solver::DamysosSolver = LinearChunked();
+	method::ConvergenceTestMethod = load_obj_hdf5(file["method"]),
+	atolgoal::Real = read(file,"atolgoal"),
+	rtolgoal::Real = read(file,"rtolgoal"),
+	maxtime::Union{Real, Unitful.Time} = read(file,"maxtime"),
+	maxiterations::Integer = read(file,"maxiterations"),
+	altpath = joinpath(pwd(), read(file,"testdatafile")))
+	
+	start			= load_obj_hdf5(file["start"])
+	simgroup 		= file["completedsims"]
+	done_sims 		= [load_obj_hdf5(simgroup[s]) for s in keys(simgroup)] 
+	
+	return ConvergenceTest(
+		start,
+		solver,
+		method,
+		atolgoal,
+		rtolgoal,
+		maxtime,
+		maxiterations,
+		read(file["testdatafile"]),
+		done_sims;
+		altpath = altpath)
+end
+
+"""
     successful_retcode(x)
 
 Returns true if x terminated with a successful return code.
@@ -61,6 +125,13 @@ end
 nextvalue(oldvalue::Real, method::PowerLawTest) = method.multiplier * oldvalue
 nextvalue(oldvalue::Real, method::LinearTest)   = oldvalue + method.shift
 
+function getsimindex(sim::Simulation)
+	m = match(r"(?<=#)\d+",sim.id)
+	isnothing(m) && throw(ErrorException(
+		"Could not extract simulation index from its id $(sim.id)"))
+	return parse(Int,m.match)
+end
+
 function currentvalue(m::Union{PowerLawTest, LinearTest}, sim::Simulation)
 	return getproperty(sim.numericalparams, m.parameter)
 end
@@ -84,7 +155,7 @@ function next(
 	opt      = PropertyLens(method.parameter)
 	newparam = nextvalue(oldparam, method)
 	params   = set(deepcopy(sim.numericalparams), opt, newparam)
-	id       = "$(method.parameter)=$newparam"
+	id       = "#$(getsimindex(sim)+1)_$(method.parameter)=$newparam"
 
 	Simulation(
 		sim.liouvillian,
@@ -102,28 +173,29 @@ function run!(
 	savedata = true,
 	saveplots = false)
 
-	if savedata
+	if savedata && isempty(test.completedsims)
 		rename_file_if_exists(test.testdatafile)
 		h5open(test.testdatafile,"w") do file
-			create_group(file,"completedsims")
+			ensuregroup(file,"completedsims")
 			savedata_hdf5(test.method,file)
 			file["atolgoal"] 		= test.atolgoal
 			file["rtolgoal"] 		= test.rtolgoal
 			file["maxtime"]  		= test.maxtime
 			file["maxiterations"] 	= test.maxiterations
 			file["testdatafile"] 	= test.testdatafile
+			savedata_hdf5(test.start,create_group(file,"start"))
 		end
 	end
 
 	@info """
-	## Starting "  $(repr("text/plain", test))
+	## Starting $(repr("text/plain", test))
 	$(repr("text/plain", test.method))
 	"""
 	printinfo(test.start,test.solver)
 
 	runtask = @async begin
 		try
-			_run!(test, test.method; savedata = savedata, saveplots = saveplots)
+			_run!(test, test.method; savedata = savedata,saveplots = saveplots)
 		catch e
 			if e isa InterruptException
 				@warn "Convergence test interrupted!"
@@ -152,19 +224,15 @@ function _run!(
 	savedata = true,
 	saveplots = false)
 
-	currentiteration = 0
-	start            = test.start
 	done_sims        = test.completedsims
-
-	if length(done_sims) > 1
-		throw(ErrorException("
-		It seems this test has already been run, since length(completedsims) > 1"))
-	end
+	currentiteration = length(done_sims)
 
 	while currentiteration < test.maxiterations
 
 		currentiteration += 1
-		currentsim = isempty(done_sims) ? start : next(done_sims[end], method)
+		currentsim = currentiteration == 1 ? test.start : next(done_sims[end], method)
+
+		@info "Check index: $(currentiteration) ?= $(getsimindex(currentsim))"
 
 		run!(currentsim,test.allfunctions[currentiteration],test.solver;
 			showinfo=false,
@@ -233,55 +301,6 @@ function converged(test::ConvergenceTest)
 		test.completedsims[end];
 		atol = test.atolgoal,
 		rtol = test.rtolgoal)
-end
-
-"""
-    resume(filepath_hdf5::String,solver::DamysosSolver)
-
-Returns true if x terminated with a successful return code.
-
-"""
-function resume(
-	filepath_hdf5::String,
-	solver::DamysosSolver,
-	args...;
-	kwargs...)
-	h5open(filepath_hdf5,"r") do file
-		return resume(file,solver,args...;kwargs...)
-	end
-end
-
-function resume(
-	file::Union{HDF5.File, HDF5.Group},
-	solver::DamysosSolver,
-	method::ConvergenceTestMethod = load_obj_hdf5(file["method"]),
-	atolgoal::Real = read(file,"atolgoal"),
-	rtolgoal::Real = read(file,"rtolgoal"),
-	maxtime::Union{Real, Unitful.Time} = read(file,"maxtime"),
-	maxiterations::Integer = read(file,"maxiterations");
-	altpath = joinpath(pwd(), read(file,"testdatafile")))
-	
-	last_params 	= load_obj_hdf5(file["testresult/last_params"])
-	oldstart		= load_obj_hdf5(file["start"])
-	start 			= Simulation(
-		oldstart.liouvillian,
-		oldstart.drivingfield,
-		last_params,
-		zero.(oldstart.observables),
-		oldstart.unitscaling,
-		oldstart.id,
-		dirname(read(file,"testdatafile")),
-		dirname(read(file,"testdatafile")))
-	
-	return ConvergenceTest(
-		start,
-		solver,
-		method,
-		atolgoal,
-		rtolgoal,
-		maxtime,
-		maxiterations;
-		altpath = altpath)
 end
 
 function findminimum_precision(test::ConvergenceTest)

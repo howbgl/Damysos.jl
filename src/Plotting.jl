@@ -272,7 +272,7 @@ function plotdata(
                 kwargs...)
             
             altpath             = joinpath(pwd(),basename(plotpath))
-            (success,plotpath)  = ensurepath([plotpath,altpath])
+            (success,plotpath)  = ensuredirpath([plotpath,altpath])
             if success
                 CairoMakie.save(joinpath(plotpath,vname*".pdf"),figtime)
                 CairoMakie.save(joinpath(plotpath,vname*".png"),figtime,px_per_unit = 4)
@@ -346,7 +346,7 @@ function plotdata(
             kwargs...) for (tot,c1,c2,tit) in collection]
 
         altpath             = joinpath(pwd(),basename(plotpath))
-        (success,plotpath)  = ensurepath([plotpath,altpath])
+        (success,plotpath)  = ensuredirpath([plotpath,altpath])
         if success
             CairoMakie.save(joinpath(plotpath,"vxinterference_spec.pdf"),figx)
             CairoMakie.save(joinpath(plotpath,"vxinterference_spec.png"),figx,px_per_unit = 4)
@@ -407,7 +407,7 @@ function plotdata(
             kwargs...)
 
         altpath             = joinpath(pwd(),basename(plotpath))
-        (success,plotpath)  = ensurepath([plotpath,altpath])
+        (success,plotpath)  = ensuredirpath([plotpath,altpath])
         if success
             CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
             CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
@@ -505,7 +505,7 @@ function plotdata(
                 kwargs...)
 
             altpath             = joinpath(pwd(),basename(plotpath))
-            (success,plotpath)  = ensurepath([plotpath,altpath])
+            (success,plotpath)  = ensuredirpath([plotpath,altpath])
             if success
                 CairoMakie.save(joinpath(plotpath,"$(lab[1]).pdf"),figtime)
                 CairoMakie.save(joinpath(plotpath,"$(lab[1]).png"),figtime,px_per_unit = 4)
@@ -562,7 +562,7 @@ function plotdata(
             kwargs...)
 
             altpath             = joinpath(pwd(),basename(plotpath))
-            (success,plotpath)  = ensurepath([plotpath,altpath])
+            (success,plotpath)  = ensuredirpath([plotpath,altpath])
             if success
                 CairoMakie.save(joinpath(plotpath,"vinterference_spec.pdf"),fig)
                 CairoMakie.save(joinpath(plotpath,"vinterference_spec.png"),fig,px_per_unit = 4)
@@ -601,7 +601,7 @@ function plotdata(sim::Simulation{T},occ::Occupation{T};
             kwargs...)
 
         altpath             = joinpath(pwd(),basename(plotpath))
-        (success,plotpath)  = ensurepath([plotpath,altpath])
+        (success,plotpath)  = ensuredirpath([plotpath,altpath])
         if success
             CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
             CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
@@ -655,7 +655,7 @@ function plotfield(sim::Simulation)
             ylabel="el. field [MV/cm]")
 
         altpath             = joinpath(pwd(),basename(plotpath))
-        (success,plotpath)  = ensurepath([plotpath,altpath])
+        (success,plotpath)  = ensuredirpath([plotpath,altpath])
         if success
             CairoMakie.save(joinpath(plotpath,"vecfield.pdf"),figa)
             CairoMakie.save(joinpath(plotpath,"vecfield.png"),figa,px_per_unit = 4)
@@ -717,7 +717,7 @@ function plotbandstructure2d(sim::Simulation;plotkgrid=false,nk=2048)
         Label(fig[1,3],printparamsSI(sim),tellheight=false,justification = :left)
 
         altpath             = joinpath(pwd(),basename(plotpath))
-        (success,plotpath)  = ensurepath([plotpath,altpath])
+        (success,plotpath)  = ensuredirpath([plotpath,altpath])
         if success
             CairoMakie.save(joinpath(plotpath,"bandstructure.pdf"),fig)
             CairoMakie.save(joinpath(plotpath,"bandstructure.png"),fig,px_per_unit = 4)

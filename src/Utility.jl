@@ -1,7 +1,7 @@
 
-export ensurepath
+export ensuredirpath
+export ensurefilepath
 export find_files_with_name
-export parametersweep
 export random_word
 export replace_expression!
 
@@ -285,26 +285,39 @@ function try_execute_n_times(f::Function, n::Int, arg; wait_time::Real=10.0)
     return success
 end
 
-function ensurepath(paths::Vector{String}; n_tries::Int=3, wait_time::Real=10.0)
+function ensurefilepath(args...; n_tries::Int=3, wait_time::Real=10.0)
+    return ensurepath(isfile,p -> mkpath(dirname(p)),args...;n_tries=n_tries,wait_time=wait_time)
+end
+
+function ensuredirpath(args...; n_tries::Int=3, wait_time::Real=10.0)
+    return ensurepath(isdir,mkpath,args...;n_tries=n_tries,wait_time=wait_time)
+end
+
+
+function ensurepath(check::Function, make::Function, paths::Vector{String};
+    n_tries::Int=3,
+    wait_time::Real=10.0)
 
     for path in paths
-        success = ensurepath(path; n_tries=n_tries, wait_time=wait_time)
+        success = ensurepath(check, make, path; n_tries=n_tries, wait_time=wait_time)
         if success
             return (true, path)
         end
     end
 
     @warn "None of the given paths could be created."
-    return (false, "")
+    return (false, "")   
 end
 
-function ensurepath(path::String; n_tries::Int=3, wait_time::Real=10.0)
+function ensurepath(check::Function, make::Function, path::String; 
+    n_tries::Int=3, 
+    wait_time::Real=10.0)
 
     @debug "Attempting to create \"...$path\""
     @debug "Full path: $path"
     success = false
-    if !isdir(path)
-        success = try_execute_n_times(mkpath, n_tries, path; wait_time=wait_time)
+    if !check(path)
+        success = try_execute_n_times(make, n_tries, path; wait_time=wait_time)
     else
         @debug "\"$path\" already exists."
         return true
@@ -319,6 +332,9 @@ function ensurepath(path::String; n_tries::Int=3, wait_time::Real=10.0)
     end
 end
 
+function ensuregroup(parent::Union{HDF5.File, HDF5.Group},group::AbstractString)
+    return group ∈ keys(parent) ? parent[group] : create_group(parent,group)
+end
 
 "Fits a straight line through a set of points and returns an anonymous fit-function"
 function linear_fit(x, y)

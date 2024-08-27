@@ -72,8 +72,8 @@ function prerun!(sim::Simulation,solver::DamysosSolver;
     showinfo && printinfo(sim,solver)
     
     checkbzbounds(sim)
-    savedata && ensurepath(sim.datapath)
-    saveplots && ensurepath(sim.plotpath)
+    savedata && ensuredirpath(sim.datapath)
+    saveplots && ensuredirpath(sim.plotpath)
 
     resize_obs!(sim)
     zero.(sim.observables)

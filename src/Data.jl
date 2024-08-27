@@ -48,7 +48,7 @@ function savedata(
 	@debug "datapath = \"$(sim.datapath)\""
 
 	datapath            = sim.datapath
-	(success, datapath) = ensurepath([datapath, altpath])
+	(success, datapath) = ensuredirpath([datapath, altpath])
 
 	if !success
 		@warn "Could not save simulation data to $(sim.datapath) or $altpath."
@@ -65,6 +65,9 @@ end
 function savedata(result::ConvergenceTestResult)
 
 	h5open(result.test.testdatafile, "cw") do file
+
+		"testresult" ∈ keys(file) && delete_object(file,"testresult")
+
 		g = create_group(file, "testresult")
 
 		g["retcode"]          = Integer(result.retcode)
@@ -72,9 +75,6 @@ function savedata(result::ConvergenceTestResult)
 		g["achieved_rtol"]    = result.min_achieved_rtol
 		g["elapsed_time_sec"] = result.elapsed_time_sec
 		g["iterations"]       = result.iterations
-
-		start = create_group(file,"start")
-		savedata_hdf5(result.test.start,start)
 
 		generic_save_hdf5(result.last_params, g, "last_params")
 		savedata_hdf5(result.test, g)
@@ -84,7 +84,7 @@ end
 function savedata(test::ConvergenceTest, sim::Simulation)
 
 	h5open(test.testdatafile, "cw") do file
-		savedata_hdf5(sim, create_group(file["completedsims"], sim.id))
+		savedata_hdf5(sim, ensuregroup(file["completedsims"], sim.id))
 	end
 end
 
@@ -182,7 +182,7 @@ end
 
 function savedata_hdf5(t::ConvergenceTest,parent::Union{HDF5.File, HDF5.Group})
 
-	g = create_group(parent, "convergence_parameters")
+	g = ensuregroup(parent, "convergence_parameters")
 	if !isempty(t.completedsims)
 		params = [currentvalue(t.method, s) for s in t.completedsims]
 		g[string(t.method.parameter)] = params
@@ -198,7 +198,7 @@ function savedata_hdf5(
 	m::Union{PowerLawTest,LinearTest},
 	parent::Union{HDF5.File, HDF5.Group})
 	
-	g = create_group(parent,"method")
+	g = ensuregroup(parent,"method")
 	g["T"] 			= "$(typeof(m))"
 	g["parameter"] 	= string(m.parameter)
 
@@ -323,7 +323,7 @@ function add_observable!(dat::DataFrame, occ::Occupation)
 end
 
 function generic_save_hdf5(object, parent::Union{HDF5.File, HDF5.Group}, grpname::String)
-	g = create_group(parent, grpname)
+	g = ensuregroup(parent, grpname)
 	generic_save_hdf5(object, g)
 	close(g)
 end
@@ -359,7 +359,7 @@ function savemetadata(sim::Simulation;
 	filename = "simulation.meta")
 
 
-	(success, datapath) = ensurepath([sim.datapath, altpath])
+	(success, datapath) = ensuredirpath([sim.datapath, altpath])
 	_sim = save_observables ? sim : Simulation(
 		sim.liouvillian,
 		sim.drivingfield,
@@ -385,7 +385,7 @@ function savemetadata(ens::Ensemble)
 
 	filename            = "ensemble.meta"
 	altpath             = joinpath(pwd(), basename(ens.datapath))
-	(success, datapath) = ensurepath([ens.datapath, altpath])
+	(success, datapath) = ensuredirpath([ens.datapath, altpath])
 	if success
 		if save(joinpath(datapath, filename), ens)
 			@debug "Ensemble metadata saved at \"" * joinpath(datapath, filename) * "\""

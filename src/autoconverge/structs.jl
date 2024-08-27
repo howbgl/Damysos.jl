@@ -10,13 +10,15 @@ abstract type ConvergenceTestMethod end
 
 
 """
-    ConvergenceTest(start::Simulation,
+    ConvergenceTest(
+		start::Simulation,
 		solver::DamysosSolver = LinearChunked(),
 		method::ConvergenceTestMethod = PowerLawTest(:dt, 0.5),
 		atolgoal::Real = 1e-12,
 		rtolgoal::Real = 1e-8,
 		maxtime::Union{Real, Unitful.Time} = 600,
-		maxiterations::Integer = 16;
+		maxiterations::Integer = 16,
+		path::String;
 		altpath = joinpath(pwd(), start.datapath)))
 
 A convergence test based on a Simulation and a ConvergenceTestMethod.
@@ -28,6 +30,7 @@ A convergence test based on a Simulation and a ConvergenceTestMethod.
 - `rtolgoal::Real`: desired relative tolerance
 - `maxtime::Union{Real,Unitful.Time}`: test guaranteed to stop after maxtime
 - `maxiterations::Integer`: test stops after maxiterations Simulations were performed
+- `path::String`: path to save data of convergence test
 - `altpath`: path to try inf start.datapath throws an error
 
 
@@ -52,13 +55,24 @@ struct ConvergenceTest
 		atolgoal::Real = 1e-12,
 		rtolgoal::Real = 1e-8,
 		maxtime::Union{Real, Unitful.Time} = 600,
-		maxiterations::Integer = 16;
-		altpath = joinpath(pwd(), start.datapath))
+		maxiterations::Integer = 16,
+		path::String = joinpath(start.datapath, "convergencetest_$(getname(method)).hdf5"),
+		completedsims::Vector{<:Simulation} = empty([start]);
+		altpath = joinpath(
+			pwd(), 
+			"convergencetest_$(basename(tempname()))_$(getname(method)).hdf5"))
 
 		maxtime = maxtime isa Real ? maxtime : ustrip(u"s", maxtime)
 
-		fns = []
-		s = deepcopy(start)
+		(success, path) = ensurefilepath([path, altpath])
+		!success && throw(ErrorException("could not create neceesary data directory"))
+		
+		@reset start.datapath = joinpath(path, "start")
+		@reset start.plotpath = joinpath(path, "start")
+		@reset start.id = "#1"
+
+		fns 	= []
+		s 		= deepcopy(start)
 
 		for i in 1:maxiterations
 			f = define_functions(s, solver)
@@ -66,15 +80,7 @@ struct ConvergenceTest
 			push!(fns, f)
 		end
 
-		(success, path) = ensurepath([start.datapath, altpath])
-		!success && throw(ErrorException("could not create neceesary data directory"))
-
-		filename = "convergencetest_$(getname(start))_$(getname(method)).hdf5"
-		filepath = joinpath(path, filename)
-		
-		@reset start.datapath = joinpath(start.datapath, "start")
-		@reset start.plotpath = joinpath(start.plotpath, "start")
-		@reset start.id = "start_$(start.id)"
+		sort!(completedsims,by=getsimindex)
 
 		return new(
 			start,
@@ -84,8 +90,8 @@ struct ConvergenceTest
 			rtolgoal,
 			maxtime,
 			maxiterations,
-			empty([start]),
-			filepath,
+			completedsims,
+			path,
 			fns)
 	end
 end

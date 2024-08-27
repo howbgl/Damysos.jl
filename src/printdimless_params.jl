@@ -24,11 +24,12 @@ function printdimless_params(h::GappedDirac,df::DrivingField;digits=3)
 end
 
 function printdimless_params(h::QuadraticToy,df::DrivingField;digits=3)
-    amax = maximum_vecpot(df)
     emax = maximum_efield(df)
     ω   = central_angular_frequency(df)
-    M   = round(h.Δ / ω,sigdigits=digits)            # Multi-photon number
+    M   = round(h.Δ / ω,sigdigits=digits)               # Multi-photon number
+    ζ   = round(h.ζ * emax^2  / ω^3,sigdigits=digits)   # My dimless asymptotic ζ
 
     return """
-        M = $M\n"""
+        M = $M\n
+        ζ = $ζ"""
 end

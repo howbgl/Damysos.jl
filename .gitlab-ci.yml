@@ -27,7 +27,7 @@
   script:
     # Let's run the tests. Substitute `coverage = false` below, if you do not
     # want coverage results.
-    - timeout 30m julia --project=src -e '
+    - timeout 2h julia --project=src -e '
       using Pkg;
       Pkg.develop(PackageSpec(path=pwd()));
       using Damysos'

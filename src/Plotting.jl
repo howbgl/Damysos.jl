@@ -242,7 +242,8 @@ function plotdata(
             d           = sim.dimensions
             ts_in_cyc   = collect(pars.tsamples) .* pars.ν
             v           = filter(x -> x isa Velocity,sim.observables)[1]
-            data        = getproperty(v,vsymb) .* pars.vF ./ lc_in_nm^d
+            v_nm_per_s  = v -> ustrip(u"nm/s",velocitySI(v,sim.unitscaling))
+            data        = v_nm_per_s.(getproperty(v,vsymb))
 
             push!(timeseries,data)
             push!(tsamples,ts_in_cyc)

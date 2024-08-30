@@ -1,12 +1,14 @@
 export ConvergenceTest
 export ConvergenceTestMethod
 export ConvergenceTestResult
+export CTestStart
 export LinearTest
 export PowerLawTest
 
 abstract type ConvergenceTestMethod end
 
 @enumx ReturnCode success maxtime maxiter running failed
+@enumx CTestStart first last
 
 
 """
@@ -52,8 +54,9 @@ struct ConvergenceTest
 		maxtime::Union{Real, Unitful.Time} = 600,
 		maxiterations::Integer = 16,
 		path::String = joinpath(start.datapath, "convergencetest_$(getname(method)).hdf5"),
-		completedsims::Vector{<:Simulation} = empty([start]),
+		where_to_start::CTestStart.T = CTestStart.first,
 		resume = false,
+
 		altpath = joinpath(
 			pwd(), 
 			"convergencetest_$(basename(tempname()))_$(getname(method)).hdf5"))
@@ -84,7 +87,7 @@ struct ConvergenceTest
 			rtolgoal,
 			maxtime,
 			maxiterations,
-			completedsims,
+			empty([start]),
 			path,
 			fns)
 	end

@@ -22,16 +22,16 @@ function ConvergenceTest(
 	maxiterations::Integer = read(file,"maxiterations"),
 	path::String = read(file["testdatafile"]),
 	altpath = joinpath(pwd(), read(file,"testdatafile")),
-	resume = true,
-	where_to_start::CTestStart.T = CTestStart.first)
+	resume = true)
 
 	g 			= file["completedsims"]
 	done_sims 	= [load_obj_hdf5(g[s]) for s in keys(g)]
+	start 		= load_obj_hdf5(file["start"])
 
 	sort!(done_sims,by=getsimindex)
 	
-	t = ConvergenceTest(
-		last(done_sims),
+	return ConvergenceTest(
+		resume ? start : last(done_sims),
 		solver;
 		method=method,
 		atolgoal=atolgoal,
@@ -39,21 +39,9 @@ function ConvergenceTest(
 		maxtime=maxtime,
 		maxiterations=maxiterations,
 		path=path,
-		altpath = altpath)
-
-	if resume 
-		if where_to_start == CTestStart.first
-			@warn "Cannot resume & start at initial. Resuming from last saved simulation"
-		end
-		append!(t.completedsims,done_sims)
-		return t
-	elseif where_to_start == CTestStart.last
-		return t
-	elseif where_to_start == CTestStart.first
-		return @set t.start = load_obj_hdf5(file["start"])
-	else
-		return t
-	end
+		altpath = altpath,
+		completedsims = resume ? done_sims : empty([start]),
+		resume = resume)
 end
 
 """

@@ -54,9 +54,8 @@ struct ConvergenceTest
 		maxtime::Union{Real, Unitful.Time} = 600,
 		maxiterations::Integer = 16,
 		path::String = joinpath(start.datapath, "convergencetest_$(getname(method)).hdf5"),
-		where_to_start::CTestStart.T = CTestStart.first,
-		resume = false,
-
+		completedsims::Vector{<:Simulation} = empty([start]),
+		resume=false,
 		altpath = joinpath(
 			pwd(), 
 			"convergencetest_$(basename(tempname()))_$(getname(method)).hdf5"))
@@ -73,8 +72,18 @@ struct ConvergenceTest
 		fns 	= []
 		s 		= deepcopy(start)
 
+		maxiterations = maxiterations + length(completedsims)
+
 		for i in 1:maxiterations
 			f = define_functions(s, solver)
+			@debug """
+				Defining functions (iteration $i)
+					$(s.numericalparams)
+					$(s.drivingfield)
+					$(s.liouvillian)
+					
+					
+					"""
 			s = next(s, method)
 			push!(fns, f)
 		end
@@ -87,7 +96,7 @@ struct ConvergenceTest
 			rtolgoal,
 			maxtime,
 			maxiterations,
-			empty([start]),
+			completedsims,
 			path,
 			fns)
 	end

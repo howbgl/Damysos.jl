@@ -12,6 +12,7 @@ const LOADABLES = Dict(
 	"NumericalParamsSingleMode" 	=> NumericalParamsSingleMode,
 	"TwoBandDephasingLiouvillian" 	=> TwoBandDephasingLiouvillian,
 	"GappedDirac" 					=> GappedDirac,
+	"QuadraticToy"					=> QuadraticToy,
 	"UnitScaling"					=> UnitScaling,
 	"GaussianAPulse" 				=> GaussianAPulse,
 	"GaussianEPulse" 				=> GaussianEPulse,

@@ -10,22 +10,17 @@ abstract type ConvergenceTestMethod end
 
 
 """
-    ConvergenceTest(
-		start::Simulation,
-		solver::DamysosSolver = LinearChunked(),
-		method::ConvergenceTestMethod = PowerLawTest(:dt, 0.5),
-		atolgoal::Real = 1e-12,
-		rtolgoal::Real = 1e-8,
-		maxtime::Union{Real, Unitful.Time} = 600,
-		maxiterations::Integer = 16,
-		path::String;
-		altpath = joinpath(pwd(), start.datapath)))
+    ConvergenceTest(start, solver::DamysosSolver = LinearChunked(); kwargs...)
 
 A convergence test based on a Simulation and a ConvergenceTestMethod.
 
 # Arguments
-- `start::Simulation`: the Simulation to be converged
+- `start`: the starting point can be a `Simulation` object or are path to a previous test
+- `solver::DamysosSolver = LinearChunked()`: the solver used for simulations,
+
+# Keyword arguments
 - `method::ConvergenceTestMethod`: specifies the convergence parmeter & iteration method
+- `resume::Bool`: if true re-use the completedsims, otherwise start from scratch
 - `atolgoal::Real`: desired absolute tolerance
 - `rtolgoal::Real`: desired relative tolerance
 - `maxtime::Union{Real,Unitful.Time}`: test guaranteed to stop after maxtime
@@ -50,14 +45,15 @@ struct ConvergenceTest
 	allfunctions::Vector{Any}
 	function ConvergenceTest(
 		start::Simulation,
-		solver::DamysosSolver = LinearChunked(),
+		solver::DamysosSolver = LinearChunked();
 		method::ConvergenceTestMethod = PowerLawTest(:dt, 0.5),
 		atolgoal::Real = 1e-12,
 		rtolgoal::Real = 1e-8,
 		maxtime::Union{Real, Unitful.Time} = 600,
 		maxiterations::Integer = 16,
 		path::String = joinpath(start.datapath, "convergencetest_$(getname(method)).hdf5"),
-		completedsims::Vector{<:Simulation} = empty([start]);
+		completedsims::Vector{<:Simulation} = empty([start]),
+		resume = false,
 		altpath = joinpath(
 			pwd(), 
 			"convergencetest_$(basename(tempname()))_$(getname(method)).hdf5"))
@@ -79,8 +75,6 @@ struct ConvergenceTest
 			s = next(s, method)
 			push!(fns, f)
 		end
-
-		sort!(completedsims,by=getsimindex)
 
 		return new(
 			start,

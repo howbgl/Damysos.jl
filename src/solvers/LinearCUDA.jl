@@ -21,12 +21,10 @@ struct LinearCUDA{T <: Integer} <: DamysosSolver
 		kchunksize::T = default_kchunk_size(LinearCUDA),
 		algorithm::DiffEqGPU.GPUODEAlgorithm = GPUTsit5()) where {T}
 
-		if CUDA.functional()
-			new(kchunksize, algorithm)
-		else
-			throw(ErrorException(
-				"CUDA.jl is not functional, cannot use LinearCUDA solver."))
+		if !CUDA.functional()
+			@warn "CUDA.jl is not functional, cannot use LinearCUDA solver."
 		end
+		return new(kchunksize, algorithm)
 	end
 end
 
@@ -58,6 +56,9 @@ function _run!(
 	functions,
 	solver::LinearCUDA;
 	bypass_memcheck = false)
+
+	CUDA.functional() && throw(ErrorException(
+		"CUDA.jl is not functional, cannot use LinearCUDA solver."))
 
 	obs_kchunks = Vector{Vector{Observable}}(undef, 0)
 	kchunks 	= buildkgrid_chunks(sim,solver.kchunksize)

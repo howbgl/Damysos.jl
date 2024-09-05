@@ -22,7 +22,7 @@ function ConvergenceTest(
 	maxiterations::Integer = read(file,"maxiterations"),
 	path::String = read(file["testdatafile"]),
 	altpath = joinpath(pwd(), read(file,"testdatafile")),
-	resume = true)
+	resume = false)
 
 	g 			= file["completedsims"]
 	done_sims 	= [load_obj_hdf5(g[s]) for s in keys(g)]
@@ -31,7 +31,7 @@ function ConvergenceTest(
 	sort!(done_sims,by=getsimindex)
 	
 	return ConvergenceTest(
-		resume ? start : last(done_sims),
+		isempty(done_sims) ? start : last(done_sims),
 		solver;
 		method=method,
 		atolgoal=atolgoal,
@@ -178,6 +178,8 @@ function run!(
 			if e isa InterruptException
 				@warn "Convergence test interrupted!"
 				close(test.testdatafile)
+			else
+				rethrow()
 			end
 		end
 
@@ -321,8 +323,7 @@ function findminimum_precision(
 	s1::Simulation,
 	s2::Simulation;
 	max_atol = 10.0,
-	max_rtol = 10.0,
-)
+	max_rtol = 10.0)
 
 	p1 = getparams(s1)
 	p2 = getparams(s2)
@@ -337,8 +338,8 @@ function findminimum_precision(
 	min_achieved_atol, min_achieved_rtol = findminimum_precision(s1, s2, atols, rtols)
 
 	# Search the order of magnitude linearly to get a more precise estimate
-	atols = LinRange(min_achieved_atol, 0.1min_achieved_atol, 10)
-	rtols = LinRange(min_achieved_rtol, 0.1min_achieved_rtol, 10)
+	atols = LinRange(min_achieved_atol, 0.1min_achieved_atol, 100)
+	rtols = LinRange(min_achieved_rtol, 0.1min_achieved_rtol, 100)
 
 	return findminimum_precision(s1, s2, atols, rtols)
 end

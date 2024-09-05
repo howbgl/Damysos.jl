@@ -57,7 +57,7 @@ function _run!(
 	solver::LinearCUDA;
 	bypass_memcheck = false)
 
-	CUDA.functional() && throw(ErrorException(
+	!CUDA.functional() && throw(ErrorException(
 		"CUDA.jl is not functional, cannot use LinearCUDA solver."))
 
 	obs_kchunks = Vector{Vector{Observable}}(undef, 0)

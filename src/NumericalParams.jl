@@ -13,6 +13,14 @@ export NumericalParamsSingleMode
 const DEFAULT_ATOL = 1e-12
 const DEFAULT_RTOL = 1e-10
 
+function symmetric_steprange(max::Real,step::Real)
+    step < zero(step) && return symmetric_steprange(max,-step)
+    max < zero(max) && return symmetric_steprange(-max,step)
+    hi = zero(step):step:max
+    lo = zero(step):-step:-max
+    return append!(reverse(collect(lo))[1:end-1],collect(hi))
+end
+
 gettsamples(p::NumericalParameters)     = -abs(p.t0):p.dt:abs(p.t0)
 getnt(p::NumericalParameters)           = length(gettsamples(p))
 gettspan(p::NumericalParameters)        = (gettsamples(p)[1],gettsamples(p)[end])
@@ -89,7 +97,7 @@ function printparamsSI(p::NumericalParams2d,us::UnitScaling;digits=3)
     return str
 end
 
-getkysamples(p::NumericalParams2d)      = -p.kymax:p.dky:p.kymax
+getkysamples(p::NumericalParams2d) = symmetric_steprange(p.kymax,p.dky)
 
 struct NumericalParams1d{T<:Real} <: NumericalParameters{T}
     dkx::T
@@ -157,7 +165,7 @@ end
 
 
 function getkxsamples(p::Union{NumericalParams1d,NumericalParams2d})    
-    return -p.kxmax:p.dkx:p.kxmax
+    return symmetric_steprange(p.kxmax,p.dkx)
 end
 
 

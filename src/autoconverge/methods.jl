@@ -387,21 +387,16 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", m::LinearTest)
 	println(io, "Linear convergence test method (+$(m.shift)):")
-	str = print_iterated_symbolsequence(x -> nextvalue(x, m), m.parameter)
-	print(io, str)
+	seq = String["kxmax, "]
+	for i in 1:5
+		push!(seq,"kxmax + $(round(i*m.shift,sigdigits=3)), ")
+	end
+	print(io, " - [" * join(seq) * "...]")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", m::PowerLawTest)
 	println(io, "Power-law convergence test method (*$(m.multiplier)):")
-	str = print_iterated_symbolsequence(x -> nextvalue(x, m), m.parameter)
-	print(io, " - " * str)
+	str = join(["$(round(m.multiplier^n,sigdigits=3))$(m.parameter), " for n in 0:5])
+	print(io, " - [" * str * "...]")
 end
 
-function print_iterated_symbolsequence(f::Function, s::Symbol; sigdigits = 3, n = 5)
-	seq = [1.0]
-	for i in 1:n
-		push!(seq, f(seq[end]))
-	end
-	str = join(["$(round(v,sigdigits=sigdigits))$s, " for v in seq])
-	return "[" * str * "...]"
-end

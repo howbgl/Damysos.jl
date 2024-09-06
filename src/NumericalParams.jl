@@ -46,6 +46,23 @@ function NumericalParams2d(dkx::Real,dky::Real,kxmax::Real,kymax::Real,dt::Real,
     return NumericalParams2d(promote(dkx,dky,kxmax,kymax,dt,t0,rtol,atol)...)
 end
 
+
+function Base.show(io::IO,::MIME"text/plain",p::Union{NumericalParams1d,NumericalParams2d})
+    println(io,getshortname(p)*":")
+    for (name,val) in zip(
+        ["dt","t0","dkx","kxmax","nkx","rtol","atol"],
+        [p.dt,p.t0,p.dkx,p.kxmax,length(getkxsamples(p)),p.rtol,p.atol])
+        println(io," $name: $(round(val,sigdigits=4))")
+    end
+    if p isa NumericalParams1d
+        println(io," ky: $(round(p.ky,sigdigits=4))")
+    else # isa NumericalParams2d
+        println(io," dky: $(round(p.dky,sigdigits=4))")
+        println(io," kymax: $(round(p.kymax,sigdigits=4))")
+        println(io," nky: $(length(getkysamples(p)))")
+    end
+end
+
 NumericalParams2d(p::Dict) = construct_type_from_dict(NumericalParams2d,p)
 
 getdimension(::NumericalParams2d) = UInt8(2)

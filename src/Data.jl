@@ -1,6 +1,7 @@
 
 export load
 export loaddata
+export loadlast_testsim
 export save
 export savedata
 export savemetadata
@@ -229,9 +230,17 @@ function loaddata(sim::Simulation)
 	return DataFrame(CSV.File(joinpath(sim.datapath, "data.csv")))
 end
 
-function loadsimulation_hdf5(path::String)
+function loadlast_testsim(path::String)
 	h5open(path,"r") do file
-		loadsimulation_hdf5(file)
+		g 			= file["completedsims"]
+		done_sims 	= [load_obj_hdf5(g[s]) for s in keys(g)]
+		
+		sort!(done_sims,by=getsimindex)
+
+		isempty(done_sims) && throw(ErrorException(
+			"No completed simulation found (test.completedsims is empty)"))
+		
+		return last(done_sims)
 	end
 end
 

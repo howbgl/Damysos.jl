@@ -40,9 +40,92 @@ function ConvergenceTest(
 		maxiterations=maxiterations,
 		path=path,
 		altpath = altpath,
-		completedsims = resume ? done_sims : empty([start]),
-		resume = resume)
+		completedsims = resume ? done_sims : empty([start]))
 end
+
+function dryrun(file::String,outpath::Union{Nothing,String}=nothing;kwargs...)
+	h5open(file,"r") do f
+		return dryrun(f,outpath;kwargs...)
+	end
+end
+
+function dryrun(
+	file::Union{HDF5.File, HDF5.Group},
+	outpath::Union{Nothing, String}=nothing;
+	atolgoal::Real = read(file,"atolgoal"),
+	rtolgoal::Real = read(file,"rtolgoal"))
+
+	g 			= file["completedsims"]
+	done_sims 	= [load_obj_hdf5(g[s]) for s in keys(g)]
+
+	sort!(done_sims,by=getsimindex)
+
+
+	t = ConvergenceTest(done_sims[1],LinearChunked();
+					method = load_obj_hdf5(file["method"]),
+					rtolgoal = rtolgoal,
+					atolgoal = atolgoal,
+					maxtime = read(file,"maxtime"),
+					maxiterations = read(file,"maxiterations"),
+					path = outpath)
+	push!(t.completedsims,done_sims[1])
+
+	h5open(t.testdatafile,"cw") do f
+		ensuregroup(f,"completedsims")
+		savedata_hdf5(t.method,f)
+		f["atolgoal"] 		= t.atolgoal
+		f["rtolgoal"] 		= t.rtolgoal
+		f["maxtime"]  		= t.maxtime
+		f["maxiterations"] 	= t.maxiterations
+		f["testdatafile"] 	= t.testdatafile
+		savedata_hdf5(t.start,create_group(f,"start"))
+	end
+	
+
+	!isnothing(outpath) && Damysos.savedata(t,done_sims[1])
+	
+	for (s,i) in zip(done_sims[2:end],1:length(done_sims)-1)
+		achieved_tol = findminimum_precision(t)
+		if converged(t)
+			@info "Converged at iteration $i"
+			achieved_tol = findminimum_precision(t)
+			r = ConvergenceTestResult(
+				t,
+				ReturnCode.success,
+				achieved_tol...,
+				0.0,
+				i,
+				s.numericalparams)
+			!isnothing(outpath) &&  Damysos.savedata(r)
+			return r
+		else
+			push!(t.completedsims, s)
+			!isnothing(outpath) &&  Damysos.savedata(t,s)
+			@info """ 
+			- Iteration $i of maximum of $(t.maxiterations)
+			- Current value: $(currentvalue(t.method,s)) $(getname(t.method)))
+			- Current atol: $(achieved_tol[1])
+			- Current rtol: $(achieved_tol[2])
+			"""
+		end
+	end
+	@warn "No convergence achieved"
+	achieved_tol = findminimum_precision(t)
+	@info """ 
+			- Achieved atol: $(achieved_tol[1])
+			- Achieved rtol: $(achieved_tol[2])
+			"""
+	r = ConvergenceTestResult(
+		t,
+		ReturnCode.failed,
+		achieved_tol...,
+		0.0,
+		length(t.completedsims),
+		t.completedsims[end].numericalparams)
+	!isnothing(outpath) &&  Damysos.savedata(r)
+	return r
+end
+
 
 """
     successful_retcode(x)
@@ -178,9 +261,8 @@ function run!(
 			if e isa InterruptException
 				@warn "Convergence test interrupted!"
 				close(test.testdatafile)
-			else
-				rethrow()
 			end
+			rethrow(e)
 		end
 
 	end
@@ -226,6 +308,7 @@ function _run!(
 		achieved_tol = findminimum_precision(test)
 		@info """ 
 			- Iteration $currentiteration of maximum of $(test.maxiterations)
+			- Current value: $(currentvalue(method,currentsim)) $(getname(method)))
 			- Current atol: $(achieved_tol[1])
 			- Current rtol: $(achieved_tol[2])
 		"""
@@ -286,7 +369,9 @@ end
 function findminimum_precision(test::ConvergenceTest)
 	return	length(test.completedsims) < 2 ? (Inf, Inf) : findminimum_precision(
 			test.completedsims[end-1],
-			test.completedsims[end])
+			test.completedsims[end];
+			min_atol = test.atolgoal,
+			min_rtol = test.rtolgoal)
 end
 
 function findminimum_precision(
@@ -323,13 +408,15 @@ function findminimum_precision(
 	s1::Simulation,
 	s2::Simulation;
 	max_atol = 10.0,
-	max_rtol = 10.0)
+	max_rtol = 10.0,
+	min_atol = 1e-12,
+	min_rtol = 1e-12)
 
 	p1 = getparams(s1)
 	p2 = getparams(s2)
 
-	min_possible_atol = maximum([p1.atol, p2.atol])
-	min_possible_rtol = maximum([p1.rtol, p2.rtol])
+	min_possible_atol = maximum([p1.atol, p2.atol, min_atol])
+	min_possible_rtol = maximum([p1.rtol, p2.rtol, min_rtol])
 
 	# Sweep the range of tolerance exponentially (i.e. like 1e-2,1e-3,1e-4,...)
 	atols = exp10.(log10(max_atol):-1.0:log10(min_possible_atol))

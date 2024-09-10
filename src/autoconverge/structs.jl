@@ -55,7 +55,6 @@ struct ConvergenceTest
 		maxiterations::Integer = 16,
 		path::String = joinpath(start.datapath, "convergencetest_$(getname(method)).hdf5"),
 		completedsims::Vector{<:Simulation} = empty([start]),
-		resume=false,
 		altpath = joinpath(
 			pwd(), 
 			"convergencetest_$(basename(tempname()))_$(getname(method)).hdf5"))

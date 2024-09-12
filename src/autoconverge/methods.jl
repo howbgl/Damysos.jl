@@ -82,7 +82,8 @@ function terminated_retcode(retcode::ReturnCode.T)
 		ReturnCode.success,
 		ReturnCode.maxtime,
 		ReturnCode.maxiter,
-		ReturnCode.failed])
+		ReturnCode.failed,
+		ReturnCode.exception])
 end
 
 terminated_retcode(x::ConvergenceTestResult) = successful_retcode(x.retcode)
@@ -171,17 +172,20 @@ function run!(
 	"""
 	printinfo(test.start,test.solver)
 
-	runtask = @async begin
+	runtask = errormonitor( @async begin
 		try
 			_run!(test, test.method; savedata = savedata,saveplots = saveplots)
 		catch e
 			if e isa InterruptException
 				@warn "Convergence test interrupted!"
 				close(test.testdatafile)
+			else
+				close(test.testdatafile)
+				rethrow(e)
 			end
 		end
 
-	end
+	end)
 
 	pollinterval = minimum((60.0, test.maxtime / 10))
 	stats =
@@ -193,7 +197,7 @@ function run!(
 		sleep(120)
 	end
 
-	return postrun!(test, stats.time, timedout; savedata = savedata)
+	return postrun!(test, stats.time, timedout, istaskfailed(runtask); savedata = savedata)
 end
 
 function _run!(
@@ -210,7 +214,7 @@ function _run!(
 		currentiteration += 1
 		currentsim = currentiteration == 1 ? test.start : next(done_sims[end], method)
 
-		@info "Check index: $(currentiteration) ?= $(getsimindex(currentsim))"
+		@debug "Check index: $(currentiteration) ?= $(getsimindex(currentsim))"
 
 		run!(currentsim,test.allfunctions[currentiteration],test.solver;
 			showinfo=false,
@@ -232,7 +236,11 @@ function _run!(
 	return nothing
 end
 
-function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, timedout::Bool;
+function postrun!(
+	test::ConvergenceTest, 
+	elapsedtime_seconds::Real, 
+	timedout::Bool, 
+	exception_thrown::Bool;
 	savedata = true)
 
 	if converged(test)
@@ -246,6 +254,9 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, timedout::Bo
 	elseif length(test.completedsims) >= test.maxiterations
 		@warn "Maximum number of iterations ($(test.maxiterations)) exceeded."
 		retcode = ReturnCode.maxiter
+	elseif exception_thrown
+		@warn "An exception was thrown during the ConvergenceTest."
+		retcode = ReturnCode.exception
 	else
 		@warn "Something very weird happened..."
 		retcode = ReturnCode.failed

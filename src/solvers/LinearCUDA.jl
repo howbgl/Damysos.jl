@@ -79,7 +79,6 @@ function _run!(
 	kchunks 		= buildkgrid_chunks(sim,solver.kchunksize)
 	kchunk_batches  = subdivide_vector(kchunks,cld(length(kchunks),solver.ngpus))
 	
-	@info length(kchunk_batches)
 	synchronize()
 
 	function work(d,kcs)

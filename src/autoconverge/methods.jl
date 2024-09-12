@@ -150,7 +150,11 @@ Loads .hdf5 file of convergence test and returns true if it was successful.
 """
 function successful_retcode(path::String)
 	h5open(path, "r") do file
-		return successful_retcode(ReturnCode.T(read(file["testresult"], "retcode")))
+		if "testresult" ∈ keys(file) && "retcode" ∈ keys(file["testresult"])
+			return successful_retcode(ReturnCode.T(read(file["testresult"], "retcode")))
+		else
+			return false
+		end
 	end
 end
 
@@ -261,8 +265,9 @@ function run!(
 			if e isa InterruptException
 				@warn "Convergence test interrupted!"
 				close(test.testdatafile)
+			else
+				rethrow(e)
 			end
-			rethrow(e)
 		end
 
 	end

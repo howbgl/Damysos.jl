@@ -12,6 +12,17 @@ export zero!
 Vector{Observable}(obs::Observable...)               = Observable[obs...]
 Vector{Observable}(::SimulationComponent{T}) where T = Observable{T}[]
 
+function Base.isapprox(
+    o1::Vector{Observable{T}},
+    o2::Vector{Observable{U}};
+    atol::Real=0,
+    rtol=atol>0 ? 0 : √eps(promote_type(T,U)),
+    nans::Bool=false) where {T,U}
+    
+    return Base.isapprox.(o1,o2;atol=atol,rtol=rtol,nans=nans) |> all
+end
+
+
 sig(x)                      = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
 bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
 

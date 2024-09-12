@@ -112,6 +112,12 @@ function Base.show(io::IO,::MIME"text/plain",s::Simulation{T}) where T
     end
 end
 
+function Base.show(io::IO,::MIME"text/plain",c::Union{SimulationComponent,Hamiltonian})
+    println(io,getshortname(c)*":")
+    print(io,c |> getparams |> stringexpand_nt |> prepend_spaces)
+end
+
+
 for func = (BAND_SYMBOLS...,DIPOLE_SYMBOLS...,VELOCITY_SYMBOLS...)
     @eval(Damysos,$func(s::Simulation) = $func(s.liouvillian))
 end
@@ -207,13 +213,6 @@ function incompatible_solver_exception(sim::Simulation,solver::DamysosSolver)
             SingleMode    => 0d Simulation
         Your Simulation has the dimension $(sim.dimensions)""")
 end
-
-
-function Base.show(io::IO,::MIME"text/plain",c::Union{SimulationComponent,Hamiltonian})
-    println(io,getshortname(c)*":")
-    print(io,c |> getparams |> stringexpand_nt |> prepend_spaces)
-end
-
 
 printdimless_params(l::Liouvillian,df::DrivingField) = ""
 

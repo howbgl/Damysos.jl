@@ -38,9 +38,9 @@ struct LinearCUDA{T <: Integer} <: DamysosSolver
 			end
 			return new(kchunksize, algorithm, _ngpus)
 		else
-			throw(ErrorException(
-				"CUDA.jl is not functional, cannot use LinearCUDA solver."))
+			@warn "CUDA.jl is not functional, cannot use LinearCUDA solver."
 		end
+		return new(kchunksize, algorithm)
 	end
 end
 
@@ -98,6 +98,9 @@ function runtimeslices!(
 	solver::LinearCUDA,
 	kchunks;
 	bypass_memcheck = false)
+
+	!CUDA.functional() && throw(ErrorException(
+		"CUDA.jl is not functional, cannot use LinearCUDA solver."))
 
 	obs_kchunks = Vector{Vector{Observable}}(undef, 0)
 	ts, obs 	= ([gettsamples(sim)], [sim.observables])

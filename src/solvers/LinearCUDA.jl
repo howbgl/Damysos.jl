@@ -30,15 +30,13 @@ struct LinearCUDA{T <: Integer} <: DamysosSolver
 				@warn """
 					Only $(_ngpus) GPUs available (requested $ngpus)
 					Proceeding with $(_ngpus) GPUs"""
-					return new(kchunksize, algorithm, _ngpus)
 			elseif _ngpus > ngpus
 				@warn """
 					Only requested $ngpus out of the $(_ngpus) available GPUs.
 					Proceeding with $(ngpus) GPUs"""
-					return new(kchunksize, algorithm, ngpus)
-			else
-				return new(kchunksize, algorithm, _ngpus)
+					_ngpus = ngpus
 			end
+			return new(kchunksize, algorithm, _ngpus)
 		else
 			throw(ErrorException(
 				"CUDA.jl is not functional, cannot use LinearCUDA solver."))

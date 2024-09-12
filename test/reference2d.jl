@@ -90,7 +90,7 @@ const fns_2d_lincuda = skipcuda ? nothing : define_functions(sim_2d, lincuda)
 s_multigpu = multigpu ? LinearCUDA() : nothing
 const fns_2d_multigpu = multigpu ? define_functions(sim_2d, s_multigpu) : nothing
 
-@testset "Reference (1d)" begin
+@testset "Reference (2d)" begin
     # @testset "LinearChunked" begin
     #     @test test_1d(vref1d,sim_1d,fns_1d_linchunked,linchunked)
     # end

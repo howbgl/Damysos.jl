@@ -172,35 +172,40 @@ function run!(
 	"""
 	printinfo(test.start,test.solver)
 
-	runtask = errormonitor( @async begin
-		try
-			_run!(test, test.method; savedata = savedata,saveplots = saveplots)
-		catch e
-			if e isa InterruptException
-				@warn "Convergence test interrupted!"
-				close(test.testdatafile)
-			else
-				close(test.testdatafile)
-				rethrow(e)
+	producer = let t=test,sd=savedata,sp=saveplots
+		c::Channel -> _run!(c, t, t.method; savedata = sd, saveplots = sp)
+	end 
+
+	prod_taskref			= Ref{Task}();
+	results 	 			= Channel{Simulation}(producer;taskref = prod_taskref)
+	pollint 	 			= minimum((60.0, test.maxtime / 10))
+	elapsed_time 			= 0.0
+
+	while elapsed_time < test.maxtime && isopen(results)
+
+		remaining_time = test.maxtime - elapsed_time
+
+		elapsed_time += @elapsed timedwait(
+			() -> isready(results) || !isopen(results), remaining_time, pollint = pollint)
+
+		if isready(results)
+			elapsed_time += @elapsed for sim in results
+				push!(test.completedsims,sim)
+				savedata && Damysos.savedata(test, sim)
+				saveplots && Damysos.savedata(sim)
 			end
 		end
-
-	end)
-
-	pollinterval = minimum((60.0, test.maxtime / 10))
-	stats =
-		@timed timedwait(() -> istaskdone(runtask), test.maxtime, pollint = pollinterval)
-	timedout = stats.value == :timed_out
-	if timedout
-		schedule(runtask, InterruptException(), error = true)
-		@info "Waiting for 120s to make time for cleanup"
-		sleep(120)
 	end
 
-	return postrun!(test, stats.time, timedout, istaskfailed(runtask); savedata = savedata)
+	close(results)
+
+	istaskfailed(prod_taskref[]) && Base.show_task_exception(stderr,prod_taskref[])
+
+	return postrun!(test, elapsed_time, istaskfailed(prod_taskref[]); savedata = savedata)
 end
 
 function _run!(
+	c::Channel,
 	test::ConvergenceTest,
 	method::Union{PowerLawTest, LinearTest};
 	savedata = true,
@@ -209,7 +214,7 @@ function _run!(
 	done_sims        = test.completedsims
 	currentiteration = length(done_sims)
 
-	while currentiteration < test.maxiterations
+	while currentiteration < test.maxiterations && isopen(c)
 
 		currentiteration += 1
 		currentsim = currentiteration == 1 ? test.start : next(done_sims[end], method)
@@ -221,9 +226,7 @@ function _run!(
 			savedata=false,
 			saveplots=saveplots)
 
-		savedata && Damysos.savedata(test, currentsim)
-		saveplots && Damysos.savedata(currentsim)
-		
+		put!(c, currentsim)		
 		push!(done_sims, currentsim)
 		achieved_tol = findminimum_precision(test)
 		@info """ 
@@ -233,14 +236,11 @@ function _run!(
 		"""
 		converged(test) && break
 	end
+	close(c)
 	return nothing
 end
 
-function postrun!(
-	test::ConvergenceTest, 
-	elapsedtime_seconds::Real, 
-	timedout::Bool, 
-	exception_thrown::Bool;
+function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, exception_thrown::Bool;
 	savedata = true)
 
 	if converged(test)
@@ -248,15 +248,15 @@ function postrun!(
 		## Converged after $(round(elapsedtime_seconds/60,sigdigits=3))min and \
 		$(length(test.completedsims)) iterations"""
 		retcode = ReturnCode.success
-	elseif timedout
+	elseif exception_thrown
+		@warn "An exception was thrown during the ConvergenceTest."
+		retcode = ReturnCode.exception
+	elseif elapsedtime_seconds > test.maxtime
 		@info "Maximum runtime exceeded"
 		retcode = ReturnCode.maxtime
 	elseif length(test.completedsims) >= test.maxiterations
 		@warn "Maximum number of iterations ($(test.maxiterations)) exceeded."
 		retcode = ReturnCode.maxiter
-	elseif exception_thrown
-		@warn "An exception was thrown during the ConvergenceTest."
-		retcode = ReturnCode.exception
 	else
 		@warn "Something very weird happened..."
 		retcode = ReturnCode.failed
@@ -281,6 +281,10 @@ function postrun!(
 	@info "$(repr("text/plain", result))"
 
 	return result
+end
+
+function converged(s1::Simulation,s2::Simulation;atol=DEFAULT_ATOL,rtol=DEFAULT_RTOL)
+	return isapprox(s1,s2;atol = atol,rtol = rtol)
 end
 
 function converged(test::ConvergenceTest)

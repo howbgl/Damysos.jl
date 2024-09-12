@@ -5,11 +5,12 @@ export LinearCUDA
 	LinearCUDA{T}
 
 Represents an integration strategy for k-space via simple midpoint sum, where individual
-k points are computed concurrently on a CUDA GPU
+k points are computed concurrently on one or several CUDA GPU(s)
 
 # Fields
 - `kchunksize::T`: number of k-points in one concurrently executed chunk. 
 - `algorithm::GPUODEAlgorithm`: algorithm for solving differential equations
+- `ngpus::Int`: number of GPUs to use
 
 # See also
 [`LinearChunked`](@ref LinearChunked), [`SingleMode`](@ref SingleMode)
@@ -17,11 +18,26 @@ k points are computed concurrently on a CUDA GPU
 struct LinearCUDA{T <: Integer} <: DamysosSolver
 	kchunksize::T
 	algorithm::DiffEqGPU.GPUODEAlgorithm
+	ngpus::Integer
 	function LinearCUDA{T}(
 		kchunksize::T = default_kchunk_size(LinearCUDA),
-		algorithm::DiffEqGPU.GPUODEAlgorithm = GPUTsit5()) where {T}
+		algorithm::DiffEqGPU.GPUODEAlgorithm = GPUVern7(),
+		ngpus::Integer=length(CUDA.devices())) where {T}
 
-		if !CUDA.functional()
+		if CUDA.functional()
+			_ngpus = length(CUDA.devices())
+			if _ngpus < ngpus 
+				@warn """
+					Only $(_ngpus) GPUs available (requested $ngpus)
+					Proceeding with $(_ngpus) GPUs"""
+			elseif _ngpus > ngpus
+				@warn """
+					Only requested $ngpus out of the $(_ngpus) available GPUs.
+					Proceeding with $(ngpus) GPUs"""
+					_ngpus = ngpus
+			end
+			return new(kchunksize, algorithm, _ngpus)
+		else
 			@warn "CUDA.jl is not functional, cannot use LinearCUDA solver."
 		end
 		return new(kchunksize, algorithm)
@@ -31,8 +47,9 @@ end
 
 function LinearCUDA(
 	kchunksize::Integer = default_kchunk_size(LinearCUDA),
-	algorithm::DiffEqGPU.GPUODEAlgorithm = GPUVern7())
-	return LinearCUDA{typeof(kchunksize)}(kchunksize, algorithm)
+	algorithm::DiffEqGPU.GPUODEAlgorithm = GPUVern7(),
+	ngpus::Integer=length(CUDA.devices()))
+	return LinearCUDA{typeof(kchunksize)}(kchunksize, algorithm, ngpus)
 end
 
 default_kchunk_size(::Type{LinearCUDA}) = 10_000
@@ -46,7 +63,7 @@ function Base.show(io::IO, ::MIME"text/plain", s::LinearCUDA)
 	str = """
 	- kchunksize: $(s.kchunksize)
 	- algorithm: $(s.algorithm)
-	""" |> escape_underscores
+	- # GPUs: $(s.ngpus)""" |> escape_underscores
 	print(io, prepend_spaces(str, 2))
 end
 
@@ -56,14 +73,38 @@ function _run!(
 	functions,
 	solver::LinearCUDA;
 	bypass_memcheck = false)
+	
+	kchunks 		= buildkgrid_chunks(sim,solver.kchunksize)
+	kchunk_batches  = subdivide_vector(kchunks,cld(length(kchunks),solver.ngpus))
+	
+	synchronize()
+
+	function work(d,kcs)
+		device!(d)
+		res = runtimeslices!(sim,functions,solver,kcs;bypass_memcheck=bypass_memcheck)
+		CUDA.reclaim()
+		return res
+	end
+
+	obs_batches 	= asyncmap(work,devices(),kchunk_batches)
+	sim.observables .= sum(obs_batches)
+
+	return sim.observables
+end
+
+function runtimeslices!(
+	sim::Simulation,
+	functions,
+	solver::LinearCUDA,
+	kchunks;
+	bypass_memcheck = false)
 
 	!CUDA.functional() && throw(ErrorException(
 		"CUDA.jl is not functional, cannot use LinearCUDA solver."))
 
 	obs_kchunks = Vector{Vector{Observable}}(undef, 0)
-	kchunks 	= buildkgrid_chunks(sim,solver.kchunksize)
+	ts, obs 	= ([gettsamples(sim)], [sim.observables])
 
-	ts, obs = ([gettsamples(sim)], [sim.observables])
 	if !bypass_memcheck
 		actual_n_kchunk = minimum((solver.kchunksize,length(kchunks[1])))
 		ts, obs = build_tchunks_if_necessary(sim, functions, solver, actual_n_kchunk)
@@ -78,10 +119,7 @@ function _run!(
 		push!(obs_kchunks, timemerge_obs(obs_timeslice))
 	end
 
-	sim.observables .= sum(obs_kchunks)
-	CUDA.reclaim()
-
-	return sim.observables
+	return sum(obs_kchunks)
 end
 
 function runkchunk!(

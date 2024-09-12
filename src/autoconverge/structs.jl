@@ -7,9 +7,7 @@ export PowerLawTest
 
 abstract type ConvergenceTestMethod end
 
-@enumx ReturnCode success maxtime maxiter running failed
-@enumx CTestStart first last
-
+@enumx ReturnCode success maxtime maxiter running failed exception
 
 """
     ConvergenceTest(start, solver::DamysosSolver = LinearChunked(); kwargs...)

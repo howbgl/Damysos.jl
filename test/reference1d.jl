@@ -59,8 +59,17 @@ const sim_1d_dkx = make_test_simulation_1d(0.01,2.0)
 linchunked = LinearChunked()
 const fns_1d_linchunked = define_functions(sim_1d, linchunked)
 
-skipcuda = !CUDA.functional()
-lincuda = skipcuda ? nothing : LinearCUDA()
+skipcuda = false
+
+try
+	LinearCUDA()
+catch err
+	if err == ErrorException("CUDA.jl is not functional, cannot use LinearCUDA solver.")
+		global skipcuda = true
+		@warn "Skipping CUDA tests, CUDA.jl is not functional."
+	end
+end
+lincuda = skipcuda ? nothing : LinearCUDA(10_000,GPUVern7(),1)
 const fns_1d_lincuda = skipcuda ? nothing : define_functions(sim_1d, lincuda)
 
 

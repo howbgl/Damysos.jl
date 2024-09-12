@@ -17,7 +17,7 @@ global_logger(TerminalLogger(stderr, Logging.Info))
 	include("fieldtests.jl")
 	include("matrixelements.jl")
 	include("reference1d.jl")
-
+	include("reference2d.jl")
 	
 end
 

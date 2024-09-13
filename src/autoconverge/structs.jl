@@ -53,6 +53,7 @@ struct ConvergenceTest
 		maxiterations::Integer = 16,
 		path::String = joinpath(start.datapath, "convergencetest_$(getname(method)).hdf5"),
 		completedsims::Vector{<:Simulation} = empty([start]),
+		resume = false,
 		altpath = joinpath(
 			pwd(), 
 			"convergencetest_$(basename(tempname()))_$(getname(method)).hdf5"))
@@ -65,6 +66,8 @@ struct ConvergenceTest
 		@reset start.datapath = joinpath(path, "start")
 		@reset start.plotpath = joinpath(path, "start")
 		@reset start.id = "#1"
+
+		!resume && rename_file_if_exists(path)
 
 		fns 	= []
 		s 		= deepcopy(start)

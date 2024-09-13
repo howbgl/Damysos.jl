@@ -332,10 +332,6 @@ function ensurepath(check::Function, make::Function, path::String;
     end
 end
 
-function ensuregroup(parent::Union{HDF5.File, HDF5.Group},group::AbstractString)
-    return group ∈ keys(parent) ? parent[group] : create_group(parent,group)
-end
-
 "Fits a straight line through a set of points and returns an anonymous fit-function"
 function linear_fit(x, y)
 

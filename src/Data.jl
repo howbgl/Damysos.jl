@@ -244,6 +244,21 @@ function loadlast_testsim(path::String)
 	end
 end
 
+function ensuregroup(parent::Union{HDF5.File, HDF5.Group},group::AbstractString)
+    return group ∈ keys(parent) ? parent[group] : create_group(parent,group)
+end
+
+
+function replace_data_hdf5(
+	parent::Union{HDF5.File,HDF5.Group},
+	object::String,
+	data)
+	if object ∈ keys(parent)
+		delete_object(parent[object])
+	end
+	parent[object] = data
+end
+
 function load_obj_hdf5(object::Union{HDF5.File, HDF5.Group})
 	return construct_type_from_dict(read(object))
 end

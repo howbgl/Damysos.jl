@@ -48,7 +48,7 @@ end
 function LinearCUDA(
 	kchunksize::Integer = default_kchunk_size(LinearCUDA),
 	algorithm::DiffEqGPU.GPUODEAlgorithm = GPUVern7(),
-	ngpus::Integer=length(CUDA.devices()))
+	ngpus::Integer=CUDA.functional() ? length(CUDA.devices()) : 1)
 	return LinearCUDA{typeof(kchunksize)}(kchunksize, algorithm, ngpus)
 end
 

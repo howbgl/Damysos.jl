@@ -29,7 +29,7 @@ function ConvergenceTest(
 	start 		= load_obj_hdf5(file["start"])
 
 	sort!(done_sims,by=getsimindex)
-	
+
 	return ConvergenceTest(
 		isempty(done_sims) ? start : last(done_sims),
 		solver;
@@ -40,6 +40,7 @@ function ConvergenceTest(
 		maxiterations=maxiterations,
 		path=path,
 		altpath = altpath,
+		resume = resume,
 		completedsims = resume ? done_sims : empty([start]))
 end
 
@@ -234,24 +235,36 @@ function next(
 		joinpath(parentplotpath, id))
 end
 
+function prepare_hdf5_file(test::ConvergenceTest)
+
+	h5open(test.testdatafile,"cw") do file
+
+		ensuregroup(file,"completedsims")
+
+		if "method" ∈ keys(file)
+			delete_object(file["method"])
+		end
+		savedata_hdf5(test.method,file)
+
+		replace_data_hdf5(file,"atolgoal",test.atolgoal)
+		replace_data_hdf5(file,"rtolgoal",test.rtolgoal)
+		replace_data_hdf5(file,"maxtime",test.maxtime)
+		replace_data_hdf5(file,"maxiterations",test.maxiterations)
+		replace_data_hdf5(file,"testdatafile",test.testdatafile)
+
+		if "start" ∈ keys(file)
+			delete_object(file["start"])
+		end
+		savedata_hdf5(test.start,create_group(file,"start"))
+	end
+end
+
 function run!(
 	test::ConvergenceTest;
 	savedata = true,
 	saveplots = false)
-
-	if savedata && isempty(test.completedsims)
-		rename_file_if_exists(test.testdatafile)
-		h5open(test.testdatafile,"w") do file
-			ensuregroup(file,"completedsims")
-			savedata_hdf5(test.method,file)
-			file["atolgoal"] 		= test.atolgoal
-			file["rtolgoal"] 		= test.rtolgoal
-			file["maxtime"]  		= test.maxtime
-			file["maxiterations"] 	= test.maxiterations
-			file["testdatafile"] 	= test.testdatafile
-			savedata_hdf5(test.start,create_group(file,"start"))
-		end
-	end
+	
+	savedata && prepare_hdf5_file(test)
 
 	@info """
 	## Starting $(repr("text/plain", test))
@@ -259,28 +272,43 @@ function run!(
 	"""
 	printinfo(test.start,test.solver)
 
-	producer = let t=test,sd=savedata,sp=saveplots
-		c::Channel -> _run!(c, t, t.method; savedata = sd, saveplots = sp)
+	producer = let t=test,sp=saveplots
+		c::Channel -> _run!(c, t, t.method; saveplots = sp)
 	end 
 
 	prod_taskref			= Ref{Task}();
 	results 	 			= Channel{Simulation}(producer;taskref = prod_taskref)
 	pollint 	 			= minimum((60.0, test.maxtime / 10))
 	elapsed_time 			= 0.0
+	method 					= test.method
 
 	while elapsed_time < test.maxtime && isopen(results)
 
 		remaining_time = test.maxtime - elapsed_time
-
+		
 		elapsed_time += @elapsed timedwait(
 			() -> isready(results) || !isopen(results), remaining_time, pollint = pollint)
 
-		if isready(results)
-			elapsed_time += @elapsed for sim in results
+		while isready(results)
+			elapsed_time += @elapsed begin
+
+				sim = take!(results)
 				push!(test.completedsims,sim)
+
 				savedata && Damysos.savedata(test, sim)
 				saveplots && Damysos.savedata(sim)
+
+				achieved_tol = findminimum_precision(test)
+				i 			 = length(test.completedsims)
+				@info """ 
+					- Iteration $i of maximum of $(test.maxiterations)
+					- Current value: $(currentvalue(method,sim)) $(getname(method)))
+					- Current atol: $(achieved_tol[1])
+					- Current rtol: $(achieved_tol[2])
+				"""
+				converged(test) && break
 			end
+			elapsed_time + pollint > test.maxtime && break
 		end
 	end
 
@@ -295,34 +323,24 @@ function _run!(
 	c::Channel,
 	test::ConvergenceTest,
 	method::Union{PowerLawTest, LinearTest};
-	savedata = true,
 	saveplots = false)
 
 	done_sims        = test.completedsims
 	currentiteration = length(done_sims)
+	currentsim 		 = currentiteration == 0 ? test.start : next(done_sims[end], method)
 
 	while currentiteration < test.maxiterations && isopen(c)
 
 		currentiteration += 1
-		currentsim = currentiteration == 1 ? test.start : next(done_sims[end], method)
-
 		@debug "Check index: $(currentiteration) ?= $(getsimindex(currentsim))"
-
+		
 		run!(currentsim,test.allfunctions[currentiteration],test.solver;
-			showinfo=false,
-			savedata=false,
-			saveplots=saveplots)
-
+		showinfo=false,
+		savedata=false,
+		saveplots=saveplots)
+		
 		put!(c, currentsim)		
-		push!(done_sims, currentsim)
-		achieved_tol = findminimum_precision(test)
-		@info """ 
-			- Iteration $currentiteration of maximum of $(test.maxiterations)
-			- Current value: $(currentvalue(method,currentsim)) $(getname(method)))
-			- Current atol: $(achieved_tol[1])
-			- Current rtol: $(achieved_tol[2])
-		"""
-		converged(test) && break
+		currentsim = next(currentsim, method)
 	end
 	close(c)
 	return nothing
@@ -340,7 +358,7 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, exception_th
 		@warn "An exception was thrown during the ConvergenceTest."
 		retcode = ReturnCode.exception
 	elseif elapsedtime_seconds > test.maxtime
-		@info "Maximum runtime exceeded"
+		@warn "Maximum runtime exceeded"
 		retcode = ReturnCode.maxtime
 	elseif length(test.completedsims) >= test.maxiterations
 		@warn "Maximum number of iterations ($(test.maxiterations)) exceeded."

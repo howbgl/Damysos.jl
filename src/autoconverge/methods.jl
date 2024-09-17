@@ -306,9 +306,9 @@ function run!(
 					- Current atol: $(achieved_tol[1])
 					- Current rtol: $(achieved_tol[2])
 				"""
-				converged(test) && break
+				converged(test) && close(results)
 			end
-			elapsed_time + pollint > test.maxtime && break
+			elapsed_time + pollint > test.maxtime && close(results)
 		end
 	end
 

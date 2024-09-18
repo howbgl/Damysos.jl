@@ -20,39 +20,6 @@ function scaledriving_frequency(
     return UnitScaling(tc,lc)
 end
 
-# General fallback methods, more specialized functions can be provided for efficiency
-maximum_vecpot(df::DrivingField) = maximum((maximum_vecpotx(df),maximum_vecpoty(df)))
-maximum_efield(df::DrivingField) = maximum((maximum_efieldx(df),maximum_efieldy(df)))
-
-function maximum_vecpotx(df::DrivingField) 
-    dt = 2π / (df.ω * 128)
-    ts = -5df.σ:dt:5df.σ
-    return maximum([vecpotx(df,t) for t in ts])
-end
-
-function maximum_vecpoty(df::DrivingField) 
-    dt = 2π / (df.ω * 128)
-    ts = -5df.σ:dt:5df.σ
-    return maximum([vecpoty(df,t) for t in ts])
-end
-
-function maximum_efieldx(df::DrivingField) 
-    dt = 2π / (df.ω * 128)
-    ts = -5df.σ:dt:5df.σ
-    return maximum([efieldx(df,t) for t in ts])
-end
-
-function maximum_efieldy(df::DrivingField) 
-    dt = 2π / (df.ω * 128)
-    ts = -5df.σ:dt:5df.σ
-    return maximum([efieldy(df,t) for t in ts])
-end
-
-
-central_frequency(df::DrivingField) = central_angular_frequency(df) / (2π)
-
-# TODO generic fallback for central frequency (via Fourier trafo?)
-
 
 get_efieldx(sim::Simulation) = get_efieldx(sim.drivingfield)
 get_efieldy(sim::Simulation) = get_efieldy(sim.drivingfield)
@@ -61,3 +28,5 @@ get_vecpoty(sim::Simulation) = get_vecpoty(sim.drivingfield)
 
 include("GaussianAPulse.jl")
 include("GaussianEPulse.jl")
+include("GaussianAPulse_s.jl")
+include("GaussianEPulse_s.jl")

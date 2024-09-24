@@ -22,6 +22,30 @@ function Base.isapprox(
     return Base.isapprox.(o1,o2;atol=atol,rtol=rtol,nans=nans) |> all
 end
 
+function extrapolate(oh_itr::AbstractVector{<:Tuple{<:Observable{T}, <:Number}};
+    invert_h = false,
+    kwargs...) where T
+    
+    odata       = first.(oh_itr)
+    O           = eltype(odata)
+    hdata       = invert_h ? [1/oh[2] for oh in oh_itr] : last.(oh_itr)
+    timeseries  = []
+    errs        = Vector{T}(undef,0)
+
+    for n in fieldnames(O)
+        field_data = [getproperty(x,n) for x in odata]
+
+        upsample!(field_data)
+        data,err =  Richardson.extrapolate([(d,h) for (d,h) in zip(field_data,hdata)];
+            kwargs...)
+
+        push!(timeseries, data)
+        push!(errs, err)
+    end
+
+    return (O(timeseries...),errs)
+end
+
 
 sig(x)                      = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
 bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))

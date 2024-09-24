@@ -44,6 +44,27 @@ function ConvergenceTest(
 		completedsims = resume ? done_sims : empty([start]))
 end
 
+function ConvergenceTestResult(
+	test::ConvergenceTest,
+	retcode::ReturnCode.T,
+	min_achieved_atol::Real,
+	min_achieved_rtol::Real,
+	elapsed_time_sec::Rea,
+	iterations::Integer,
+	last_params::NumericalParameters)
+	
+	return ConvergenceTestResult(
+		test,
+		retcode,
+		min_achieved_atol,
+		min_achieved_rtol,
+		elapsed_time_sec,
+		iterations,
+		last_params,
+		extrapolate(test).observables)
+end
+
+
 function dryrun(file::String,outpath::Union{Nothing,String}=nothing;kwargs...)
 	h5open(file,"r") do f
 		return dryrun(f,outpath;kwargs...)
@@ -203,6 +224,14 @@ function currentvalue(m::Union{PowerLawTest, LinearTest}, sim::Simulation)
 	return getproperty(sim.numericalparams, m.parameter)
 end
 
+function invert_h(m::Union{PowerLawTest, LinearTest})
+	if m.parameter == :kxmax || m.parameter == :kymax
+		return true
+	else
+		return false
+	end
+end
+
 function getfilename(m::Union{PowerLawTest, LinearTest}, sim::Simulation)
 	return "$(m.parameter)=$(currentvalue(m,sim))_$(round(now(),Dates.Second))"
 end
@@ -298,15 +327,14 @@ function run!(
 				savedata && Damysos.savedata(test, sim)
 				saveplots && Damysos.savedata(sim)
 
-				achieved_tol = findminimum_precision(test)
-				i 			 = length(test.completedsims)
+				oe = extrapolate(test)
+				i  = length(test.completedsims)
 				@info """ 
 					- Iteration $i of maximum of $(test.maxiterations)
 					- Current value: $(currentvalue(method,sim)) $(getname(method)))
-					- Current atol: $(achieved_tol[1])
-					- Current rtol: $(achieved_tol[2])
+					- $(repr("text/plain",oe))
 				"""
-				converged(test) && close(results)
+				converged(oe) && close(results)
 			end
 			elapsed_time + pollint > test.maxtime && close(results)
 		end
@@ -349,7 +377,8 @@ end
 function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, exception_thrown::Bool;
 	savedata = true)
 
-	if converged(test)
+	oe = extrapolate(test)
+	if converged(oe;rtol=test.rtolgoal,atol=test.atolgoal)
 		@info """
 		## Converged after $(round(elapsedtime_seconds/60,sigdigits=3))min and \
 		$(length(test.completedsims)) iterations"""
@@ -368,7 +397,7 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, exception_th
 		retcode = ReturnCode.failed
 	end
 
-	achieved_tol = findminimum_precision(test)
+	achieved_tol = findminimum_precision(oe,test.atolgoal,test.rtolgoal)
 
 	last_params =
 		isempty(test.completedsims) ? test.start.numericalparams :
@@ -380,7 +409,8 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, exception_th
 		achieved_tol...,
 		elapsedtime_seconds,
 		length(test.completedsims),
-		last_params)
+		last_params,
+		oe.observables)
 
 	savedata && Damysos.savedata(result)
 
@@ -389,48 +419,57 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, exception_th
 	return result
 end
 
-function converged(s1::Simulation,s2::Simulation;atol=DEFAULT_ATOL,rtol=DEFAULT_RTOL)
-	return isapprox(s1,s2;atol = atol,rtol = rtol)
+function extrapolate(test::ConvergenceTest; kwargs...)
+	
+	invert_h = invert_h(test.method)
+	res = []
+	for i in 1:length(test.start.observables)
+		oh_itr = [(s.observables[i],currentvalue(test.method,s)) for s in test.completedsims]
+		
+		push!(res,extrapolate(oh_itr, invert_h=invert_h, kwargs...))
+	end
+	return ObservableExtrapolation(first.(res),last.(res))
 end
 
-function converged(test::ConvergenceTest)
-	length(test.completedsims) < 2 ? false :
-	isapprox(
-		test.completedsims[end-1],
-		test.completedsims[end];
-		atol = test.atolgoal,
-		rtol = test.rtolgoal)
+function converged(test::ConvergenceTest) 
+	return converged(extrapolate(test);atol=test.atolgoal,rtol=test.rtolgoal)
 end
 
-function findminimum_precision(test::ConvergenceTest)
-	return	length(test.completedsims) < 2 ? (Inf, Inf) : findminimum_precision(
-			test.completedsims[end-1],
-			test.completedsims[end];
-			min_atol = test.atolgoal,
-			min_rtol = test.rtolgoal)
+function converged(oe::ObservableExtrapolation;rtol=DEFAULT_RTOL,atol=DEFAULT_ATOL)
+	obserrs = zip(oe.observables,oe.errs)
+	return all([converged(obs,errs,rtol=rtol,atol=atol) for (obs,errs) in obserrs])
 end
 
-function findminimum_precision(
-	s1::Simulation,
-	s2::Simulation,
-	atols::AbstractVector{<:Real},
-	rtols::AbstractVector{<:Real})
+function converged(obs::Observable,errs::Vector{<:Real};rtol=DEFAULT_RTOL,atol=DEFAULT_ATOL)
+	nameserrs = zip(fieldnames(typeof(obs)),errs)
+	return all([err ≤ max(atol,rtol*norm(getproperty(obs,n))) for (n,err) in nameserrs])
+end
 
-	!isapprox(s1, s2; atol = atols[1], rtol = rtols[1]) && return (Inf, Inf)
+function findminimum_precision(oe::ObservableExtrapolation,
+	atolgoal=DEFAULT_ATOL,
+	rtolgoal=DEFAULT_RTOL;
+	max_atol=100.0,
+	max_rtol=2.0)
+
+	!converged(oe;rtol=max_rtol,atol=max_atol) && return (Inf, Inf)
+
+	# Sweep the range of tolerance exponentially
+	atols = exp10.(log10(max_atol):-0.2:log10(atolgoal))
+	rtols = exp10.(log10(max_rtol):-0.1:log10(rtolgoal))
 
 	min_achieved_atol = atols[1]
 	min_achieved_rtol = rtols[1]
 
 	# First find the lowest atol, since that is usually less problematic
 	for atol in atols
-		if isapprox(s1, s2; atol = atol, rtol = rtols[1])
+		if converged(oe; atol = atol, rtol = rtols[1])
 			min_achieved_atol = atol
 		else
 			break
 		end
 	end
 	for rtol in rtols
-		if isapprox(s1, s2; atol = min_achieved_atol, rtol = rtol)
+		if converged(oe; atol = min_achieved_atol, rtol = rtol)
 			min_achieved_rtol = rtol
 		else
 			break
@@ -438,33 +477,6 @@ function findminimum_precision(
 	end
 
 	return (min_achieved_atol, min_achieved_rtol)
-end
-
-function findminimum_precision(
-	s1::Simulation,
-	s2::Simulation;
-	max_atol = 10.0,
-	max_rtol = 10.0,
-	min_atol = 1e-12,
-	min_rtol = 1e-12)
-
-	p1 = getparams(s1)
-	p2 = getparams(s2)
-
-	min_possible_atol = maximum([p1.atol, p2.atol, min_atol])
-	min_possible_rtol = maximum([p1.rtol, p2.rtol, min_rtol])
-
-	# Sweep the range of tolerance exponentially (i.e. like 1e-2,1e-3,1e-4,...)
-	atols = exp10.(log10(max_atol):-1.0:log10(min_possible_atol))
-	rtols = exp10.(log10(max_rtol):-1.0:log10(min_possible_rtol))
-
-	min_achieved_atol, min_achieved_rtol = findminimum_precision(s1, s2, atols, rtols)
-
-	# Search the order of magnitude linearly to get a more precise estimate
-	atols = LinRange(min_achieved_atol, 0.1min_achieved_atol, 100)
-	rtols = LinRange(min_achieved_rtol, 0.1min_achieved_rtol, 100)
-
-	return findminimum_precision(s1, s2, atols, rtols)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", t::ConvergenceTest)
@@ -523,3 +535,14 @@ function Base.show(io::IO, ::MIME"text/plain", m::PowerLawTest)
 	print(io, " - [" * str * "...]")
 end
 
+function Base.show(io::IO, ::MIME"text/plain", oe::ObservableExtrapolation)
+	println(io, "ObservableExtrapolation:")
+	for (o,errs) in zip(oe.observables,oe.errs) 
+		println(io, " $(typeof(o)):")
+		for (n,err) in zip(fieldnames(typeof(o)),errs)
+			println(io, "  $n:")
+			println(io, "      relerr: $(err/norm(getproperty(o,n)))")
+			println(io, "      abserr: $err")
+		end
+	end
+end

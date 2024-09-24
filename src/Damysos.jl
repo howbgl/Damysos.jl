@@ -17,6 +17,7 @@ using LinearAlgebra
 using ProgressLogging
 using Random
 using Reexport
+using Richardson
 using TerminalLoggers
 
 @reexport using DifferentialEquations

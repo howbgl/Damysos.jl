@@ -49,7 +49,7 @@ function ConvergenceTestResult(
 	retcode::ReturnCode.T,
 	min_achieved_atol::Real,
 	min_achieved_rtol::Real,
-	elapsed_time_sec::Rea,
+	elapsed_time_sec::Real,
 	iterations::Integer,
 	last_params::NumericalParameters)
 	

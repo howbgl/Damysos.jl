@@ -421,12 +421,11 @@ end
 
 function extrapolate(test::ConvergenceTest; kwargs...)
 	
-	invert_h = invert_h(test.method)
 	res = []
 	for i in 1:length(test.start.observables)
 		oh_itr = [(s.observables[i],currentvalue(test.method,s)) for s in test.completedsims]
 		
-		push!(res,extrapolate(oh_itr, invert_h=invert_h, kwargs...))
+		push!(res,extrapolate(oh_itr, invert_h=invert_h(test.method), kwargs...))
 	end
 	return ObservableExtrapolation(first.(res),last.(res))
 end

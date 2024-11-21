@@ -41,6 +41,18 @@ function plottimeseries(timeseries::Vector{Vector{T}},
     return f
 end
 
+function calculate_spectrum(timeseries::Vector{<:Real},dt::Real;
+    fftwindow=hanning)
+
+    pdg = periodogram(
+        timeseries,
+        nfft=8*length(timeseries),
+        fs=1/dt,
+        window=fftwindow)
+    ydata       = pdg.power .* (pdg.freq .^ 2)
+    return pdg.freq,ydata
+end
+
 function plotpowerspectra(timeseries::Vector{Vector{T}},
                     labels::Vector{String},
                     frequencies::Vector{T},
@@ -51,6 +63,8 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
                     title="",
                     sidelabel="",
                     colors="categorical",
+                    xlims=nothing,
+                    ylims=nothing,
                     kwargs...) where {T<:Real}
 
     f   = Figure(size=DEFAULT_FIGSIZE)
@@ -69,16 +83,10 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
 
     for (i,data,label,dt,ν) in zip(1:length(timeseries),timeseries,labels,timesteps,
                                     frequencies)
-
-        pdg         = periodogram(
-            data,
-            nfft=8*length(data),
-            fs=1/dt,
-            window=fftwindow)
-        ydata       = pdg.power .* (pdg.freq .^ 2)
+        xdata,ydata = calculate_spectrum(data,dt,fftwindow=fftwindow)
         ymax        = maximum(ydata)
         total_ymax  = total_ymax < ymax ? ymax : total_ymax
-        xdata       = 1/ν .* pdg.freq
+        xdata       = 1/ν .* xdata
         cut_inds    = ydata .> 10floatmin(T)
         if length(ydata[cut_inds]) < length(ydata)
             @debug "Removing zeros/negatives in plotting spectrum of $title ($label)"
@@ -101,6 +109,9 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
     text!(ax,0.05,total_ymax*rtol*1e3,text="$(rtol*1e3)",align=(:left,:baseline))
     axislegend(ax,position=:lb)
     Label(f[1,2],sidelabel,tellheight=false,justification = :left)
+
+    !isnothing(xlims) && xlims!(ax,xlims)
+    !isnothing(ylims) && ylims!(ax,ylims)
     
     return f
 end

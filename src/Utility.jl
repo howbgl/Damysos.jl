@@ -135,6 +135,20 @@ function adjust_density(samples::Vector{<:Number}, desired_samples::Int)
     return interpolated_values
 end
 
+function apply_with_longest!(x::Vector{<:Vector{<:Number}}, f!::Function)
+    # Find the longest vector in x
+    longest_vec = x[argmax(length.(x))]
+    
+    # Apply f! to each vector in x with the longest vector
+    for vec in x
+        f!(vec, longest_vec)
+    end
+end
+
+function upsample!(x::Vector{<:Vector{<:Number}})
+    return apply_with_longest!(x, upsample!)
+end
+
 function upsample!(a::Vector{<:Number},b::Vector{<:Number})
     
     la = length(a)
@@ -152,6 +166,10 @@ function upsample!(a::Vector{<:Number},b::Vector{<:Number})
         b .= buf
         return
     end
+end
+
+function downsample!(x::Vector{Vector{<:Number}})
+    return apply_with_longest!(x,downsample!)
 end
 
 function downsample!(a::Vector{<:Number},b::Vector{<:Number})

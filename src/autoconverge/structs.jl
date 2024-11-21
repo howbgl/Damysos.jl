@@ -137,4 +137,11 @@ struct ConvergenceTestResult
 	elapsed_time_sec::Real
 	iterations::Integer
 	last_params::NumericalParameters
+	extrapolated_results::Vector{<:Observable}
+end
+
+
+struct ObservableExtrapolation{T <: Real}
+	observables::Vector{Observable{T}}
+	errs::Vector{<:Vector{T}}
 end

@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../work"
+		},
+		{
+			"path": "../vault"
+		}
+	],
+	"settings": {
+		"julia.environmentPath": "/home/hpc/b228da/b228da10/Damysos.jl"
+	}
+}

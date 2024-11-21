@@ -22,6 +22,19 @@ function Base.isapprox(
     return Base.isapprox.(o1,o2;atol=atol,rtol=rtol,nans=nans) |> all
 end
 
+function count_nans(obs::Vector{<:Observable})
+	return sum(count_nans.(obs))
+end
+
+function count_nans(o::Observable)
+    n = 0
+    for s in fieldnames(typeof(o))
+        n += sum(isnan.(getproperty(o,s)))
+    end
+    return n
+end
+
+
 function extrapolate(oh_itr::AbstractVector{<:Tuple{<:Observable{T}, <:Number}};
     invert_h = false,
     kwargs...) where T

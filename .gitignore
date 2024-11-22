@@ -3,6 +3,7 @@
 *.jl.mem
 /Manifest.toml
 /logs/
+/testresults/
 *.out
 *.err
 *.log

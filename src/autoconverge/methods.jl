@@ -338,7 +338,7 @@ function run!(
 					- $(repr("text/plain",oe))
 				"""
 
-				retcode = converged(oe) ? ReturnCode.success : retcode
+				retcode = converged(test) ? ReturnCode.success : retcode
 				retcode = length(sims) ≥ test.maxiterations ? ReturnCode.maxiter : retcode
 
 				if count_nans(sim.observables) > nan_limit

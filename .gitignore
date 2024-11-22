@@ -10,3 +10,4 @@
 *_old_*.hdf
 *_old_*.hdf5
 /jupyter/preliminary_spectra/**
+*.code-workspace

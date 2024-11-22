@@ -82,7 +82,7 @@ function savedata(result::ConvergenceTestResult)
 		savedata_hdf5(result.test, g)
 
 		obs  = result.extrapolated_results
-		gobs = create_group(file, "extrapolated_results")
+		gobs = ensuregroup(file, "extrapolated_results")
 		gobs["T"] = "$(typeof(obs))"
 		for o in obs
 			savedata_hdf5(o, gobs)

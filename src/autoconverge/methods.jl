@@ -2,6 +2,8 @@ export successful_retcode
 export terminated_retcode
 export resume
 
+const DEFAULT_NAN_LIMIT 		= 128
+const DEFAULT_MAX_NAN_RETRIES 	= 2
 
 function ConvergenceTest(
 	filepath_hdf5::String,
@@ -187,15 +189,11 @@ Returns true if x terminated regularly.
 
 """
 function terminated_retcode(retcode::ReturnCode.T)
-	return any(retcode .== [
-		ReturnCode.success,
-		ReturnCode.maxtime,
-		ReturnCode.maxiter,
-		ReturnCode.failed,
-		ReturnCode.exception])
+	return retcode != ReturnCode.running
 end
 
-terminated_retcode(x::ConvergenceTestResult) = successful_retcode(x.retcode)
+terminated_retcode(x::ConvergenceTestResult) = terminated_retcode(x.retcode)
+
 """
     terminated_retcode(path::String)
 
@@ -291,7 +289,9 @@ end
 function run!(
 	test::ConvergenceTest;
 	savedata = true,
-	saveplots = false)
+	saveplots = false,
+	nan_limit = DEFAULT_NAN_LIMIT,
+	max_nan_retries = DEFAULT_MAX_NAN_RETRIES)
 	
 	savedata && prepare_hdf5_file(test)
 
@@ -301,17 +301,20 @@ function run!(
 	"""
 	printinfo(test.start,test.solver)
 
-	producer = let t=test,sp=saveplots
-		c::Channel -> _run!(c, t, t.method; saveplots = sp)
+	producer = let t=test,sp=saveplots,nl=nan_limit
+		c::Channel -> _run!(c, t, t.method; saveplots = sp, nan_limit=nl)
 	end 
 
 	prod_taskref			= Ref{Task}();
 	results 	 			= Channel{Simulation}(producer;taskref = prod_taskref)
 	pollint 	 			= minimum((60.0, test.maxtime / 10))
 	elapsed_time 			= 0.0
+	nan_errors				= 0
 	method 					= test.method
+	retcode 				= ReturnCode.running
+	sims 					= test.completedsims
 
-	while elapsed_time < test.maxtime && isopen(results)
+	while !terminated_retcode(retcode) && isopen(results)
 
 		remaining_time = test.maxtime - elapsed_time
 		
@@ -322,36 +325,48 @@ function run!(
 			elapsed_time += @elapsed begin
 
 				sim = take!(results)
-				push!(test.completedsims,sim)
+				push!(sims,sim)
 
 				savedata && Damysos.savedata(test, sim)
 				saveplots && Damysos.savedata(sim)
 
 				oe = extrapolate(test)
-				i  = length(test.completedsims)
+				i  = length(sims)
 				@info """ 
 					- Iteration $i of maximum of $(test.maxiterations)
 					- Current value: $(currentvalue(method,sim)) $(getname(method)))
 					- $(repr("text/plain",oe))
 				"""
-				converged(oe) && close(results)
+
+				retcode = converged(oe) ? ReturnCode.success : retcode
+				retcode = length(sims) ≥ test.maxiterations ? ReturnCode.maxiter : retcode
+
+				if count_nans(sim.observables) > nan_limit
+					nan_errors += 1
+					@show nan_errors
+					retcode = nan_errors > max_nan_retries ? ReturnCode.nan_abort : retcode
+				end
 			end
-			elapsed_time + pollint > test.maxtime && close(results)
+			retcode = elapsed_time + pollint > test.maxtime ? ReturnCode.maxtime : retcode
 		end
 	end
 
 	close(results)
 
-	istaskfailed(prod_taskref[]) && Base.show_task_exception(stderr,prod_taskref[])
+	if istaskfailed(prod_taskref[])
+		Base.show_task_exception(stderr,prod_taskref[])
+		retcode = ReturnCode.exception
+	end
 
-	return postrun!(test, elapsed_time, istaskfailed(prod_taskref[]); savedata = savedata)
+	return postrun!(test, elapsed_time + pollint, retcode; savedata = savedata)
 end
 
 function _run!(
 	c::Channel,
 	test::ConvergenceTest,
 	method::Union{PowerLawTest, LinearTest};
-	saveplots = false)
+	saveplots = false,
+	nan_limit = DEFAULT_NAN_LIMIT)
 
 	done_sims        = test.completedsims
 	currentiteration = length(done_sims)
@@ -363,9 +378,10 @@ function _run!(
 		@debug "Check index: $(currentiteration) ?= $(getsimindex(currentsim))"
 		
 		run!(currentsim,test.allfunctions[currentiteration],test.solver;
-		showinfo=false,
-		savedata=false,
-		saveplots=saveplots)
+			showinfo=false,
+			savedata=false,
+			saveplots=saveplots,
+			nan_limit=nan_limit)
 		
 		put!(c, currentsim)		
 		currentsim = next(currentsim, method)
@@ -374,35 +390,18 @@ function _run!(
 	return nothing
 end
 
-function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, exception_thrown::Bool;
+function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, retcode;
 	savedata = true)
 
-	oe = extrapolate(test)
-	if converged(oe;rtol=test.rtolgoal,atol=test.atolgoal)
-		@info """
-		## Converged after $(round(elapsedtime_seconds/60,sigdigits=3))min and \
-		$(length(test.completedsims)) iterations"""
-		retcode = ReturnCode.success
-	elseif exception_thrown
-		@warn "An exception was thrown during the ConvergenceTest."
-		retcode = ReturnCode.exception
-	elseif elapsedtime_seconds > test.maxtime
-		@warn "Maximum runtime exceeded"
-		retcode = ReturnCode.maxtime
-	elseif length(test.completedsims) >= test.maxiterations
-		@warn "Maximum number of iterations ($(test.maxiterations)) exceeded."
-		retcode = ReturnCode.maxiter
-	else
-		@warn "Something very weird happened..."
-		retcode = ReturnCode.failed
-	end
-
+	retcode = terminated_retcode(retcode) ? retcode : ReturnCode.failed
+	
+	oe 			 = extrapolate(test)
 	achieved_tol = findminimum_precision(oe,test.atolgoal,test.rtolgoal)
-
+	
 	last_params =
-		isempty(test.completedsims) ? test.start.numericalparams :
-		test.completedsims[end].numericalparams
-
+	isempty(test.completedsims) ? test.start.numericalparams :
+	test.completedsims[end].numericalparams
+	
 	result = ConvergenceTestResult(
 		test,
 		retcode,
@@ -411,12 +410,37 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, exception_th
 		length(test.completedsims),
 		last_params,
 		oe.observables)
-
+		
 	savedata && Damysos.savedata(result)
-
-	@info "$(repr("text/plain", result))"
+	
+	testresult_message(result)
 
 	return result
+end
+
+function testresult_message(result::ConvergenceTestResult)
+
+	r 		= result.retcode
+	time 	= round(result.elapsed_time_sec/60,sigdigits=3)
+	n 		= length(result.test.completedsims)
+
+	if r == ReturnCode.success
+		@info "## Converged after $(time)min and $n iterations."
+	elseif r == ReturnCode.maxtime
+		@warn "## Maximum runtime exceeded."
+	elseif r == ReturnCode.maxiter
+		@warn "## Maximum number of iterations ($(result.test.maxiterations)) exceeded."
+	elseif r == ReturnCode.exception
+		@warn "## An exception was thrown during the ConvergenceTest."
+	elseif r == ReturnCode.running
+		@warn "## ReturnCode.running received! Something very weird happened..."
+	elseif r == ReturnCode.nan_abort
+		@warn "## Too many NaNs."
+	elseif r == ReturnCode.failed
+		@warn "## Unkown failure (ReturnCode.failed)."
+	end
+
+	@info "$(repr("text/plain", result))"
 end
 
 function extrapolate(test::ConvergenceTest; kwargs...)

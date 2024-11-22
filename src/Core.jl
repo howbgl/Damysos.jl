@@ -36,11 +36,12 @@ The observables obtained from the simulation.
 function run!(sim::Simulation,functions,solver::DamysosSolver=LinearChunked();
     savedata=true,
     saveplots=true,
-    showinfo=true)
+    showinfo=true,
+    nan_limit=DEFAULT_NAN_LIMIT)
 
     prerun!(sim,solver;savedata=savedata,saveplots=saveplots,showinfo=showinfo)
     _run!(sim,functions,solver)
-    postrun!(sim;savedata=savedata,saveplots=saveplots)
+    postrun!(sim;savedata=savedata,saveplots=saveplots,nan_limit=nan_limit)
 
     return sim.observables
 end
@@ -81,7 +82,7 @@ function prerun!(sim::Simulation,solver::DamysosSolver;
     return nothing
 end
 
-function postrun!(sim::Simulation;savedata=true,saveplots=true)
+function postrun!(sim::Simulation;savedata=true,saveplots=true,nan_limit=DEFAULT_NAN_LIMIT)
     
     p   = sim.numericalparams
     Δk  = if sim.dimensions == 2
@@ -93,40 +94,13 @@ function postrun!(sim::Simulation;savedata=true,saveplots=true)
         end
     normalize!.(sim.observables,(2π)^sim.dimensions / Δk)
 
+    nancount = count_nans(sim.observables)
+    nancount > nan_limit && @warn "Too many Nans ($nancount)!"
+
     savedata && Damysos.savedata(sim)
     saveplots && plotdata(sim)
     
     return nothing
-end
-
-function runtimeout!(timeout,sim::Simulation,fns,solver::DamysosSolver;savedata=true,saveplots=true)
-
-    _run = let sim=sim,fns=fns,solver=solver,sd=savedata,sp=saveplots
-        c -> begin
-            try
-                put!(c,run!(sim,fns,solver;savedata=sd,saveplots=sp))
-                return nothing
-            catch e
-                if e isa InterruptException
-                    @warn "run interrupted!"
-                end
-            end
-        end 
-    end
-
-    runtask = @async begin
-        try
-            run!(sim,fns,solver;savedata=savedata,saveplots=saveplots)
-        catch e
-            if e isa InterruptException
-                @warn "run interrupted!"
-            end
-        end
-    end
-
-    sig = timedwait(()->istaskdone(runtask),timeout)
-    sig == :timed_out && schedule(runtask,InterruptException(),error=true)
-    return sim.observables
 end
 
 function printinfo(sim::Simulation,solver::DamysosSolver)

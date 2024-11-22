@@ -343,7 +343,6 @@ function run!(
 
 				if count_nans(sim.observables) > nan_limit
 					nan_errors += 1
-					@show nan_errors
 					retcode = nan_errors > max_nan_retries ? ReturnCode.nan_abort : retcode
 				end
 			end

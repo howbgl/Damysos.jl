@@ -35,15 +35,18 @@ function count_nans(o::Observable)
 end
 
 
-function extrapolate(oh_itr::AbstractVector{<:Tuple{<:Observable{T}, <:Number}};
+function extrapolate(obs_h_itr::AbstractVector{<:Tuple{<:Observable{T}, <:Number}};
     invert_h = false,
     kwargs...) where T
-    
+
+    oh_itr      = filter(x -> count_nans(x[1]) == 0,obs_h_itr) 
     odata       = first.(oh_itr)
     O           = eltype(odata)
     hdata       = invert_h ? [1/oh[2] for oh in oh_itr] : last.(oh_itr)
     timeseries  = []
     errs        = Vector{T}(undef,0)
+
+    isempty(oh_itr) && return (obs_h_itr[end][1],fill(Inf,fieldcount(O)))
 
     for n in fieldnames(O)
         field_data = [getproperty(x,n) for x in odata]

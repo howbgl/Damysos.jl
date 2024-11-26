@@ -395,7 +395,7 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, retcode;
 	retcode = terminated_retcode(retcode) ? retcode : ReturnCode.failed
 	
 	oe 			 = extrapolate(test)
-	achieved_tol = findminimum_precision(oe,test.atolgoal,test.rtolgoal)
+	achieved_tol = findminimum_precision(oe,test.atolgoal)
 	
 	last_params =
 	isempty(test.completedsims) ? test.start.numericalparams :
@@ -467,17 +467,20 @@ function converged(obs::Observable,errs::Vector{<:Real};rtol=DEFAULT_RTOL,atol=D
 	return all([err ≤ max(atol,rtol*norm(getproperty(obs,n))) for (n,err) in nameserrs])
 end
 
-function findminimum_precision(oe::ObservableExtrapolation,
-	atolgoal=DEFAULT_ATOL,
-	rtolgoal=DEFAULT_RTOL;
+function findminimum_precision(test::ConvergenceTest)
+	return findminimum_precision(extrapolate(test),test.atolgoal)
+end
+
+function findminimum_precision(oe::ObservableExtrapolation{T},
+	atolgoal=DEFAULT_ATOL;
 	max_atol=100.0,
-	max_rtol=2.0)
+	max_rtol=2.0) where {T<:Real}
 
 	!converged(oe;rtol=max_rtol,atol=max_atol) && return (Inf, Inf)
 
 	# Sweep the range of tolerance exponentially
 	atols = exp10.(log10(max_atol):-0.2:log10(atolgoal))
-	rtols = exp10.(log10(max_rtol):-0.1:log10(rtolgoal))
+	rtols = exp10.(log10(max_rtol):-0.1:log10(sqrt(eps(T))))
 
 	min_achieved_atol = atols[1]
 	min_achieved_rtol = rtols[1]

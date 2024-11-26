@@ -192,6 +192,7 @@ function downsample!(a::Vector{<:Number},b::Vector{<:Number})
     end
 end
 
+seconds_passed_since(t::DateTime) = Dates.value(now() - t) / 1000.
 
 function find_files_with_name(root_dir::String, target_name::String)
     file_paths = Vector{String}()

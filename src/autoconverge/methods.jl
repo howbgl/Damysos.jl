@@ -292,6 +292,8 @@ function run!(
 	saveplots = false,
 	nan_limit = DEFAULT_NAN_LIMIT,
 	max_nan_retries = DEFAULT_MAX_NAN_RETRIES)
+
+	starting_time 			= now()
 	
 	savedata && prepare_hdf5_file(test)
 
@@ -308,7 +310,6 @@ function run!(
 	prod_taskref			= Ref{Task}();
 	results 	 			= Channel{Simulation}(producer;taskref = prod_taskref)
 	pollint 	 			= minimum((60.0, test.maxtime / 10))
-	elapsed_time 			= 0.0
 	nan_errors				= 0
 	method 					= test.method
 	retcode 				= ReturnCode.running
@@ -316,36 +317,38 @@ function run!(
 
 	while !terminated_retcode(retcode) && isopen(results)
 
-		remaining_time = test.maxtime - elapsed_time
+		remaining_time = test.maxtime - seconds_passed_since(starting_time)
 		
-		elapsed_time += @elapsed timedwait(
+		finished = timedwait(
 			() -> isready(results) || !isopen(results), remaining_time, pollint = pollint)
+		if finished == :timed_out
+			retcode = ReturnCode.maxtime
+			break
+		end
 
 		while isready(results)
-			elapsed_time += @elapsed begin
+			sim = take!(results)
+			push!(sims,sim)
 
-				sim = take!(results)
-				push!(sims,sim)
+			savedata && Damysos.savedata(test, sim)
+			saveplots && Damysos.savedata(sim)
 
-				savedata && Damysos.savedata(test, sim)
-				saveplots && Damysos.savedata(sim)
+			oe = extrapolate(test)
+			i  = length(sims)
+			@info """ 
+				- Iteration $i of maximum of $(test.maxiterations)
+				- Current value: $(currentvalue(method,sim)) $(getname(method)))
+				- $(repr("text/plain",oe))
+			"""
 
-				oe = extrapolate(test)
-				i  = length(sims)
-				@info """ 
-					- Iteration $i of maximum of $(test.maxiterations)
-					- Current value: $(currentvalue(method,sim)) $(getname(method)))
-					- $(repr("text/plain",oe))
-				"""
+			retcode = converged(test) ? ReturnCode.success : retcode
+			retcode = length(sims) ≥ test.maxiterations ? ReturnCode.maxiter : retcode
 
-				retcode = converged(test) ? ReturnCode.success : retcode
-				retcode = length(sims) ≥ test.maxiterations ? ReturnCode.maxiter : retcode
-
-				if count_nans(sim.observables) > nan_limit
-					nan_errors += 1
-					retcode = nan_errors > max_nan_retries ? ReturnCode.nan_abort : retcode
-				end
+			if count_nans(sim.observables) > nan_limit
+				nan_errors += 1
+				retcode = nan_errors > max_nan_retries ? ReturnCode.nan_abort : retcode
 			end
+			elapsed_time = seconds_passed_since(starting_time)
 			retcode = elapsed_time + pollint > test.maxtime ? ReturnCode.maxtime : retcode
 		end
 	end
@@ -357,7 +360,7 @@ function run!(
 		retcode = ReturnCode.exception
 	end
 
-	return postrun!(test, elapsed_time + pollint, retcode; savedata = savedata)
+	return postrun!(test, seconds_passed_since(starting_time), retcode; savedata = savedata)
 end
 
 function _run!(

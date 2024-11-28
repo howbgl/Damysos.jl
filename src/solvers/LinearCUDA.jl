@@ -39,8 +39,8 @@ struct LinearCUDA{T <: Integer} <: DamysosSolver
 			return new(kchunksize, algorithm, _ngpus)
 		else
 			@warn "CUDA.jl is not functional, cannot use LinearCUDA solver."
+			return new(kchunksize, algorithm, ngpus)
 		end
-		return new(kchunksize, algorithm)
 	end
 end
 

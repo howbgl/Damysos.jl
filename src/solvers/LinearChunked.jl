@@ -18,7 +18,7 @@ julia> solver = LinearChunked(256,EnsembleThreads())
 LinearChunked:
   - kchunksize: 256
   - algorithm: EnsembleThreads()
-  - odesolver: Vern7(; stage_limiter! = trivial_limiter!, step_limiter! = trivial_limiter!, thread = static(false), lazy = true,)
+  - odesolver: Vern7{typeof(OrdinaryDiffEqCore.trivial_limiter!), typeof(OrdinaryDiffEqCore.trivial_limiter!), Static.False}(OrdinaryDiffEqCore.trivial_limiter!, OrdinaryDiffEqCore.trivial_limiter!, static(false), true)
   
 ```
 

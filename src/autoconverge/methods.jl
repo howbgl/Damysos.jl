@@ -1,6 +1,5 @@
 export successful_retcode
 export terminated_retcode
-export resume
 
 const DEFAULT_NAN_LIMIT 		= 128
 const DEFAULT_MAX_NAN_RETRIES 	= 2

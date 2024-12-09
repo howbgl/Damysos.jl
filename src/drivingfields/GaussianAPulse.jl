@@ -13,7 +13,7 @@ Represents spacially homogeneous, linearly polarized pulse with Gaussian envelop
 # Mathematical form
 The form of the vector potential is given by
 ```math
-\\vec{A}(t) = \\vec{A}_0 \\cos(\\omega t + \\theta) e^{-t^2 / \\sigma^2}
+\\vec{A}(t) = \\vec{A}_0 \\cos(\\omega t + \\theta) e^{-t^2 / 2\\sigma^2}
 ``` 
 where ``\\vec{A}_0=A_0(\\cos\\varphi\\,\\vec{e}_x + \\sin\\varphi\\,\\vec{e}_y``). 
 

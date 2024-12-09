@@ -82,6 +82,7 @@ function savedata(result::ConvergenceTestResult)
 		savedata_hdf5(result.test, g)
 
 		obs  = result.extrapolated_results
+		"extrapolated_results" ∈ keys(file) && delete_object(file,"extrapolated_results")
 		gobs = ensuregroup(file, "extrapolated_results")
 		gobs["T"] = "$(typeof(obs))"
 		for o in obs

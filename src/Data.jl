@@ -447,10 +447,14 @@ end
 
 function load(filepath::String)
 
-	file = open(filepath, "r")
-	code = read(file, String)
-	close(file)
-
-	return eval(Meta.parse(code))
+	if splitext(filepath)[2] == ".hdf5"
+		h5open(filepath,"r") do file
+			return load_obj_hdf5(file)
+		end
+	else
+		open(filepath, "r") do file
+			return eval(Meta.parse(read(file, String)))
+		end
+	end
 end
 

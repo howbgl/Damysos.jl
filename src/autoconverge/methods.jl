@@ -509,7 +509,7 @@ end
 function Base.show(io::IO, ::MIME"text/plain", t::ConvergenceTest)
 	println(io, "Convergence Test")
 	methodstring = repr("text/plain", t.method)
-	maxtime = round(Int64, t.maxtime)
+	maxtime = isfinite(t.maxtime) ? round(Int64, t.maxtime) : t.maxtime
 	str = """
 	$(getshortname(t.start))
 	method: $(methodstring)

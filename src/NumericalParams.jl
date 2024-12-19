@@ -39,11 +39,22 @@ struct NumericalParams2d{T<:Real} <: NumericalParameters{T}
     t0::T
     rtol::T
     atol::T
+    function NumericalParams2d{T}(dkx,dky,kxmax,kymax,dt,t0,rtol,atol) where {T<:Real}
+        @argcheck dkx > 0
+        @argcheck dky > 0
+        @argcheck kxmax > 0
+        @argcheck kymax > 0
+        @argcheck dt > 0
+        @argcheck rtol > 0
+        @argcheck atol > 0
+        new(dkx,dky,kxmax,kymax,dt,t0,rtol,atol)
+    end
 end
 function NumericalParams2d(dkx::Real,dky::Real,kxmax::Real,kymax::Real,dt::Real,t0::Real,
     rtol::Real=DEFAULT_RTOL,
-    atol::Real=DEFAULT_ATOL)  
-    return NumericalParams2d(promote(dkx,dky,kxmax,kymax,dt,t0,rtol,atol)...)
+    atol::Real=DEFAULT_ATOL)
+    args = promote(dkx,dky,kxmax,kymax,dt,t0,rtol,atol)
+    return NumericalParams2d{typeof(args[1])}(args...)
 end
 
 
@@ -108,12 +119,21 @@ struct NumericalParams1d{T<:Real} <: NumericalParameters{T}
     t0::T
     rtol::T
     atol::T
+    function NumericalParams1d{T}(dkx,kxmax,ky,dt,t0,rtol,atol) where {T<:Real}
+        @argcheck dkx > 0
+        @argcheck kxmax > 0
+        @argcheck dt > 0
+        @argcheck rtol > 0
+        @argcheck atol > 0
+        new(dkx,kxmax,ky,dt,t0,rtol,atol)
+    end
 end
 
 function NumericalParams1d(dkx::Real,kxmax::Real,ky::Real,dt::Real,t0::Real,
     rtol::Real=DEFAULT_RTOL,
     atol::Real=DEFAULT_ATOL)
-    return NumericalParams1d(promote(dkx,kxmax,ky,dt,t0,rtol,atol)...)
+    args = promote(dkx,kxmax,ky,dt,t0,rtol,atol)
+    return NumericalParams1d{typeof(args[1])}(args...)
 end
 
 NumericalParams1d(p::Dict) = construct_type_from_dict(NumericalParams1d,p)
@@ -193,6 +213,12 @@ struct NumericalParamsSingleMode{T<:Real} <: NumericalParameters{T}
     t0::T
     rtol::T
     atol::T
+    function NumericalParamsSingleMode{T}(kx,ky,kdt,t0,rtol,atol) where {T<:Real}
+        @argcheck dt > 0
+        @argcheck rtol > 0
+        @argcheck atol > 0
+        new(kx,ky,dt,t0,rtol,atol)
+    end
 end
 
 function NumericalParamsSingleMode(
@@ -202,14 +228,8 @@ function NumericalParamsSingleMode(
     t0::Real,
     rtol::Real=DEFAULT_RTOL,
     atol::Real=DEFAULT_ATOL)
-    args = promote(
-        kx,
-        ky,
-        dt,
-        t0,
-        rtol,
-        atol)
-    return NumericalParamsSingleMode(args...)
+    args = promote(kx,ky,dt,t0,rtol,atol)
+    return NumericalParamsSingleMode{typeof(args[1])}(args...)
 end
 
 

@@ -2,6 +2,7 @@ module Damysos
 
 
 using Accessors
+using ArgCheck
 using CairoMakie
 using ColorSchemes
 using CSV

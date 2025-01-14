@@ -12,3 +12,4 @@
 /jupyter/preliminary_spectra/**
 *.code-workspace
 /scripts/nhr_fau/
+.venv

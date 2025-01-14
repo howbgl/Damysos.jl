@@ -11,5 +11,4 @@
 *_old_*.hdf5
 /jupyter/preliminary_spectra/**
 *.code-workspace
-/scripts/nhr_fau/
 .venv

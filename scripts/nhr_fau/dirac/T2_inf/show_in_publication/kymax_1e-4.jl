@@ -28,22 +28,24 @@ end
 
 
 global_logger(make_teelogger(
-	joinpath(ENV["WORK"],"dirac/T2_100fs/zeta-M-sweep1/3x3_dkx_1e-3"),
-	"slurmid="*ENV["SLURM_JOB_ID"]*"dkx_1e-3"))
+	joinpath(ENV["WORK"],"dirac/T2_inf/show_in_publication/kymax_1e-4"),
+	"slurmid="*ENV["SLURM_JOB_ID"]*"kymax_1e-4"))
 
 
 const files = load_hdf5_files(joinpath(
 	ENV["WORK"],
-	"dirac/T2_100fs/zeta-M-sweep1/3x3_dt_1e-3"))
+	"dirac/T2_inf/show_in_publication/dkx_1e-4"))
+
+const oldsims = loadlast_testsim.(files)
 
 const tests = [ConvergenceTest(f,LinearCUDA();
 	resume = false,
-	method = PowerLawTest(:dkx,0.6),
-	rtolgoal = 1e-3,
+	method = PowerLawTest(:kymax,1.4),
+	rtolgoal = 1e-4,
 	atolgoal = 1e-6,
-	maxtime = u"60minute",
-	maxiterations = 12,
-	path = replace(f,"dt" => "dkx")) for f in files]
+	maxtime = u"12*60minute",
+	maxiterations = 15,
+	path = replace(f,"dky" => "kymax")) for f in files]
 
 
 for t in tests

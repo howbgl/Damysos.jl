@@ -1,4 +1,5 @@
-using Damysos, CSV, DataFrames, Interpolations, HDF5, TerminalLoggers, LoggingExtras, Dates, Accessors
+using Damysos, CSV, DataFrames, Interpolations, HDF5, TerminalLoggers, LoggingExtras, Dates
+using CUDA, Accessors
 
 import Damysos.getname
 import Damysos.maximum_vecpot
@@ -37,20 +38,23 @@ const files = load_hdf5_files(joinpath(
 	"dirac/T2_100fs/large_zeta/dkx_1e-3"))
 
 const oldsims = loadlast_testsim.(files)
-const sims 	  = [@set s.numericalparams.kymax = 0.2maximum_vecpot(s.drivingfield) for s in oldsims]
+const sims 	  = [@set s.numericalparams.kymax = 0.5maximum_vecpot(s.drivingfield) for s in oldsims]
+const newsims = [@set s.numericalparams.dky = s.numericalparams.kymax/30. for s in sims]
 
-const tests = [ConvergenceTest(f,LinearCUDA();
+const tests = [ConvergenceTest(s,LinearCUDA();
 	resume = false,
 	method = PowerLawTest(:dky,0.6),
 	rtolgoal = 1e-3,
 	atolgoal = 1e-6,
-	maxtime = u"60minute",
-	maxiterations = 12,
-	path = replace(f,"dkx" => "dky")) for f in files]
+	maxtime = u"2*60minute",
+	maxiterations = 14,
+	path = replace(f,"dkx" => "dky")) for (s,f) in zip(newsims,files)]
 
 
 for t in tests
 	run!(t)
+	GC.gc()
+	CUDA.reclaim()
 end
 
 exit(0)

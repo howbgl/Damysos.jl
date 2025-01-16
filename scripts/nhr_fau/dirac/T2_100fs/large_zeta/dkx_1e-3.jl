@@ -41,7 +41,7 @@ const tests = [ConvergenceTest(f,LinearCUDA();
 	method = PowerLawTest(:dkx,0.6),
 	rtolgoal = 1e-3,
 	atolgoal = 1e-6,
-	maxtime = u"60minute",
+	maxtime = u"3*60minute",
 	maxiterations = 12,
 	path = replace(f,"dt" => "dkx", "1e-4" => "1e-3")) for f in files]
 

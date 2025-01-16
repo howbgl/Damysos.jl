@@ -1,13 +1,12 @@
 #!/bin/bash -l
 #SBATCH --gres=gpu:a100:1
-#SBATCH --time=06:10:00
-#SBATCH --array=1-81
-#SBATCH -e /home/atuin/b228da/b228da10/dirac/T2_inf/converge_r_9x9_dkx/slurm-%A_%a.err
-#SBATCH -o /home/atuin/b228da/b228da10/dirac/T2_inf/converge_r_9x9_dkx/slurm-%A_%a.out
+#SBATCH --time=02:10:00
+#SBATCH -e /home/atuin/b228da/b228da10/dirac/T2_100fs/large_zeta/dt_1e-3/slurm-%A_%a.err
+#SBATCH -o /home/atuin/b228da/b228da10/dirac/T2_100fs/large_zeta/dt_1e-3/slurm-%A_%a.out
 
 export PATH=$PATH:/home/hpc/b228da/b228da10/.juliaup/bin
 
-julia --project -t auto converge_r_9x9_dkx.jl
+julia --project -t auto --heap-size-hint=60G dt_1e-3.jl
 
 exit_code=$?
 

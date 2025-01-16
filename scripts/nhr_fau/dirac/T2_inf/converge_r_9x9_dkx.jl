@@ -79,12 +79,12 @@ end
 function maketest(ζ,M,path::String,altpath::String=pwd())
 	sim    = makesim_interpol(ζ,M)
 	solver = LinearCUDA(10_000)
-	method = PowerLawTest(:dky,0.6)
+	method = PowerLawTest(:dkx,0.6)
 	return ConvergenceTest(sim,solver;
 		method = method,
-		atolgoal = 0.0,
-		rtolgoal = 0.0,
-		maxtime = u"60minute",
+		atolgoal = 1e-12,
+		rtolgoal = 1e-10,
+		maxtime = u"6*60minute",
 		maxiterations = 4,
 		path 	= path,
 		altpath = altpath)

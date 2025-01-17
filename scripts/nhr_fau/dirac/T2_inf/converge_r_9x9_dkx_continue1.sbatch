@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH --gres=gpu:a100:1
-#SBATCH --time=02:10:00
+#SBATCH --time=00:55:00
 #SBATCH --array=1-81
 #SBATCH -e /home/atuin/b228da/b228da10/dirac/T2_inf/converge_r_9x9_dkx/slurm-%A_%a.err
 #SBATCH -o /home/atuin/b228da/b228da10/dirac/T2_inf/converge_r_9x9_dkx/slurm-%A_%a.out

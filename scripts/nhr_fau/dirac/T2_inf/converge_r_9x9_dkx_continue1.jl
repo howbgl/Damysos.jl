@@ -26,10 +26,11 @@ function load_hdf5_files(path::String)
 end
 
 
-const files = load_hdf5_files(joinpath(ENV["WORK"],"dirac/T2_inf/converge_r_9x9_dkx"))
+const files  = load_hdf5_files(joinpath(ENV["WORK"],"dirac/T2_inf/converge_r_9x9_dkx"))
 const id 	 = parse(Int, ENV["SLURM_ARRAY_TASK_ID"])
 const test 	 = ConvergenceTest(files[id],LinearCUDA(10_000);
 	resume = true,
+	maxtime = u"40minute",
 	maxiterations=4)
 
 	

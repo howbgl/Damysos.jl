@@ -2,6 +2,7 @@ using Damysos, CSV, DataFrames, Interpolations, HDF5, TerminalLoggers, LoggingEx
 using Accessors
 
 import Damysos.getname
+import Damysos.maximum_vecpot
 
 function make_teelogger(logging_path::AbstractString, name::AbstractString)
 
@@ -25,23 +26,21 @@ function load_hdf5_files(path::String)
 	return allfiles
 end
 
-function load_iterations(file::String)
-	h5open(file,"r") do f
-		return read(f["testresult"],"iterations")
-	end
-end
-
-
-const files  = load_hdf5_files(joinpath(ENV["WORK"],"dirac/T2_inf/converge_r_9x9_dkx"))
+const dir  	 = joinpath(ENV["WORK"],"dirac/T2_inf/9x9_dkx_1e-4")
+const files  = load_hdf5_files(dir)
 const id 	 = parse(Int, ENV["SLURM_ARRAY_TASK_ID"])
-const test 	 = ConvergenceTest(files[id],LinearCUDA(10_000);
-	resume = true,
-	maxtime = u"6*60minute",
-	maxiterations=10 - load_iterations(files[id]))
-
+const file 	 = files[id]
+const path 	 = replace(file,"dkx_1e-4" => "kxmax_1e-3")
+const test   = ConvergenceTest(file,LinearCUDA(10_000);
+	resume = false,
+	method = PowerLawTest(:kxmax,1.5),
+	path = path,
+	maxtime = u"4*60minute",
+	maxiterations = 12)
 	
-global_logger(make_teelogger(joinpath(ENV["WORK"],"dirac/T2_inf/converge_r_9x9_dkx"),
-	"slurmid="*ENV["SLURM_ARRAY_TASK_ID"]*basename(files[id])[1:end-5]))
+
+global_logger(make_teelogger(dir,
+	"slurmid="*ENV["SLURM_ARRAY_TASK_ID"]*first(splitext(basename(file)))))
 
 run!(test)
 

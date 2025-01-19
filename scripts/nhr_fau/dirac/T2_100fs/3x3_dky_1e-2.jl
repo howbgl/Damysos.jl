@@ -40,7 +40,7 @@ const files = load_hdf5_files(joinpath(
 const oldsims = loadlast_testsim.(files)
 const kymaxsims = [@set s.numericalparams.kymax = 0.2maximum_vecpot(s.drivingfield) for s in oldsims]
 const sims  = [@set s.numericalparams.dky = s.numericalparams.kymax/50. for s in kymaxsims]
-const newpaths = [replace(f,"dkx" => "dky") for f in files]
+const newpaths = [replace(f,"dkx_1e-3" => "dky_1e-2") for f in files]
 const newsims  = Simulation{Float64}[]
 
 # Even though numerical convergence looks better, this data became worse for the smaller

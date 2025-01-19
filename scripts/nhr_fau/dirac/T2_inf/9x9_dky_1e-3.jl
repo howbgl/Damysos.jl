@@ -26,18 +26,32 @@ function load_hdf5_files(path::String)
 	return allfiles
 end
 
-const dir  	 = joinpath(ENV["WORK"],"dirac/T2_inf/9x9_dkx_1e-4")
+const dir  	 = joinpath(ENV["WORK"],"dirac/T2_inf/9x9_kxmax_1e-3")
 const files  = load_hdf5_files(dir)
 const id 	 = parse(Int, ENV["SLURM_ARRAY_TASK_ID"])
 const file 	 = files[id]
-const path 	 = replace(file,"dkx_1e-4" => "kxmax_1e-3")
-const test   = ConvergenceTest(file,LinearCUDA(10_000);
+const path 	 = replace(file,"kxmax_1e-3" => "dky_1e-3")
+
+
+const kxmaxsim 	= Damysos.loadlast_testsim(file)
+const kymax 	= 0.5maximum_vecpot(kxmaxsim.drivingfield)
+const dky 		= kymax / 10 
+
+# ζ=10 M=10 called nan_abort, but vx converged already in 1st iteration, fix that manually:
+const oldpars = successful_retcode(file) ? kxmaxsim.numericalparams : @set kxmaxsim.numericalparams.kxmax = 320.0
+const kymaxpars = @set oldpars.kymax = kymax
+const pars 		= @set kymaxpars.dky = dky
+const start 	= @set kxmaxsim.numericalparams = pars
+
+
+const test   = ConvergenceTest(start,LinearCUDA(10_000);
 	resume = false,
-	method = PowerLawTest(:kxmax,1.5),
+	method = PowerLawTest(:dky,0.6),
 	rtolgoal = 1e-3,
+	atolgoal = 1e-7,
 	path = path,
 	maxtime = u"4*60minute",
-	maxiterations = 12)
+	maxiterations = 15)
 	
 
 global_logger(make_teelogger(dirname(path),

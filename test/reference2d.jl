@@ -6,7 +6,7 @@ using LoggingExtras
 using TerminalLoggers
 using Test
 
-function make_test_simulation1(
+function make_test_simulation_2d(
 	dt::Real = 0.01,
 	dkx::Real = 1.0,
 	dky::Real = 1.0,
@@ -39,10 +39,8 @@ function make_test_simulation1(
 	obs  = [Velocity(pars), Occupation(pars)]
 
 	id    = "sim1"
-	dpath = "testresults/sim1"
-	ppath = "testresults/sim1"
 
-	return Simulation(l, df, pars, obs, us, id, dpath, ppath)
+	return Simulation(l, df, pars, obs, us, id)
 end
 
 
@@ -50,7 +48,8 @@ function test_2d(v_ref::Velocity,sim::Simulation,fns,solver::DamysosSolver;
 	atol = 1e-10,
 	rtol = 1e-2)
     
-    res = run!(sim, fns, solver; saveplots = false)
+    res = run!(sim, fns, solver; saveplots = false, 
+		savepath = joinpath("testresults",Damysos.getname(sim)))
 	v   = filter(o -> o isa Velocity,res)[1]
 	return isapprox(v, v_ref, atol = atol, rtol = rtol)
 end
@@ -65,7 +64,7 @@ const vref2d = Velocity(
 	referencedata2d.vyintra,
 	referencedata2d.vyinter)
 
-const sim_2d = make_test_simulation1()
+const sim_2d = make_test_simulation_2d()
 
 
 linchunked = LinearChunked()

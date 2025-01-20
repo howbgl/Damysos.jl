@@ -67,6 +67,7 @@ sig(x)                      = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e
 bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
 
 include("Velocity.jl")
+include("VelocityX.jl")
 include("Occupation.jl")
 
 function timesplit_obs(obs::Vector{<:Observable},ts::Vector{<:Vector{<:Real}})

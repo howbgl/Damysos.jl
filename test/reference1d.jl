@@ -26,22 +26,23 @@ function make_test_simulation_1d(
     df   = GaussianAPulse(us, σ, freq, emax)
     ky 	 = 0.0
     pars = NumericalParams1d(dkx, kxmax, ky, dt, -5df.σ)
-    obs  = [Velocity(pars), Occupation(pars)]
+    obs  = [Velocity(pars), Occupation(pars), VelocityX(pars)]
 
     id    = "sim1d"
-    dpath = "testresults/sim1d"
-    ppath = "testresults/sim1d"
 
-    return Simulation(l, df, pars, obs, us, id, dpath, ppath)
+    return Simulation(l, df, pars, obs, us, id)
 end
 
 function test_1d(v_ref::Velocity,sim::Simulation,fns,solver::DamysosSolver;
 	atol = 1e-10,
 	rtol = 1e-2)
     
-    res = run!(sim, fns, solver; saveplots = false)
+    res = run!(sim, fns, solver; saveplots = true, savedata = true, 
+        savepath = joinpath("testresults",Damysos.getname(sim)))
 	v   = filter(o -> o isa Velocity,res)[1]
-	return isapprox(v, v_ref, atol = atol, rtol = rtol)
+    vx  = filter(o -> o isa VelocityX,res)[1]
+    vx_ref = VelocityX(v_ref.vx,v_ref.vxintra,v_ref.vxinter)
+	return isapprox(v,v_ref,atol=atol,rtol=rtol) && isapprox(vx,vx_ref,atol=atol,rtol=rtol)
 end
 
 const referencedata1d = DataFrame(CSV.File("referencedata1d.csv"))

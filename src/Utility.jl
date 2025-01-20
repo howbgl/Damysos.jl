@@ -284,6 +284,11 @@ function rename_file_if_exists(filepath::String)
     end
 end
 
+function rename_path(path::String)
+    p,ext = splitext(path)
+    p = p[end] == '/' ? p[1:end-1] : p
+    return p * "_" * basename(tempname()) * ext
+end
 
 function try_execute_n_times(f::Function, n::Int, arg; wait_time::Real=10.0)
 

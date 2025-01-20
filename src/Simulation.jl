@@ -2,7 +2,7 @@ export Simulation
 
 
 """
-    Simulation{T}(l, df, p, obs, us, d[, id, datapath, plotpath])
+    Simulation{T}(l, df, p, obs, us, d[, id])
 
 Represents a simulation with all physical and numerical parameters specified.
 
@@ -13,8 +13,6 @@ Represents a simulation with all physical and numerical parameters specified.
 - `obs::Vector{Observable{T}}`: physical observables to be computed
 - `us::UnitScaling{T}`: time- and lengthscale linking dimensionless units to SI units
 - `id::String`: identifier of the Simulation
-- `datapath::String`: path to save computed observables and simulation metadata
-- `plotpath::String`: path to savee automatically generated plots
 - `dimensions::UInt8`: system can be 0d (single mode),1d or 2d
 
 # See also
@@ -28,18 +26,18 @@ struct Simulation{T<:Real}
     observables::Vector{Observable{T}}
     unitscaling::UnitScaling{T}
     id::String
-    datapath::String
-    plotpath::String
     dimensions::UInt8
-    function Simulation{T}(l,df,p,obs,us,id,dpath,ppath,d) where {T<:Real}
+    function Simulation{T}(l,df,p,obs,us,id,d) where {T<:Real}
         if d != getdimension(p)
             @warn """
             The dimension d=$d does not match the the NumericalParameters.
             Overwriting to d=$(getdimension(p)) instead."""
         end
-        new(l,df,p,obs,us,id,dpath,ppath,getdimension(p))
+        new(l,df,p,obs,us,id,getdimension(p))
     end
 end
+
+Simulation(path::String) = load_obj_hdf5(path)
 
 function Simulation(
     l::Liouvillian{T},
@@ -48,32 +46,9 @@ function Simulation(
     obs::Vector{<:Observable{T}},
     us::UnitScaling{T},
     id::String,
-    dpath::String,
-    ppath::String,
     d::Integer=getdimension(p)) where {T<:Real} 
 
-    return Simulation{T}(l,df,p,[obs...],us,id,dpath,ppath,UInt8(d))
-end
-
-function Simulation(
-    l::Liouvillian{T},
-    df::DrivingField{T},
-    p::NumericalParameters{T},
-    obs::Vector{<:Observable{T}},
-    us::UnitScaling{T},
-    id::String) where {T<:Real}
-
-    d    = getdimension(p)
-    name = "Simulation{$T}($(d)d)" * getshortname(l) *"_"*  getshortname(df) * "_$id"
-    return Simulation(
-        l,
-        df,
-        p,
-        [obs...],
-        us,
-        String(id),
-        "/home/how09898/phd/data/hhgjl/"*name*"/",
-        "/home/how09898/phd/plots/hhgjl/"*name*"/")
+    return Simulation{T}(l,df,p,[obs...],us,id,UInt8(d))
 end
 
 function Simulation(

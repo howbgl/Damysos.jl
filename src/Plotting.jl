@@ -273,7 +273,7 @@ function plotdata(
 
     for obs in sim.observables
         @info "Plotting " * getshortname(obs)
-        plotdata(sim,obs;
+        plotdata(sim,obs,path;
             fftwindow=fftwindow,
             maxharm=maxharm,
             kwargs...)        

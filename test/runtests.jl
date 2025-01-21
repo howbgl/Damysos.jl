@@ -18,6 +18,7 @@ global_logger(TerminalLogger(stderr, Logging.Info))
 	include("matrixelements.jl")
 	include("reference1d.jl")
 	include("reference2d.jl")
+	include("convergencetest.jl")
 	
 end
 

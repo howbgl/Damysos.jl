@@ -1,10 +1,7 @@
 
-export load
 export loaddata
 export loadlast_testsim
-export save
 export savedata
-export savemetadata
 
 const LOADABLES = Dict(
 	"Simulation"					=> Simulation,
@@ -20,6 +17,7 @@ const LOADABLES = Dict(
 	"GaussianPulse"					=> GaussianPulse,
 	"Vector{Observable{.*?}}"		=> Vector{Observable},
 	"Velocity" 						=> Velocity,
+	"VelocityX"						=> VelocityX,
 	"Occupation"					=> Occupation,
 	"PowerLawTest"					=> PowerLawTest,
 	"LinearTest"					=> LinearTest
@@ -40,33 +38,36 @@ function loadable_datatype(s::String)
 	throw(ArgumentError("No equivalent for $t found in LOADABLES."))
 end
 
+function ensurefile_ext(filepath::String,ext::String)
+	ext = replace(ext,"." => "")
+	path = splitext(filepath)[1]
+	return path * "." * ext
+end
+
 function savedata(
-	sim::Simulation;
-	altpath = joinpath(pwd(), basename(sim.datapath)),
-	savecsv = true,
-	savehdf5 = true)
+	sim::Simulation,
+	path::String = joinpath(pwd(),getname(sim)))
 
 	@info "Saving simulation data"
-	@debug "datapath = \"$(sim.datapath)\""
+	@debug "path = \"$(path)\""
 
-	datapath            = sim.datapath
-	(success, datapath) = ensuredirpath([datapath, altpath])
+	(success, datapath) = ensuredirpath([path])
 
 	if !success
-		@warn "Could not save simulation data to $(sim.datapath) or $altpath."
+		@warn "Could not save simulation data to $(datapath)."
 		return nothing
 	end
 
-	savemetadata(sim)
-	savecsv && savedata_csv(sim, datapath)
-	savehdf5 && savedata_hdf5(sim, datapath)
+	savedata_hdf5(sim, datapath)
 
 	return nothing
 end
 
-function savedata(result::ConvergenceTestResult)
+function savedata(result::ConvergenceTestResult, 
+	filepath=joinpath(pwd(),getname(result.test)*"_$(result.test.rtolgoal).hdf5"))
 
-	h5open(result.test.testdatafile, "cw") do file
+	filepath = ensurefile_ext(filepath,"hdf5")
+	h5open(filepath, "cw") do file
 
 		"testresult" ∈ keys(file) && delete_object(file,"testresult")
 
@@ -92,17 +93,21 @@ function savedata(result::ConvergenceTestResult)
 	end
 end
 
-function savedata(test::ConvergenceTest, sim::Simulation)
+function savedata(test::ConvergenceTest, sim::Simulation,
+	filepath=joinpath(pwd(),getname(result.test)*"_$(test.rtolgoal).hdf5"))
 
-	h5open(test.testdatafile, "cw") do file
+	filepath = ensurefile_ext(filepath,"hdf5")
+	h5open(filepath, "cw") do file
 		savedata_hdf5(sim, ensuregroup(file["completedsims"], sim.id))
 	end
 end
 
-function savedata_hdf5(sim::Simulation, datapath::String)
+function savedata_hdf5(sim::Simulation,
+	path=joinpath(pwd(),getname(sim)))
 
-	rename_file_if_exists(joinpath(datapath, "data.hdf5"))
-	h5open(joinpath(datapath, "data.hdf5"), "cw") do file
+	filepath = joinpath(path,"data.hdf5")
+	filepath = ispath(filepath) ? rename_path(filepath) : filepath
+	h5open(filepath, "cw") do file
 		savedata_hdf5(sim, file)
 	end
 	@debug "Saved Simulation data at\n\"$datapath\""
@@ -135,8 +140,6 @@ function savedata_hdf5(
 
 	parent["dim"] 		= sim.dimensions
 	parent["id"]  		= sim.id
-	parent["datapath"] 	= sim.datapath
-	parent["plotpath"] 	= sim.plotpath
 	parent["T"]   		= "Simulation"
 end
 
@@ -187,6 +190,10 @@ function savedata_hdf5(v::Velocity, parent::Union{HDF5.File, HDF5.Group})
 	generic_save_hdf5(v, parent, "velocity")
 end
 
+function savedata_hdf5(v::VelocityX, parent::Union{HDF5.File, HDF5.Group})
+	generic_save_hdf5(v, parent, "velocity_x")
+end
+
 function savedata_hdf5(o::Occupation, parent::Union{HDF5.File, HDF5.Group})
 	generic_save_hdf5(o, parent, "occupation")
 end
@@ -222,23 +229,6 @@ function savedata_hdf5(
 	close(g)
 end
 
-function savedata_csv(sim::Simulation, datapath::String)
-
-	tsamples = getparams(sim).tsamples
-	dat      = DataFrame(t = tsamples)
-
-	for o in sim.observables
-		add_observable!(dat, o)
-		add_drivingfield!(dat, sim.drivingfield, tsamples)
-	end
-	CSV.write(joinpath(datapath, "data.csv"), dat)
-	@debug "Saved data (CSV) at $(joinpath(datapath,"data.csv"))"
-end
-
-function loaddata(sim::Simulation)
-	return DataFrame(CSV.File(joinpath(sim.datapath, "data.csv")))
-end
-
 function loadlast_testsim(path::String)
 	h5open(path,"r") do file
 		g 			= file["completedsims"]
@@ -266,6 +256,12 @@ function replace_data_hdf5(
 		delete_object(parent[object])
 	end
 	parent[object] = data
+end
+
+function load_obj_hdf5(path::String)
+	h5open(path,"r") do file
+		return load_obj_hdf5(file)
+	end
 end
 
 function load_obj_hdf5(object::Union{HDF5.File, HDF5.Group})
@@ -317,8 +313,6 @@ function construct_type_from_dict(::Type{<:Simulation},d::Dict{String})
 		[construct_type_from_dict(d["observables"])...], # Vector{Obs} => Vector{Obs{T}}
 		construct_type_from_dict(d["unitscaling"]),
 		d["id"],
-		d["datapath"],
-		d["plotpath"],
 		d["dim"])
 end
 
@@ -339,23 +333,6 @@ function construct_type_from_dict(::Type{<:LinearTest},d::Dict{String})
 	return LinearTest(Symbol(d["parameter"]),d["shift"])
 end
 
-function add_observable!(dat::DataFrame, v::Velocity)
-	dat.vx      = v.vx
-	dat.vxintra = v.vxintra
-	dat.vxinter = v.vxinter
-	# skip for 1d
-	if length(v.vy) == length(v.vx)
-		dat.vy      = v.vy
-		dat.vyintra = v.vyintra
-		dat.vyinter = v.vyinter
-	end
-
-end
-
-function add_observable!(dat::DataFrame, occ::Occupation)
-	dat.cbocc = occ.cbocc
-end
-
 function generic_save_hdf5(object, parent::Union{HDF5.File, HDF5.Group}, grpname::String)
 	g = ensuregroup(parent, grpname)
 	generic_save_hdf5(object, g)
@@ -370,88 +347,3 @@ function generic_save_hdf5(object, parent::Union{HDF5.File, HDF5.Group})
 		parent["$n"] = getproperty(object, n)
 	end
 end
-
-function add_drivingfield!(
-	dat::DataFrame,
-	df::DrivingField, 
-	tsamples::AbstractVector{<:Real})
-
-	fx = get_efieldx(df)
-	fy = get_efieldy(df)
-	ax = get_vecpotx(df)
-	ay = get_vecpoty(df)
-
-	dat.fx = fx.(tsamples)
-	dat.fy = fy.(tsamples)
-	dat.ax = ax.(tsamples)
-	dat.ay = ay.(tsamples)
-end
-
-function savemetadata(sim::Simulation;
-	save_observables = false,
-	altpath = joinpath(pwd(), basename(sim.datapath)),
-	filename = "simulation.meta")
-
-
-	(success, datapath) = ensuredirpath([sim.datapath, altpath])
-	_sim = save_observables ? sim : Simulation(
-		sim.liouvillian,
-		sim.drivingfield,
-		sim.numericalparams,
-		empty(sim.observables),
-		sim.unitscaling,
-		sim.id,
-		sim.datapath,
-		sim.plotpath,
-		sim.dimensions)
-	if success
-		if save(joinpath(datapath, filename), _sim)
-			@debug "Simulation metadata saved at \"" * joinpath(datapath, filename) * "\""
-			return
-		end
-	end
-
-	@warn "Could not save simulation metadata."
-end
-
-
-function savemetadata(ens::Ensemble)
-
-	filename            = "ensemble.meta"
-	altpath             = joinpath(pwd(), basename(ens.datapath))
-	(success, datapath) = ensuredirpath([ens.datapath, altpath])
-	if success
-		if save(joinpath(datapath, filename), ens)
-			@debug "Ensemble metadata saved at \"" * joinpath(datapath, filename) * "\""
-			return
-		end
-	end
-
-	@warn "Could not save ensemble metadata."
-end
-
-
-function save(filepath::String, object)
-
-	try
-		touch(filepath)
-		file = open(filepath, "w")
-		write(file, "$object")
-		close(file)
-	catch e
-		@warn "Could not save to $filepath ", e
-		return false
-	end
-	return true
-end
-
-
-function load(filepath::String)
-
-	file = open(filepath, "r")
-	code = read(file, String)
-	close(file)
-
-	return eval(Meta.parse(code))
-end
-

@@ -41,7 +41,6 @@ struct ConvergenceTest
 	maxtime::Real
 	maxiterations::Integer
 	completedsims::Vector{Simulation}
-	testdatafile::String
 	allfunctions::Vector{Any}
 	function ConvergenceTest(
 		start::Simulation,
@@ -51,23 +50,11 @@ struct ConvergenceTest
 		rtolgoal::Real = 1e-8,
 		maxtime::Union{Real, Unitful.Time} = 600,
 		maxiterations::Integer = 16,
-		path::String = joinpath(start.datapath, "convergencetest_$(getname(method)).hdf5"),
-		completedsims::Vector{<:Simulation} = empty([start]),
-		resume = false,
-		altpath = joinpath(
-			pwd(), 
-			"convergencetest_$(basename(tempname()))_$(getname(method)).hdf5"))
+		completedsims::Vector{<:Simulation} = empty([start]))
 
 		maxtime = maxtime isa Real ? maxtime : ustrip(u"s", maxtime)
 
-		(success, path) = ensurefilepath([path, altpath])
-		!success && throw(ErrorException("could not create neceesary data directory"))
-		
-		@reset start.datapath = joinpath(path, "start")
-		@reset start.plotpath = joinpath(path, "start")
 		@reset start.id = "#1"
-
-		!resume && rename_file_if_exists(path)
 
 		fns 	= []
 		s 		= deepcopy(start)
@@ -97,7 +84,6 @@ struct ConvergenceTest
 			maxtime,
 			maxiterations,
 			completedsims,
-			path,
 			fns)
 	end
 end

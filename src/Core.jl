@@ -25,6 +25,9 @@ Run a simulation.
 # Keyword Arguments
 - `savedata::Bool`: save observables and simulation to disk after completion
 - `plotdata::Bool`: create default plots and save them to disk after completion
+- `savedir::String`: path to directory to save data & plots
+- `showinfo::Bool`: log/display simulation info before running
+- `nan_limit::Int`: maximum tolerated number of nans in observables
 
 # Returns
 The observables obtained from the simulation.
@@ -33,15 +36,11 @@ The observables obtained from the simulation.
 [`Simulation`](@ref), [`define_functions`](@ref), [`LinearChunked`](@ref)
 
 """
-function run!(sim::Simulation,functions,solver::DamysosSolver=LinearChunked();
-    savedata=true,
-    saveplots=true,
-    showinfo=true,
-    nan_limit=DEFAULT_NAN_LIMIT)
+function run!(sim::Simulation,functions,solver::DamysosSolver=LinearChunked(); kwargs...)
 
-    prerun!(sim,solver;savedata=savedata,saveplots=saveplots,showinfo=showinfo)
+    prerun!(sim,solver;kwargs...)
     _run!(sim,functions,solver)
-    postrun!(sim;savedata=savedata,saveplots=saveplots,nan_limit=nan_limit)
+    postrun!(sim;kwargs...)
 
     return sim.observables
 end
@@ -67,14 +66,17 @@ function define_functions end
 function prerun!(sim::Simulation,solver::DamysosSolver;
     savedata=true,
     saveplots=true,
-    showinfo=true)
+    savepath=joinpath(pwd(),getname(sim)),
+    showinfo=true,
+    kwargs...)
 
     !solver_compatible(sim,solver) && throw(incompatible_solver_exception(sim,solver))
     showinfo && printinfo(sim,solver)
     
     checkbzbounds(sim)
-    savedata && ensuredirpath(sim.datapath)
-    saveplots && ensuredirpath(sim.plotpath)
+    if savedata || saveplots
+        ensuredirpath(savepath)
+    end
 
     resize_obs!(sim)
     zero.(sim.observables)
@@ -82,7 +84,12 @@ function prerun!(sim::Simulation,solver::DamysosSolver;
     return nothing
 end
 
-function postrun!(sim::Simulation;savedata=true,saveplots=true,nan_limit=DEFAULT_NAN_LIMIT)
+function postrun!(sim::Simulation;
+    savedata=true,
+    saveplots=true,
+    savepath=joinpath(pwd(),getname(sim)),
+    nan_limit=DEFAULT_NAN_LIMIT,
+    kwargs...)
     
     p   = sim.numericalparams
     Δk  = if sim.dimensions == 2
@@ -97,8 +104,8 @@ function postrun!(sim::Simulation;savedata=true,saveplots=true,nan_limit=DEFAULT
     nancount = count_nans(sim.observables)
     nancount > nan_limit && @warn "Too many Nans ($nancount)!"
 
-    savedata && Damysos.savedata(sim)
-    saveplots && plotdata(sim)
+    savedata && Damysos.savedata(sim,savepath)
+    saveplots && plotdata(sim,savepath,kwargs...)
     
     return nothing
 end
@@ -112,8 +119,6 @@ function printinfo(sim::Simulation,solver::DamysosSolver)
         * threads: $(Threads.nthreads())
         * processes: $(Distributed.nprocs())
         * Solver: $(repr(solver))
-        * plotpath: $(sim.plotpath)
-        * datapath: $(sim.datapath)
 
         $(markdown_paramsSI(sim))
         """

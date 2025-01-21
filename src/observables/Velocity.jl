@@ -182,7 +182,7 @@ build_expression_vxinter(h::Hamiltonian) = :(2real(cv * $(vx_vc(h))))
 build_expression_vyintra(h::Hamiltonian) = :(real(cc) * $(vy_cc(h)) + (1-real(cc)) * $(vy_vv(h)))
 build_expression_vyinter(h::Hamiltonian) = :(2real(cv * $(vy_vc(h))))
 
-function build_expression_velocity_svec(h::Hamiltonian)
+function build_expression_velocity_svec(h::Hamiltonian,::Velocity)
 
     vxintra_expr = build_expression_vxintra(h)
     vxinter_expr = build_expression_vxinter(h)
@@ -192,14 +192,14 @@ function build_expression_velocity_svec(h::Hamiltonian)
     return :(SA[$vxintra_expr,$vxinter_expr,$vyintra_expr,$vyinter_expr])
 end
 
-function buildobservable_expression_svec_upt(sim::Simulation,::Velocity)
+function buildobservable_expression_svec_upt(sim::Simulation,v::Velocity)
     
     h   = sim.liouvillian.hamiltonian
     df  = sim.drivingfield
     ax  = vecpotx(df)
     ay  = vecpoty(df)
     
-    vel_expr = build_expression_velocity_svec(h)
+    vel_expr = build_expression_velocity_svec(h,v)
     rules    = Dict(
         :kx => :(p[1] - $ax),
         :ky => :(p[2]),

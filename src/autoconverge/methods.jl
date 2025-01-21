@@ -21,8 +21,6 @@ function ConvergenceTest(
 	rtolgoal::Real = read(file,"rtolgoal"),
 	maxtime::Union{Real, Unitful.Time} = read(file,"maxtime"),
 	maxiterations::Integer = read(file,"maxiterations"),
-	path::String = read(file["testdatafile"]),
-	altpath = joinpath(pwd(), read(file,"testdatafile")),
 	resume = false)
 
 	g 			= file["completedsims"]
@@ -39,9 +37,6 @@ function ConvergenceTest(
 		rtolgoal=rtolgoal,
 		maxtime=maxtime,
 		maxiterations=maxiterations,
-		path=path,
-		altpath = altpath,
-		resume = resume,
 		completedsims = resume ? done_sims : empty([start]))
 end
 
@@ -240,9 +235,7 @@ getname(m::LinearTest)      = "LinearTest_$(m.parameter)"
 
 function next(
 	sim::Simulation,
-	method::Union{PowerLawTest, LinearTest},
-	parentdatapath::String = droplast(sim.datapath),
-	parentplotpath::String = droplast(sim.plotpath))
+	method::Union{PowerLawTest, LinearTest})
 
 	oldparam = getproperty(sim.numericalparams, method.parameter)
 	opt      = PropertyLens(method.parameter)
@@ -256,27 +249,26 @@ function next(
 		params,
 		zero.(sim.observables),
 		sim.unitscaling,
-		id,
-		joinpath(parentdatapath, id),
-		joinpath(parentplotpath, id))
+		id)
 end
 
-function prepare_hdf5_file(test::ConvergenceTest)
+function prepare_hdf5_file(test::ConvergenceTest,
+	filepath=joinpath(pwd(),getname(test)*"_$(test.rtolgoal).hdf5"))
 
-	h5open(test.testdatafile,"cw") do file
+	ensuredirpath(dirname(filepath))
+	h5open(filepath,"cw") do file
 
 		ensuregroup(file,"completedsims")
+		for (name,object) in zip(
+			["atolgoal","rtolgoal","maxtime","maxiterations"],
+			[test.atolgoal,test.rtolgoal,test.maxtime,test.maxiterations])
+			replace_data_hdf5(file,name,object)
+		end
 
 		if "method" ∈ keys(file)
 			delete_object(file["method"])
 		end
 		savedata_hdf5(test.method,file)
-
-		replace_data_hdf5(file,"atolgoal",test.atolgoal)
-		replace_data_hdf5(file,"rtolgoal",test.rtolgoal)
-		replace_data_hdf5(file,"maxtime",test.maxtime)
-		replace_data_hdf5(file,"maxiterations",test.maxiterations)
-		replace_data_hdf5(file,"testdatafile",test.testdatafile)
 
 		if "start" ∈ keys(file)
 			delete_object(file["start"])
@@ -289,12 +281,13 @@ function run!(
 	test::ConvergenceTest;
 	savedata = true,
 	saveplots = false,
+	filepath = joinpath(pwd(),getname(test)*"_$(test.rtolgoal).hdf5"),
 	nan_limit = DEFAULT_NAN_LIMIT,
 	max_nan_retries = DEFAULT_MAX_NAN_RETRIES)
 
 	starting_time 			= now()
 	
-	savedata && prepare_hdf5_file(test)
+	savedata && prepare_hdf5_file(test, filepath)
 
 	@info """
 	## Starting $(repr("text/plain", test))
@@ -303,7 +296,7 @@ function run!(
 	printinfo(test.start,test.solver)
 
 	producer = let t=test,sp=saveplots,nl=nan_limit
-		c::Channel -> _run!(c, t, t.method; saveplots = sp, nan_limit=nl)
+		c::Channel -> _run!(c, t, t.method; nan_limit=nl)
 	end 
 
 	prod_taskref			= Ref{Task}();
@@ -329,8 +322,7 @@ function run!(
 			sim = take!(results)
 			push!(sims,sim)
 
-			savedata && Damysos.savedata(test, sim)
-			saveplots && Damysos.savedata(sim)
+			savedata && Damysos.savedata(test, sim, filepath)
 
 			oe = extrapolate(test)
 			i  = length(sims)
@@ -359,14 +351,15 @@ function run!(
 		retcode = ReturnCode.exception
 	end
 
-	return postrun!(test, seconds_passed_since(starting_time), retcode; savedata = savedata)
+	return postrun!(test, seconds_passed_since(starting_time), retcode; 
+		savedata = savedata,
+		filepath = filepath)
 end
 
 function _run!(
 	c::Channel,
 	test::ConvergenceTest,
 	method::Union{PowerLawTest, LinearTest};
-	saveplots = false,
 	nan_limit = DEFAULT_NAN_LIMIT)
 
 	done_sims        = test.completedsims
@@ -381,7 +374,7 @@ function _run!(
 		run!(currentsim,test.allfunctions[currentiteration],test.solver;
 			showinfo=false,
 			savedata=false,
-			saveplots=saveplots,
+			saveplots=false,
 			nan_limit=nan_limit)
 		
 		put!(c, currentsim)		
@@ -392,7 +385,8 @@ function _run!(
 end
 
 function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, retcode;
-	savedata = true)
+	savedata = true,
+	filepath = joinpath(pwd(),getname(test)*"_$(test.rtolgoal).hdf5"),)
 
 	retcode = terminated_retcode(retcode) ? retcode : ReturnCode.failed
 	
@@ -412,7 +406,7 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, retcode;
 		last_params,
 		oe.observables)
 		
-	savedata && Damysos.savedata(result)
+	savedata && Damysos.savedata(result, filepath)
 	
 	testresult_message(result)
 
@@ -517,7 +511,6 @@ function Base.show(io::IO, ::MIME"text/plain", t::ConvergenceTest)
 	rtolgoal: $(t.rtolgoal)
 	maxtime: $maxtime
 	maxiter: $(t.maxiterations)
-	testdatafile: $(t.testdatafile)
 	"""
 	print(io, prepend_spaces(str, 2))
 end

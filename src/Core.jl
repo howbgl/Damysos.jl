@@ -25,7 +25,7 @@ Run a simulation.
 # Keyword Arguments
 - `savedata::Bool`: save observables and simulation to disk after completion
 - `plotdata::Bool`: create default plots and save them to disk after completion
-- `savedir::String`: path to directory to save data & plots
+- `savepath::String`: path to directory to save data & plots
 - `showinfo::Bool`: log/display simulation info before running
 - `nan_limit::Int`: maximum tolerated number of nans in observables
 
@@ -88,8 +88,7 @@ function postrun!(sim::Simulation;
     savedata=true,
     saveplots=true,
     savepath=joinpath(pwd(),getname(sim)),
-    nan_limit=DEFAULT_NAN_LIMIT,
-    kwargs...)
+    nan_limit=DEFAULT_NAN_LIMIT)
     
     p   = sim.numericalparams
     Δk  = if sim.dimensions == 2
@@ -105,7 +104,7 @@ function postrun!(sim::Simulation;
     nancount > nan_limit && @warn "Too many Nans ($nancount)!"
 
     savedata && Damysos.savedata(sim,savepath)
-    saveplots && plotdata(sim,savepath,kwargs...)
+    saveplots && plotdata(sim,savepath)
     
     return nothing
 end

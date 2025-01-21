@@ -118,7 +118,7 @@ The object is specific to the type of simulation:
 
 With this we can create the `Simulation` object
 ```julia
-julia> sim = Simulation(l,df,pars,obs,us,"simulation-name",pwd(),pwd())
+julia> sim = Simulation(l,df,pars,obs,us,"simulation-name")
 Simulation{Float64} (2d):
  TwoBandDephasingLiouvillian(GappedDirac)
    Hamiltonian: GappedDirac
@@ -157,8 +157,6 @@ Simulation{Float64} (2d):
   timescale: 1000.0 fs
   lengthscale: 550.0 nm
  id: "simulation-name"
- datapath: "path/to/working/dir"
- plotpath: "path/to/working/dir"
 
 ```
 
@@ -172,6 +170,6 @@ LinearChunked:
 
 julia> fns = define_functions(sim,solver);
 
-julia> res = run!(sim,fns,solver;savedata=true,saveplots=true)
+julia> res = run!(sim,fns,solver;savedata=true,saveplots=true,savedir="path/to/savedir")
 
 ```

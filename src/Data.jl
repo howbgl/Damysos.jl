@@ -110,7 +110,7 @@ function savedata_hdf5(sim::Simulation,
 	h5open(filepath, "cw") do file
 		savedata_hdf5(sim, file)
 	end
-	@debug "Saved Simulation data at\n\"$datapath\""
+	@debug "Saved Simulation data at\n\"$filepath\""
 end
 
 function savedata_hdf5(

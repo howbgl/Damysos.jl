@@ -2,7 +2,7 @@ using Damysos,TerminalLoggers,Dates,LoggingExtras
 
 function make_teelogger(logging_path::AbstractString,name::AbstractString)
 
-    ensurepath(logging_path)
+    ensuredirpath(logging_path)
     info_filelogger  = FileLogger(joinpath(logging_path,name)*"_$(now()).log")
     info_logger      = MinLevelLogger(info_filelogger,Logging.Info)
     all_filelogger   = FileLogger(joinpath(logging_path,name)*"_$(now())_debug.log")
@@ -11,7 +11,7 @@ function make_teelogger(logging_path::AbstractString,name::AbstractString)
 end
 
 
-function make_demo_simulation(datapath="~/data",plotpath=datapath)
+function make_demo_simulation()
 
     vf        = u"4.3e5m/s"
     freq      = u"5THz"
@@ -44,18 +44,18 @@ function make_demo_simulation(datapath="~/data",plotpath=datapath)
 
     id      = "demo"
 
-    return Simulation(l,df,pars,obs,us,id,datapath,plotpath)
+    return Simulation(l,df,pars,obs,us,id)
 end
 
 const sim = make_demo_simulation()
-const logger = make_teelogger(sim.plotpath,sim.id)
+const logger = make_teelogger(pwd(),sim.id)
 const solver = LinearChunked(1_024)
 const fns = define_functions(sim,solver)
 
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run!(sim,fns,solver)
+const results,time,rest... = @timed run!(sim,fns,solver;savepath="scripts/demodata")
 
 @info "$(time/60.)min spent in run!(...)"
 @debug rest

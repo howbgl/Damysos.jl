@@ -414,7 +414,7 @@ function plotdata(
                 CairoMakie.save(joinpath(path,"$(lab[1]).png"),figtime,px_per_unit = 4)
                 CairoMakie.save(joinpath(path,"$(lab[1])_spec.png"),
                     figspectra,px_per_unit = 4)
-                @debug "Saved $(lab[1]).pdf at \n\"$plotpath\""
+                @debug "Saved $(lab[1]).pdf at \n\"$path\""
             else
                 @warn "Could not save $((lab[1])) plots"
             end
@@ -564,7 +564,7 @@ function plotbandstructure2d(sim::Simulation,path::String = joinpath(pwd(),getna
         (success,path)  = ensuredirpath([path])
         if success
             CairoMakie.save(joinpath(path,"bandstructure.png"),fig,px_per_unit = 4)
-            @debug "Saved bandstructure.pdf \n\"$plotpath\""
+            @debug "Saved bandstructure.pdf \n\"$path\""
         else
             @warn "Could not save bandstructure plots"
         end

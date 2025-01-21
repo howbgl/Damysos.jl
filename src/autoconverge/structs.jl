@@ -129,5 +129,5 @@ end
 
 struct ObservableExtrapolation{T <: Real}
 	observables::Vector{<:Observable{T}}
-	errs::Vector{<:Vector}
+	errs::Vector{<:Vector{T}}
 end

@@ -20,7 +20,7 @@ function ConvergenceTest(
 	atolgoal::Real = read(file,"atolgoal"),
 	rtolgoal::Real = read(file,"rtolgoal"),
 	maxtime::Union{Real, Unitful.Time} = read(file,"maxtime"),
-	maxiterations::Integer = read(file,"maxiterations"),
+	maxiterations::Integer = convert(Int,read(file,"maxiterations")),
 	resume = false)
 
 	g 			= file["completedsims"]

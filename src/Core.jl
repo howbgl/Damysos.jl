@@ -88,7 +88,8 @@ function postrun!(sim::Simulation;
     savedata=true,
     saveplots=true,
     savepath=joinpath(pwd(),getname(sim)),
-    nan_limit=DEFAULT_NAN_LIMIT)
+    nan_limit=DEFAULT_NAN_LIMIT,
+    kwargs...)
     
     p   = sim.numericalparams
     Δk  = if sim.dimensions == 2

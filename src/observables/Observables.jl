@@ -49,7 +49,7 @@ function extrapolate(obs_h_itr::AbstractVector{<:Tuple{<:Observable{T}, <:Number
     isempty(oh_itr) && return (obs_h_itr[end][1],fill(Inf,fieldcount(O)))
 
     for n in fieldnames(O)
-        field_data = [getproperty(x,n) for x in odata]
+        field_data = deepcopy([getproperty(x,n) for x in odata])
 
         upsample!(field_data)
         data,err =  Richardson.extrapolate([(d,h) for (d,h) in zip(field_data,hdata)];

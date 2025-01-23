@@ -37,6 +37,12 @@ function make_test_simulation_tiny(
 	return Simulation(l, df, pars, obs, us, id)
 end
 
+function test_plotting_simvector(sims::Vector{Simulation})
+	path = "testresults/plots"
+	plotdata(sims, path)
+	return any([occursin(".png",f) for f in readdir(path,join=true)])
+end
+
 const sim = make_test_simulation_tiny()
 
 linchunked = LinearChunked()
@@ -74,4 +80,8 @@ const dt_tests = [ConvergenceTest(
             @test successful_retcode(run!(dt_tests[2];filepath="testresults/dt_cuda.hdf5")) skip = skipcuda
         end
     end
+end
+
+@testset "Plotting" begin
+	@test test_plotting_simvector(dt_tests[1].completedsims)
 end

@@ -116,32 +116,36 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
     return f
 end
 
-function plotdata(ens::Ensemble;
+function plotdata(sims::Vector{Simulation}, path::String = pwd();
     maxharm=DEFAULT_MAX_HARMONIC,
     fftwindow=hanning,
     kwargs...)
     
-    for obs in ens[1].observables
+    for obs in sims[1].observables
         @info "Plotting " * getshortname(obs)
-        plotdata(
-            ens,
-            obs;
-            maxharm=maxharm,
-            fftwindow=fftwindow,
-            kwargs...)
+        try
+            plotdata(
+                sims,
+                obs,
+                path;
+                maxharm=maxharm,
+                fftwindow=fftwindow,
+                kwargs...)
+        catch e
+            @warn "Plotting of $(getshortname(obs)) failed due to $e"
+            continue
+        end
     end
 end
 
 
-function plotdata(
-    ens::Ensemble{T},
-    vel::Velocity{T};
+function plotdata(sims::Vector{Simulation}, vel::Velocity{T}, path::String = pwd();
     maxharm=DEFAULT_MAX_HARMONIC,
     fftwindow=hanning,
+    title = stringexpand_vector([s.id for s in sims]),
     kwargs...) where {T<:Real}
     
-    plotpath    = ens.plotpath
-    rtol        = maximum(getparams(s).rtol for s in ens.simlist)
+    rtol        = maximum(getparams(s).rtol for s in sims)
 
     for (vsymb,vname) in zip([:vx,:vxintra,:vxinter,:vy,:vyintra,:vyinter],
                             ["vx","vxintra","vxinter","vy","vyintra","vyinter"])
@@ -152,11 +156,11 @@ function plotdata(
         frequencies = Vector{T}(undef,0)
         labels      = Vector{String}(undef,0)
 
-        for sim in ens.simlist
+        for sim in sims
             pars        = getparams(sim)
             lc_in_nm    = ustrip(u"nm",pars.lengthscale)
             d           = sim.dimensions
-            ts_in_cyc   = collect(pars.tsamples) .* pars.ν
+            ts_in_cyc   = gettsamples(sim) .* pars.ν
             v           = filter(x -> x isa Velocity,sim.observables)[1]
             v_nm_per_s  = v -> ustrip(u"nm/s",velocitySI(v,sim.unitscaling))
             data        = v_nm_per_s.(getproperty(v,vsymb))
@@ -167,53 +171,40 @@ function plotdata(
             push!(frequencies,pars.ν)
             push!(labels,sim.id)
         end
-        
-        try
-            figtime     = plottimeseries(
-                timeseries,
-                labels,
-                tsamples,
-                title=vname * " (" * ens.id * ")",
-                colors="continuous",
-                ylabel=ens[1].dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
-                kwargs...)
-            figspectra  = plotpowerspectra(timeseries,
-                labels,
-                frequencies,
-                timesteps,
-                rtol,
-                maxharm=maxharm,
-                fftwindow=fftwindow,
-                title=vname * " (" * ens.id * ")",
-                colors="continuous",
-                kwargs...)
-            
-            altpath             = joinpath(pwd(),basename(plotpath))
-            (success,plotpath)  = ensuredirpath([plotpath,altpath])
-            if success
-                CairoMakie.save(joinpath(plotpath,vname*".pdf"),figtime)
-                CairoMakie.save(joinpath(plotpath,vname*".png"),figtime,px_per_unit = 4)
-                CairoMakie.save(joinpath(plotpath,vname*"_spec.pdf"),figspectra)
-                CairoMakie.save(joinpath(plotpath,vname*"_spec.png"),figspectra,
-                    px_per_unit = 4)
-                @debug "Saved $(vname).pdf & $(vname).spec.pdf at\n\"$plotpath\""
-            else
-                @warn "Could not save $(vname) plots"
-            end 
+        @show length.(tsamples)
+        @show length.(timeseries)
 
-        catch e
-            @warn "In plotdata(ens::Ensemble{T},vel::Velocity{T};...)"
-            @error e
-        end            
+        figtime     = plottimeseries(
+            timeseries,
+            labels,
+            tsamples,
+            title=vname * " (" * title * ")",
+            colors="continuous",
+            ylabel=sims[1].dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
+            kwargs...)
+        figspectra  = plotpowerspectra(timeseries,
+            labels,
+            frequencies,
+            timesteps,
+            rtol,
+            maxharm=maxharm,
+            fftwindow=fftwindow,
+            title=vname * " (" * title * ")",
+            colors="continuous",
+            kwargs...)
+        
+        ensuredirpath(path)
+        CairoMakie.save(joinpath(path,vname*".png"),figtime, px_per_unit = 4)
+        CairoMakie.save(joinpath(path,vname*"_spec.png"), figspectra, px_per_unit = 4)
+        @debug "Saved $(vname).png & $(vname)_spec.png at\n\"$path\""
     end
 end
 
 
-function plotdata(
-    ens::Ensemble{T},
-    occ::Occupation{T};
+function plotdata(sims::Vector{Simulation}, vel::Occupation{T}, path::String = pwd();
     maxharm=DEFAULT_MAX_HARMONIC,
     fftwindow=hanning,
+    title = stringexpand_vector([s.id for s in sims]),
     kwargs...) where {T<:Real}
 
     timeseries  = Vector{Vector{T}}(undef,0)
@@ -221,9 +212,8 @@ function plotdata(
     timesteps   = Vector{T}(undef,0)
     frequencies = Vector{T}(undef,0)
     labels      = Vector{String}(undef,0)
-    plotpath    = ens.plotpath
 
-    for sim in ens.simlist
+    for sim in sims
 
         lc      = sim.unitscaling.lengthscale
         pars    = getparams(sim)
@@ -237,29 +227,17 @@ function plotdata(
         push!(labels,sim.id)
     end
 
-    try
-        figtime = plottimeseries(
-            timeseries,
-            labels,
-            tsamples;
-            title="CB occupation" * "(" * ens.id * ")",
-            colors="continuous",
-            kwargs...)
+    figtime = plottimeseries(
+        timeseries,
+        labels,
+        tsamples;
+        title="CB occupation" * "(" * title * ")",
+        colors="continuous",
+        kwargs...)
 
-        altpath             = joinpath(pwd(),basename(plotpath))
-        (success,plotpath)  = ensuredirpath([plotpath,altpath])
-        if success
-            CairoMakie.save(joinpath(plotpath,"cb_occ.pdf"),figtime)
-            CairoMakie.save(joinpath(plotpath,"cb_occ.png"),figtime,px_per_unit = 4)
-            @debug "Saved cb_occ.pdf & cb_occ_spec.pdf at \n\"$plotpath\""
-        else
-            @warn "Could not save occupation plots."
-        end
-
-    catch e
-        @warn "In plotdata(ens::Ensemble{T},occ::Occupation{T};...)"
-        @error e
-    end
+    ensuredirpath(path)
+    CairoMakie.save(joinpath(path,"cb_occ.png"),figtime,px_per_unit = 4)
+    @debug "Saved cb_occ.png at \n\"$path\""
 end
 
 function plotdata(
@@ -273,10 +251,15 @@ function plotdata(
 
     for obs in sim.observables
         @info "Plotting " * getshortname(obs)
-        plotdata(sim,obs,path;
-            fftwindow=fftwindow,
-            maxharm=maxharm,
-            kwargs...)        
+        try
+            plotdata(sim,obs,path;
+                fftwindow=fftwindow,
+                maxharm=maxharm,
+                kwargs...)
+        catch e
+            @warn "Plotting of $(getshortname(obs)) failed due to $e"
+            continue
+        end
     end
 
     plotfield(sim, path)
@@ -308,43 +291,33 @@ function plotdata(
     frequencies = [frequenciesx]
     labels      = [labelsx]
 
-    try
-        for (data,lab,ts,dt,ν) in zip(timeseries,labels,tsamples,timesteps,frequencies)
+    for (data,lab,ts,dt,ν) in zip(timeseries,labels,tsamples,timesteps,frequencies)
 
-            figtime     = plottimeseries(
-                data,
-                lab,
-                ts,
-                title=sim.id,
-                sidelabel=printparamsSI(sim),
-                ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
-                kwargs...)
-            figspectra  = plotpowerspectra(
-                data,
-                lab,
-                ν,
-                dt,
-                p.rtol,
-                maxharm=maxharm,
-                fftwindow=fftwindow,
-                title=sim.id,
-                sidelabel=printparamsSI(sim),
-                kwargs...)
+        figtime     = plottimeseries(
+            data,
+            lab,
+            ts,
+            title=sim.id,
+            sidelabel=printparamsSI(sim),
+            ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
+            kwargs...)
+        figspectra  = plotpowerspectra(
+            data,
+            lab,
+            ν,
+            dt,
+            p.rtol,
+            maxharm=maxharm,
+            fftwindow=fftwindow,
+            title=sim.id,
+            sidelabel=printparamsSI(sim),
+            kwargs...)
 
-            (success,path)  = ensuredirpath([path])
-            if success
-                CairoMakie.save(joinpath(path,"$(lab[1]).png"),figtime,px_per_unit = 4)
-                CairoMakie.save(joinpath(path,"$(lab[1])_spec.png"),
-                    figspectra,px_per_unit = 4)
-                @debug "Saved $(lab[1]).pdf at \n\"$plotpath\""
-            else
-                @warn "Could not save $((lab[1])) plots"
-            end
-        end
-        
-    catch e
-        @warn "In plotdata(sim::Simulation,vel::Velocity;...)"
-        @error e
+        ensuredirpath(path)
+        CairoMakie.save(joinpath(path,"$(lab[1]).png"),figtime,px_per_unit = 4)
+        CairoMakie.save(joinpath(path,"$(lab[1])_spec.png"),
+            figspectra,px_per_unit = 4)
+        @debug "Saved $(lab[1]).png & at $(lab[1])_spec.png \n\"$path\""
     end
 
     return nothing
@@ -386,44 +359,35 @@ function plotdata(
         push!(labels,["vy","vyintra","vyinter"])
     end
 
-    try
-        for (data,lab,ts,dt,ν) in zip(timeseries,labels,tsamples,timesteps,frequencies)
+    for (data,lab,ts,dt,ν) in zip(timeseries,labels,tsamples,timesteps,frequencies)
 
-            figtime     = plottimeseries(
-                data,
-                lab,
-                ts,
-                title=sim.id,
-                sidelabel=printparamsSI(sim),
-                ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
-                kwargs...)
-            figspectra  = plotpowerspectra(
-                data,
-                lab,
-                ν,
-                dt,
-                p.rtol,
-                maxharm=maxharm,
-                fftwindow=fftwindow,
-                title=sim.id,
-                sidelabel=printparamsSI(sim),
-                kwargs...)
+        figtime     = plottimeseries(
+            data,
+            lab,
+            ts,
+            title=sim.id,
+            sidelabel=printparamsSI(sim),
+            ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
+            kwargs...)
+        figspectra  = plotpowerspectra(
+            data,
+            lab,
+            ν,
+            dt,
+            p.rtol,
+            maxharm=maxharm,
+            fftwindow=fftwindow,
+            title=sim.id,
+            sidelabel=printparamsSI(sim),
+            kwargs...)
 
-            (success,path)  = ensuredirpath([path])
-            if success
-                CairoMakie.save(joinpath(path,"$(lab[1]).png"),figtime,px_per_unit = 4)
-                CairoMakie.save(joinpath(path,"$(lab[1])_spec.png"),
-                    figspectra,px_per_unit = 4)
-                @debug "Saved $(lab[1]).pdf at \n\"$path\""
-            else
-                @warn "Could not save $((lab[1])) plots"
-            end
-        end
-        
-    catch e
-        @warn "In plotdata(sim::Simulation,vel::Velocity;...)"
-        @error e
+        ensuredirpath(path)
+        CairoMakie.save(joinpath(path,"$(lab[1]).png"),figtime,px_per_unit = 4)
+        CairoMakie.save(joinpath(path,"$(lab[1])_spec.png"),
+            figspectra,px_per_unit = 4)
+        @debug "Saved $(lab[1]).png & $(lab[1])_spec.png at \n\"$path\""
     end
+        
 
     return nothing
 end
@@ -440,29 +404,19 @@ function plotdata(
     d           = sim.dimensions
     data        = occ.cbocc ./ lc_in_nm^d
     ts_in_cyc   = collect(p.tsamples) .* p.ν
-    try
-        
-        figtime     = plottimeseries(
-            [data],
-            ["CB occupation"],
-            [ts_in_cyc];
-            title=sim.id,
-            sidelabel=printparamsSI(sim),
-            ylabel = sim.dimensions == 1 ? "ρcc [nm^-1]" : "ρcc [nm^-2]",
-            kwargs...)
 
-        (success,path)  = ensuredirpath([path])
-        if success
-            CairoMakie.save(joinpath(path,"cb_occ.png"),figtime,px_per_unit = 4)
-            @debug "Saved cb_occ.pdf at \"$path\"\n"
-        else
-            @warn "Could not save occupation plots"
-        end
+    figtime     = plottimeseries(
+        [data],
+        ["CB occupation"],
+        [ts_in_cyc];
+        title=sim.id,
+        sidelabel=printparamsSI(sim),
+        ylabel = sim.dimensions == 1 ? "ρcc [nm^-1]" : "ρcc [nm^-2]",
+        kwargs...)
 
-    catch e
-        @warn "In plotdata(sim::Simulation{T},occ::Occupation{T};...)"
-        @error e
-    end
+   ensuredirpath(path)
+    CairoMakie.save(joinpath(path,"cb_occ.png"),figtime,px_per_unit = 4)
+    @debug "Saved cb_occ.png at \"$path\"\n"
     
 end
 
@@ -505,7 +459,7 @@ function plotfield(sim::Simulation,path::String = joinpath(pwd(),getname(sim)))
         if success
             CairoMakie.save(joinpath(path,"vecfield.png"),figa,px_per_unit = 4)
             CairoMakie.save(joinpath(path,"efield.png"),fige,px_per_unit = 4)
-            @debug "Saved vecfield.pdf & efield.spec.pdf at \"$path\"\n"
+            @debug "Saved vecfield.png & efield.spec.png at \"$path\"\n"
         else
             @warn "Could not save driving field plots"
         end
@@ -564,7 +518,7 @@ function plotbandstructure2d(sim::Simulation,path::String = joinpath(pwd(),getna
         (success,path)  = ensuredirpath([path])
         if success
             CairoMakie.save(joinpath(path,"bandstructure.png"),fig,px_per_unit = 4)
-            @debug "Saved bandstructure.pdf \n\"$path\""
+            @debug "Saved bandstructure.png \n\"$path\""
         else
             @warn "Could not save bandstructure plots"
         end

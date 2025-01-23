@@ -171,8 +171,6 @@ function plotdata(sims::Vector{Simulation}, vel::Velocity{T}, path::String = pwd
             push!(frequencies,pars.ν)
             push!(labels,sim.id)
         end
-        @show length.(tsamples)
-        @show length.(timeseries)
 
         figtime     = plottimeseries(
             timeseries,
@@ -202,8 +200,6 @@ end
 
 
 function plotdata(sims::Vector{Simulation}, vel::Occupation{T}, path::String = pwd();
-    maxharm=DEFAULT_MAX_HARMONIC,
-    fftwindow=hanning,
     title = stringexpand_vector([s.id for s in sims]),
     kwargs...) where {T<:Real}
 

@@ -56,8 +56,7 @@ end
 function plotpowerspectra(timeseries::Vector{Vector{T}},
                     labels::Vector{String},
                     frequencies::Vector{T},
-                    timesteps::Vector{T},
-                    rtol=1e-10;
+                    timesteps::Vector{T};
                     maxharm=DEFAULT_MAX_HARMONIC,
                     fftwindow=hanning,
                     title="",
@@ -104,9 +103,6 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
         end
         
     end
-    hlines!(ax,[total_ymax*rtol,total_ymax*rtol*1e3],color=:grey)
-    text!(ax,0.05,total_ymax*rtol,text="$rtol",align=(:left,:baseline))
-    text!(ax,0.05,total_ymax*rtol*1e3,text="$(rtol*1e3)",align=(:left,:baseline))
     axislegend(ax,position=:lb)
     Label(f[1,2],sidelabel,tellheight=false,justification = :left)
 
@@ -144,8 +140,6 @@ function plotdata(sims::Vector{Simulation}, vel::Velocity{T}, path::String = pwd
     fftwindow=hanning,
     title = stringexpand_vector([s.id for s in sims]),
     kwargs...) where {T<:Real}
-    
-    rtol        = maximum(getparams(s).rtol for s in sims)
 
     for (vsymb,vname) in zip([:vx,:vxintra,:vxinter,:vy,:vyintra,:vyinter],
                             ["vx","vxintra","vxinter","vy","vyintra","vyinter"])
@@ -184,7 +178,6 @@ function plotdata(sims::Vector{Simulation}, vel::Velocity{T}, path::String = pwd
             labels,
             frequencies,
             timesteps,
-            rtol,
             maxharm=maxharm,
             fftwindow=fftwindow,
             title=vname * " (" * title * ")",
@@ -302,7 +295,6 @@ function plotdata(
             lab,
             ν,
             dt,
-            p.rtol,
             maxharm=maxharm,
             fftwindow=fftwindow,
             title=sim.id,
@@ -370,7 +362,6 @@ function plotdata(
             lab,
             ν,
             dt,
-            p.rtol,
             maxharm=maxharm,
             fftwindow=fftwindow,
             title=sim.id,

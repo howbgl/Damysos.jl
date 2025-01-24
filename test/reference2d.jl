@@ -11,9 +11,7 @@ function make_test_simulation_2d(
 	dkx::Real = 1.0,
 	dky::Real = 1.0,
 	kxmax::Real = 175,
-	kymax::Real = 100,
-	rtol::Real = 1e-5,
-	atol::Real = 1e-12)
+	kymax::Real = 100)
 
 	vf     = u"4.3e5m/s"
 	freq   = u"5THz"
@@ -35,7 +33,7 @@ function make_test_simulation_2d(
 	h    = GappedDirac(energyscaled(m, us))
 	l    = TwoBandDephasingLiouvillian(h, Inf, timescaled(t2, us))
 	df   = GaussianAPulse(us, σ, freq, emax)
-	pars = NumericalParams2d(dkx, dky, kxmax, kymax, dt, -5df.σ, rtol, atol)
+	pars = NumericalParams2d(dkx, dky, kxmax, kymax, dt, -5df.σ)
 	obs  = [Velocity(pars), Occupation(pars)]
 
 	id    = "sim1"

@@ -137,7 +137,7 @@ function getbzbounds(df::DrivingField,p::NumericalParams1d)
 end
 
 function getbzbounds(df::DrivingField,p::NumericalParams2d)
-    bz_1d = getbzbounds(df,NumericalParams1d(p.dkx,p.kxmax,0.0,p.dt,p.t0,p.rtol,p.atol))
+    bz_1d = getbzbounds(df,NumericalParams1d(p.dkx,p.kxmax,0.0,p.dt,p.t0))
     aymax   = maximum_vecpoty(df)
     kymax   = maximum(getkysamples(p))
     return (bz_1d...,-kymax + 1.3aymax,kymax - 1.3aymax)

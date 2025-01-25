@@ -2,6 +2,8 @@ export CartesianKGrid1d
 export CartesianKGrid2d
 export KGrid0d
 
+abstract type CartesianKGrid{T} <: KGrid{T} end
+
 function symmetric_steprange(max::Real, step::Real)
 	step < zero(step) && return symmetric_steprange(max, -step)
 	max < zero(max) && return symmetric_steprange(-max, step)
@@ -11,7 +13,7 @@ function symmetric_steprange(max::Real, step::Real)
 end
 
 """
-	KGrid0d{T}(kx,ky) <: KGrid{T}
+	KGrid0d{T}(kx,ky) <: CartesianKGrid{T}
 
 Zero-dimensional grid, i.e. a single point in k-space.
 
@@ -19,13 +21,13 @@ Zero-dimensional grid, i.e. a single point in k-space.
 [`Simulation`](@ref), [`SymmetricTimeGrid`](@ref), [`CartesianKGrid1d`](@ref),
 [`CartesianKGrid2d`](@ref)
 """
-struct KGrid0d{T <: Real} <: KGrid{T}
+struct KGrid0d{T <: Real} <: CartesianKGrid{T}
     kx::T
     ky::T
 end
 
 """
-	CartesianKGrid1d{T}(dkx, kxmax[, ky]) <: KGrid{T}
+	CartesianKGrid1d{T}(dkx, kxmax[, ky]) <: CartesianKGrid{T}
 
 One-dimensional equidistant samples in k-space in kx direction at `ky`.
 
@@ -33,7 +35,7 @@ One-dimensional equidistant samples in k-space in kx direction at `ky`.
 [`Simulation`](@ref), [`SymmetricTimeGrid`](@ref), [`KGrid0d`](@ref),
 [`CartesianKGrid2d`](@ref)
 """
-struct CartesianKGrid1d{T <: Real} <: KGrid{T} 
+struct CartesianKGrid1d{T <: Real} <: CartesianKGrid{T}
     dkx::T
     kxmax::T
     ky::T
@@ -45,7 +47,7 @@ end
 CartesianKGrid1d(kgrid::Dict) = construct_type_from_dict(CartesianKGrid1d, kgrid)
 
 """
-	CartesianKGrid2d{T}(dkx, kxmax, dky, kymax) <: KGrid{T} 
+	CartesianKGrid2d{T}(dkx, kxmax, dky, kymax) <: CartesianKGrid{T}
 
 Two-dimensional equidistant cartesian grid in reciprocal (k-)space.
 
@@ -53,7 +55,7 @@ Two-dimensional equidistant cartesian grid in reciprocal (k-)space.
 [`Simulation`](@ref), [`SymmetricTimeGrid`](@ref), [`CartesianKGrid1d`](@ref),
 [`KGrid0d`](@ref)
 """
-struct CartesianKGrid2d{T <: Real} <: KGrid{T} 
+struct CartesianKGrid2d{T <: Real} <: CartesianKGrid{T}
     dkx::T
     kxmax::T
     dky::T
@@ -67,23 +69,35 @@ end
 CartesianKGrid2d(kgrid::Dict) = construct_type_from_dict(CartesianKGrid2d, kgrid)
 
 
-function getkxsamples(kgrid::Union{CartesianKGrid1d,CartesianKGrid2d}) 
+struct CartesianKGrid2dStrips{T <: Real} <: CartesianKGrid{T}
+    dkx::T
+    kxmax::T
+    dky::T
+    kymax::T
+    kymin::T
+end
+
+function getkxsamples(kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,CartesianKGrid2dStrips}) 
     return symmetric_steprange(kgrid.kxmax,kgrid.dkx)
 end
 getkxsamples(kgrid::KGrid0d) = [kgrid.kx]
 
+function getkysamples(kgrid::CartesianKGrid2dStrips)
+    fullsamples = symmetric_steprange(kgrid.kymax,kgrid.dky)
+    return fullsamples[abs.(fullsamples) .> kgrid.kymin]
+end
 getkysamples(kgrid::CartesianKGrid2d) = symmetric_steprange(kgrid.kymax,kgrid.dky)
 getkysamples(kgrid::Union{KGrid0d,CartesianKGrid1d}) = [kgrid.ky]
 
-getdimension(kgrid::KGrid0d)            = UInt8(0)
-getdimension(::CartesianKGrid1d)        = UInt8(1)
-getdimension(kgrid::CartesianKGrid2d)   = UInt8(2)
+getdimension(::KGrid0d)                                         = UInt8(0)
+getdimension(::CartesianKGrid1d)                                = UInt8(1)
+getdimension(k::Union{CartesianKGrid2d,CartesianKGrid2dStrips}) = UInt8(2)
 
 
-function getnkx(kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,KGrid0d})
+function getnkx(kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,KGrid0d,CartesianKGrid2dStrips})
     return length(getkxsamples(kgrid))
 end
-function getnky(kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,KGrid0d})
+function getnky(kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,KGrid0d,CartesianKGrid2dStrips})
     return length(getkysamples(kgrid))
 end
 
@@ -92,27 +106,27 @@ for func ∈ (:getkxsamples,:getnkx,:getkysamples,:getnky)
     @eval(Damysos,$func(g::NGrid)       = $func(g.kgrid))
 end
 
-
-function printparamsSI(kgrid::KGrid0d, us::UnitScaling; digits = 3)
-    params  = [("kx",kgrid.dkx), ("ky",kgrid.kxmax)]
-    strings = [param_string(p[1],wavenumberSI(p[2], us),p[2]; digits = digits) for p in params]
-    return strings[1] * "\n" * strings[2] *"\n" 
+function applyweights_afterintegration!(obs::Vector{<:Observable}, kgrid::CartesianKGrid)
+    normalize!.(obs,1 / volume_element(kgrid))
 end
 
-function printparamsSI(kgrid::CartesianKGrid1d, us::UnitScaling; digits = 3)
-    params  = [("dkx",kgrid.dkx), ("kxmax",kgrid.kxmax)]
-    strings = [param_string(p[1],wavenumberSI(p[2], us),p[2]; digits = digits) for p in params]
-    return strings[1] * "\n" * strings[2] *"\n" 
-end
+volume_element(::KGrid0d)                       = 1
+volume_element(kgrid::CartesianKGrid1d)         = kgrid.dkx
+volume_element(kgrid::Union{CartesianKGrid2d,CartesianKGrid2dStrips}) = kgrid.dkx * kgrid.dky
 
-function printparamsSI(kgrid::CartesianKGrid2d, us::UnitScaling; digits = 3)
-    params  = [
-        ("dkx",kgrid.dkx), 
-        ("kxmax",kgrid.kxmax),
-        ("dky",kgrid.dky), 
-        ("kymax",kgrid.kymax)]
-    strings = [param_string(p[1],wavenumberSI(p[2], us),p[2]; digits = digits) for p in params]
-    return strings[1] * "\n" * strings[2] *"\n" 
+function printparamsSI(kgrid::CartesianKGrid, us::UnitScaling; digits = 3)
+
+    symbols     = fieldnames(typeof(kgrid))
+    valuesSI    = [wavenumberSI(getproperty(kgrid,s),us) for s in symbols]
+    values      = [getproperty(kgrid,s) for s in symbols]
+    str         = ""
+
+    for (s,v,vsi) in zip(symbols,values,valuesSI)
+        valSI   = round(typeof(vsi),vsi,sigdigits=digits)
+        val     = round(v,sigdigits=digits)
+        str     *= "$s = $valSI ($val)\n"
+    end
+    return str
 end
 
 
@@ -186,3 +200,11 @@ end
     return kysamples[idx[2]]
 end
 
+ntrajectories(kgrid::CartesianKGrid) = getnkx(kgrid) * getnky(kgrid)
+
+function buildkgrid_chunks(kgrid::CartesianKGrid, kchunksize::Integer)
+	kxs = collect(getkxsamples(kgrid))
+	kys = collect(getkysamples(kgrid))
+	ks  = [getkgrid_point(i, kxs, kys) for i in 1:ntrajectories(kgrid)]
+	return subdivide_vector(ks, kchunksize)
+end

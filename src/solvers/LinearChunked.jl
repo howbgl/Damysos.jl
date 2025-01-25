@@ -1,6 +1,5 @@
 
 export LinearChunked
-export ntrajectories
 
 const DEFAULT_ATOL = Float64(1e-12)
 const DEFAULT_RTOL = Float64(1e-10)
@@ -122,7 +121,7 @@ function buildensemble(
 	bzmask::Function,
 	obsfunction::Function)
 
-	kbatches = buildkgrid_chunks(sim, solver.kchunksize)
+	kbatches = buildkgrid_chunks(sim.grid.kgrid, solver.kchunksize)
 	prob     = buildode(sim, solver, kbatches[1], rhs_cc, rhs_cv)
 	ensprob  = EnsembleProblem(
 	prob,
@@ -191,4 +190,3 @@ function Base.show(io::IO, ::MIME"text/plain", s::LinearChunked)
 	print(io, prepend_spaces(str, 2))
 end
 
-ntrajectories(sim) = getnkx(sim) * getnky(sim)

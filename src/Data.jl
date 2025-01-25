@@ -7,6 +7,7 @@ const LOADABLES = Dict(
 	"Simulation"					=> Simulation,
 	"NGrid{.*?}"					=> NGrid,
 	"CartesianKGrid2d{.*?}"			=> CartesianKGrid2d,
+	"CartesianKGrid2dStrips{.*?}"	=> CartesianKGrid2dStrips,
 	"CartesianKGrid1d{.*?}"			=> CartesianKGrid1d,
 	"SymmetricTimeGrid{.*?}" 		=> SymmetricTimeGrid,
 	"KGrid0d{.*?}"					=> KGrid0d,
@@ -182,7 +183,7 @@ function savedata_hdf5(tgrid::SymmetricTimeGrid,parent::Union{HDF5.File,HDF5.Gro
 end
 
 function savedata_hdf5(
-	kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,KGrid0d},
+	kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,KGrid0d,CartesianKGrid2dStrips},
 	parent::Union{HDF5.File, HDF5.Group})
 	generic_save_hdf5(kgrid, parent, "kgrid")
 end
@@ -221,7 +222,7 @@ function savedata_hdf5(t::ConvergenceTest,parent::Union{HDF5.File, HDF5.Group})
 	g = ensuregroup(parent, "convergence_parameters")
 	if !isempty(t.completedsims)
 		params = [currentvalue(t.method, s) for s in t.completedsims]
-		g[string(t.method.parameter)] = params
+		g[parametername(t.method)] = params
 	end
 	close(g)
 end
@@ -232,9 +233,10 @@ end
 
 function savedata_hdf5(
 	m::Union{PowerLawTest,LinearTest},
-	parent::Union{HDF5.File, HDF5.Group})
+	parent::Union{HDF5.File, HDF5.Group},
+	grpname::String = "method")
 	
-	g = ensuregroup(parent,"method")
+	g = ensuregroup(parent, grpname)
 	g["T"] 			= "$(typeof(m))"
 	g["parameter"] 	= string(m.parameter)
 
@@ -244,6 +246,14 @@ function savedata_hdf5(
 		g["shift"] = m.shift
 	end
 
+	close(g)
+end
+
+function savedata_hdf5(m::ExtendKymaxTest, parent::Union{HDF5.File, HDF5.Group})
+	g 		= ensuregroup(parent, "method")
+	g["T"] 	= "$(typeof(m))"
+	
+	savedata_hdf5(m.extendmethod, g, "extendmethod")
 	close(g)
 end
 

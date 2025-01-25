@@ -134,7 +134,7 @@ function getbzbounds(df::DrivingField,g::CartesianKGrid1d)
     return (-kxmax + 1.3axmax,kxmax - 1.3axmax)
 end
 
-function getbzbounds(df::DrivingField,g::CartesianKGrid2d)
+function getbzbounds(df::DrivingField,g::Union{CartesianKGrid2d,CartesianKGrid2dStrips})
     bz_1d = getbzbounds(df,CartesianKGrid1d(g.dkx,g.kxmax))
     aymax   = maximum_vecpoty(df)
     kymax   = maximum(getkysamples(g))
@@ -152,6 +152,14 @@ function printBZSI(df::DrivingField,g::CartesianKGrid2d,us::UnitScaling;digits=3
     return """
         BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])
         BZ(ky) = [$(bzSI[3]),$(bzSI[4])] ([$(bz[3]),$(bz[4])])\n"""
+end
+
+function printBZSI(df::DrivingField,g::CartesianKGrid2dStrips,us::UnitScaling;digits=3)
+    kymin = wavenumberSI(g.kymin,us)
+    t     = typeof(kymin)
+    str   = printBZSI(df,CartesianKGrid2d(g.dkx,g.kxmax,g.dky,g.kymax),us;digits=digits)
+    str   *= "BZ patched together with previous one at $(round(t,kymin,sigdigits=digits))"
+    return str
 end
 
 function printBZSI(df::DrivingField,g::CartesianKGrid1d,us::UnitScaling;digits=3)

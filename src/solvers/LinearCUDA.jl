@@ -66,7 +66,7 @@ function _run!(
 	solver::LinearCUDA;
 	bypass_memcheck = false)
 
-	kchunks = buildkgrid_chunks(sim, solver.kchunksize)
+	kchunks = buildkgrid_chunks(sim.grid.kgrid, solver.kchunksize)
 	kchunk_batches = subdivide_vector(kchunks, cld(length(kchunks), solver.ngpus))
 
 	synchronize()
@@ -239,7 +239,7 @@ function cuda_memory_estimate_linear(sim::Simulation, fns, solver::LinearCUDA,
 	nts = div.(maxnt, 4:-1:1)
 
 	for nt in nts
-		kchunk = buildkgrid_chunks(sim, nkchunk)[1]
+		kchunk = buildkgrid_chunks(sim.grid.kgrid, nkchunk)[1]
 		nk = length(kchunk) # account for possible nk < nkchunk
 		obs = deepcopy(sim.observables)
 		ts = subdivide_vector(gettsamples(sim), nt)

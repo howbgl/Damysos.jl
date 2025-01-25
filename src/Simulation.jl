@@ -152,13 +152,6 @@ function resize_obs!(sim::Simulation)
 	sim.observables .= [resize(o, sim.grid) for o in sim.observables]
 end
 
-function buildkgrid_chunks(sim::Simulation, kchunksize::Integer)
-	kxs = collect(getkxsamples(sim))
-	kys = collect(getkysamples(sim))
-	ks  = [getkgrid_point(i, kxs, kys) for i in 1:ntrajectories(sim)]
-	return subdivide_vector(ks, kchunksize)
-end
-
 function define_functions(sim::Simulation, solver::DamysosSolver)
 	!solver_compatible(sim, solver) && throw(incompatible_solver_exception(sim, solver))
 	return (

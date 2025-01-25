@@ -9,14 +9,14 @@ Represents a simulation with all physical and numerical parameters specified.
 # Fields
 - `l::Liouvillian{T}`: describes physical system via Liouville operator
 - `df::DrivingField{T}`: laser field driving the system
-- `g::Grid{T}`: time & reciprocal (k-) space discretization
+- `g::NGrid{T}`: time & reciprocal (k-) space discretization
 - `obs::Vector{Observable{T}}`: physical observables to be computed
 - `us::UnitScaling{T}`: time- and lengthscale linking dimensionless units to SI units
 - `id::String`: identifier of the Simulation
 - `dimensions::UInt8`: system can be 0d (single mode),1d or 2d
 
 # See also
-[`Grid`](@ref), [`TwoBandDephasingLiouvillian`](@ref), [`UnitScaling`](@ref),
+[`NGrid`](@ref), [`TwoBandDephasingLiouvillian`](@ref), [`UnitScaling`](@ref),
 [`Velocity`](@ref), [`Occupation`](@ref), [`GaussianAPulse`](@ref)
 """
 struct Simulation{T <: Real}

@@ -11,7 +11,7 @@ Time discretzation of a [`Simulation`](@ref) spanning (-t0,t0) in steps of dt.
 
 # See also
 [`Simulation`](@ref), [`SymmetricTimeGrid`](@ref), [`CartesianKGrid1d`](@ref),
-[`CartesianKGrid2d`](@ref) [`SingleModeKGrid`](@ref)
+[`CartesianKGrid2d`](@ref)
 """
 struct SymmetricTimeGrid{T <: Real} <: TimeGrid{T}
     dt::T

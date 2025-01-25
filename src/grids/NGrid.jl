@@ -11,7 +11,7 @@ Represents the discretzation of a [`Simulation`](@ref) in reciprocal (k-)space a
 
 # See also
 [`Simulation`](@ref), [`SymmetricTimeGrid`](@ref), [`CartesianKGrid1d`](@ref),
-[`CartesianKGrid2d`](@ref) [`SingleModeKGrid`](@ref) [`KGrid0d`](@ref)
+[`CartesianKGrid2d`](@ref) [`KGrid0d`](@ref)
 """
 struct NGrid{T <: Real} <: SimulationComponent{T}
     kgrid::KGrid{T}
@@ -33,6 +33,6 @@ function Base.show(io::IO, ::MIME"text/plain", g::NGrid)
     str *= String(take!(buf))
     Base.show(buf, MIME"text/plain"(), g.tgrid)
     str *= String(take!(buf))
-	println(io, "Grid:")
+	println(io, "NGrid:")
 	print(io, str)
 end

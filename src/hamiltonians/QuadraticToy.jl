@@ -19,9 +19,9 @@ form (SI) would be
 ```jldoctest
 julia> h = QuadraticToy(0.2,1.0)
 QuadraticToy:
- Δ: 0.2
- ζ: 1.0
-
+  Δ: 0.2
+  ζ: 1.0
+ 
 
 ```
 

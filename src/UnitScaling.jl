@@ -36,7 +36,7 @@ Represents a physical length- and time-scale used for non-dimensionalization of 
 
 # Examples
 ```jldoctest
-julia> using Unitful; us = UnitScaling(u"1.0s",u"1.0m")
+julia> us = UnitScaling(u"1.0s",u"1.0m")
 UnitScaling:
  timescale: 1.0e15 fs
  lengthscale: 1.0e9 nm
@@ -134,4 +134,12 @@ end
 function wavenumberscaled(k::Unitful.Wavenumber,us::UnitScaling)
     lc = lengthscaleSI(us)
     return uconvert(Unitful.NoUnits,k*lc)
+end
+
+
+function Base.show(io::IO, ::MIME"text/plain", us::UnitScaling)
+	println(io, getshortname(us) * ":")
+    tc = timescaleSI(us)
+    lc = lengthscaleSI(us)
+	print(io, "timescale: $tc\nlengthscale: $lc" |> prepend_spaces)
 end

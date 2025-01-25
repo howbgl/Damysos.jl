@@ -15,9 +15,8 @@ such that ``\\vec{h}=[k_x,k_y,m]``.
 ```jldoctest
 julia> h = GappedDirac(1.0)
 GappedDirac:
- m: 1.0
- vF: 1.0
-
+  m: 1.0
+  vF: 1.0
 
 ```
 
@@ -101,3 +100,8 @@ getjac(h::GappedDirac) = let m=h.m
         zero(m) zero(m)]
 end
 
+function Base.show(io::IO, ::MIME"text/plain", h::GappedDirac)
+	println(io, getshortname(h) * ":")
+	print(io, printfields_generic(h) |> prepend_spaces)
+    print(io, " vF: 1.0")
+end

@@ -5,9 +5,11 @@ export savedata
 
 const LOADABLES = Dict(
 	"Simulation"					=> Simulation,
-	"NumericalParams2d" 			=> NumericalParams2d,
-	"NumericalParams1d" 			=> NumericalParams1d,
-	"NumericalParamsSingleMode" 	=> NumericalParamsSingleMode,
+	"NGrid{.*?}"					=> NGrid,
+	"CartesianKGrid2d{.*?}"			=> CartesianKGrid2d,
+	"CartesianKGrid1d{.*?}"			=> CartesianKGrid1d,
+	"SymmetricTimeGrid{.*?}" 		=> SymmetricTimeGrid,
+	"KGrid0d{.*?}"					=> KGrid0d,
 	"TwoBandDephasingLiouvillian" 	=> TwoBandDephasingLiouvillian,
 	"GappedDirac" 					=> GappedDirac,
 	"QuadraticToy"					=> QuadraticToy,
@@ -79,7 +81,7 @@ function savedata(result::ConvergenceTestResult,
 		g["elapsed_time_sec"] = result.elapsed_time_sec
 		g["iterations"]       = result.iterations
 
-		generic_save_hdf5(result.last_params, g, "last_params")
+		savedata_hdf5(result.last_params, g, "last_params")
 		savedata_hdf5(result.test, g)
 
 		obs  = result.extrapolated_results
@@ -134,7 +136,7 @@ function savedata_hdf5(
 
 	
 	savedata_hdf5(sim.observables, parent)
-	savedata_hdf5(sim.numericalparams, parent)
+	savedata_hdf5(sim.grid, parent)
 	savedata_hdf5(sim.liouvillian, parent)
 	savedata_hdf5(sim.unitscaling, parent)
 
@@ -156,17 +158,33 @@ function savedata_hdf5(
 end
 
 function savedata_hdf5(
-	p::NumericalParameters,
-	parent::Union{HDF5.File, HDF5.Group})
+	grid::NGrid,
+	parent::Union{HDF5.File, HDF5.Group},
+	grpname::String = "grid")
 
-	g = create_group(parent, "numericalparams")
-	generic_save_hdf5(p, g)
-	g["tsamples"]  = p |> gettsamples |> collect
-	g["kxsamples"] = p |> getkxsamples |> collect
-	if p isa NumericalParams2d
-		g["kysamples"] = p |> getkysamples |> collect
+	g = create_group(parent, grpname)
+	savedata_hdf5(grid.tgrid,g)
+	savedata_hdf5(grid.kgrid,g)
+	
+	g["T"] 		   = "$(typeof(grid))"
+	g["tsamples"]  = grid |> gettsamples |> collect
+	if getdimension(grid) >= 1
+		g["kxsamples"] = grid |> getkxsamples |> collect
+	end
+	if getdimension(grid) == 2
+		g["kysamples"] = grid |> getkysamples |> collect
 	end
 	close(g)
+end
+
+function savedata_hdf5(tgrid::SymmetricTimeGrid,parent::Union{HDF5.File,HDF5.Group})
+	generic_save_hdf5(tgrid, parent, "tgrid")
+end
+
+function savedata_hdf5(
+	kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,KGrid0d},
+	parent::Union{HDF5.File, HDF5.Group})
+	generic_save_hdf5(kgrid, parent, "kgrid")
 end
 
 function savedata_hdf5(us::UnitScaling, parent::Union{HDF5.File, HDF5.Group})
@@ -285,7 +303,14 @@ end
 # Generic method simply extracts primitive numeric values (or Dicts if substructure exists)
 # from fieldnames(...)
 function construct_type_from_dict(
-	t::Type{<:Union{SimulationComponent,Observable,Hamiltonian}},
+	t::Type{<:Union{
+		SimulationComponent,
+		Observable,
+		Hamiltonian,
+		CartesianKGrid1d,
+		CartesianKGrid2d,
+		KGrid0d,
+		SymmetricTimeGrid}},
 	d::Dict{String})
 
     names = String.(fieldnames(t))
@@ -309,7 +334,7 @@ function construct_type_from_dict(::Type{<:Simulation},d::Dict{String})
 	return Simulation(
 		construct_type_from_dict(d["liouvillian"]),
 		construct_type_from_dict(d["drivingfield"]),
-		construct_type_from_dict(d["numericalparams"]),
+		construct_type_from_dict(d["grid"]),
 		[construct_type_from_dict(d["observables"])...], # Vector{Obs} => Vector{Obs{T}}
 		construct_type_from_dict(d["unitscaling"]),
 		d["id"],

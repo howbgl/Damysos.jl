@@ -88,7 +88,7 @@ function define_bzmask(sim::Simulation)
 
     bz = getbzbounds(sim)
     ax = vecpotx(sim.drivingfield)
-    dkx = sim.numericalparams.dkx
+    dkx = sim.grid.kgrid.dkx
 
     @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2]))
 end
@@ -108,45 +108,43 @@ function write_ensemblesols_to_observables!(sim::Simulation,data)
     return sim.observables
 end
 
-function getmovingbz(sim::Simulation)
-    p = getparams(sim)
-    return getmovingbz(sim,p.kxsamples)
-end
+getmovingbz(sim::Simulation) = getmovingbz(sim,getkxsamples(sim))
 
 function getmovingbz(sim::Simulation{T},kxsamples::AbstractVector{T}) where {T<:Real}
-    p              = getparams(sim)
-    nkx            = length(kxsamples)
+    nkx            = getnkx(sim)
     ax             = get_vecpotx(sim.drivingfield)
     ay             = get_vecpoty(sim.drivingfield)
-    moving_bz      = zeros(T,nkx,p.nt)
-    bzmask1d(kx)   = sig((kx-p.bz[1])/(2*p.dkx)) * sig((p.bz[2]-kx)/(2*p.dkx))
+    moving_bz      = zeros(T,nkx,getnt(sim))
+    dkx            = sim.grid.kgrid.dkx
+    bz             = getbzbounds(sim)
+    bzmask1d(kx)   = sig((kx-bz[1])/(2*dkx)) * sig((bz[2]-kx)/(2*dkx))
 
-    for i in 1:p.nt
+    for i in 1:getnt(sim)
         moving_bz[:,i] .= bzmask1d.(kxsamples .- ax(p.tsamples[i]))
     end
     return moving_bz    
 end
 
 
-getbzbounds(::DrivingField,::NumericalParamsSingleMode) = ()
+getbzbounds(::DrivingField,::KGrid0d) = ()
 
-function getbzbounds(df::DrivingField,p::NumericalParams1d)
+function getbzbounds(df::DrivingField,g::CartesianKGrid1d)
     axmax   = maximum_vecpotx(df)
-    kxmax   = maximum(getkxsamples(p))
+    kxmax   = maximum(getkxsamples(g))
     return (-kxmax + 1.3axmax,kxmax - 1.3axmax)
 end
 
-function getbzbounds(df::DrivingField,p::NumericalParams2d)
-    bz_1d = getbzbounds(df,NumericalParams1d(p.dkx,p.kxmax,0.0,p.dt,p.t0))
+function getbzbounds(df::DrivingField,g::CartesianKGrid2d)
+    bz_1d = getbzbounds(df,CartesianKGrid1d(g.dkx,g.kxmax))
     aymax   = maximum_vecpoty(df)
-    kymax   = maximum(getkysamples(p))
+    kymax   = maximum(getkysamples(g))
     return (bz_1d...,-kymax + 1.3aymax,kymax - 1.3aymax)
 end
 
 
-function printBZSI(df::DrivingField,p::NumericalParams2d,us::UnitScaling;digits=3)
+function printBZSI(df::DrivingField,g::CartesianKGrid2d,us::UnitScaling;digits=3)
     
-    bz    = getbzbounds(df,p)
+    bz    = getbzbounds(df,g)
     bzSI  = [wavenumberSI(k,us) for k in bz]
     bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
     bz    = [round(x,sigdigits=digits) for x in bz]
@@ -156,9 +154,9 @@ function printBZSI(df::DrivingField,p::NumericalParams2d,us::UnitScaling;digits=
         BZ(ky) = [$(bzSI[3]),$(bzSI[4])] ([$(bz[3]),$(bz[4])])\n"""
 end
 
-function printBZSI(df::DrivingField,p::NumericalParams1d,us::UnitScaling;digits=3)
+function printBZSI(df::DrivingField,g::CartesianKGrid1d,us::UnitScaling;digits=3)
     
-    bz    = getbzbounds(df,p)
+    bz    = getbzbounds(df,g)
     bzSI  = [wavenumberSI(k,us) for k in bz]
     bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
     bz    = [round(x,sigdigits=digits) for x in bz]
@@ -167,6 +165,6 @@ function printBZSI(df::DrivingField,p::NumericalParams1d,us::UnitScaling;digits=
         BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])\n"""
 end
 
-function printBZSI(df::DrivingField,p::NumericalParamsSingleMode,us::UnitScaling;digits=3)
+function printBZSI(df::DrivingField,g::KGrid0d,us::UnitScaling;digits=3)
     return ""
 end

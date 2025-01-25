@@ -12,6 +12,7 @@ using DataFrames
 using DSP
 using EnumX
 using HDF5
+using Infiltrator
 using Interpolations
 using LinearAlgebra
 using ProgressLogging
@@ -32,26 +33,29 @@ export DamysosSolver
 export DrivingField
 export Hamiltonian
 export Liouvillian
-export NumericalParameters
+export NGrid
 
 abstract type DamysosSolver end
 abstract type Observable{T} end
 abstract type SimulationComponent{T} end
 abstract type Hamiltonian{T} end
+abstract type KGrid{T} end
+abstract type TimeGrid{T} end
 abstract type Liouvillian{T}            <: SimulationComponent{T} end
 abstract type DrivingField{T}           <: SimulationComponent{T} end
-abstract type NumericalParameters{T}    <: SimulationComponent{T} end
 
 
 include("Utility.jl")
 include("general_hamiltonian/GeneralTwoBand.jl")
 include("UnitScaling.jl")
+include("grids/NGrid.jl")
 include("Simulation.jl")
+include("grids/SymmetricTimeGrid.jl")
 include("hamiltonians/GappedDirac.jl")
 include("hamiltonians/QuadraticToy.jl")
 include("Liouvillian.jl")
 include("drivingfields/DrivingFields.jl")
-include("NumericalParams.jl")
+include("grids/symmetric_cartesian_kgrids.jl")
 include("observables/Observables.jl")
 include("printdimless_params.jl")
 include("equationsofmotion.jl")

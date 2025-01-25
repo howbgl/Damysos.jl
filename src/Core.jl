@@ -91,11 +91,10 @@ function postrun!(sim::Simulation;
     nan_limit=DEFAULT_NAN_LIMIT,
     kwargs...)
     
-    p   = sim.numericalparams
     Δk  = if sim.dimensions == 2
-            p.dkx * p.dky
+            sim.grid.kgrid.dkx * sim.grid.kgrid.dky
         elseif sim.dimensions == 1
-            p.dkx 
+            sim.grid.kgrid.dkx 
         elseif sim.dimensions == 0
             1.0
         end

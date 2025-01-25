@@ -29,8 +29,8 @@ struct GappedDirac{T<:Real} <: GeneralTwoBand{T}
 end
 
 function GappedDirac(us::UnitScaling,m::Unitful.Energy,vf::Unitful.Velocity)
-    p = getparams(us)
-    delta = uconvert(Unitful.NoUnits,m*p.timescale/Unitful.ħ)
+    
+    delta = uconvert(Unitful.NoUnits,m*timescaleSI(us)/ħ)
     if velocityscaled(vf,us) ≈ 1.0
         return GappedDirac(delta)
     else

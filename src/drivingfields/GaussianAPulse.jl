@@ -36,10 +36,12 @@ function GaussianAPulse(us::UnitScaling,
                     fieldstrength::Unitful.EField,
                     φ=0,
                     θ=0)
-    p   = getparams(us)
-    σ   = uconvert(Unitful.NoUnits,standard_dev/p.timescale)
-    ω   = uconvert(Unitful.NoUnits,2π*frequency*p.timescale)
-    eE  = uconvert(Unitful.NoUnits,q_e*p.timescale*p.lengthscale*fieldstrength/Unitful.ħ)
+    
+    tc  = timescaleSI(us)
+    lc  = lengthscaleSI(us)
+    σ   = uconvert(Unitful.NoUnits,standard_dev/tc)
+    ω   = uconvert(Unitful.NoUnits,2π*frequency*tc)
+    eE  = uconvert(Unitful.NoUnits,q_e*tc*lc*fieldstrength/ħ)
     return GaussianAPulse(promote(σ,ω,eE,φ,θ)...)
 end
 
@@ -47,9 +49,6 @@ end
 export GaussianPulse
 GaussianPulse = GaussianAPulse
 
-function getparams(df::GaussianAPulse)
-    return (σ=df.σ,ν=df.ω/2π,ω=df.ω,eE=df.eE,φ=df.φ,ħω=df.ω,θ=df.θ)
-end
 
 @inline function get_efieldx(df::GaussianAPulse)
     return t-> cos(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
@@ -124,7 +123,6 @@ central_angular_frequency(df::GaussianAPulse) = df.ω
 
 function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)
 
-    p       = getparams(df)
     σ       = timeSI(df.σ,us)
     ω       = uconvert(u"fs^-1",frequencySI(df.ω,us))
     ħω      = uconvert(u"eV",energySI(df.ω,us))
@@ -134,7 +132,7 @@ function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)
 
     symbols     = [:σ,:ω,:ν,:eE,:φ,:ħω]
     valuesSI    = [σ,ω,ν,eE,φ,ħω]
-    values      = [getproperty(p,s) for s in symbols]
+    values      = [df.σ,df.ω,central_frequency(df),df.eE,df.ω]
     str         = ""
 
     for (s,v,vsi) in zip(symbols,values,valuesSI)

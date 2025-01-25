@@ -2,10 +2,12 @@ using CUDA
 using CSV
 using Damysos
 using DataFrames
+using HDF5
 using LoggingExtras
 using TerminalLoggers
 using Test
 
+import Damysos.load_obj_hdf5
 
 function make_test_simulation_tiny(
 	dt::Real = 0.01,
@@ -27,12 +29,14 @@ function make_test_simulation_tiny(
 	h    = GappedDirac(energyscaled(m, us))
 	l    = TwoBandDephasingLiouvillian(h, Inf, timescaled(t2, us))
 	df   = GaussianAPulse(us, σ, freq, emax)
-	pars = NumericalParams2d(dkx, dky, kxmax, kymax, dt, -5df.σ)
-	obs  = [Velocity(pars), Occupation(pars)]
+	tgrid = SymmetricTimeGrid(dt, -5df.σ)
+	kgrid = CartesianKGrid2d(dkx, kxmax, dky, kymax)
+	grid = NGrid(kgrid,tgrid)
+	obs  = [Velocity(grid), Occupation(grid)]
 
 	id    = "sim1"
 
-	return Simulation(l, df, pars, obs, us, id)
+	return Simulation(l, df, grid, obs, us, id)
 end
 
 function test_plotting_simvector(sims::Vector{Simulation})
@@ -41,9 +45,14 @@ function test_plotting_simvector(sims::Vector{Simulation})
 	return any([occursin(".png",f) for f in readdir(path,join=true)])
 end
 
+function test_continue_ctest(test::ConvergenceTest,path::String)
+	loaded_test = ConvergenceTest(path,LinearCUDA(),resume=true)
+	return all(test.completedsims .≈ loaded_test.completedsims)
+end
+
 const sim = make_test_simulation_tiny()
 
-linchunked = LinearChunked()
+linchunked = LinearChunked(256,EnsembleThreads(),Vern7(),1e-8,0.01)
 
 skipcuda = false
 
@@ -82,4 +91,8 @@ end
 
 @testset "Plotting" begin
 	@test test_plotting_simvector(dt_tests[1].completedsims)
+end
+
+@testset "HDF5 loading" begin
+	@test test_continue_ctest(dt_tests[1],"testresults/dt_linchunked.hdf5")
 end

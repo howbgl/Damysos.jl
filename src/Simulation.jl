@@ -2,38 +2,38 @@ export Simulation
 
 
 """
-	Simulation{T}(l, df, p, obs, us, d[, id])
+	Simulation{T}(l, df, g, obs, us, d[, id])
 
 Represents a simulation with all physical and numerical parameters specified.
 
 # Fields
 - `l::Liouvillian{T}`: describes physical system via Liouville operator
 - `df::DrivingField{T}`: laser field driving the system
-- `p::NumericalParameters{T}`: all numerical parameters of the system
+- `g::Grid{T}`: time & reciprocal (k-) space discretization
 - `obs::Vector{Observable{T}}`: physical observables to be computed
 - `us::UnitScaling{T}`: time- and lengthscale linking dimensionless units to SI units
 - `id::String`: identifier of the Simulation
 - `dimensions::UInt8`: system can be 0d (single mode),1d or 2d
 
 # See also
-[`Ensemble`](@ref), [`TwoBandDephasingLiouvillian`](@ref), [`UnitScaling`](@ref),
+[`Grid`](@ref), [`TwoBandDephasingLiouvillian`](@ref), [`UnitScaling`](@ref),
 [`Velocity`](@ref), [`Occupation`](@ref), [`GaussianAPulse`](@ref)
 """
 struct Simulation{T <: Real}
 	liouvillian::Liouvillian{T}
 	drivingfield::DrivingField{T}
-	numericalparams::NumericalParameters{T}
+	grid::NGrid{T}
 	observables::Vector{Observable{T}}
 	unitscaling::UnitScaling{T}
 	id::String
 	dimensions::UInt8
-	function Simulation{T}(l, df, p, obs, us, id, d) where {T <: Real}
-		if d != getdimension(p)
+	function Simulation{T}(l, df, g, obs, us, id, d) where {T <: Real}
+		if d != getdimension(g)
 			@warn """
 			The dimension d=$d does not match the the NumericalParameters.
 			Overwriting to d=$(getdimension(p)) instead."""
 		end
-		new(l, df, p, obs, us, id, getdimension(p))
+		new(l, df, g, obs, us, id, getdimension(g))
 	end
 end
 
@@ -42,24 +42,24 @@ Simulation(path::String) = load_obj_hdf5(path)
 function Simulation(
 	l::Liouvillian{T},
 	df::DrivingField{T},
-	p::NumericalParameters{T},
+	g::NGrid{T},
 	obs::Vector{<:Observable{T}},
 	us::UnitScaling{T},
 	id::String,
-	d::Integer = getdimension(p)) where {T <: Real}
+	d::Integer = getdimension(g)) where {T <: Real}
 
-	return Simulation{T}(l, df, p, [obs...], us, id, UInt8(d))
+	return Simulation{T}(l, df, g, [obs...], us, id, UInt8(d))
 end
 
 function Simulation(
 	l::Liouvillian,
 	df::DrivingField,
-	p::NumericalParameters,
+	g::NGrid,
 	obs::Vector{<:Observable},
 	us::UnitScaling)
 
-	id = string(hash([l, df, p, obs, us]), base = 16)
-	return Simulation(l, df, p, [obs...], us, id)
+	id = string(hash([l, df, g, obs, us]), base = 16)
+	return Simulation(l, df, g, [obs...], us, id)
 end
 
 
@@ -89,7 +89,7 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", c::Union{SimulationComponent, Hamiltonian})
 	println(io, getshortname(c) * ":")
-	print(io, c |> getparams |> stringexpand_nt |> prepend_spaces)
+	print(io, printfields_generic(c) |> prepend_spaces)
 end
 
 
@@ -104,9 +104,21 @@ function Base.isapprox(
 	rtol = atol > 0 ? 0 : √eps(promote_type(T, U)),
 	nans::Bool = false) where {T, U}
 
-	coll = zip(s1.observables, s2.observables)
+	allobs = []
+	for obs1 in s1.observables
+		for obs2 in s2.observables 
+			if typeof(obs1) == typeof(obs2)
+				push!(allobs, (obs1, obs2))
+				break
+			end
+		end
+	end
+	if length(allobs) != length(s1.observables) || length(allobs) != length(s2.observables)
+		return false
+	end
+
 	return all([Base.isapprox(o1, o2; 
-        atol = atol, rtol = rtol, nans = nans) for (o1, o2) in coll])
+        atol = atol, rtol = rtol, nans = nans) for (o1, o2) in allobs])
 end
 
 
@@ -115,32 +127,6 @@ function getshortname(sim::Simulation{T}) where {T <: Real}
 		   getshortname(sim.drivingfield)
 end
 
-function getparams(sim::Simulation)
-
-	numpars   = getparams(sim.numericalparams)
-	fieldpars = getparams(sim.drivingfield)
-
-	if sim.dimensions == 1
-		bztuple = (bz = (
-			-numpars.kxmax + 1.3 * fieldpars.eE / fieldpars.ω,
-			numpars.kxmax - 1.3 * fieldpars.eE / fieldpars.ω,
-		),)
-	elseif sim.dimensions == 2
-		bztuple = (bz = (
-			-numpars.kxmax + 1.3 * fieldpars.eE / fieldpars.ω,
-			numpars.kxmax - 1.3 * fieldpars.eE / fieldpars.ω,
-			-numpars.kymax,
-			numpars.kymax,
-		),)
-	end
-
-	merge((bz = getbzbounds(sim),),
-		getparams(sim.liouvillian),
-		fieldpars,
-		numpars,
-		getparams(sim.unitscaling),
-		(dimensions = sim.dimensions,))
-end
 
 getnames_obs(sim::Simulation) = vcat(getnames_obs.(sim.observables)...)
 arekresolved(sim::Simulation) = vcat(arekresolved.(sim.observables)...)
@@ -151,24 +137,24 @@ getshortname(obs::Observable)        = split("$obs", '{')[1]
 getshortname(c::SimulationComponent) = split("$c", '{')[1]
 
 
-getbzbounds(sim::Simulation) = getbzbounds(sim.drivingfield, sim.numericalparams)
+getbzbounds(sim::Simulation) = getbzbounds(sim.drivingfield, sim.grid.kgrid)
 
 function checkbzbounds(sim::Simulation)
-	sim.numericalparams isa NumericalParamsSingleMode && return
 	bz = getbzbounds(sim)
-	if bz[1] > bz[2] || (sim.dimensions == 2 && bz[3] > bz[4])
+	if isempty(bz)
+		return
+	elseif bz[1] > bz[2] || (sim.dimensions == 2 && bz[3] > bz[4])
 		@warn "Brillouin zone vanishes: $(bz)"
 	end
 end
 
 function resize_obs!(sim::Simulation)
-
-	sim.observables .= [resize(o, sim.numericalparams) for o in sim.observables]
+	sim.observables .= [resize(o, sim.grid) for o in sim.observables]
 end
 
 function buildkgrid_chunks(sim::Simulation, kchunksize::Integer)
-	kxs = collect(getkxsamples(sim.numericalparams))
-	kys = collect(getkysamples(sim.numericalparams))
+	kxs = collect(getkxsamples(sim))
+	kys = collect(getkysamples(sim))
 	ks  = [getkgrid_point(i, kxs, kys) for i in 1:ntrajectories(sim)]
 	return subdivide_vector(ks, kchunksize)
 end
@@ -197,13 +183,13 @@ function printparamsSI(sim::Simulation; digits = 3)
     us  = sim.unitscaling
     l   = sim.liouvillian
     df  = sim.drivingfield
-    p   = sim.numericalparams
+    g   = sim.grid
 	str = printdimless_params(l, df)
 
-	str *= printBZSI(df, p, us, digits = digits)
+	str *= printBZSI(df, g.kgrid, us, digits = digits)
 	str *= printparamsSI(l, us; digits = digits)
 	str *= printparamsSI(df, us; digits = digits)
-	str *= printparamsSI(p, us; digits = digits)
+	str *= printparamsSI(g, us; digits = digits)
 	return str
 end
 

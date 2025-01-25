@@ -65,7 +65,7 @@ struct ConvergenceTest
 			f = define_functions(s, solver)
 			@debug """
 				Defining functions (iteration $i)
-					$(s.numericalparams)
+					$(s.grid)
 					$(s.drivingfield)
 					$(s.liouvillian)
 					
@@ -122,7 +122,7 @@ struct ConvergenceTestResult
 	min_achieved_rtol::Real
 	elapsed_time_sec::Real
 	iterations::Integer
-	last_params::NumericalParameters
+	last_params::NGrid
 	extrapolated_results::Vector{<:Observable}
 end
 

@@ -47,7 +47,7 @@ function ConvergenceTestResult(
 	min_achieved_rtol::Real,
 	elapsed_time_sec::Real,
 	iterations::Integer,
-	last_params::NumericalParameters)
+	last_params::NGrid)
 	
 	return ConvergenceTestResult(
 		test,
@@ -113,7 +113,7 @@ function dryrun(
 				achieved_tol...,
 				0.0,
 				i,
-				s.numericalparams)
+				s.grid)
 			!isnothing(outpath) &&  Damysos.savedata(r)
 			return r
 		else
@@ -139,7 +139,7 @@ function dryrun(
 		achieved_tol...,
 		0.0,
 		length(t.completedsims),
-		t.completedsims[end].numericalparams)
+		t.completedsims[end].grid)
 	!isnothing(outpath) &&  Damysos.savedata(r)
 	return r
 end
@@ -213,7 +213,11 @@ function getsimindex(sim::Simulation)
 end
 
 function currentvalue(m::Union{PowerLawTest, LinearTest}, sim::Simulation)
-	return getproperty(sim.numericalparams, m.parameter)
+	if m.parameter in fieldnames(typeof(sim.grid.tgrid))
+		return getproperty(sim.grid.tgrid, m.parameter)
+	else
+		return getproperty(sim.grid.kgrid, m.parameter)
+	end
 end
 
 function invert_h(m::Union{PowerLawTest, LinearTest})
@@ -237,16 +241,24 @@ function next(
 	sim::Simulation,
 	method::Union{PowerLawTest, LinearTest})
 
-	oldparam = getproperty(sim.numericalparams, method.parameter)
-	opt      = PropertyLens(method.parameter)
+	oldparam = if method.parameter in fieldnames(typeof(sim.grid.tgrid))
+		getproperty(sim.grid.tgrid, method.parameter)
+	else
+		getproperty(sim.grid.kgrid, method.parameter)
+	end
+	opt = if method.parameter in fieldnames(typeof(sim.grid.tgrid))
+		opcompose(PropertyLens(:tgrid), PropertyLens(method.parameter))
+	else
+		opcompose(PropertyLens(:kgrid), PropertyLens(method.parameter))
+	end
 	newparam = nextvalue(oldparam, method)
-	params   = set(deepcopy(sim.numericalparams), opt, newparam)
+	grid   	= set(deepcopy(sim.grid), opt, newparam)
 	id       = "#$(getsimindex(sim)+1)_$(method.parameter)=$newparam"
 
 	Simulation(
 		sim.liouvillian,
 		sim.drivingfield,
-		params,
+		grid,
 		zero.(sim.observables),
 		sim.unitscaling,
 		id)
@@ -393,9 +405,8 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, retcode;
 	oe 			 = extrapolate(test)
 	achieved_tol = findminimum_precision(oe,test.atolgoal)
 	
-	last_params =
-	isempty(test.completedsims) ? test.start.numericalparams :
-	test.completedsims[end].numericalparams
+	done_sims   = test.completedsims
+	last_params = isempty(done_sims) ? test.start.grid : done_sims[end].grid
 	
 	result = ConvergenceTestResult(
 		test,

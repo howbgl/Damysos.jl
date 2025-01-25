@@ -69,7 +69,7 @@ function _run!(
 		solver.odesolver,
 		solver.algorithm;
 		trajectories = length(kchunks),
-		saveat = gettsamples(sim.numericalparams),
+		saveat = gettsamples(sim),
 		abstol = solver.atol,
 		reltol = solver.rtol,
 		progress = true)
@@ -146,7 +146,7 @@ function buildode(
 	rhs_cc::Function,
 	rhs_cv::Function) where {T <: Real}
 
-	tspan = gettspan(sim.numericalparams)
+	tspan = gettspan(sim)
 	u0    = zeros(Complex{T}, 2length(kbatch))
 
 	function f(du, u, p, t)
@@ -191,4 +191,4 @@ function Base.show(io::IO, ::MIME"text/plain", s::LinearChunked)
 	print(io, prepend_spaces(str, 2))
 end
 
-ntrajectories(sim) = getnkx(sim.numericalparams) * getnky(sim.numericalparams)
+ntrajectories(sim) = getnkx(sim) * getnky(sim)

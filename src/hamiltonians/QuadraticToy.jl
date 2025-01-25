@@ -34,9 +34,9 @@ struct QuadraticToy{T<:Real} <: GeneralTwoBand{T}
 end
 
 function QuadraticToy(us::UnitScaling,gap::Unitful.Energy,mass::Unitful.Mass)
-    p = getparams(us)
-    lc = p.lengthscale
-    tc = p.timescale
+    
+    lc = lengthscaleSI(us)
+    tc = timescale(us)
     delta = uconvert(Unitful.NoUnits,gap * tc / Unitful.ħ)
     zeta  = uconvert(Unitful.NoUnits,Unitful.ħ * tc / (lc^2 * mass))
     return QuadraticToy(delta,zeta)
@@ -70,7 +70,8 @@ jac(h::QuadraticToy) = @SMatrix [
 
 function printparamsSI(h::QuadraticToy,us::UnitScaling;digits=3)
 
-    tc,lc   = getparams(us)
+    tc      = timescaleSI(us)
+    lc      = timescaleSI(us)
     Δ       = energySI(h.Δ,us)
     m       = uconvert(u"kg",ħ*tc / (h.Δ*lc^2))
     

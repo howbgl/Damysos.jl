@@ -33,12 +33,14 @@ function make_test_simulation_2d(
 	h    = GappedDirac(energyscaled(m, us))
 	l    = TwoBandDephasingLiouvillian(h, Inf, timescaled(t2, us))
 	df   = GaussianAPulse(us, σ, freq, emax)
-	pars = NumericalParams2d(dkx, dky, kxmax, kymax, dt, -5df.σ)
-	obs  = [Velocity(pars), Occupation(pars)]
+	tgrid = SymmetricTimeGrid(dt, -5df.σ)
+	kgrid = CartesianKGrid2d(dkx, kxmax, dky, kymax)
+	grid = NGrid(kgrid,tgrid)
+	obs  = [Velocity(grid), Occupation(grid)]
 
 	id    = "sim1"
 
-	return Simulation(l, df, pars, obs, us, id)
+	return Simulation(l, df, grid, obs, us, id)
 end
 
 

@@ -151,18 +151,18 @@ function plotdata(sims::Vector{Simulation}, vel::Velocity{T}, path::String = pwd
         labels      = Vector{String}(undef,0)
 
         for sim in sims
-            pars        = getparams(sim)
-            lc_in_nm    = ustrip(u"nm",pars.lengthscale)
+            lc_in_nm    = ustrip(u"nm",lengthscaleSI(sim.unitscaling))
+            ν           = central_frequency(sim.drivingfield)
             d           = sim.dimensions
-            ts_in_cyc   = gettsamples(sim) .* pars.ν
+            ts_in_cyc   = gettsamples(sim) .* ν
             v           = filter(x -> x isa Velocity,sim.observables)[1]
             v_nm_per_s  = v -> ustrip(u"nm/s",velocitySI(v,sim.unitscaling))
             data        = v_nm_per_s.(getproperty(v,vsymb))
 
             push!(timeseries,data)
             push!(tsamples,ts_in_cyc)
-            push!(timesteps,pars.dt)
-            push!(frequencies,pars.ν)
+            push!(timesteps,getdt(sim))
+            push!(frequencies,ν)
             push!(labels,sim.id)
         end
 
@@ -192,7 +192,7 @@ function plotdata(sims::Vector{Simulation}, vel::Velocity{T}, path::String = pwd
 end
 
 
-function plotdata(sims::Vector{Simulation}, vel::Occupation{T}, path::String = pwd();
+function plotdata(sims::Vector{Simulation}, ::Occupation{T}, path::String = pwd();
     title = stringexpand_vector([s.id for s in sims]),
     kwargs...) where {T<:Real}
 
@@ -205,14 +205,14 @@ function plotdata(sims::Vector{Simulation}, vel::Occupation{T}, path::String = p
     for sim in sims
 
         lc      = sim.unitscaling.lengthscale
-        pars    = getparams(sim)
+        ν       = central_frequency(sim.drivingfield)
         o       = filter(x -> x isa Occupation,sim.observables)[1]
         data    = o.cbocc  / (lc^sim.dimensions)
 
         push!(timeseries,data)
-        push!(tsamples,pars.tsamples)
-        push!(timesteps,pars.dt)
-        push!(frequencies,pars.ν)
+        push!(tsamples,collect(gettsamples(sim)))
+        push!(timesteps,getdt(sim))
+        push!(frequencies,ν)
         push!(labels,sim.id)
     end
 
@@ -264,14 +264,15 @@ function plotdata(
     maxharm=DEFAULT_MAX_HARMONIC,
     kwargs...)
 
-    p           = getparams(sim)
-    ts_in_cyc   = collect(p.tsamples) .* p.ν
+    dt          = getdt(sim)
+    ν           = central_frequency(sim.drivingfield)
+    ts_in_cyc   = collect(gettsamples(sim)) .* ν
     velocities  = [vel.vx,vel.vxintra,vel.vxinter]
     v_nm_per_s  = v -> ustrip(u"nm/s",velocitySI(v,sim.unitscaling))
     timeseriesx = [v_nm_per_s.(x) for x in velocities]
     tsamplesx   = [ts_in_cyc,ts_in_cyc,ts_in_cyc]
-    timestepsx  = [p.dt,p.dt,p.dt]
-    frequenciesx = [p.ν,p.ν,p.ν]
+    timestepsx  = [dt,dt,dt]
+    frequenciesx = [ν,ν,ν]
     labelsx     = ["vx", "vxintra", "vxinter"]
 
     timeseries  = [timeseriesx]
@@ -320,15 +321,16 @@ function plotdata(
     maxharm=DEFAULT_MAX_HARMONIC,
     kwargs...)
 
-    p           = getparams(sim)
+    dt          = getdt(sim)
+    ν           = central_frequency(sim.drivingfield)
     d           = sim.dimensions
-    ts_in_cyc   = collect(p.tsamples) .* p.ν
+    ts_in_cyc   = collect(gettsamples(sim)) .* ν
     velocities  = [vel.vx,vel.vxintra,vel.vxinter]
     v_nm_per_s  = v -> ustrip(u"nm/s",velocitySI(v,sim.unitscaling))
     timeseriesx = [v_nm_per_s.(x) for x in velocities]
     tsamplesx   = [ts_in_cyc,ts_in_cyc,ts_in_cyc]
-    timestepsx  = [p.dt,p.dt,p.dt]
-    frequenciesx = [p.ν,p.ν,p.ν]
+    timestepsx  = [dt,dt,dt]
+    frequenciesx = [ν,ν,ν]
     labelsx     = ["vx", "vxintra", "vxinter"]
 
     timeseries  = [timeseriesx]
@@ -386,11 +388,12 @@ function plotdata(
     path::String = joinpath(pwd(),getname(sim));
     kwargs...) where {T<:Real}
 
-    p           = getparams(sim)
-    lc_in_nm    = ustrip(u"nm",p.lengthscale)
+    dt          = getdt(sim)
+    ν           = central_frequency(sim.drivingfield)
+    lc_in_nm    = ustrip(u"nm",lengthscaleSI(sim.unitscaling))
     d           = sim.dimensions
     data        = occ.cbocc ./ lc_in_nm^d
-    ts_in_cyc   = collect(p.tsamples) .* p.ν
+    ts_in_cyc   = collect(gettsamples(sim)) .* ν
 
     figtime     = plottimeseries(
         [data],
@@ -413,17 +416,18 @@ function plotfield(sim::Simulation,path::String = joinpath(pwd(),getname(sim)))
     @info "Plotting driving field"
 
     name    = getname(sim)
-    p       = getparams(sim)
-    ts      = collect(p.tsamples)
+    ts      = collect(gettsamples(sim))
     ax      = get_vecpotx(sim)
     ay      = get_vecpoty(sim)
     ex      = get_efieldx(sim)
     ey      = get_efieldy(sim)
 
-    ts_in_cyc           = collect(p.tsamples) .* p.ν
-    e                   = uconvert(u"C",u"1eV" / u"1V")
-    vecpot_SI_factor    = ustrip(u"MV*fs/cm",Unitful.ħ/(e*p.lengthscale))
-    field_SI_factor     = ustrip(u"MV/cm",Unitful.ħ/(e*p.lengthscale*p.timescale))
+    ν                   = central_frequency(sim.drivingfield)
+    ts_in_cyc           = ts .* ν
+    tc                  = timescaleSI(sim.unitscaling)
+    lc                  = lengthscaleSI(sim.unitscaling)
+    vecpot_SI_factor    = ustrip(u"MV*fs/cm",Unitful.ħ/(q_e*lc))
+    field_SI_factor     = ustrip(u"MV/cm",Unitful.ħ/(q_e*lc*tc))
     try
         figa    = plottimeseries(
             [ax.(ts) .* vecpot_SI_factor,ay.(ts) .* vecpot_SI_factor],
@@ -471,13 +475,13 @@ function plotbandstructure2d(sim::Simulation,path::String = joinpath(pwd(),getna
     plotkgrid=false,nk=2048)
     
     @info "Plotting bandstructure"
-
-    p           = getparams(sim)
-    bzSI        = [ustrip(u"Å^-1",wavenumberSI(k,sim.unitscaling)) for k in p.bz]
+    
+    bz          = getbzbounds(sim)
+    bzSI        = [ustrip(u"Å^-1",wavenumberSI(k,sim.unitscaling)) for k in bz]
     bzSI_kx     = [bzSI[1],bzSI[2],bzSI[2],bzSI[1],bzSI[1]] 
     bzSI_ky     = [bzSI[3],bzSI[3],bzSI[4],bzSI[4],bzSI[3]] 
     Δϵ          = getΔϵ(sim)
-    kmax        = maximum([p.kxmax,p.kymax])
+    kmax        = maximum([maximum(getkxsamples(sim)),maximum(getkysamples(sim))])
     dk          = 2kmax/nk
     ks          = -kmax:dk:kmax
     ksSI        = [ustrip(u"Å^-1",wavenumberSI(k,sim.unitscaling)) for k in ks]
@@ -494,8 +498,10 @@ function plotbandstructure2d(sim::Simulation,path::String = joinpath(pwd(),getna
         cont = contourf!(ax,ksSI,ksSI,zdataSI)
         Colorbar(fig[1,2],cont)
         if plotkgrid
-            for ky in p.kysamples
-                scatter!(ax,collect(p.kxsamples),fill(ky,p.nkx);color=:black,markersize=1.2)
+            for ky in getkysamples(sim)
+                scatter!(ax,collect(getkxsamples(sim)),fill(ky,getnkx(sim));
+                    color=:black,
+                    markersize=1.2)
             end
         end
         lines!(ax,bzSI_kx,bzSI_ky,color=:black)

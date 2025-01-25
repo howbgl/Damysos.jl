@@ -169,7 +169,7 @@ function solvechunk(
 		solver.algorithm;
 		save_everystep = false,
 		saveat = tsamples,
-		dt = sim.numericalparams.dt)
+		dt = sim.grid.tgrid.dt)
 
 	return ts, us
 end

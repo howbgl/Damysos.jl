@@ -32,9 +32,9 @@ end
 
 # TODO make this file more concise, atm it is copy & paste from Velocity.jl
 
-function VelocityX(p::NumericalParameters{T}) where {T<:Real}
+function VelocityX(g::NGrid{T}) where {T<:Real}
 
-    nt          = getnt(p)
+    nt          = getnt(g)
     vxintra     = zeros(T,nt)
     vxinter     = zeros(T,nt)
     vx          = zeros(T,nt)
@@ -51,7 +51,7 @@ function VelocityX(
     return VelocityX(vxintra .+ vxinter,vxintra,vxinter)
 end
 
-resize(v::VelocityX,p::NumericalParameters) = VelocityX(p)
+resize(v::VelocityX,g::NGrid) = VelocityX(g)
 
 function resize(::VelocityX{T},nt::Integer) where {T<:Real}
     return VelocityX(zeros(T,nt),zeros(T,nt),zeros(T,nt))
@@ -70,7 +70,6 @@ end
 
 
 getnames_obs(v::VelocityX)   = ["vx","vxintra","vxinter"]
-getparams(v::VelocityX)      = getnames_obs(v)
 arekresolved(v::VelocityX)   = [false,false,false]
 
 

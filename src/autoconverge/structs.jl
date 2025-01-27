@@ -53,7 +53,7 @@ struct ConvergenceTest
 		maxiterations::Integer = 16,
 		completedsims::Vector{<:Simulation} = empty([start]))
 
-		check_compatibility(start,method)
+		@argcheck check_compatibility(start,method)
 
 		maxtime = maxtime isa Real ? maxtime : ustrip(u"s", maxtime)
 

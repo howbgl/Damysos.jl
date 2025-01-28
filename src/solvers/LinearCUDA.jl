@@ -2,31 +2,31 @@
 export LinearCUDA
 
 """
-	LinearCUDA{T}
+	LinearCUDA
 
 Represents an integration strategy for k-space via simple midpoint sum, where individual
 k points are computed concurrently on one or several CUDA GPU(s)
 
 # Fields
-- `kchunksize::T`: number of k-points in one concurrently executed chunk. 
+- `kchunksize::Int64`: number of k-points in one concurrently executed chunk. 
 - `algorithm::GPUODEAlgorithm`: algorithm for solving differential equations
-- `ngpus::Int`: number of GPUs to use
+- `ngpus::Int64`: number of GPUs to use
 
 # See also
 [`LinearChunked`](@ref LinearChunked), [`SingleMode`](@ref SingleMode)
 """
-struct LinearCUDA{T <: Integer} <: DamysosSolver
-	kchunksize::T
+struct LinearCUDA <: DamysosSolver
+	kchunksize::Int64
 	algorithm::DiffEqGPU.GPUODEAlgorithm
-	ngpus::Integer
-	function LinearCUDA{T}(
-		kchunksize::T = default_kchunk_size(LinearCUDA),
+	ngpus::Int64
+	function LinearCUDA(
+		kchunksize::Int64 = default_kchunk_size(LinearCUDA),
 		algorithm::DiffEqGPU.GPUODEAlgorithm = GPUVern7(),
-		ngpus::Integer=length(CUDA.devices())) where {T}
+		ngpus::Int64 = convert(Int64, CUDA.functional() ? length(CUDA.devices()) : 1))
 
 		if CUDA.functional()
 			_ngpus = length(CUDA.devices())
-			if _ngpus < ngpus 
+			if _ngpus < ngpus
 				@warn """
 					Only $(_ngpus) GPUs available (requested $ngpus)
 					Proceeding with $(_ngpus) GPUs"""
@@ -34,7 +34,7 @@ struct LinearCUDA{T <: Integer} <: DamysosSolver
 				@warn """
 					Only requested $ngpus out of the $(_ngpus) available GPUs.
 					Proceeding with $(ngpus) GPUs"""
-					_ngpus = ngpus
+				_ngpus = ngpus
 			end
 			return new(kchunksize, algorithm, _ngpus)
 		else
@@ -44,15 +44,7 @@ struct LinearCUDA{T <: Integer} <: DamysosSolver
 	end
 end
 
-
-function LinearCUDA(
-	kchunksize::Integer = default_kchunk_size(LinearCUDA),
-	algorithm::DiffEqGPU.GPUODEAlgorithm = GPUVern7(),
-	ngpus::Integer=CUDA.functional() ? length(CUDA.devices()) : 1)
-	return LinearCUDA{typeof(kchunksize)}(kchunksize, algorithm, ngpus)
-end
-
-default_kchunk_size(::Type{LinearCUDA}) = 10_000
+default_kchunk_size(::Type{LinearCUDA}) = Int64(10_000)
 
 function solver_compatible(sim::Simulation, ::LinearCUDA)
 	return sim.dimensions == 2 || sim.dimensions == 1
@@ -73,20 +65,20 @@ function _run!(
 	functions,
 	solver::LinearCUDA;
 	bypass_memcheck = false)
-	
-	kchunks 		= buildkgrid_chunks(sim,solver.kchunksize)
-	kchunk_batches  = subdivide_vector(kchunks,cld(length(kchunks),solver.ngpus))
-	
+
+	kchunks = buildkgrid_chunks(sim.grid.kgrid, solver.kchunksize)
+	kchunk_batches = subdivide_vector(kchunks, cld(length(kchunks), solver.ngpus))
+
 	synchronize()
 
-	function work(d,kcs)
+	function work(d, kcs)
 		device!(d)
-		res = runtimeslices!(sim,functions,solver,kcs;bypass_memcheck=bypass_memcheck)
+		res = runtimeslices!(sim, functions, solver, kcs; bypass_memcheck = bypass_memcheck)
 		CUDA.reclaim()
 		return res
 	end
 
-	obs_batches 	= asyncmap(work,devices(),kchunk_batches)
+	obs_batches = asyncmap(work, devices(), kchunk_batches)
 	sim.observables .= sum(obs_batches)
 
 	return sim.observables
@@ -103,10 +95,10 @@ function runtimeslices!(
 		"CUDA.jl is not functional, cannot use LinearCUDA solver."))
 
 	obs_kchunks = Vector{Vector{Observable}}(undef, 0)
-	ts, obs 	= ([gettsamples(sim)], [sim.observables])
+	ts, obs = ([gettsamples(sim)], [sim.observables])
 
 	if !bypass_memcheck
-		actual_n_kchunk = minimum((solver.kchunksize,length(kchunks[1])))
+		actual_n_kchunk = minimum((solver.kchunksize, length(kchunks[1])))
 		ts, obs = build_tchunks_if_necessary(sim, functions, solver, actual_n_kchunk)
 	end
 
@@ -177,7 +169,7 @@ function solvechunk(
 		solver.algorithm;
 		save_everystep = false,
 		saveat = tsamples,
-		dt = sim.numericalparams.dt)
+		dt = sim.grid.tgrid.dt)
 
 	return ts, us
 end
@@ -243,11 +235,11 @@ function cuda_memory_estimate_linear(sim::Simulation, fns, solver::LinearCUDA,
 
 	GC.gc(true)
 	CUDA.reclaim()
-	maxnt = minimum((getnt(sim),5_000))
-	nts = div.(maxnt,4:-1:1)
+	maxnt = minimum((getnt(sim), 5_000))
+	nts = div.(maxnt, 4:-1:1)
 
 	for nt in nts
-		kchunk = buildkgrid_chunks(sim, nkchunk)[1]
+		kchunk = buildkgrid_chunks(sim.grid.kgrid, nkchunk)[1]
 		nk = length(kchunk) # account for possible nk < nkchunk
 		obs = deepcopy(sim.observables)
 		ts = subdivide_vector(gettsamples(sim), nt)
@@ -258,7 +250,7 @@ function cuda_memory_estimate_linear(sim::Simulation, fns, solver::LinearCUDA,
 		sum_observables!(cu(kchunk), d_us, d_ts, bzmask, obs, obsfuncs; free_memory = false)
 
 		free, tot = CUDA.memory_info()
-		push!(mem_fractions, (tot - free) / (tot * nk) )
+		push!(mem_fractions, (tot - free) / (tot * nk))
 
 		CUDA.unsafe_free!(d_ts)
 		CUDA.unsafe_free!(d_us)
@@ -267,7 +259,7 @@ function cuda_memory_estimate_linear(sim::Simulation, fns, solver::LinearCUDA,
 
 	end
 
-	return linear_fit(nts,mem_fractions)
+	return linear_fit(nts, mem_fractions)
 end
 
 

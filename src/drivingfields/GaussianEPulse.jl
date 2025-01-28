@@ -30,10 +30,11 @@ function GaussianEPulse(us::UnitScaling,
                     fieldstrength::Unitful.EField,
                     φ=0,
                     ϕ=0)
-    p   = getparams(us)
-    σ   = uconvert(Unitful.NoUnits,standard_dev/p.timescale)
-    ω   = uconvert(Unitful.NoUnits,2π*frequency*p.timescale)
-    eE  = uconvert(Unitful.NoUnits,q_e*p.timescale*p.lengthscale*fieldstrength/Unitful.ħ)
+    tc  = timescaleSI(us)
+    lc  = lengthscaleSI(us)
+    σ   = uconvert(Unitful.NoUnits,standard_dev/tc)
+    ω   = uconvert(Unitful.NoUnits,2π*frequency*tc)
+    eE  = uconvert(Unitful.NoUnits,q_e*tc*lc*fieldstrength/ħ)
     return GaussianEPulse(promote(σ,ω,eE,φ,ϕ)...)
 end
 
@@ -129,7 +130,6 @@ central_angular_frequency(df::GaussianEPulse) = df.ω
 
 function printparamsSI(df::GaussianEPulse,us::UnitScaling;digits=4)
 
-    p       = getparams(df)
     σ       = timeSI(df.σ,us)
     ω       = uconvert(u"fs^-1",frequencySI(df.ω,us))
     ħω      = uconvert(u"eV",energySI(df.ω,us))
@@ -139,7 +139,7 @@ function printparamsSI(df::GaussianEPulse,us::UnitScaling;digits=4)
 
     symbols     = [:σ,:ω,:ν,:eE,:φ,:ħω]
     valuesSI    = [σ,ω,ν,eE,φ,ħω]
-    values      = [getproperty(p,s) for s in symbols]
+    values      = [df.σ,df.ω,central_frequency(df),df.eE,df.φ,df.ω]
     str         = ""
 
     for (s,v,vsi) in zip(symbols,values,valuesSI)

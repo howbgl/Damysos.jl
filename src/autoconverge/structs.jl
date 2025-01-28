@@ -2,6 +2,7 @@ export ConvergenceTest
 export ConvergenceTestMethod
 export ConvergenceTestResult
 export CTestStart
+export ExtendKymaxTest
 export LinearTest
 export PowerLawTest
 
@@ -52,6 +53,8 @@ struct ConvergenceTest
 		maxiterations::Integer = 16,
 		completedsims::Vector{<:Simulation} = empty([start]))
 
+		check_compatibility(start, method, solver)
+
 		maxtime = maxtime isa Real ? maxtime : ustrip(u"s", maxtime)
 
 		@reset start.id = "#1"
@@ -65,7 +68,7 @@ struct ConvergenceTest
 			f = define_functions(s, solver)
 			@debug """
 				Defining functions (iteration $i)
-					$(s.numericalparams)
+					$(s.grid)
 					$(s.drivingfield)
 					$(s.liouvillian)
 					
@@ -94,7 +97,7 @@ end
 A convergence method where `parameter` is changed by adding `shift` each iteration.
 
 # See also
-[`ConvergenceTest`](@ref), [`PowerLawTest`](@ref)
+[`ConvergenceTest`](@ref), [`PowerLawTest`](@ref) [`ExtendKymaxTest`](@ref)
 """
 struct LinearTest{T <: Real} <: ConvergenceTestMethod
 	parameter::Symbol
@@ -107,12 +110,31 @@ end
 A convergence method multiplying `parameter` by `multiplier` each iteration.
 
 # See also
-[`ConvergenceTest`](@ref), [`LinearTest`](@ref)
+[`ConvergenceTest`](@ref), [`LinearTest`](@ref) [`ExtendKymaxTest`](@ref)
 """
 struct PowerLawTest{T <: Real} <: ConvergenceTestMethod
 	parameter::Symbol
 	multiplier::T
 end
+
+"""
+    ExtendKymaxTest(extendmethod::ConvergenceTestMethod)
+
+Specialized for extending the integration region in ky-direction avoided re-calculation.
+
+# See also
+[`ConvergenceTest`](@ref), [`LinearTest`](@ref) [`PowerLawTest`](@ref)
+"""
+struct ExtendKymaxTest <: ConvergenceTestMethod
+	extendmethod::ConvergenceTestMethod
+	function ExtendKymaxTest(extendmethod::ConvergenceTestMethod)
+		@argcheck extendmethod isa Union{LinearTest,PowerLawTest}
+		@argcheck extendmethod.parameter == :kymax
+		return new(extendmethod)
+	end
+end
+
+# TODO Fix ExtendKymaxTest for LinearChunked
 
 "Result of a ConvergenceTest"
 struct ConvergenceTestResult
@@ -122,7 +144,7 @@ struct ConvergenceTestResult
 	min_achieved_rtol::Real
 	elapsed_time_sec::Real
 	iterations::Integer
-	last_params::NumericalParameters
+	last_params::NGrid
 	extrapolated_results::Vector{<:Observable}
 end
 

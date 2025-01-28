@@ -40,6 +40,26 @@ function ConvergenceTest(
 		completedsims = resume ? done_sims : empty([start]))
 end
 
+function check_compatibility(sim::Simulation, m::ConvergenceTestMethod, s::DamysosSolver)
+	if m isa ExtendKymaxTest 
+		if s isa LinearChunked
+			@warn "ExtendKymaxTest using LinearChunked is bugged atm (to be fixed soon)."
+		end
+		if sim.drivingfield isa Union{GaussianAPulse, GaussianEPulse} 
+			if sim.drivingfield.φ == 0.0
+				return nothing
+			end
+		end
+		throw(ArgumentError(
+			"""
+			ExtendKymaxTest is only compatible with GaussianAPulse/GaussianEPulse along
+			kx-direction (φ=0). Non-trivial BZ stuff not implemented yet.
+			"""))
+	else
+		return nothing
+	end
+end
+
 function ConvergenceTestResult(
 	test::ConvergenceTest,
 	retcode::ReturnCode.T,
@@ -47,7 +67,7 @@ function ConvergenceTestResult(
 	min_achieved_rtol::Real,
 	elapsed_time_sec::Real,
 	iterations::Integer,
-	last_params::NumericalParameters)
+	last_params::NGrid)
 	
 	return ConvergenceTestResult(
 		test,
@@ -113,7 +133,7 @@ function dryrun(
 				achieved_tol...,
 				0.0,
 				i,
-				s.numericalparams)
+				s.grid)
 			!isnothing(outpath) &&  Damysos.savedata(r)
 			return r
 		else
@@ -139,7 +159,7 @@ function dryrun(
 		achieved_tol...,
 		0.0,
 		length(t.completedsims),
-		t.completedsims[end].numericalparams)
+		t.completedsims[end].grid)
 	!isnothing(outpath) &&  Damysos.savedata(r)
 	return r
 end
@@ -202,8 +222,12 @@ function terminated_retcode(path::String)
 	end
 end
 
-nextvalue(oldvalue::Real, method::PowerLawTest) = method.multiplier * oldvalue
-nextvalue(oldvalue::Real, method::LinearTest)   = oldvalue + method.shift
+parametername(m::ConvergenceTestMethod) = string(m.parameter)
+parametername(m::ExtendKymaxTest) 		= parametername(m.extendmethod)
+
+nextvalue(oldvalue::Real, method::PowerLawTest)    = method.multiplier * oldvalue
+nextvalue(oldvalue::Real, method::LinearTest)      = oldvalue + method.shift
+nextvalue(oldvalue::Real, method::ExtendKymaxTest) = nextvalue(oldvalue,method.extendmethod)
 
 function getsimindex(sim::Simulation)
 	m = match(r"(?<=#)\d+",sim.id)
@@ -212,8 +236,21 @@ function getsimindex(sim::Simulation)
 	return parse(Int,m.match)
 end
 
-function currentvalue(m::Union{PowerLawTest, LinearTest}, sim::Simulation)
-	return getproperty(sim.numericalparams, m.parameter)
+currentvalue(m::ExtendKymaxTest, sim::Simulation) 		= currentvalue(m.extendmethod,sim)
+currentvalue(m::ConvergenceTestMethod, sim::Simulation) = currentvalue(m, sim.grid)
+
+function currentvalue(m::ConvergenceTestMethod, grid::NGrid)
+	if m.parameter in fieldnames(typeof(grid.tgrid))
+		return currentvalue(m, grid.tgrid)
+	else
+		return currentvalue(m, grid.kgrid)
+	end
+end
+
+function currentvalue(
+	m::Union{PowerLawTest, LinearTest},
+	grid::Union{CartesianKGrid, SymmetricTimeGrid})
+	return getproperty(grid, m.parameter)
 end
 
 function invert_h(m::Union{PowerLawTest, LinearTest})
@@ -223,8 +260,20 @@ function invert_h(m::Union{PowerLawTest, LinearTest})
 		return false
 	end
 end
+invert_h(::ExtendKymaxTest) = true
 
-function getfilename(m::Union{PowerLawTest, LinearTest}, sim::Simulation)
+function extendsim_kymax(sim::Simulation, previoussim::Simulation)
+	kg 			= sim.grid.kgrid 
+	extendkgrid = CartesianKGrid2dStrips(
+		kg.dkx,
+		kg.kxmax,
+		kg.dky,
+		kg.kymax,
+		previoussim.grid.kgrid.kymax)
+	return @set sim.grid.kgrid = extendkgrid
+end
+
+function getfilename(m::Union{PowerLawTest, LinearTest, ExtendKymaxTest}, sim::Simulation)
 	return "$(m.parameter)=$(currentvalue(m,sim))_$(round(now(),Dates.Second))"
 end
 
@@ -232,25 +281,35 @@ end
 getname(t::ConvergenceTest) = "convergencetest_$(getname(t.start))_$(getname(t.method))"
 getname(m::PowerLawTest)    = "PowerLawTest_$(m.parameter)"
 getname(m::LinearTest)      = "LinearTest_$(m.parameter)"
+getname(m::ExtendKymaxTest) = "ExtendKymaxTest_$(getname(m.extendmethod))"
 
 function next(
 	sim::Simulation,
 	method::Union{PowerLawTest, LinearTest})
 
-	oldparam = getproperty(sim.numericalparams, method.parameter)
-	opt      = PropertyLens(method.parameter)
+	oldparam = if method.parameter in fieldnames(typeof(sim.grid.tgrid))
+		getproperty(sim.grid.tgrid, method.parameter)
+	else
+		getproperty(sim.grid.kgrid, method.parameter)
+	end
+	opt = if method.parameter in fieldnames(typeof(sim.grid.tgrid))
+		opcompose(PropertyLens(:tgrid), PropertyLens(method.parameter))
+	else
+		opcompose(PropertyLens(:kgrid), PropertyLens(method.parameter))
+	end
 	newparam = nextvalue(oldparam, method)
-	params   = set(deepcopy(sim.numericalparams), opt, newparam)
+	grid   	= set(deepcopy(sim.grid), opt, newparam)
 	id       = "#$(getsimindex(sim)+1)_$(method.parameter)=$newparam"
 
 	Simulation(
 		sim.liouvillian,
 		sim.drivingfield,
-		params,
+		grid,
 		zero.(sim.observables),
 		sim.unitscaling,
 		id)
 end
+next(sim::Simulation, method::ExtendKymaxTest) = next(sim,method.extendmethod)
 
 function prepare_hdf5_file(test::ConvergenceTest,
 	filepath=joinpath(pwd(),getname(test)*"_$(test.rtolgoal).hdf5"))
@@ -359,26 +418,36 @@ end
 function _run!(
 	c::Channel,
 	test::ConvergenceTest,
-	method::Union{PowerLawTest, LinearTest};
+	method::Union{PowerLawTest, LinearTest, ExtendKymaxTest};
 	nan_limit = DEFAULT_NAN_LIMIT)
 
 	done_sims        = test.completedsims
 	currentiteration = length(done_sims)
 	currentsim 		 = currentiteration == 0 ? test.start : next(done_sims[end], method)
+	previoussim 	 = nothing
 
 	while currentiteration < test.maxiterations && isopen(c)
 
 		currentiteration += 1
 		@debug "Check index: $(currentiteration) ?= $(getsimindex(currentsim))"
+		if method isa ExtendKymaxTest && currentiteration > 1
+			currentsim = extendsim_kymax(currentsim, previoussim)
+		end
 		
 		run!(currentsim,test.allfunctions[currentiteration],test.solver;
 			showinfo=false,
 			savedata=false,
 			saveplots=false,
 			nan_limit=nan_limit)
+
+		if method isa ExtendKymaxTest && currentiteration > 1
+			currentsim.observables .= previoussim.observables .+ currentsim.observables
+		end
 		
-		put!(c, currentsim)		
-		currentsim = next(currentsim, method)
+		put!(c, currentsim)
+
+		previoussim = deepcopy(currentsim)		
+		currentsim 	= next(currentsim, method)
 	end
 	close(c)
 	return nothing
@@ -393,9 +462,8 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, retcode;
 	oe 			 = extrapolate(test)
 	achieved_tol = findminimum_precision(oe,test.atolgoal)
 	
-	last_params =
-	isempty(test.completedsims) ? test.start.numericalparams :
-	test.completedsims[end].numericalparams
+	done_sims   = test.completedsims
+	last_params = isempty(done_sims) ? test.start.grid : done_sims[end].grid
 	
 	result = ConvergenceTestResult(
 		test,

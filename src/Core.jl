@@ -91,15 +91,8 @@ function postrun!(sim::Simulation;
     nan_limit=DEFAULT_NAN_LIMIT,
     kwargs...)
     
-    p   = sim.numericalparams
-    Δk  = if sim.dimensions == 2
-            p.dkx * p.dky
-        elseif sim.dimensions == 1
-            p.dkx 
-        elseif sim.dimensions == 0
-            1.0
-        end
-    normalize!.(sim.observables,(2π)^sim.dimensions / Δk)
+    applyweights_afterintegration!(sim.observables, sim.grid.kgrid)
+    normalize!.(sim.observables,(2π)^sim.dimensions)
 
     nancount = count_nans(sim.observables)
     nancount > nan_limit && @warn "Too many Nans ($nancount)!"

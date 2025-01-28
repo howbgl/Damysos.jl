@@ -19,12 +19,12 @@ end
 function Occupation(::SimulationComponent{T}) where {T<:Real}
     return Occupation(Vector{T}(undef,0))
 end
-function Occupation(p::NumericalParameters{T}) where {T<:Real}
-    return Occupation(zeros(T,getnt(p)))
+function Occupation(g::NGrid{T}) where {T<:Real}
+    return Occupation(zeros(T,getnt(g)))
 end
 
-function resize(::Occupation,p::NumericalParameters)
-    return Occupation(p)
+function resize(::Occupation,g::NGrid)
+    return Occupation(g)
 end
 function resize(::Occupation{T},nt::Integer) where {T<:Real}
     return Occupation(zeros(T,nt))
@@ -40,7 +40,6 @@ function empty(o::Occupation)
 end
 
 getnames_obs(occ::Occupation)   = ["cbocc", "cbocck"]
-getparams(occ::Occupation)      = getnames_obs(occ)
 arekresolved(occ::Occupation)   = [false, true]
 
 @inline function addto!(o::Occupation,ototal::Occupation)

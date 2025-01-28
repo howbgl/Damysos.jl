@@ -20,17 +20,18 @@ function make_test_simulation_1d(
     t1     = Inf * u"1s"
     σ      = u"800.0fs"
 
-    us   = scaledriving_frequency(freq, vf)
-    h    = GappedDirac(energyscaled(m, us))
-    l    = TwoBandDephasingLiouvillian(h, Inf, timescaled(t2, us))
-    df   = GaussianAPulse(us, σ, freq, emax)
-    ky 	 = 0.0
-    pars = NumericalParams1d(dkx, kxmax, ky, dt, -5df.σ)
-    obs  = [Velocity(pars), Occupation(pars), VelocityX(pars)]
+    us      = scaledriving_frequency(freq, vf)
+    h       = GappedDirac(energyscaled(m, us))
+    l       = TwoBandDephasingLiouvillian(h, Inf, timescaled(t2, us))
+    df      = GaussianAPulse(us, σ, freq, emax)
+    tgrid   = SymmetricTimeGrid(dt, -5df.σ)
+    kgrid   = CartesianKGrid1d(dkx, kxmax)
+    grid    = NGrid(kgrid, tgrid)
+    obs     = [Velocity(grid), Occupation(grid), VelocityX(grid)]
 
     id    = "sim1d"
 
-    return Simulation(l, df, pars, obs, us, id)
+    return Simulation(l, df, grid, obs, us, id)
 end
 
 function test_1d(v_ref::Velocity,sim::Simulation,fns,solver::DamysosSolver;

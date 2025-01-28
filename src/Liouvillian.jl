@@ -22,8 +22,6 @@ TwoBandDephasingLiouvillian(l::Dict) = construct_type_from_dict(TwoBandDephasing
 for func = (BAND_SYMBOLS...,DIPOLE_SYMBOLS...,VELOCITY_SYMBOLS...)
     @eval(Damysos,$func(l::Liouvillian) = $func(l.hamiltonian))
 end
-
-getparams(l::TwoBandDephasingLiouvillian) = (getparams(l.hamiltonian)...,t1=l.t1,t2=l.t2)
 getparamsonly(l::TwoBandDephasingLiouvillian) = (t1=l.t1,t2=l.t2)
 function getshortname(l::TwoBandDephasingLiouvillian)  
     return "TwoBandDephasingLiouvillian($(getshortname(l.hamiltonian)))"

@@ -11,7 +11,6 @@ export energyscaled
 export energySI
 export frequencyscaled
 export frequencySI
-export getparams
 export lengthscaled
 export lengthSI
 export timescaled
@@ -37,7 +36,7 @@ Represents a physical length- and time-scale used for non-dimensionalization of 
 
 # Examples
 ```jldoctest
-julia> using Unitful; us = UnitScaling(u"1.0s",u"1.0m")
+julia> us = UnitScaling(u"1.0s",u"1.0m")
 UnitScaling:
  timescale: 1.0e15 fs
  lengthscale: 1.0e9 nm
@@ -59,78 +58,88 @@ end
 function UnitScaling(timescale,lengthscale) 
     return UnitScaling(ustrip(u"fs",timescale),ustrip(u"nm",lengthscale))
 end
-function getparams(us::UnitScaling{T}) where {T<:Real} 
-    return (timescale=Quantity(us.timescale,u"fs"),
-            lengthscale=Quantity(us.lengthscale,u"nm"))
-end
+
+timescaleSI(us::UnitScaling)    = Quantity(us.timescale,u"fs")
+lengthscaleSI(us::UnitScaling)  = Quantity(us.lengthscale,u"nm")
+
 
 function energySI(en::Real,us::UnitScaling)
-    tc,lc = getparams(us)
+    tc = timescaleSI(us)
     return uconvert(u"meV",en*Unitful.ħ/tc)
 end
 
 function energyscaled(energy::Unitful.Energy,us::UnitScaling)
-    tc,lc = getparams(us)
+    tc = timescaleSI(us)
     return uconvert(Unitful.NoUnits,tc*energy/ħ)
 end
 
 function electricfieldSI(field::Real,us::UnitScaling)
-    tc,lc   = getparams(us)
-    e       = uconvert(u"C",1u"eV"/1u"V")
-    return uconvert(u"MV/cm",field*ħ/(e*tc*lc))
+    tc = timescaleSI(us)
+    lc = lengthscaleSI(us)
+    return uconvert(u"MV/cm",field*ħ/(q_e*tc*lc))
 end
 
 function electricfield_scaled(field::Unitful.EField,us::UnitScaling)
-    tc,lc   = getparams(us)
-    e       = uconvert(u"C",1u"eV"/1u"V")
-    return uconvert(Unitful.NoUnits,e*tc*lc*field/ħ)
+    tc = timescaleSI(us)
+    lc = lengthscaleSI(us)
+    return uconvert(Unitful.NoUnits,q_e*tc*lc*field/ħ)
 end
 
 function timeSI(time::Real,us::UnitScaling)
-    tc,lc = getparams(us)
+    tc = timescaleSI(us)
     return uconvert(u"fs",time*tc)
 end
 
 function timescaled(time::Unitful.Time,us::UnitScaling)
-    tc,lc = getparams(us)
+    tc = timescaleSI(us)
     return uconvert(Unitful.NoUnits,time/tc)    
 end
 
 function lengthSI(length::Real,us::UnitScaling)
-    tc,lc = getparams(us)
+    lc = lengthscaleSI(us)
     return uconvert(u"Å",length*lc)
 end
 function lengthscaled(length::Unitful.Length,us::UnitScaling)
-    tc,lc = getparams(us)
+    lc = lengthscaleSI(us)
     return uconvert(Unitful.NoUnits,length/lc)
 end
 
 function frequencySI(ν::Real,us::UnitScaling)
-    tc,lc = getparams(us)
+    tc = timescaleSI(us)
     return uconvert(u"THz",ν/tc)
 end
 
 function frequencyscaled(ν::Unitful.Frequency,us::UnitScaling)
-    tc,lc = getparams(us)
+    tc = timescaleSI(us)
     return uconvert(Unitful.NoUnits,ν*tc)
 end
 
 function velocitySI(v::Real,us::UnitScaling)
-    tc,lc = getparams(us)
+    tc = timescaleSI(us)
+    lc = lengthscaleSI(us)
     return uconvert(u"m/s",v*lc/tc)
 end
 
 function velocityscaled(v::Unitful.Velocity,us::UnitScaling)
-    tc,lc = getparams(us)
+    tc = timescaleSI(us)
+    lc = lengthscaleSI(us)
     return uconvert(Unitful.NoUnits,v*tc/lc)
 end
 
 function wavenumberSI(k::Real,us::UnitScaling)
-    tc,lc = getparams(us)
+    lc = lengthscaleSI(us)
     return uconvert(u"Å^-1",k/lc)
 end
 
 function wavenumberscaled(k::Unitful.Wavenumber,us::UnitScaling)
-    tc,lc = getparams(us)
+    lc = lengthscaleSI(us)
     return uconvert(Unitful.NoUnits,k*lc)
+end
+
+
+function Base.show(io::IO, ::MIME"text/plain", us::UnitScaling)
+	println(io, getshortname(us) * ":")
+    tc = timescaleSI(us)
+    lc = lengthscaleSI(us)
+	print(io, "timescale: $tc\nlengthscale: $lc" |> prepend_spaces)
 end

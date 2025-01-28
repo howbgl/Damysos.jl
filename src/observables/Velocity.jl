@@ -36,9 +36,9 @@ function Velocity(::SimulationComponent{T}) where {T<:Real}
                     Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0))
 end
 
-function Velocity(p::NumericalParameters{T}) where {T<:Real}
+function Velocity(g::NGrid{T}) where {T<:Real}
 
-    nt          = getnt(p)
+    nt          = getnt(g)
 
     vxintra     = zeros(T,nt)
     vxinter     = zeros(T,nt)
@@ -64,8 +64,8 @@ function Velocity(
     return Velocity(vxintra .+ vxinter,vxintra,vxinter,vyintra .+ vyinter,vyintra,vyinter)
 end
 
-function resize(v::Velocity,p::NumericalParameters)
-    return Velocity(p)
+function resize(v::Velocity,g::NGrid)
+    return Velocity(g)
 end
 
 function resize(::Velocity{T},nt::Integer) where {T<:Real}
@@ -88,7 +88,6 @@ end
 
 
 getnames_obs(v::Velocity)   = ["vx","vxintra","vxinter","vy","vyintra","vyinter"]
-getparams(v::Velocity)      = getnames_obs(v)
 arekresolved(v::Velocity)   = [false,false,false,false,false,false]
 
 

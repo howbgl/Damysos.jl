@@ -5,64 +5,10 @@ export find_files_with_name
 export random_word
 export replace_expression!
 
-@inline cartesianindex2dx(i,n) = 1 + ((i-1) % n)
-@inline cartesianindex2dy(i,n) = 1 + ((i-1) ÷ n)
-@inline caresianindex2d(i,n)   = (cartesianindex2dx(i,n),cartesianindex2dy(i,n))
 
 @inline function vector_of_svec_to_matrix(u::Vector{SVector{N,T}}) where {N,T}
     return reshape(reinterpret(T,u),(N,:))
 end
-
-
-@inline function get_cartesianindices_kgrid(
-    kxsamples::AbstractVector{<:Real},
-    kysamples::AbstractVector{<:Real})
-
-    return CartesianIndices((length(kxsamples),length(kysamples)))
-end
-
-@inline function getkgrid_index(
-    i::Integer,
-    kxsamples::AbstractVector{<:Real},
-    kysamples::AbstractVector{<:Real})
-
-    return get_cartesianindices_kgrid(kxsamples,kysamples)[i]
-end
-
-@inline function getkgrid_index(i::Integer,nkx::Integer,nky::Integer)
-    return caresianindex2d(i,nkx)
-end
-
-@inline function getkgrid_point(
-    i::Integer,
-    kxsamples::AbstractVector{<:Real},
-    kysamples::AbstractVector{<:Real})
-
-    idx = caresianindex2d(i,length(kxsamples))
-
-    return SA[kxsamples[idx[1]],kysamples[idx[2]]]
-end
-
-
-@inline function getkgrid_point_kx(
-    i::Integer,
-    kxsamples::AbstractVector{<:Real},
-    kysamples::AbstractVector{<:Real})
-
-    idx = getkgrid_index(i,kxsamples,kysamples)
-
-    return kxsamples[idx[1]]
-end
-@inline function getkgrid_point_ky(
-    i::Integer,
-    kxsamples::AbstractVector{<:Real},
-    kysamples::AbstractVector{<:Real})
-
-    idx = getkgrid_index(i,kxsamples,kysamples)
-
-    return kysamples[idx[2]]
-end
-
 
 function replace_expression!(e::Expr, old::Union{Expr,Symbol}, new::Union{Expr,Symbol})
     for (i,a) in enumerate(e.args)
@@ -288,6 +234,21 @@ function rename_path(path::String)
     p,ext = splitext(path)
     p = p[end] == '/' ? p[1:end-1] : p
     return p * "_" * basename(tempname()) * ext
+end
+
+function param_string(name::String, pSI, p; digits = 3)
+    pSI = round(typeof(pSI),pSI, sigdigits=digits)
+    p   = round(p, sigdigits = digits)
+    return "$name = $pSI ($p)"
+end
+
+function printfields_generic(x; digits = 4)
+    str = ""
+    for s in fieldnames(typeof(x))
+        val = round(getproperty(x,s), sigdigits = digits)
+        str *= " $s: $val\n"
+    end
+    return str
 end
 
 function try_execute_n_times(f::Function, n::Int, arg; wait_time::Real=10.0)

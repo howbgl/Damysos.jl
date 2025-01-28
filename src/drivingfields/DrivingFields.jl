@@ -49,7 +49,10 @@ function maximum_efieldy(df::DrivingField)
 end
 
 
-central_frequency(df::DrivingField) = central_angular_frequency(df) / (2π)
+central_frequency(df::DrivingField)     = central_angular_frequency(df) / (2π)
+function central_frequency_SI(df::DrivingField,us::UnitScaling)
+    return frequencySI(central_frequency(df),us)
+end
 
 # TODO generic fallback for central frequency (via Fourier trafo?)
 

@@ -40,16 +40,23 @@ function ConvergenceTest(
 		completedsims = resume ? done_sims : empty([start]))
 end
 
-function check_compatibility(sim::Simulation, m::ConvergenceTestMethod)
-	if m isa ExtendKymaxTest
+function check_compatibility(sim::Simulation, m::ConvergenceTestMethod, s::DamysosSolver)
+	if m isa ExtendKymaxTest 
+		if s isa LinearChunked
+			@warn "ExtendKymaxTest using LinearChunked is bugged atm (to be fixed soon)."
+		end
 		if sim.drivingfield isa Union{GaussianAPulse, GaussianEPulse} 
 			if sim.drivingfield.φ == 0.0
-				return true
+				return nothing
 			end
 		end
-		return false
+		throw(ArgumentError(
+			"""
+			ExtendKymaxTest is only compatible with GaussianAPulse/GaussianEPulse along
+			kx-direction (φ=0). Non-trivial BZ stuff not implemented yet.
+			"""))
 	else
-		return true
+		return nothing
 	end
 end
 

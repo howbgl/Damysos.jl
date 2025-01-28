@@ -53,7 +53,7 @@ struct ConvergenceTest
 		maxiterations::Integer = 16,
 		completedsims::Vector{<:Simulation} = empty([start]))
 
-		@argcheck check_compatibility(start,method)
+		check_compatibility(start, method, solver)
 
 		maxtime = maxtime isa Real ? maxtime : ustrip(u"s", maxtime)
 
@@ -133,6 +133,8 @@ struct ExtendKymaxTest <: ConvergenceTestMethod
 		return new(extendmethod)
 	end
 end
+
+# TODO Fix ExtendKymaxTest for LinearChunked
 
 "Result of a ConvergenceTest"
 struct ConvergenceTestResult

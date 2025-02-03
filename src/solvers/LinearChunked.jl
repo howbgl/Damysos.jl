@@ -2,7 +2,7 @@
 export LinearChunked
 
 const DEFAULT_ATOL = Float64(1e-12)
-const DEFAULT_RTOL = Float64(1e-10)
+const DEFAULT_RTOL = Float64(1e-6)
 
 """
 	LinearChunked

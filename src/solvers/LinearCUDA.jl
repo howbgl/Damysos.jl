@@ -5,24 +5,34 @@ export LinearCUDA
 	LinearCUDA
 
 Represents an integration strategy for k-space via simple midpoint sum, where individual
-k points are computed concurrently on one or several CUDA GPU(s)
+k points are computed concurrently on one or several CUDA GPU(s) via linear indexing.
 
 # Fields
 - `kchunksize::Int64`: number of k-points in one concurrently executed chunk. 
 - `algorithm::GPUODEAlgorithm`: algorithm for solving differential equations
-- `ngpus::Int64`: number of GPUs to use
+- `ngpus::Int`: #GPUs to use, automatically chooses all available GPUs if none given
+- `rtol::Union{Nothing, Real}`: relative tolerance of solver (nothing for fixed-timestep)
+- `atol::Union{Nothing, Real}`: absolute tolerance of solver (nothing for fixed-timestep)
 
 # See also
 [`LinearChunked`](@ref LinearChunked), [`SingleMode`](@ref SingleMode)
 """
-struct LinearCUDA <: DamysosSolver
+struct LinearCUDA{isadaptive} <: DamysosSolver
 	kchunksize::Int64
 	algorithm::DiffEqGPU.GPUODEAlgorithm
 	ngpus::Int64
+	rtol::Real
+	atol::Real
 	function LinearCUDA(
 		kchunksize::Int64 = default_kchunk_size(LinearCUDA),
 		algorithm::DiffEqGPU.GPUODEAlgorithm = GPUVern7(),
-		ngpus::Int64 = convert(Int64, CUDA.functional() ? length(CUDA.devices()) : 1))
+		ngpus::Int64 = convert(Int64, CUDA.functional() ? length(CUDA.devices()) : 1),
+		rtol = nothing,
+		atol = nothing)
+
+		adaptive 	= !(isnothing(rtol) && isnothing(atol))
+		_rtol 		= isnothing(rtol) ? DEFAULT_RTOL : rtol
+		_atol 		= isnothing(atol) ? DEFAULT_ATOL : atol
 
 		if CUDA.functional()
 			_ngpus = length(CUDA.devices())
@@ -36,10 +46,10 @@ struct LinearCUDA <: DamysosSolver
 					Proceeding with $(ngpus) GPUs"""
 				_ngpus = ngpus
 			end
-			return new(kchunksize, algorithm, _ngpus)
+			return new{adaptive}(kchunksize, algorithm, _ngpus, _rtol, _atol)
 		else
 			@warn "CUDA.jl is not functional, cannot use LinearCUDA solver."
-			return new(kchunksize, algorithm, ngpus)
+			return new{adaptive}(kchunksize, algorithm, ngpus, _rtol, _atol)
 		end
 	end
 end
@@ -50,22 +60,27 @@ function solver_compatible(sim::Simulation, ::LinearCUDA)
 	return sim.dimensions == 2 || sim.dimensions == 1
 end
 
-function Base.show(io::IO, ::MIME"text/plain", s::LinearCUDA)
-	println(io, "LinearCUDA:" |> escape_underscores)
+function Base.show(io::IO, ::MIME"text/plain", s::LinearCUDA{ia}) where {ia}
+	println(io, "LinearCUDA{$ia}:" |> escape_underscores)
 	str = """
 	- kchunksize: $(s.kchunksize)
 	- algorithm: $(s.algorithm)
-	- # GPUs: $(s.ngpus)""" |> escape_underscores
-	print(io, prepend_spaces(str, 2))
+	- # GPUs: $(s.ngpus)""" 
+	if ia
+		str *= """
+		- rtol: $(s.rtol)
+		- atol: $(s.atol)"""
+	end
+	print(io, prepend_spaces(escape_underscores(str), 2))
 end
 
 
 function _run!(
-	sim::Simulation,
-	functions,
-	solver::LinearCUDA;
-	bypass_memcheck = false)
-
+		sim::Simulation,
+		functions,
+		solver::LinearCUDA;
+		bypass_memcheck = false) 
+		
 	kchunks = buildkgrid_chunks(sim.grid.kgrid, solver.kchunksize)
 	kchunk_batches = subdivide_vector(kchunks, cld(length(kchunks), solver.ngpus))
 
@@ -85,11 +100,11 @@ function _run!(
 end
 
 function runtimeslices!(
-	sim::Simulation,
-	functions,
-	solver::LinearCUDA,
-	kchunks;
-	bypass_memcheck = false)
+		sim::Simulation,
+		functions,
+		solver::LinearCUDA,
+		kchunks;
+		bypass_memcheck = false)
 
 	!CUDA.functional() && throw(ErrorException(
 		"CUDA.jl is not functional, cannot use LinearCUDA solver."))
@@ -115,12 +130,12 @@ function runtimeslices!(
 end
 
 function runkchunk!(
-	sim::Simulation,
-	functions,
-	solver::LinearCUDA,
-	kchunk::Vector{<:SVector{2, <:Real}},
-	ts::AbstractVector{<:Real} = gettsamples(sim),
-	obs::Vector{<:Observable} = sim.observables)
+		sim::Simulation,
+		functions,
+		solver::LinearCUDA,
+		kchunk::Vector{<:SVector{2, <:Real}},
+		ts::AbstractVector{<:Real} = gettsamples(sim),
+		obs::Vector{<:Observable} = sim.observables)
 
 	rhs, bzmask, obsfuncs = functions
 	d_ts, d_us = solvechunk(sim, solver, kchunk, rhs, ts)
@@ -147,11 +162,11 @@ function define_observable_functions(sim::Simulation, ::LinearCUDA, o::Observabl
 end
 
 function solvechunk(
-	sim::Simulation{T},
-	solver::LinearCUDA,
-	kchunk::Vector{SVector{2, T}},
-	rhs::Function,
-	tsamples::AbstractVector{T} = collect(gettsamples(sim))) where {T <: Real}
+		sim::Simulation{T},
+		solver::LinearCUDA,
+		kchunk::Vector{SVector{2, T}},
+		rhs::Function,
+		tsamples::AbstractVector{T} = collect(gettsamples(sim))) where {T <: Real}
 
 	prob = ODEProblem{false}(
 		rhs,
@@ -163,13 +178,33 @@ function solvechunk(
 		DiffEqGPU.make_prob_compatible(remake(prob, p = k))
 	end
 	probs = cu(probs)
+	return solve_ode_problems(probs, prob, solver, tsamples, getdt(sim))
+end
+
+function solve_ode_problems(problems::CuArray, prob, solver::LinearCUDA{false}, saveat, dt)
+	
 	CUDA.@sync ts, us = DiffEqGPU.vectorized_solve(
-		probs,
+		problems,
 		prob,
 		solver.algorithm;
 		save_everystep = false,
-		saveat = tsamples,
-		dt = sim.grid.tgrid.dt)
+		saveat = saveat,
+		dt = dt)
+
+	return ts, us
+end
+
+function solve_ode_problems(problems::CuArray, prob, solver::LinearCUDA{true}, saveat, dt)
+	
+	CUDA.@sync ts, us = DiffEqGPU.vectorized_asolve(
+		problems,
+		prob,
+		solver.algorithm;
+		save_everystep = false,
+		saveat = saveat,
+		dt = dt,
+		abstol = solver.atol,
+		reltol = solver.rtol)
 
 	return ts, us
 end

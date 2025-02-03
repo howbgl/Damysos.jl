@@ -112,7 +112,7 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
     return f
 end
 
-function plotdata(sims::Vector{Simulation}, path::String = pwd();
+function plotdata(sims::Vector{<:Simulation}, path::String = pwd();
     maxharm=DEFAULT_MAX_HARMONIC,
     fftwindow=hanning,
     kwargs...)
@@ -128,21 +128,31 @@ function plotdata(sims::Vector{Simulation}, path::String = pwd();
                 fftwindow=fftwindow,
                 kwargs...)
         catch e
-            @warn "Plotting of $(getshortname(obs)) failed due to $e"
+            @warn "Plotting of $(getshortname(obs)) failed"
+            showerror(stdout, e)
             continue
         end
     end
 end
 
 
-function plotdata(sims::Vector{Simulation}, vel::Velocity{T}, path::String = pwd();
-    maxharm=DEFAULT_MAX_HARMONIC,
-    fftwindow=hanning,
-    title = stringexpand_vector([s.id for s in sims]),
-    kwargs...) where {T<:Real}
+function plotdata(
+        sims::Vector{Simulation{T}}, 
+        vel::Union{Velocity{T}, VelocityX{T}}, 
+        path::String = pwd();
+        maxharm=DEFAULT_MAX_HARMONIC,
+        fftwindow=hanning,
+        title = stringexpand_vector([s.id for s in sims]),
+        kwargs...) where {T<:Real}
 
-    for (vsymb,vname) in zip([:vx,:vxintra,:vxinter,:vy,:vyintra,:vyinter],
+        collection = if vel isa Velocity
+            zip([:vx,:vxintra,:vxinter,:vy,:vyintra,:vyinter],
                             ["vx","vxintra","vxinter","vy","vyintra","vyinter"])
+        else
+            zip([:vx,:vxintra,:vxinter], ["vx","vxintra","vxinter"])
+        end
+
+    for (vsymb,vname) in collection
 
         timeseries  = Vector{Vector{T}}(undef,0)
         tsamples    = Vector{Vector{T}}(undef,0)
@@ -192,7 +202,7 @@ function plotdata(sims::Vector{Simulation}, vel::Velocity{T}, path::String = pwd
 end
 
 
-function plotdata(sims::Vector{Simulation}, ::Occupation{T}, path::String = pwd();
+function plotdata(sims::Vector{Simulation{T}}, ::Occupation{T}, path::String = pwd();
     title = stringexpand_vector([s.id for s in sims]),
     kwargs...) where {T<:Real}
 

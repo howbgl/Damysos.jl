@@ -23,7 +23,7 @@ function printdimless_params(h::GappedDirac,df::DrivingField;digits=3)
         plz = $plz\n"""
 end
 
-function printdimless_params(h::QuadraticToy,df::DrivingField;digits=3)
+function printdimless_params(h::Union{QuadraticToy,BilayerToy},df::DrivingField;digits=3)
     emax = maximum_efield(df)
     ω   = central_angular_frequency(df)
     M   = round(h.Δ / ω,sigdigits=digits)               # Multi-photon number

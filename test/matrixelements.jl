@@ -129,7 +129,7 @@ end
 
 hconj(x::AbstractMatrix) = transpose(conj(x))
 
-const ALL_HAMILTONIANS = [GappedDirac(0.2), QuadraticToy(1.6,0.4)]
+const ALL_HAMILTONIANS = [GappedDirac(0.2), QuadraticToy(1.6,0.4), BilayerToy(1.0,0.6)]
 
 @testset "Pauli matrixelements" begin
 	for h in ALL_HAMILTONIANS

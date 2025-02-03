@@ -52,8 +52,11 @@ include("UnitScaling.jl")
 include("grids/NGrid.jl")
 include("Simulation.jl")
 include("grids/SymmetricTimeGrid.jl")
+
 include("hamiltonians/GappedDirac.jl")
 include("hamiltonians/QuadraticToy.jl")
+include("hamiltonians/BilayerToy.jl")
+
 include("Liouvillian.jl")
 include("drivingfields/DrivingFields.jl")
 include("grids/symmetric_cartesian_kgrids.jl")

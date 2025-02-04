@@ -610,9 +610,9 @@ end
 
 function Base.show(io::IO, ::MIME"text/plain", m::LinearTest)
 	println(io, "Linear convergence test method (+$(m.shift)):")
-	seq = String["kxmax, "]
+	seq = String["$(m.parameter), "]
 	for i in 1:5
-		push!(seq,"kxmax + $(round(i*m.shift,sigdigits=3)), ")
+		push!(seq,"$(m.parameter) + $(round(i*m.shift,sigdigits=3)), ")
 	end
 	print(io, " - [" * join(seq) * "...]")
 end

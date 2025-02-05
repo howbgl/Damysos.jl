@@ -7,12 +7,12 @@ A toy model of touching quadratic bands with a gap turning them quartic near the
 
 The Hamiltonian reads 
 ```math
-\\hat{H} = \\frac{\\zeta}{2}(k_x^2 + k_y^2)\\sigma_x + \\frac{\\Delta}{2}\\sigma_z
+\\hat{H} = \\frac{\\zeta}{2}[(k_y^2-k_x^2)\\sigma_x - k_x k_y \\sigma_y] + \\frac{\\Delta}{2}\\sigma_z
 ``` 
-such that ``\\vec{h}=[\\zeta/2 (k_x^2 + k_y^2), 0, \\Delta/2]``. The dimensionful 
-form (SI) would be
+such that ``\\vec{h}=[\\zeta/2 (k_y^2-k_x^2), -\\zeta/2 k_x k_y, \\Delta/2]``. 
+The dimensionful form (SI) would be
 ```math
-\\hat{H}_{SI} = \\frac{\\hbar^2}{2m^*}(k_x^2+k_y^2)\\sigma_x+\\frac{E_{gap}}{2}\\sigma_z
+\\hat{H}_{SI} = \\frac{\\hbar^2}{2m^*}[(k_y^2-k_x^2)\\sigma_x - k_x k_y \\sigma_y]+\\frac{E_{gap}}{2}\\sigma_z
 ```
 
 # Examples
@@ -42,30 +42,30 @@ function BilayerToy(us::UnitScaling,gap::Unitful.Energy,mass::Unitful.Mass)
     return BilayerToy(delta,zeta)
 end
 
-hx(h::BilayerToy,kx,ky)    = h.ζ * (kx^2 + ky^2) / 2
-hx(h::BilayerToy)          = quote $(h.ζ/2) * (kx^2 + ky^2) end
+hx(h::BilayerToy,kx,ky)    = h.ζ * (kx^2 - ky^2) / 2
+hx(h::BilayerToy)          = quote $(h.ζ/2) * (kx^2 - ky^2) end
 
-hy(h::BilayerToy,kx,ky)    = zero(kx)
-hy(h::BilayerToy)          = quote $(zero(h.Δ)) end
+hy(h::BilayerToy,kx,ky)    = h.ζ * kx * ky 
+hy(h::BilayerToy)          = quote $(h.ζ) * kx * ky end
 
 hz(h::BilayerToy,kx,ky)    = h.Δ / 2
 hz(h::BilayerToy)          = quote $(h.Δ / 2) end
 
-dhdkx(h::BilayerToy,kx,ky) = SA[h.ζ * kx,zero(h.Δ),zero(h.Δ)]
-dhdkx(h::BilayerToy)       = SA[:($(h.ζ)*kx),zero(h.Δ),zero(h.Δ)]
+dhdkx(h::BilayerToy,kx,ky) = SA[h.ζ * kx,       h.ζ * ky,      zero(h.Δ)]
+dhdkx(h::BilayerToy)       = SA[:($(h.ζ)*kx),  :($(h.ζ)*ky),  zero(h.Δ)]
 
-dhdky(h::BilayerToy,kx,ky) = SA[h.ζ * ky, zero(h.Δ), zero(h.Δ)]
-dhdky(h::BilayerToy)       = SA[:($(h.ζ)*ky), zero(h.Δ),zero(h.Δ)]
+dhdky(h::BilayerToy,kx,ky) = SA[-h.ζ * ky,       h.ζ * kx,      zero(h.Δ)]
+dhdky(h::BilayerToy)       = SA[:(-$(h.ζ)*ky),   :($(h.ζ)*kx),  zero(h.Δ)]
 
 # Jacobian ∂h_i/∂k_j
 jac(h::BilayerToy,kx,ky) = SA[
-    h.ζ * kx  h.ζ * ky
-    zero(h.Δ) zero(h.Δ)
-    zero(h.Δ) zero(h.Δ)]
+    h.ζ * kx   -h.ζ * ky
+    h.ζ * ky    h.ζ * kx
+    zero(h.Δ)   zero(h.Δ)]
 
 jac(h::BilayerToy) = @SMatrix [
-    :($(h.ζ)*kx)                :($(h.ζ)*ky)
-    quote zero($(h.Δ)) end      quote zero($(h.Δ)) end  
+    :($(h.ζ)*kx)               :(-$(h.ζ)*ky)
+    :($(h.ζ)*ky)               :($(h.ζ)*kx)  
     quote zero($(h.Δ)) end      quote zero($(h.Δ)) end]
 
 
@@ -91,21 +91,21 @@ function getparamsSI(h::BilayerToy,us::UnitScaling)
 end
 
 gethvec(h::BilayerToy) = let Δ=h.Δ,ζ=h.ζ
-    (kx,ky) -> SA[ζ*(kx^2 + ky^2) / 2,zero(Δ), Δ/2]
+    (kx,ky) -> SA[ζ*(kx^2 - ky^2) / 2, ζ*kx*ky, Δ/2]
 end
 
 getdhdkx(h::BilayerToy) = let Δ=h.Δ,ζ=h.ζ
-    (kx,ky) -> SA[ζ*kx, zero(Δ), zero(Δ)]
+    (kx,ky) -> SA[ζ*kx, ζ*ky, zero(Δ)]
 end
 
 getdhdky(h::BilayerToy) = let Δ=h.Δ,ζ=h.ζ
-    (kx,ky) -> SA[ζ*ky, zero(Δ), zero(Δ)]
+    (kx,ky) -> SA[-ζ*ky, ζ*kx, zero(Δ)]
 end
 
 getjac(h::BilayerToy) = let Δ=h.Δ,ζ=h.ζ
     (kx,ky) -> SA[
-        ζ*kx    ζ*ky
-        zero(Δ) zero(Δ) 
+        ζ*kx   -ζ*ky
+        ζ*ky    ζ*kx 
         zero(Δ) zero(Δ)]
 end
 

@@ -22,6 +22,7 @@ GappedDirac:
 
 # See also
 [`GeneralTwoBand`](@ref GeneralTwoBand) [`QuadraticToy`](@ref QuadraticToy)
+[`BilayerToy`](@ref BilayerToy)
 """
 struct GappedDirac{T<:Real} <: GeneralTwoBand{T} 
     m::T

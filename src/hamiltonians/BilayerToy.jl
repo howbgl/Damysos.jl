@@ -36,7 +36,7 @@ end
 function BilayerToy(us::UnitScaling,gap::Unitful.Energy,mass::Unitful.Mass)
     
     lc = lengthscaleSI(us)
-    tc = timescale(us)
+    tc = timescaleSI(us)
     delta = uconvert(Unitful.NoUnits,gap * tc / ħ)
     zeta  = uconvert(Unitful.NoUnits,ħ * tc / (lc^2 * mass))
     return BilayerToy(delta,zeta)
@@ -72,7 +72,7 @@ jac(h::BilayerToy) = @SMatrix [
 function printparamsSI(h::BilayerToy,us::UnitScaling;digits=3)
 
     tc      = timescaleSI(us)
-    lc      = timescaleSI(us)
+    lc      = lengthscaleSI(us)
     Δ       = energySI(h.Δ,us)
     m       = uconvert(u"kg",ħ*tc / (h.Δ*lc^2))
     

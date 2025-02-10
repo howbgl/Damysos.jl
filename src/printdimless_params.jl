@@ -29,7 +29,9 @@ function printdimless_params(h::Union{QuadraticToy,BilayerToy},df::DrivingField;
     M   = round(h.Δ / ω,sigdigits=digits)               # Multi-photon number
     ζ   = round(h.ζ * emax^2  / ω^3,sigdigits=digits)   # My dimless asymptotic ζ
 
+    # In SI units: ζ = (eE)^2 / (ħω * m)
+
     return """
-        M = $M\n
+        M = $M
         ζ = $ζ"""
 end

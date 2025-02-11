@@ -23,7 +23,8 @@ const LOADABLES = Dict(
 	"VelocityX"						=> VelocityX,
 	"Occupation"					=> Occupation,
 	"PowerLawTest"					=> PowerLawTest,
-	"LinearTest"					=> LinearTest
+	"LinearTest"					=> LinearTest,
+	"ExtendKymaxTest"				=> ExtendKymaxTest
 )
 
 const BACKWARDSCOMPATLOADABLES = Dict(

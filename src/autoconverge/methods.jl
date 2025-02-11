@@ -81,17 +81,19 @@ function ConvergenceTestResult(
 end
 
 
-function dryrun(file::String,outpath::Union{Nothing,String}=nothing;kwargs...)
+function dryrun(file::String, filepath::String; kwargs...)
 	h5open(file,"r") do f
-		return dryrun(f,outpath;kwargs...)
+		return dryrun(f,filepath;kwargs...)
 	end
 end
 
 function dryrun(
 	file::Union{HDF5.File, HDF5.Group},
-	outpath::Union{Nothing, String}=nothing;
+	filepath::String;
 	atolgoal::Real = read(file,"atolgoal"),
 	rtolgoal::Real = read(file,"rtolgoal"))
+
+	ensuredirpath(dirname(filepath))
 
 	g 			= file["completedsims"]
 	done_sims 	= [load_obj_hdf5(g[s]) for s in keys(g)]
@@ -104,29 +106,24 @@ function dryrun(
 					rtolgoal = rtolgoal,
 					atolgoal = atolgoal,
 					maxtime = read(file,"maxtime"),
-					maxiterations = read(file,"maxiterations"),
-					path = outpath)
-	push!(t.completedsims,done_sims[1])
+					maxiterations = Int(read(file,"maxiterations")))
 
-	h5open(t.testdatafile,"cw") do f
+	h5open(filepath,"cw") do f
 		ensuregroup(f,"completedsims")
 		savedata_hdf5(t.method,f)
 		f["atolgoal"] 		= t.atolgoal
 		f["rtolgoal"] 		= t.rtolgoal
 		f["maxtime"]  		= t.maxtime
 		f["maxiterations"] 	= t.maxiterations
-		f["testdatafile"] 	= t.testdatafile
 		savedata_hdf5(t.start,create_group(f,"start"))
 	end
 	
-
-	!isnothing(outpath) && Damysos.savedata(t,done_sims[1])
-	
-	for (s,i) in zip(done_sims[2:end],1:length(done_sims)-1)
+	for (s,i) in zip(done_sims,1:length(done_sims))
+		push!(t.completedsims, s)
+		Damysos.savedata(t, s, filepath)
 		achieved_tol = findminimum_precision(t)
 		if converged(t)
 			@info "Converged at iteration $i"
-			achieved_tol = findminimum_precision(t)
 			r = ConvergenceTestResult(
 				t,
 				ReturnCode.success,
@@ -134,11 +131,9 @@ function dryrun(
 				0.0,
 				i,
 				s.grid)
-			!isnothing(outpath) &&  Damysos.savedata(r)
+			Damysos.savedata(r, filepath)
 			return r
 		else
-			push!(t.completedsims, s)
-			!isnothing(outpath) &&  Damysos.savedata(t,s)
 			@info """ 
 			- Iteration $i of maximum of $(t.maxiterations)
 			- Current value: $(currentvalue(t.method,s)) $(getname(t.method)))
@@ -147,7 +142,7 @@ function dryrun(
 			"""
 		end
 	end
-	@warn "No convergence achieved"
+	!converged(t) && @warn "No convergence achieved"
 	achieved_tol = findminimum_precision(t)
 	@info """ 
 			- Achieved atol: $(achieved_tol[1])
@@ -160,7 +155,7 @@ function dryrun(
 		0.0,
 		length(t.completedsims),
 		t.completedsims[end].grid)
-	!isnothing(outpath) &&  Damysos.savedata(r)
+	Damysos.savedata(r, filepath)
 	return r
 end
 
@@ -336,10 +331,26 @@ function prepare_hdf5_file(test::ConvergenceTest,
 	end
 end
 
+"""
+    run!(test::ConvergenceTest; kwargs...)
+
+Run a convergence test and return the result as ConvergenceTestResult.
+
+# Keyword Arguments
+- `savedata::Bool`: save observables and simulations to disk
+- `filepath::String`: path to .hdf5 file to save results
+- `nan_limit::Int`: maximum tolerated number of nans in observables
+- `max_nan_retries::Int`: maximum number of iterations where `nan_limit` nans are tolerated
+
+# Returns
+A ConvergenceTestResult object.
+
+# See also
+[`ConvergenceTest`](@ref)
+"""
 function run!(
 	test::ConvergenceTest;
 	savedata = true,
-	saveplots = false,
 	filepath = joinpath(pwd(),getname(test)*"_$(test.rtolgoal).hdf5"),
 	nan_limit = DEFAULT_NAN_LIMIT,
 	max_nan_retries = DEFAULT_MAX_NAN_RETRIES)
@@ -354,7 +365,7 @@ function run!(
 	"""
 	printinfo(test.start,test.solver)
 
-	producer = let t=test,sp=saveplots,nl=nan_limit
+	producer = let t=test, nl=nan_limit
 		c::Channel -> _run!(c, t, t.method; nan_limit=nl)
 	end 
 
@@ -518,6 +529,7 @@ function extrapolate(test::ConvergenceTest; kwargs...)
 end
 
 function converged(test::ConvergenceTest) 
+	length(test.completedsims) < 2 && return false
 	return converged(extrapolate(test);atol=test.atolgoal,rtol=test.rtolgoal)
 end
 
@@ -532,6 +544,7 @@ function converged(obs::Observable,errs::Vector{<:Real};rtol=DEFAULT_RTOL,atol=D
 end
 
 function findminimum_precision(test::ConvergenceTest)
+	length(test.completedsims) < 2 && return (Inf, Inf)
 	return findminimum_precision(extrapolate(test),test.atolgoal)
 end
 

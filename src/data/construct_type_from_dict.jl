@@ -29,8 +29,10 @@ function construct_type_from_dict(
 		Hamiltonian,
 		CartesianKGrid1d,
 		CartesianKGrid2d,
+		CartesianKGrid2dStrips,
 		KGrid0d,
-		SymmetricTimeGrid}},
+		SymmetricTimeGrid,
+		ExtendKymaxTest}},
 	d::Dict{String})
 
     names = String.(fieldnames(t))

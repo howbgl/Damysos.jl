@@ -76,8 +76,12 @@ function savedata_hdf5(tgrid::SymmetricTimeGrid,parent::Union{HDF5.File,HDF5.Gro
 	generic_save_hdf5(tgrid, parent, "tgrid")
 end
 
+function savedata_hdf5(kgrid::CartesianKGrid2dStrips, parent::Union{HDF5.File, HDF5.Group})
+	return savedata_hdf5(CartesianKGrid2d(kgrid), parent)
+end
+
 function savedata_hdf5(
-	kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,KGrid0d,CartesianKGrid2dStrips},
+	kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,KGrid0d},
 	parent::Union{HDF5.File, HDF5.Group})
 	generic_save_hdf5(kgrid, parent, "kgrid")
 end

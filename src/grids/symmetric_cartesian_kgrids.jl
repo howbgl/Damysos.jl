@@ -77,6 +77,10 @@ struct CartesianKGrid2dStrips{T <: Real} <: CartesianKGrid{T}
     kymin::T
 end
 
+function CartesianKGrid2d(kgrid::CartesianKGrid2dStrips)
+    return CartesianKGrid2d(kgrid.dkx,kgrid.kxmax,kgrid.dky,kgrid.kymax)
+end
+
 function getkxsamples(kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,CartesianKGrid2dStrips}) 
     return symmetric_steprange(kgrid.kxmax,kgrid.dkx)
 end

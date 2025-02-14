@@ -14,6 +14,7 @@ const LOADABLES = Dict(
 	"TwoBandDephasingLiouvillian" 	=> TwoBandDephasingLiouvillian,
 	"GappedDirac" 					=> GappedDirac,
 	"QuadraticToy"					=> QuadraticToy,
+	"BilayerToy"					=> BilayerToy,
 	"UnitScaling"					=> UnitScaling,
 	"GaussianAPulse" 				=> GaussianAPulse,
 	"GaussianEPulse" 				=> GaussianEPulse,

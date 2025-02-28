@@ -151,6 +151,7 @@ function plotdata(
         else
             zip([:vx,:vxintra,:vxinter], ["vx","vxintra","vxinter"])
         end
+        veltype = typeof(vel)
 
     for (vsymb,vname) in collection
 
@@ -165,7 +166,7 @@ function plotdata(
             ν           = central_frequency(sim.drivingfield)
             d           = sim.dimensions
             ts_in_cyc   = gettsamples(sim) .* ν
-            v           = filter(x -> x isa Velocity,sim.observables)[1]
+            v           = filter(x -> x isa veltype,sim.observables)[1]
             v_nm_per_s  = v -> ustrip(u"nm/s",velocitySI(v,sim.unitscaling))
             data        = v_nm_per_s.(getproperty(v,vsymb))
 

@@ -24,7 +24,7 @@ function ConvergenceTest(
 	resume = false)
 
 	g 			= file["completedsims"]
-	done_sims 	= [load_obj_hdf5(g[s]) for s in keys(g)]
+	done_sims 	= Simulation[load_obj_hdf5(g[s]) for s in keys(g)]
 	start 		= load_obj_hdf5(file["start"])
 
 	sort!(done_sims,by=getsimindex)

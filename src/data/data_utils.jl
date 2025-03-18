@@ -22,6 +22,7 @@ const LOADABLES = Dict(
 	"Vector{Observable{.*?}}"		=> Vector{Observable},
 	"VelocityX"						=> VelocityX,
 	"\bVelocity\b"					=> Velocity,
+	"Velocity{.*?}"					=> Velocity,
 	"Occupation"					=> Occupation,
 	"PowerLawTest"					=> PowerLawTest,
 	"LinearTest"					=> LinearTest,

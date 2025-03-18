@@ -31,7 +31,7 @@ struct Simulation{T <: Real}
 		if d != getdimension(g)
 			@warn """
 			The dimension d=$d does not match the the NumericalParameters.
-			Overwriting to d=$(getdimension(p)) instead."""
+			Overwriting to d=$(getdimension(g)) instead."""
 		end
 		new(l, df, g, obs, us, id, getdimension(g))
 	end

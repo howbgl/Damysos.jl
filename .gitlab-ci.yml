@@ -28,7 +28,7 @@ pages:
       - sysimage.so  # Cache the precompiled system image
   stage: deploy
   script:
-    - julia --project=. -e 'using Pkg; Pkg.add("PackageCompiler")'
+    - julia --project=. -e 'using Pkg; Pkg.add("PackageCompiler");'
     - julia --project=. build_sysimage.jl  # Build the system image
     - julia --sysimage=sysimage.so --project=. -e 'using Pkg; Pkg.instantiate();'
     - julia --sysimage=sysimage.so --project=. docs/make.jl  # Build your documentation

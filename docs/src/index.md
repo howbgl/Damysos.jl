@@ -13,6 +13,3 @@ Documentation for [Damysos](https://git.uni-regensburg.de/how09898/Damysos.jl).
 - Using velocity-gauge to parallelize over k-points
 - Run any Simulation on GPU or CPU without re-writing any code
 - Built using the powerful [DifferentialEquations.jl](https://github.com/SciML/DiffEqDocs.jl) and [DiffEqGPU.jl](https://github.com/SciML/DiffEqGPU.jl)
-
-```@index
-```

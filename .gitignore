@@ -9,7 +9,6 @@
 *.log
 *_old_*.hdf
 *_old_*.hdf5
-/jupyter/preliminary_spectra/**
+/jupyter/
 *.code-workspace
 /scripts/nhr_fau/
-/docs/build/

@@ -1,4 +1,4 @@
-using DiffEqGPU, DifferentialEquations, StaticArrays, CUDA, KernelAbstractions, Adapt, Cthulhu
+using DiffEqGPU, DifferentialEquations, StaticArrays, CUDA, KernelAbstractions, Adapt
 
 import DiffEqGPU.init
 import DiffEqGPU.ImmutableODEProblem
@@ -37,79 +37,13 @@ function immutize(T)
         Expr(:block,[Expr(:(::),f,t) for (f,t) in zip(fnames,ftypes)]...)))
 end
 
-
-struct ImmutableGPUT5I{IIP, S, T, ST, P, F, TS, CB, AlgType} <: DiffEqBase.AbstractODEIntegrator{AlgType, IIP, S, T}
-    alg::AlgType
-    f::F                  # eom
-    uprev::S              # previous state
-    u::S                  # current state
-    tmp::S                # dummy, same as state
-    tprev::T              # previous time
-    t::T                  # current time
-    t0::T                 # initial time, only for reinit
-    dt::T                 # step size
-    tdir::T
-    p::P                  # parameter container
-    u_modified::Bool
-    tstops::TS
-    tstops_idx::Int
-    callback::CB
-    save_everystep::Bool
-    saveat::ST
-    cur_t::Int
-    step_idx::Int
-    event_last_time::Int
-    vector_event_last_time::Int
-    last_event_error::T
-    k1::S                 #intepolants
-    k2::S
-    k3::S
-    k4::S
-    k5::S
-    k6::S
-    k7::S
-    cs::SVector{6, T}     # ci factors cache: time coefficients
-    as::SVector{21, T}    # aij factors cache: solution coefficients
-    rs::SVector{22, T}    # rij factors cache: interpolation coefficients
-    retcode::DiffEqBase.ReturnCode.T
-
-end
-function ImmutableGPUT5I(
-    s::DiffEqGPU.GPUTsit5Integrator{IIP, S, T, ST, P, F, TS, CB, AlgType}) where {IIP, S, T, ST, P, F, TS, CB, AlgType}
-    return ImmutableGPUT5I{IIP, S, T, ST, P, F, TS, CB, AlgType}(
-        s.alg,
-        s.f,
-        s.uprev,
-        s.u,
-        s.tmp,
-        s.tprev,
-        s.t,
-        s.t0,
-        s.dt,
-        s.tdir,
-        s.p,
-        s.u_modified,
-        s.tstops,
-        s.tstops_idx,
-        s.callback,
-        s.save_everystep,
-        s.saveat,
-        s.cur_t,
-        s.step_idx,
-        s.event_last_time,
-        s.vector_event_last_time,
-        s.last_event_error,
-        s.k1,
-        s.k2,
-        s.k3,
-        s.k4,
-        s.k5,
-        s.k6,
-        s.k7,
-        s.cs,
-        s.as,
-        s.rs,
-        s.retcode)
+function define_immutable_struct(T::UnionAll)
+    immutize(T)
+    bt      = bottomtype(T)
+    @eval function $(Symbol("Immutable",nameof(bt)))(x::$T)
+        fields  = [getproperty(x, f) for f in fieldnames($T)]
+        return $(Symbol("Immutable",nameof(T)))(fields...)
+    end
 end
 
 @kernel function my_solve_kernel(@Const(probs), alg, _us, _ts, dt, callback,
@@ -131,7 +65,7 @@ end
     integ = init(alg, prob.f, false, prob.u0, prob.tspan[1], dt, prob.p, tstops,
         callback, save_everystep, saveat)
 
-    @cushow integ
+    # @cushow integ
     # @cushow ismutable(integ)
 
     u0 = prob.u0
@@ -168,15 +102,12 @@ end
 end
 
 
-function my_vectorized_solve(probs, prob::ODEProblem, alg;
+function handle_allocations(probs, prob::ODEProblem, alg;
         dt, saveat = nothing,
         save_everystep = true,
-        debug = false, callback = CallbackSet(nothing), tstops = nothing,
+        callback = CallbackSet(nothing), tstops = nothing,
         kwargs...)
-    backend = get_backend(probs)
-    backend = maybe_prefer_blocks(backend)
-    # if saveat is specified, we'll use a vector of timestamps.
-    # otherwise it's a matrix that may be different for each ODE.
+    backend = maybe_prefer_blocks(get_backend(probs))
     timeseries = prob.tspan[1]:dt:prob.tspan[2]
     nsteps = length(timeseries)
 
@@ -185,7 +116,7 @@ function my_vectorized_solve(probs, prob::ODEProblem, alg;
 
     if saveat === nothing
         if save_everystep
-            len = length(prob.tspan[1]:dt:prob.tspan[2])
+            len = length(timeseries)
             if tstops !== nothing
                 len += length(tstops) - count(x -> x in tstops, timeseries)
                 nsteps += length(tstops) - count(x -> x in tstops, timeseries)
@@ -228,9 +159,33 @@ function my_vectorized_solve(probs, prob::ODEProblem, alg;
     tstops = adapt(backend, tstops)
 
     integ = init(alg, prob.f, false, prob.u0, prob.tspan[1], dt, prob.p, 
-        tstops,  callback, save_everystep, saveat)
-    # @show typeof(integ)
-    # integs = allocate(backend, typeof(integ), (length(probs),))
+        tstops, callback, save_everystep, saveat)
+
+    return backend, ts, us, integ, nsteps
+end
+
+function get_integ(probs, prob::ODEProblem, alg;
+    dt, saveat = nothing,
+    save_everystep = true,
+    debug = false, callback = CallbackSet(nothing), tstops = nothing,
+    kwargs...)
+
+    backend, ts, us, integ, nsteps = handle_allocations(probs, prob, alg;
+        dt = dt, saveat = saveat, save_everystep = save_everystep,
+        callback = callback, tstops = tstops, kwargs...)
+
+    return integ
+end
+
+function my_vectorized_solve(probs, prob::ODEProblem, alg;
+        dt, saveat = nothing,
+        save_everystep = true,
+        debug = false, callback = CallbackSet(nothing), tstops = nothing,
+        integrators = nothing, kwargs...)
+
+    backend, ts, us, integ, nsteps = handle_allocations(probs, prob, alg;
+        dt = dt, saveat = saveat, save_everystep = save_everystep,
+        callback = callback, tstops = tstops, kwargs...)
 
     @info "Building kernel"
     kernel = my_solve_kernel(backend)
@@ -245,6 +200,32 @@ function my_vectorized_solve(probs, prob::ODEProblem, alg;
         ndrange = length(probs))
 
     ts, us
+end
+
+function define_snapshot(probs, prob::ODEProblem, alg;
+    dt, saveat = nothing,
+    save_everystep = true,
+    debug = false, callback = CallbackSet(nothing), tstops = nothing,
+    kwargs...)
+
+    integ = get_integ(probs, prob, alg;
+        dt = dt, saveat = saveat, save_everystep = save_everystep,
+        callback = callback, tstops = tstops, kwargs...)
+
+    return define_snapshot(integ)    
+end
+
+function define_snapshot(integ)
+    fnames  = fieldnames(typeof(integ))
+    ftypes  = fieldtypes(typeof(integ))
+    name    = gensym("Integ_Snapshot")
+    eval(Expr(:struct,false,name,
+        Expr(:block,[Expr(:(::),f,t) for (f,t) in zip(fnames,ftypes)]...)))
+
+    @eval function snapshot(integ::$(typeof(integ)))
+        return $(name)([getproperty(integ,n) for n in $fnames]...)
+    end
+    return eval(:($name))
 end
 
 trajectories = 10_000

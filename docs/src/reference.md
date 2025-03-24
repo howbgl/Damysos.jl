@@ -1,8 +1,8 @@
+# Reference
+
 ```@meta
 CurrentModule = Damysos
 ```
-
-# Reference
 
 ## Index
 

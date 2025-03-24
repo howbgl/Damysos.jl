@@ -39,12 +39,14 @@ function make_demo_simulation()
     h       = GappedDirac(energyscaled(m,us))
     l       = TwoBandDephasingLiouvillian(h,timescaled(t1,us),timescaled(t2,us))
     df      = GaussianAPulse(us,σ,freq,emax)
-    pars    = NumericalParams2d(dkx,dky,kxmax,kymax,dt,-5df.σ)
-    obs     = [Velocity(pars),Occupation(pars)]
+    kgrid   = CartesianKGrid2d(dkx,kxmax,dky,kymax)
+    tgrid   = SymmetricTimeGrid(dt,-5df.σ)
+    grid    = NGrid(kgrid,tgrid)
+    obs     = [Velocity(grid),Occupation(grid)]
 
     id      = "demo"
 
-    return Simulation(l,df,pars,obs,us,id)
+    return Simulation(l,df,grid,obs,us,id)
 end
 
 const sim = make_demo_simulation()

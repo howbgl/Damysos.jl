@@ -46,25 +46,33 @@ function define_immutable_struct(T::UnionAll)
     end
 end
 
-@kernel function my_solve_kernel(@Const(probs), alg, _us, _ts, dt, callback,
+@kernel function snapshot_kernel(_integs, integ)
+    i = @index(Global, Linear)
+    _integs[i] = snapshot(integ)    
+end
+
+@kernel function my_solve_kernel(@Const(probs), alg, _us, _ts, _integs, dt, callback,
         tstops, nsteps,
         saveat, ::Val{save_everystep}) where {save_everystep}
     i = @index(Global, Linear)
 
+    # @cushow typeof(@inbounds _integs[i])
+    
     # get the actual problem for this thread
     prob = @inbounds probs[i]
-
+    
     # get the input/output arrays for this thread
     ts = @inbounds view(_ts, :, i)
     us = @inbounds view(_us, :, i)
-
+    
     _saveat = get(prob.kwargs, :saveat, nothing)
-
+    
     saveat = _saveat === nothing ? saveat : _saveat
-
+    
     integ = init(alg, prob.f, false, prob.u0, prob.tspan[1], dt, prob.p, tstops,
-        callback, save_everystep, saveat)
-
+    callback, save_everystep, saveat)
+    
+    # @cushow snapshot(integ)
     # @cushow integ
     # @cushow ismutable(integ)
 
@@ -99,14 +107,19 @@ end
         @inbounds us[2] = integ.u
         @inbounds ts[2] = integ.t
     end
+
+    _integs[i] = snapshot(integ)
 end
 
 
 function handle_allocations(probs, prob::ODEProblem, alg;
-        dt, saveat = nothing,
+        dt, 
+        saveat = nothing,
         save_everystep = true,
-        callback = CallbackSet(nothing), tstops = nothing,
+        callback = CallbackSet(nothing), 
+        tstops = nothing,
         kwargs...)
+    
     backend = maybe_prefer_blocks(get_backend(probs))
     timeseries = prob.tspan[1]:dt:prob.tspan[2]
     nsteps = length(timeseries)
@@ -187,6 +200,8 @@ function my_vectorized_solve(probs, prob::ODEProblem, alg;
         dt = dt, saveat = saveat, save_everystep = save_everystep,
         callback = callback, tstops = tstops, kwargs...)
 
+    integs = allocate(backend, typeof(snapshot(integ)), (length(probs),))
+    @show typeof(integs)
     @info "Building kernel"
     kernel = my_solve_kernel(backend)
 
@@ -195,11 +210,11 @@ function my_vectorized_solve(probs, prob::ODEProblem, alg;
     end
 
     @info "Compiling & launching kernel"
-    kernel(probs, alg, us, ts, dt, callback, tstops, nsteps, saveat,
+    kernel(probs, alg, us, ts, integs, dt, callback, tstops, nsteps, saveat,
         Val(save_everystep);
         ndrange = length(probs))
 
-    ts, us
+    ts, us, integs
 end
 
 function define_snapshot(probs, prob::ODEProblem, alg;
@@ -218,12 +233,14 @@ end
 function define_snapshot(integ)
     fnames  = fieldnames(typeof(integ))
     ftypes  = fieldtypes(typeof(integ))
-    name    = gensym("Integ_Snapshot")
+    name    = gensym("IntegSnapshot")
     eval(Expr(:struct,false,name,
-        Expr(:block,[Expr(:(::),f,t) for (f,t) in zip(fnames,ftypes)]...)))
+        Expr(:block,(Expr(:(::),f,t) for (f,t) in zip(fnames,ftypes))...)))
+
+    args = [Expr(:., :integ, QuoteNode(f)) for f in fnames]
 
     @eval function snapshot(integ::$(typeof(integ)))
-        return $(name)([getproperty(integ,n) for n in $fnames]...)
+        return $(name)($(args...))
     end
     return eval(:($name))
 end
@@ -245,9 +262,11 @@ tspan = (0.0f0, 10.0f0)
 p = @SVector [10.0f0, 28.0f0, 8 / 3.0f0]
 prob = ODEProblem{false}(lorenz, u0, tspan, p)
 
+pars = [(@SVector rand(Float32, 3)) .* p for i in 1:trajectories]
+
 ## Building different problems for different parameters
 probs = map(1:trajectories) do i
-    DiffEqGPU.make_prob_compatible(remake(prob, p = (@SVector rand(Float32, 3)) .* p))
+    DiffEqGPU.make_prob_compatible(remake(prob, p = pars[i]))
 end
 
 ## Move the arrays to the GPU
@@ -256,9 +275,18 @@ probs = cu(probs)
 ## Finally use the lower API for faster solves! (Fixed time-stepping)
 
 # Run once for compilation
-@time CUDA.@sync ts, us = my_vectorized_solve(probs, prob, GPUTsit5();
+
+# Run once for compilation
+@time CUDA.@sync ts, us = DiffEqGPU.vectorized_solve(probs, prob, GPUTsit5();
+    save_everystep = false, dt = 0.1f0)
+
+@time CUDA.@sync ts, us = DiffEqGPU.vectorized_solve(probs, prob, GPUTsit5();
+    save_everystep = false, dt = 0.1f0)
+
+## Run my version
+@time CUDA.@sync ts2, us2, integs = my_vectorized_solve(probs, prob, GPUTsit5();
     save_everystep = true, dt = 0.1f0)
 
-@time CUDA.@sync ts, us = my_vectorized_solve(probs, prob, GPUTsit5();
+@time CUDA.@sync ts2, us2, integs = my_vectorized_solve(probs, prob, GPUTsit5();
     save_everystep = true, dt = 0.1f0);
 

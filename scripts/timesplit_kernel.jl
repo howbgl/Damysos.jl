@@ -71,10 +71,6 @@ end
     
     integ = init(alg, prob.f, false, prob.u0, prob.tspan[1], dt, prob.p, tstops,
     callback, save_everystep, saveat)
-    
-    # @cushow snapshot(integ)
-    # @cushow integ
-    # @cushow ismutable(integ)
 
     u0 = prob.u0
     tspan = prob.tspan
@@ -242,6 +238,13 @@ function define_snapshot(integ)
     @eval function snapshot(integ::$(typeof(integ)))
         return $(name)($(args...))
     end
+
+    args = [Expr(:., :snapshot, QuoteNode(f)) for f in fnames]
+
+    @eval function init(snapshot::$(name))
+        return $(typeof(integ))($(args...))
+    end
+
     return eval(:($name))
 end
 

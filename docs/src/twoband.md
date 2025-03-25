@@ -103,7 +103,7 @@ with the matrix
 
 ## Implementing functions
 
-```@docs
+```@docs; canonical=false
 vx_cc
 vx_cv
 vx_vc

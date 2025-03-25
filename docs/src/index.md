@@ -36,6 +36,6 @@ The time-propagation is implemented using solvers from [DifferentialEquations.jl
 
 There are three solvers to choose from:
 
-- [LinearCUDA](@ref)
-- [LinearChunked](@ref)
-- [SingleMode](@ref)
+- [`LinearCUDA`](@ref): sum with linear indexing on (CUDA) GPU
+- [`LinearChunked`](@ref): sum with linear indexing on CPU
+- [`SingleMode`](@ref): propagates single k-point

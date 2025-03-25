@@ -100,3 +100,24 @@ with the matrix
     0 & 0 & 0
 \end{pmatrix}.
 ```
+
+## Implementing functions
+
+```@docs
+vx_cc
+vx_cv
+vx_vc
+vx_vv
+vy_cc
+vy_cv
+vy_vc
+vy_vv
+dx_cc
+dx_cv
+dx_vc
+dx_vv
+dy_cc
+dy_cv
+dy_vc
+dy_vv
+```

@@ -28,3 +28,4 @@ The computational task for this package consists of solving the Semiconductor Bl
 ```
 
 By using the Coulomb/velocity gauge here ($\bm{E}(t)=-\dot{\bm{A}}(t)$), the SBEs decouple w.r.t $\bm{k}$ and are thus reduced to an ensemble of ODEs for different parameters.
+See e.g. [Linberg et al](https://doi.org/10.1103/PhysRevB.38.3342), (Sch&auml;fer, Wegener)[ISBN  3540616144], [Wilhelm et al](https://doi.org/10.1103/PhysRevB.103.125419) for more detailed description of SBEs.

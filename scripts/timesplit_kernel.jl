@@ -10,46 +10,47 @@ import DiffEqGPU.step!
 import DiffEqGPU.savevalues!
 import DiffEqGPU
 
-function symbolize(x::DataType)
-    if isprimitivetype(x) || x == String
-        return Symbol(x)
-    else
-        return Expr(:curly, nameof(x), symbolize.(x.parameters)...)
+
+############################### snapshot definition ###############################
+
+function define_snapshot(probs, prob::ODEProblem, alg;
+    dt, saveat = nothing,
+    save_everystep = true,
+    debug = false, callback = CallbackSet(nothing), tstops = nothing,
+    kwargs...)
+
+    integ = get_integ(probs, prob, alg;
+        dt = dt, saveat = saveat, save_everystep = save_everystep,
+        callback = callback, tstops = tstops, kwargs...)
+
+    return define_snapshot(integ)    
+end
+
+function define_snapshot(integ)
+    fnames  = fieldnames(typeof(integ))
+    ftypes  = fieldtypes(typeof(integ))
+    name    = gensym("IntegSnapshot")
+    eval(Expr(:struct,false,name,
+        Expr(:block,(Expr(:(::),f,t) for (f,t) in zip(fnames,ftypes))...)))
+
+    args = [Expr(:., :integ, QuoteNode(f)) for f in fnames]
+
+    @eval function snapshot(integ::$(typeof(integ)))
+        return $(name)($(args...))
     end
-end
-symbolize(x::Number) = x
-symbolize(x::TypeVar) = Symbol(x)
 
-function bottomtype(T::UnionAll)
-    cur_T = T
-    while cur_T isa UnionAll
-        cur_T = cur_T.body
+    args = [Expr(:., :snapshot, QuoteNode(f)) for f in fnames]
+
+    @eval function init(snapshot::$(name))
+        return $(typeof(integ))($(args...))
     end
-    return cur_T
+
+    return eval(:($name))
 end
 
-function immutize(T)
-    bt = bottomtype(T)
-    fnames = fieldnames(bt)
-    ftypes = [symbolize(fieldtype(bt,var)) for var in fnames]
-    eval(Expr(:struct,false,
-        Expr(:curly,Symbol("Immutable",nameof(bt)),Symbol.(bt.parameters)...),
-        Expr(:block,[Expr(:(::),f,t) for (f,t) in zip(fnames,ftypes)]...)))
-end
 
-function define_immutable_struct(T::UnionAll)
-    immutize(T)
-    bt      = bottomtype(T)
-    @eval function $(Symbol("Immutable",nameof(bt)))(x::$T)
-        fields  = [getproperty(x, f) for f in fieldnames($T)]
-        return $(Symbol("Immutable",nameof(T)))(fields...)
-    end
-end
+#################### complete version: featureset of vectorized_solve ####################
 
-@kernel function snapshot_kernel(_integs, integ)
-    i = @index(Global, Linear)
-    _integs[i] = snapshot(integ)    
-end
 
 @kernel function my_solve_kernel(@Const(probs), alg, _us, _ts, _integs, dt, callback,
         tstops, nsteps,
@@ -167,6 +168,9 @@ function handle_allocations(probs, prob::ODEProblem, alg;
 
     tstops = adapt(backend, tstops)
 
+    @show saveat
+    @show tstops
+    @show save_everystep
     integ = init(alg, prob.f, false, prob.u0, prob.tspan[1], dt, prob.p, 
         tstops, callback, save_everystep, saveat)
 
@@ -213,40 +217,104 @@ function my_vectorized_solve(probs, prob::ODEProblem, alg;
     ts, us, integs
 end
 
-function define_snapshot(probs, prob::ODEProblem, alg;
-    dt, saveat = nothing,
-    save_everystep = true,
-    debug = false, callback = CallbackSet(nothing), tstops = nothing,
+#################### custom version: only save_everystep ####################
+
+function define_snapshot(probs, prob::ODEProblem, alg, dt;
+    callback = CallbackSet(nothing),
     kwargs...)
 
-    integ = get_integ(probs, prob, alg;
-        dt = dt, saveat = saveat, save_everystep = save_everystep,
-        callback = callback, tstops = tstops, kwargs...)
+    integ = get_integ(probs, prob, alg, dt;
+        callback = CallbackSet(nothing),
+        kwargs...)
 
     return define_snapshot(integ)    
 end
 
-function define_snapshot(integ)
-    fnames  = fieldnames(typeof(integ))
-    ftypes  = fieldtypes(typeof(integ))
-    name    = gensym("IntegSnapshot")
-    eval(Expr(:struct,false,name,
-        Expr(:block,(Expr(:(::),f,t) for (f,t) in zip(fnames,ftypes))...)))
 
-    args = [Expr(:., :integ, QuoteNode(f)) for f in fnames]
+@kernel function solve_kernel(@Const(probs), alg, _us, _ts, _integs, dt, callback,
+    ::Val{resume}) where {resume}
 
-    @eval function snapshot(integ::$(typeof(integ)))
-        return $(name)($(args...))
+    i = @index(Global, Linear)
+    
+    # get the actual problem for this thread
+    prob = @inbounds probs[i]
+    
+    # get the input/output arrays for this thread
+    ts = @inbounds view(_ts, :, i)
+    us = @inbounds view(_us, :, i)
+    
+    integ = init(alg, prob.f, false, prob.u0, prob.tspan[1], dt, prob.p, 
+        nothing, callback, true, nothing)
+
+    tspan = prob.tspan
+
+    integ.cur_t = 0
+    @inbounds ts[integ.step_idx] = prob.tspan[1]
+    @inbounds us[integ.step_idx] = prob.u0
+
+    integ.step_idx += 1
+    # FSAL
+    while integ.t < tspan[2] && integ.retcode != DiffEqBase.ReturnCode.Terminated
+        saved_in_cb = DiffEqGPU.step!(integ, ts, us)
+        !saved_in_cb && DiffEqGPU.savevalues!(integ, ts, us)
+    end
+    if integ.t > tspan[2]
+        ## Intepolate to tf
+        @inbounds us[end] = integ(tspan[2])
+        @inbounds ts[end] = tspan[2]
     end
 
-    args = [Expr(:., :snapshot, QuoteNode(f)) for f in fnames]
-
-    @eval function init(snapshot::$(name))
-        return $(typeof(integ))($(args...))
-    end
-
-    return eval(:($name))
+    _integs[i] = snapshot(integ)
 end
+
+
+function adapt_odeproblem(probs, prob::Union{ODEProblem,ImmutableODEProblem}, alg, dt; 
+    kwargs...)
+
+    backend = maybe_prefer_blocks(get_backend(probs))
+    prob    = convert(ImmutableODEProblem, prob)
+    dt      = convert(eltype(prob.tspan), dt)
+
+    return backend, prob, dt
+end
+
+function get_integ(probs, prob::Union{ODEProblem,ImmutableODEProblem}, alg, dt;
+    callback = CallbackSet(nothing),
+    kwargs...)
+
+    _, prob, dt = adapt_odeproblem(probs, prob, alg, dt; kwargs...)
+
+    return init(alg, prob.f, false, prob.u0, prob.tspan[1], dt, prob.p, 
+        nothing, callback, true, nothing)
+end
+
+function solve_odes_gpu(probs, prob::ODEProblem, alg, dt;
+    callback = CallbackSet(nothing),
+    initial_integrators = nothing, 
+    kwargs...)
+
+    resume              = !isnothing(initial_integrators)
+    integ               = get_integ(probs, prob, alg, dt; callback = callback, kwargs...)
+    backend, prob, dt   = adapt_odeproblem(probs, prob, alg, dt; kwargs...)
+    timeseries          = prob.tspan[1]:dt:prob.tspan[2]
+    len                 = length(timeseries)
+
+    ts      = allocate(backend, typeof(dt), (len, length(probs)))
+    fill!(ts, prob.tspan[1])
+    us      = allocate(backend, typeof(prob.u0), (len, length(probs)))
+    integs  = allocate(backend, typeof(snapshot(integ)), (length(probs),))
+    kernel  = solve_kernel(backend)
+
+    if backend isa CPU
+        @warn "Running the kernel on CPU"
+    end
+
+    kernel(probs, alg, us, ts, integs, dt, callback, Val(resume); ndrange = length(probs))
+
+    ts, us, integs
+end
+
+################################ test it ################################
 
 trajectories = 10_000
 
@@ -281,15 +349,66 @@ probs = cu(probs)
 
 # Run once for compilation
 @time CUDA.@sync ts, us = DiffEqGPU.vectorized_solve(probs, prob, GPUTsit5();
-    save_everystep = false, dt = 0.1f0)
+    save_everystep = true, dt = 0.1f0)
 
 @time CUDA.@sync ts, us = DiffEqGPU.vectorized_solve(probs, prob, GPUTsit5();
-    save_everystep = false, dt = 0.1f0)
+    save_everystep = true, dt = 0.1f0)
 
 ## Run my version
+define_snapshot(probs, prob, GPUTsit5(), 0.1f0)
+
+@time CUDA.@sync ts2, us2, integs = solve_odes_gpu(probs, prob, GPUTsit5(), 0.1f0)
+
+@time CUDA.@sync ts2, us2, integs = solve_odes_gpu(probs, prob, GPUTsit5(), 0.1f0)
+
+
+## Run my versionts
+define_snapshot(probs, prob, GPUTsit5(); save_everystep = true, dt = 0.1f0)
+
 @time CUDA.@sync ts2, us2, integs = my_vectorized_solve(probs, prob, GPUTsit5();
     save_everystep = true, dt = 0.1f0)
 
 @time CUDA.@sync ts2, us2, integs = my_vectorized_solve(probs, prob, GPUTsit5();
     save_everystep = true, dt = 0.1f0);
+
+@show all(ts .== ts2)
+@show all(us .== us2)
+
+############################### old approach symbolize ###############################
+
+function symbolize(x::DataType)
+    if isprimitivetype(x) || x == String
+        return Symbol(x)
+    else
+        return Expr(:curly, nameof(x), symbolize.(x.parameters)...)
+    end
+end
+symbolize(x::Number) = x
+symbolize(x::TypeVar) = Symbol(x)
+
+function bottomtype(T::UnionAll)
+    cur_T = T
+    while cur_T isa UnionAll
+        cur_T = cur_T.body
+    end
+    return cur_T
+end
+
+function immutize(T)
+    bt = bottomtype(T)
+    fnames = fieldnames(bt)
+    ftypes = [symbolize(fieldtype(bt,var)) for var in fnames]
+    eval(Expr(:struct,false,
+        Expr(:curly,Symbol("Immutable",nameof(bt)),Symbol.(bt.parameters)...),
+        Expr(:block,[Expr(:(::),f,t) for (f,t) in zip(fnames,ftypes)]...)))
+end
+
+function define_immutable_struct(T::UnionAll)
+    immutize(T)
+    bt      = bottomtype(T)
+    @eval function $(Symbol("Immutable",nameof(bt)))(x::$T)
+        fields  = [getproperty(x, f) for f in fieldnames($T)]
+        return $(Symbol("Immutable",nameof(T)))(fields...)
+    end
+end
 

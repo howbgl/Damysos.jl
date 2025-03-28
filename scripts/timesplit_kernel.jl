@@ -26,6 +26,15 @@ function define_snapshot(probs, prob::ODEProblem, alg;
     return define_snapshot(integ)    
 end
 
+function define_snapshot(probs, prob::ODEProblem, alg, dt;
+    callback = CallbackSet(nothing),
+    kwargs...)
+
+    integ = get_integ(probs, prob, alg, dt; callback = CallbackSet(nothing), kwargs...)
+
+    return define_snapshot(integ)    
+end
+
 function define_snapshot(integ)
     fnames  = fieldnames(typeof(integ))
     ftypes  = fieldtypes(typeof(integ))
@@ -219,44 +228,32 @@ end
 
 #################### custom version: only save_everystep ####################
 
-function define_snapshot(probs, prob::ODEProblem, alg, dt;
-    callback = CallbackSet(nothing),
-    kwargs...)
-
-    integ = get_integ(probs, prob, alg, dt;
-        callback = CallbackSet(nothing),
-        kwargs...)
-
-    return define_snapshot(integ)    
-end
-
-
-@kernel function solve_kernel(@Const(probs), alg, _us, _ts, _integs, dt, callback,
-    ::Val{resume}) where {resume}
+@kernel function solve_ode_kernel(@Const(probs), alg, _us, _ts, _integs, dt, callback)
 
     i = @index(Global, Linear)
     
     # get the actual problem for this thread
-    prob = @inbounds probs[i]
+    prob    = @inbounds probs[i]
     
     # get the input/output arrays for this thread
-    ts = @inbounds view(_ts, :, i)
-    us = @inbounds view(_us, :, i)
-    
-    integ = init(alg, prob.f, false, prob.u0, prob.tspan[1], dt, prob.p, 
+    ts      = @inbounds view(_ts, :, i)
+    us      = @inbounds view(_us, :, i)
+    tspan   = prob.tspan
+    len     = length(ts)
+
+    integ = init(alg, prob.f, false, prob.u0, tspan[1], dt, prob.p, 
         nothing, callback, true, nothing)
 
-    tspan = prob.tspan
-
     integ.cur_t = 0
-    @inbounds ts[integ.step_idx] = prob.tspan[1]
+    @inbounds ts[integ.step_idx] = tspan[1]
     @inbounds us[integ.step_idx] = prob.u0
-
     integ.step_idx += 1
+
     # FSAL
-    while integ.t < tspan[2] && integ.retcode != DiffEqBase.ReturnCode.Terminated
+    while integ.step_idx < len + 1 && integ.retcode != DiffEqBase.ReturnCode.Terminated
         saved_in_cb = DiffEqGPU.step!(integ, ts, us)
         !saved_in_cb && DiffEqGPU.savevalues!(integ, ts, us)
+        @cushow i, integ.step_idx, integ.t, len
     end
     if integ.t > tspan[2]
         ## Intepolate to tf
@@ -264,9 +261,57 @@ end
         @inbounds ts[end] = tspan[2]
     end
 
-    _integs[i] = snapshot(integ)
+    if !isnothing(_integs)
+        _integs[i] = snapshot(integ)
+    end
 end
 
+@kernel function resume_ode_solve_kernel(_us, _ts, _integs, tspan)
+
+    i               = @index(Global, Linear)
+    integ           = @inbounds init(_integs[i])
+    integ.retcode   = DiffEqBase.ReturnCode.Default
+    integ.cur_t     = 0
+    integ.step_idx  = 1
+    len             = size(_ts, 1)
+    ts              = @inbounds view(_ts, :, i)
+    us              = @inbounds view(_us, :, i)
+    
+    # don't save initial state
+    @cushow i,integ.u[1],integ.u[2],integ.u[3]
+
+    while integ.step_idx < len && integ.retcode != DiffEqBase.ReturnCode.Terminated
+        saved_in_cb = DiffEqGPU.step!(integ, ts, us)
+        !saved_in_cb && DiffEqGPU.savevalues!(integ, ts, us)
+        # @cushow i, integ.step_idx, convert(Float64,integ.t)
+    end
+
+    if !isnothing(_integs)
+        _integs[i] = snapshot(integ)
+    end
+end
+
+function resume_ode_solve(integrators, tspan)
+
+    backend    = get_backend(integrators)
+    integ      = init(Array(integrators)[1])
+    tspan      = convert.(eltype(integ.dt), tspan)
+    timeseries = tspan[1]:integ.dt:tspan[2]
+    len        = length(timeseries) - 1 # omit initial time tspan[1]
+    ts         = allocate(backend, typeof(integ.dt), (len, length(integrators)))
+    fill!(ts, tspan[1])
+    us         = allocate(backend, typeof(integ.u), (len, length(integrators)))
+
+    kernel = resume_ode_solve_kernel(backend)
+
+    if backend isa CPU
+        @warn "Running the kernel on CPU"
+    end
+
+    kernel(us, ts, integrators, tspan; ndrange = length(integrators))
+
+    ts, us, integrators
+end
 
 function adapt_odeproblem(probs, prob::Union{ODEProblem,ImmutableODEProblem}, alg, dt; 
     kwargs...)
@@ -295,28 +340,33 @@ function solve_odes_gpu(probs, prob::ODEProblem, alg, dt;
 
     resume              = !isnothing(initial_integrators)
     integ               = get_integ(probs, prob, alg, dt; callback = callback, kwargs...)
-    backend, prob, dt   = adapt_odeproblem(probs, prob, alg, dt; kwargs...)
     timeseries          = prob.tspan[1]:dt:prob.tspan[2]
-    len                 = length(timeseries)
+    backend, prob, dt   = adapt_odeproblem(probs, prob, alg, dt; kwargs...)
 
+    len     = isnothing(initial_integrators) ? length(timeseries) : length(timeseries) -1
     ts      = allocate(backend, typeof(dt), (len, length(probs)))
     fill!(ts, prob.tspan[1])
     us      = allocate(backend, typeof(prob.u0), (len, length(probs)))
-    integs  = allocate(backend, typeof(snapshot(integ)), (length(probs),))
-    kernel  = solve_kernel(backend)
+    integs  = if isnothing(initial_integrators)
+        allocate(backend, typeof(snapshot(integ)), (length(probs),))
+    else
+        initial_integrators
+    end
+
+    kernel = solve_ode_kernel(backend)
 
     if backend isa CPU
         @warn "Running the kernel on CPU"
     end
 
-    kernel(probs, alg, us, ts, integs, dt, callback, Val(resume); ndrange = length(probs))
+    kernel(probs, alg, us, ts, integs, dt, callback; ndrange = length(probs))
 
     ts, us, integs
 end
 
 ################################ test it ################################
 
-trajectories = 10_000
+trajectories = 10
 
 function lorenz(u, p, t)
     σ = p[1]
@@ -328,12 +378,12 @@ function lorenz(u, p, t)
     return SVector{3}(du1, du2, du3)
 end
 
-u0 = @SVector [1.0f0; 0.0f0; 0.0f0]
-tspan = (0.0f0, 10.0f0)
-p = @SVector [10.0f0, 28.0f0, 8 / 3.0f0]
+u0 = @SVector [1.0; 0.0; 0.0]
+tspan = (0., 5.)
+p = @SVector [10., 28., 8 / 3.]
 prob = ODEProblem{false}(lorenz, u0, tspan, p)
 
-pars = [(@SVector rand(Float32, 3)) .* p for i in 1:trajectories]
+pars = [(@SVector rand(Float64, 3)) .* p for i in 1:trajectories]
 
 ## Building different problems for different parameters
 probs = map(1:trajectories) do i
@@ -346,33 +396,52 @@ probs = cu(probs)
 ## Finally use the lower API for faster solves! (Fixed time-stepping)
 
 # Run once for compilation
-
-# Run once for compilation
 @time CUDA.@sync ts, us = DiffEqGPU.vectorized_solve(probs, prob, GPUTsit5();
-    save_everystep = true, dt = 0.1f0)
+    save_everystep = true, dt = 0.1)
 
 @time CUDA.@sync ts, us = DiffEqGPU.vectorized_solve(probs, prob, GPUTsit5();
-    save_everystep = true, dt = 0.1f0)
+    save_everystep = true, dt = 0.1)
 
 ## Run my version
-define_snapshot(probs, prob, GPUTsit5(), 0.1f0)
+define_snapshot(probs, prob, GPUTsit5(), 0.1)
 
-@time CUDA.@sync ts2, us2, integs = solve_odes_gpu(probs, prob, GPUTsit5(), 0.1f0)
+@time CUDA.@sync myts, myus, integs = solve_odes_gpu(probs, prob, GPUTsit5(), 0.1)
 
-@time CUDA.@sync ts2, us2, integs = solve_odes_gpu(probs, prob, GPUTsit5(), 0.1f0)
+@time CUDA.@sync myts, myus, integs = solve_odes_gpu(probs, prob, GPUTsit5(), 0.1)
 
+@show all(ts .== myts)
+@show all(us .== myus)
 
-## Run my versionts
-define_snapshot(probs, prob, GPUTsit5(); save_everystep = true, dt = 0.1f0)
+# t = 0 to 2.5
+prob1 = ODEProblem{false}(lorenz, u0, (0.0, 2.5), p)
+probs1 = map(1:trajectories) do i
+    DiffEqGPU.make_prob_compatible(remake(prob1, p = pars[i]))
+end
+probs1 = cu(probs1)
+define_snapshot(probs1, prob1, GPUTsit5(), 0.1)
+@time CUDA.@sync ts1, us1, integs1 = solve_odes_gpu(probs1, prob1, GPUTsit5(), 0.1)
+
+# t = 2.5 to 5
+# prob2 = ODEProblem{false}(lorenz, u0, (2.5, 5.0), p)
+# probs2 = map(1:trajectories) do i
+#     DiffEqGPU.make_prob_compatible(remake(prob2, p = pars[i]))
+# end
+# probs2 = cu(probs2)
+# define_snapshot(probs2, prob2, GPUTsit5(), 0.1)
+@time CUDA.@sync ts2, us2, integs2 = resume_ode_solve(integs1, (2.5, 5.0))
+
+@show all(ts .== vcat(ts1, ts2))
+@show all(us .== vcat(us1, us2))
+
+## Run my versiont
+define_snapshot(probs, prob, GPUTsit5(); save_everystep = true, dt = 0.1)
 
 @time CUDA.@sync ts2, us2, integs = my_vectorized_solve(probs, prob, GPUTsit5();
-    save_everystep = true, dt = 0.1f0)
+    save_everystep = true, dt = 0.1)
 
 @time CUDA.@sync ts2, us2, integs = my_vectorized_solve(probs, prob, GPUTsit5();
-    save_everystep = true, dt = 0.1f0);
+    save_everystep = true, dt = 0.1);
 
-@show all(ts .== ts2)
-@show all(us .== us2)
 
 ############################### old approach symbolize ###############################
 

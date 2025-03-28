@@ -26,7 +26,7 @@ struct LinearCUDA{isadaptive} <: DamysosSolver
 	function LinearCUDA(
 		kchunksize::Int64 = default_kchunk_size(LinearCUDA),
 		algorithm::DiffEqGPU.GPUODEAlgorithm = GPUVern7(),
-		ngpus::Int64 = convert(Int64, CUDA.functional() ? length(CUDA.devices()) : 1),
+		ngpus::Int64 = convert(Int64, CUDA.functional() ? length(CUDA.devices()) : 1);
 		rtol = nothing,
 		atol = nothing)
 

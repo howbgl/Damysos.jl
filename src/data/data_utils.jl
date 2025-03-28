@@ -51,9 +51,10 @@ function loadable_datatype(s::String)
 end
 
 function ensurefile_ext(filepath::String,ext::String)
-	ext = replace(ext,"." => "")
-	path = splitext(filepath)[1]
-	return path * "." * ext
+	ext = startswith(ext,".") ? ext : "." * ext
+	path, _ext = splitext(filepath)
+	_ext == ext && return filepath
+	return filepath * ext
 end
 
 function savedata(

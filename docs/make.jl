@@ -1,12 +1,12 @@
-using Damysos
 using Documenter
+using Damysos
 
 DocMeta.setdocmeta!(Damysos, :DocTestSetup, :(using Damysos); recursive=true)
 
 makedocs(;
     modules=[Damysos],
-    authors="Wolfgang Hogger <wolfgang.hogger@ur.de>",
-    repo="https://git.uni-regensburg.de/how09898/Damysos.jl/blob/{commit}{path}#{line}",
+    authors="Wolfgang Hogger <wolfgang.hogger@gmail.com>",
+    repo="https://howbgl.github.io/Damysos.jl/",
     sitename="Damysos.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",

@@ -1,0 +1,35 @@
+# filepath: /home/how09898/dev/hub_damysos/.github/workflows/pages.yml
+name: Documentation
+
+on:
+  push:
+    branches:
+      - main  # Adjust to your default branch
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: '1.11'  # Use the Julia version you need
+
+      - name: Install dependencies
+        run: |
+          julia --project=docs -e 'using Pkg; Pkg.instantiate()'
+
+      - name: Build documentation
+        run: |
+          julia --project=docs docs/make.jl
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/build

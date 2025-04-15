@@ -1,5 +1,5 @@
-using Documenter
 using Damysos
+using Documenter
 
 DocMeta.setdocmeta!(Damysos, :DocTestSetup, :(using Damysos); recursive=true)
 

@@ -20,3 +20,9 @@ makedocs(;
         "reference.md",
     ],
 )
+
+deploydocs(
+    repo="https://howbgl.github.io/Damysos.jl/",
+    target="gh-pages",
+    push_preview=true
+)

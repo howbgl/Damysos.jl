@@ -1,5 +1,5 @@
-using Damysos
 using Documenter
+using Damysos
 
 DocMeta.setdocmeta!(Damysos, :DocTestSetup, :(using Damysos); recursive=true)
 
@@ -14,6 +14,10 @@ makedocs(;
         edit_link="main",
         assets=String[],
     ),
+    deploydocs = [
+        Documenter.GitHubActions(),
+        push_preview = true,  # Enable deployment for unregistered packages
+    ],
     pages=[
         "Home" => "index.md",
         "Two-band Hamiltonians" => "twoband.md",

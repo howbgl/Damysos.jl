@@ -1,6 +1,8 @@
 using Documenter
 using Damysos
 
+import Documenter.Remotes.GitHub
+
 DocMeta.setdocmeta!(Damysos, :DocTestSetup, :(using Damysos); recursive=true)
 
 makedocs(;

@@ -14,7 +14,6 @@ makedocs(;
         edit_link="main",
         assets=String[],
     ),
-    deploydocs = Documenter.GitHubActions(push_preview = true),  # Corrected syntax
     pages=[
         "Home" => "index.md",
         "Two-band Hamiltonians" => "twoband.md",

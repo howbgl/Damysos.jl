@@ -1,8 +1,8 @@
 # Damysos
 
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://how09898.git-pages.uni-regensburg.de/Damysos.jl/dev/)
-[![Build Status](https://git.uni-regensburg.de/how09898/Damysos.jl/badges/main/pipeline.svg)](https://git.uni-regensburg.de/how09898/Damysos.jl/pipelines)
-[![Coverage](https://git.uni-regensburg.de/how09898/Damysos.jl/badges/main/coverage.svg)](https://git.uni-regensburg.de/how09898/Damysos.jl/commits/main)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://howbgl.github.io/Damysos.jl/)
+[![Build Status](https://github.com/howbgl/Damysos.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/howbgl/Damysos.jl/actions)
+[![Coverage Status](https://codecov.io/gh/howbgl/Damysos.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/howbgl/Damysos.jl)
 
 ## Installation
 
@@ -12,7 +12,7 @@ First make sure you have Julia installed and setup (https://julialang.org/downlo
 ### Clone package
 Since Damysos is not yet in the official Julia registry it needs to be cloned locally. Go to the desired folder and run
 ```
-git clone https://git.uni-regensburg.de/how09898/Damysos.jl.git
+git clone https://github.com/howbgl/Damysos.jl.git
 ```
 
 ## Testing package (warning: long runtime possible)

@@ -6,7 +6,7 @@ DocMeta.setdocmeta!(Damysos, :DocTestSetup, :(using Damysos); recursive=true)
 makedocs(;
     modules=[Damysos],
     authors="Wolfgang Hogger <wolfgang.hogger@gmail.com>",
-    repo="https://howbgl.github.io/Damysos.jl/",
+    repo="https://github.com/howbgl/Damysos.jl/",
     sitename="Damysos.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
@@ -22,7 +22,7 @@ makedocs(;
 )
 
 deploydocs(
-    repo="https://howbgl.github.io/Damysos.jl/",
+    repo="https://github.com/howbgl/Damysos.jl/",
     target="gh-pages",
     push_preview=true
 )

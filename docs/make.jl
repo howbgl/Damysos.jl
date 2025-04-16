@@ -24,5 +24,5 @@ makedocs(;
 )
 
 deploydocs(
-    repo=GitHub("howbgl", "Damysos.jl"),
+    repo="https://github.com/howbgl/Damysos.jl.git",
 )

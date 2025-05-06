@@ -50,19 +50,19 @@ export GaussianPulse
 GaussianPulse = GaussianAPulse
 
 
-@inline function get_efieldx(df::GaussianAPulse)
+function get_efieldx(df::GaussianAPulse)
     return t-> cos(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
                 gauss(t,df.σ) / (df.ω*df.σ^2)  
 end
-@inline function get_vecpotx(df::GaussianAPulse)
+function get_vecpotx(df::GaussianAPulse)
     return t -> cos(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
 end
 
-@inline function get_efieldy(df::GaussianAPulse)
+function get_efieldy(df::GaussianAPulse)
     return t-> sin(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
                 gauss(t,df.σ) / (df.ω*df.σ^2)  
 end
-@inline function get_vecpoty(df::GaussianAPulse)
+function get_vecpoty(df::GaussianAPulse)
     return t -> sin(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
 end
 

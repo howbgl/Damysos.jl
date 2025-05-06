@@ -64,3 +64,4 @@ get_vecpoty(sim::Simulation) = get_vecpoty(sim.drivingfield)
 
 include("GaussianAPulse.jl")
 include("GaussianEPulse.jl")
+include("CompositeDrivingField.jl")

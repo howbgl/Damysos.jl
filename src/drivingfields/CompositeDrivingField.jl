@@ -4,39 +4,54 @@ export CompositeDrivingField
 struct CompositeDrivingField{N,T<:Real} <: DrivingField{T}
     fields::SVector{N,DrivingField{T}}
     prefactors::SVector{N,T}
+    function CompositeDrivingField{N,T}(fields::AbstractVector{<:DrivingField{T}},
+                                        prefactors::AbstractVector{T}) where {N,T<:Real}
+        @argcheck length(fields) == length(prefactors) "CompositeDrivingField: length mismatch"
+        @argcheck N == length(fields) "CompositeDrivingField: N does not match length of fields"
+        @argcheck !any(isa.(fields, CompositeDrivingField)) "CompositeDrivingField: fields must not contain CompositeDrivingFields"
+        return new{N,T}(SA{DrivingField{T}}[fields...], SA{T}[prefactors...])
+    end
 end
 
-function CompositeDrivingField(fields::SVector{N,DrivingField{T}}) where {T<:Real,N}
-    return CompositeDrivingField(fields, @SVector ones(T, N))    
+function CompositeDrivingField(
+    fields::SVector{N,DrivingField{T}},
+    prefactors::SVector{N,T}) where {N,T<:Real}
+    flat_fields, flat_prefactors = flatten_drivingfield_list(fields, prefactors)
+    return CompositeDrivingField{N,T}(flat_fields, flat_prefactors)
+end
+
+function flatten_drivingfield_list(
+    fields::AbstractVector{<:DrivingField{T}},
+    prefactors::AbstractVector{T}) where {T<:Real}
+    # Flatten a list of driving fields, removing any CompositeDrivingFields
+    flat_fields     = DrivingField{T}[]
+    flat_prefactors = T[]
+    if any(isa.(fields, CompositeDrivingField))
+        for (field,prefactor) in zip(fields, prefactors)
+            if isa(field, CompositeDrivingField)
+                append!(flat_fields, field.fields)
+                append!(flat_prefactors, field.prefactors .* prefactor)
+            else
+                push!(flat_fields, field)
+                push!(flat_prefactors, prefactor)
+            end 
+        end
+        return flatten_drivingfield_list(flat_fields, flat_prefactors)
+    else
+        return SA{DrivingField{T}}[fields...], SA{T}[prefactors...]
+    end
 end
 
 function CompositeDrivingField(
     fields::AbstractVector{<:DrivingField{T}},
     prefactors::AbstractVector{T} = ones(T, length(fields))) where {T<:Real}
-    return CompositeDrivingField(SA{DrivingField{T}}[fields...],SA{T}[prefactors...])
+    flat_fields, flat_prefactors = flatten_drivingfield_list(fields, prefactors)
+    return CompositeDrivingField(SA{DrivingField{T}}[flat_fields...],SA{T}[flat_prefactors...])
 end
 
 function Base.:+(df1::DrivingField{T}, df2::DrivingField{U}) where {T,U}
     @argcheck T == U "Base.:+(df1::DrivingField{T}, df2::DrivingField{U})"
     return CompositeDrivingField(SA{DrivingField{T}}[df1, df2])
-end
-
-function Base.:+(df1::CompositeDrivingField{N,T}, df2::DrivingField{U}) where {N,T,U}
-    @argcheck T == U "Base.:+(df1::CompositeDrivingField{N,T}, df2::DrivingField{U})"
-    return CompositeDrivingField{N+1, T}(
-        SA{DrivingField{T}}[df1.fields..., df2],
-        SA{T}[df1.prefactors..., one(T)])    
-end
-
-function Base.:+(df1::DrivingField, df2::CompositeDrivingField)
-    return df2 + df1    
-end
-
-function Base.:+(df1::CompositeDrivingField{N,T}, df2::CompositeDrivingField{M,U}) where {N,T,M,U}
-    @argcheck T == U "Base.:+(df1::CompositeDrivingField{N,T}, df2::CompositeDrivingField{M,U})"
-    return CompositeDrivingField{N+M, T}(
-        SA{DrivingField{T}}[df1.fields..., df2.fields...],
-        SA{T}[df1.prefactors..., df2.prefactors...])    
 end
 
 function Base.:-(df1::DrivingField{T}, df2::DrivingField{U}) where {T,U}

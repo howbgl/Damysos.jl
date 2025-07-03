@@ -12,6 +12,7 @@ using Distributed
 using DataFrames
 using DSP
 using EnumX
+using ForwardDiff
 using HDF5
 using Infiltrator
 using Interpolations
@@ -56,6 +57,7 @@ include("grids/SymmetricTimeGrid.jl")
 include("hamiltonians/GappedDirac.jl")
 include("hamiltonians/QuadraticToy.jl")
 include("hamiltonians/BilayerToy.jl")
+include("hamiltonians/AutoDiffTwoBand.jl")
 
 include("Liouvillian.jl")
 include("drivingfields/DrivingFields.jl")

@@ -19,6 +19,7 @@ const LOADABLES = Dict(
 	"GaussianAPulse" 				=> GaussianAPulse,
 	"GaussianEPulse" 				=> GaussianEPulse,
 	"GaussianPulse"					=> GaussianPulse,
+	"CompositeDrivingField{.*?}"	=> CompositeDrivingField,
 	"Vector{Observable{.*?}}"		=> Vector{Observable},
 	"VelocityX"						=> VelocityX,
 	"\bVelocity\b"					=> Velocity,

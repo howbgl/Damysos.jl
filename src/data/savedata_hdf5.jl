@@ -40,6 +40,21 @@ function savedata_hdf5(
 	parent["T"]   		= "Simulation"
 end
 
+function savedata_hdf5(df::DrivingField, parent::Union{HDF5.File, HDF5.Group})
+	g = ensuregroup(parent, "drivingfield")
+	if df isa CompositeDrivingField
+		g["T"] = "$(typeof(df))"
+		g["prefactors"] = Vector{eltype(df.prefactors)}(df.prefactors)
+		gfields = ensuregroup(g, "fields")
+		for (i, f) in enumerate(df.fields)
+			generic_save_hdf5(f, gfields, "field_$i")
+		end
+		close(g)
+	else
+		generic_save_hdf5(df, parent, g)
+	end
+end
+
 function savedata_hdf5(
 	obs::Vector{<:Observable},
 	parent::Union{HDF5.File, HDF5.Group})

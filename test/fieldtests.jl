@@ -2,6 +2,7 @@ using CUDA
 using CSV
 using Damysos
 using DataFrames
+using FiniteDifferences
 using LoggingExtras
 using TerminalLoggers
 using Test
@@ -38,11 +39,25 @@ end
 
 
 @testset "Driving fields" begin
-    
-    alldrivingfields    = getall_drivingfields()
-    alldrivingfield_fns = getfield_functions.(alldrivingfields)
+    @testset "Hardcoded, dispatch and closure functions" begin
+        alldrivingfields    = getall_drivingfields()
+        alldrivingfield_fns = getfield_functions.(alldrivingfields)
 
-    for fns in alldrivingfield_fns
-        @test check_drivingfield_functions(fns...)
+        for fns in alldrivingfield_fns
+            @test check_drivingfield_functions(fns...)
+        end        
+    end
+    
+    @testset "Derivatives" begin
+        fdm      = central_fdm(5, 1)
+        tsamples = -10:0.01:10
+        atol     = 1e-12
+        rtol     = 1e-8
+        for df in getall_drivingfields()
+            fx, fy = get_efieldx(df), get_efieldy(df)
+            ax, ay = get_vecpotx(df), get_vecpoty(df)
+            @test isapprox(-fx.(tsamples), fdm.(ax, tsamples), atol = atol, rtol = rtol)
+            @test isapprox(-fy.(tsamples), fdm.(ay, tsamples), atol = atol, rtol = rtol)
+        end
     end
 end

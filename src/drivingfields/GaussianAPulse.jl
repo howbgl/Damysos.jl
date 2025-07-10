@@ -132,7 +132,7 @@ function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)
 
     symbols     = [:σ,:ω,:ν,:eE,:φ,:ħω]
     valuesSI    = [σ,ω,ν,eE,φ,ħω]
-    values      = [df.σ,df.ω,central_frequency(df),df.eE,df.ω]
+    values      = [df.σ,df.ω,central_frequency(df),df.eE,df.φ,df.ω]
     str         = ""
 
     for (s,v,vsi) in zip(symbols,values,valuesSI)

@@ -25,7 +25,7 @@ function savedata_hdf5(
 		
 		gdf[n] = f.(ts)
 	end
-	generic_save_hdf5(sim.drivingfield,gdf)
+	savedata_hdf5(sim.drivingfield,parent)
 	close(gdf)
 	@debug "Saved driving field"
 

@@ -123,3 +123,32 @@ function Base.show(io::IO, ::MIME"text/plain", c::CompositeDrivingField)
         
     end
 end
+
+function printparamsSI(
+    df::CompositeDrivingField{N,T},
+    us::UnitScaling;
+    digits=4) where {N,T<:Real}
+
+    str = ""
+    for (i, field) in enumerate(df.fields)
+        pars = printparamsSI(field, us; digits=digits)
+        str *= append_to_parnames(pars, "_$i")
+    end
+    return str
+end
+
+function append_to_parnames(input::String,str::String)
+    pattern = r"(.+?)\s*=\s*([^()]+)\s*(?:\(([\d\.]+)\))?"
+    ret = ""
+    
+    for line in split(input, '\n')
+        m = match(pattern, line)
+        if !isnothing(m)
+            name = m.captures[1]
+            ret *= replace(line, name => name * str) * "\n"
+        else
+            ret *= line * "\n"
+        end
+    end
+    return ret
+end

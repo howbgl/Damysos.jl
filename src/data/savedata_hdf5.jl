@@ -51,7 +51,7 @@ function savedata_hdf5(df::DrivingField, parent::Union{HDF5.File, HDF5.Group})
 		end
 		close(g)
 	else
-		generic_save_hdf5(df, parent, g)
+		generic_save_hdf5(df, parent, "drivingfield")
 	end
 end
 

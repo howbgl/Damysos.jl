@@ -4,8 +4,9 @@ function printdimless_params(l::TwoBandDephasingLiouvillian,df::DrivingField;dig
 end
 
 function printdimless_params(h::GeneralTwoBand,df::DrivingField;digits=3)
-    return "No simple dimensionless parameters defined for this combination " *
-        "of hamiltonian and driving field.\n\n" 
+    @info "No simple dimensionless parameters defined for this combination " *
+        "of hamiltonian and driving field.\n\n"
+    return ""
 end
 
 function printdimless_params(h::GappedDirac,df::Union{GaussianAPulse,GaussianEPulse};

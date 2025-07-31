@@ -61,16 +61,9 @@ const sim = make_test_simulation_tiny()
 
 linchunked = LinearChunked(256,EnsembleThreads(),Vern7(),1e-8,0.01)
 
-skipcuda = false
+skipcuda = !(CUDA.functional())
 
-try
-	LinearCUDA()
-catch err
-	if err == ErrorException("CUDA.jl is not functional, cannot use LinearCUDA solver.")
-		global skipcuda = true
-		@warn "Skipping CUDA tests, CUDA.jl is not functional."
-	end
-end
+skipcuda &&  @warn "Skipping CUDA tests, CUDA.jl is not functional (mark as broken)."
 lincuda = skipcuda ? nothing : LinearCUDA(10_000,GPUVern7(),1)
 
 const dt_tests = [ConvergenceTest(

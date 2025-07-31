@@ -1,4 +1,9 @@
+using Unitful:𝐋
+using Unitful:𝐌
+using Unitful:𝐓
+using Unitful:𝐈
 
+@derived_dimension Vectorpotential 𝐋*𝐌*𝐓^-2*𝐈^-1 true
 
 export UnitScaling
 
@@ -83,6 +88,16 @@ function electricfield_scaled(field::Unitful.EField,us::UnitScaling)
     tc = timescaleSI(us)
     lc = lengthscaleSI(us)
     return uconvert(Unitful.NoUnits,q_e*tc*lc*field/ħ)
+end
+
+function vectorpotentialSI(vecpot::Real,us::UnitScaling)
+    lc = lengthscaleSI(us)
+    return uconvert(u"MV*fs/cm",vecpot*ħ/(q_e*lc))    
+end
+
+function vectorpotential_scaled(vecpot::Vectorpotential,us::UnitScaling)
+    lc = lengthscaleSI(us)
+    return uconvert(Unitful.NoUnits,q_e*lc*vecpot/ħ)
 end
 
 function timeSI(time::Real,us::UnitScaling)

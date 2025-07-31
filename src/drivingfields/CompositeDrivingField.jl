@@ -20,6 +20,13 @@ function CompositeDrivingField(
     return CompositeDrivingField{N,T}(flat_fields, flat_prefactors)
 end
 
+central_angular_frequency(::CompositeDrivingField) = nothing # Ill-defined in general
+central_frequency(::CompositeDrivingField) = nothing # Ill-defined in general
+
+function reference_frequency_plotting(df::CompositeDrivingField) 
+    return maximum(reference_frequency_plotting.(df.fields))    
+end
+
 function flatten_drivingfield_list(
     fields::AbstractVector{<:DrivingField{T}},
     prefactors::AbstractVector{T}) where {T<:Real}

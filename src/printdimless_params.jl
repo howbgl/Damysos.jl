@@ -4,10 +4,14 @@ function printdimless_params(l::TwoBandDephasingLiouvillian,df::DrivingField;dig
 end
 
 function printdimless_params(h::GeneralTwoBand,df::DrivingField;digits=3)
+    @info "No simple dimensionless parameters defined for this combination " *
+        "of hamiltonian and driving field.\n\n"
     return ""
 end
 
-function printdimless_params(h::GappedDirac,df::DrivingField;digits=3)
+function printdimless_params(h::GappedDirac,df::Union{GaussianAPulse,GaussianEPulse};
+    digits=3)
+
     amax = maximum_vecpot(df)
     emax = maximum_efield(df)
     ω   = central_angular_frequency(df)
@@ -23,7 +27,11 @@ function printdimless_params(h::GappedDirac,df::DrivingField;digits=3)
         plz = $plz\n"""
 end
 
-function printdimless_params(h::Union{QuadraticToy,BilayerToy},df::DrivingField;digits=3)
+function printdimless_params(
+    h::Union{QuadraticToy,BilayerToy},
+    df::Union{GaussianAPulse,GaussianEPulse};
+    digits=3)
+
     emax = maximum_efield(df)
     ω   = central_angular_frequency(df)
     M   = round(h.Δ / ω,sigdigits=digits)               # Multi-photon number

@@ -25,7 +25,7 @@ function savedata_hdf5(
 		
 		gdf[n] = f.(ts)
 	end
-	generic_save_hdf5(sim.drivingfield,gdf)
+	savedata_hdf5(sim.drivingfield,parent)
 	close(gdf)
 	@debug "Saved driving field"
 
@@ -38,6 +38,21 @@ function savedata_hdf5(
 	parent["dim"] 		= sim.dimensions
 	parent["id"]  		= sim.id
 	parent["T"]   		= "Simulation"
+end
+
+function savedata_hdf5(df::DrivingField, parent::Union{HDF5.File, HDF5.Group})
+	g = ensuregroup(parent, "drivingfield")
+	if df isa CompositeDrivingField
+		g["T"] = "$(typeof(df))"
+		g["prefactors"] = Vector{eltype(df.prefactors)}(df.prefactors)
+		gfields = ensuregroup(g, "fields")
+		for (i, f) in enumerate(df.fields)
+			generic_save_hdf5(f, gfields, "field_$i")
+		end
+		close(g)
+	else
+		generic_save_hdf5(df, parent, "drivingfield")
+	end
 end
 
 function savedata_hdf5(

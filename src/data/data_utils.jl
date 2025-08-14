@@ -19,6 +19,7 @@ const LOADABLES = Dict(
 	"GaussianAPulse" 				=> GaussianAPulse,
 	"GaussianEPulse" 				=> GaussianEPulse,
 	"GaussianPulse"					=> GaussianPulse,
+	"CompositeDrivingField{.*?}"	=> CompositeDrivingField,
 	"Vector{Observable{.*?}}"		=> Vector{Observable},
 	"VelocityX"						=> VelocityX,
 	"\bVelocity\b"					=> Velocity,
@@ -131,16 +132,33 @@ function construct_ngrid_backwards_compat(
     return NGrid(kgrid, timegrid)
 end
 
-function loadlast_testsim(path::String)
-	h5open(path,"r") do file
-		g 			= file["completedsims"]
-		done_sims 	= [load_obj_hdf5(g[s]) for s in keys(g)]
-		
-		sort!(done_sims,by=getsimindex)
 
-		isempty(done_sims) && throw(ErrorException(
-			"No completed simulation found (test.completedsims is empty)"))
-		
+function loadtest_simulations(path::String)
+	h5open(path,"r") do file
+		return loadtest_simulations(file)
+	end
+end
+
+function loadtest_simulations(file::Union{HDF5.File, HDF5.Group})
+	g 			= file["completedsims"]
+	done_sims 	= [load_obj_hdf5(g[s]) for s in keys(g)]
+	
+	sort!(done_sims,by=getsimindex)
+
+	if isempty(done_sims) && 
+		@warn "No completed simulation found (test.completedsims is empty)"
+	end
+	
+	return done_sims
+end
+
+function loadlast_testsim(file::Union{HDF5.File, HDF5.Group, String})
+	
+	done_sims = loadtest_simulations(file)
+
+	if isempty(done_sims)
+		throw(ErrorException("No completed simulation found (test.completedsims is empty)"))
+	else
 		return last(done_sims)
 	end
 end

@@ -70,6 +70,11 @@ function construct_type_from_dict(::Type{<:Simulation},d::Dict{String})
 		d["dim"])
 end
 
+function construct_type_from_dict(::Type{<:CompositeDrivingField},d::Dict{String})
+	fields = [construct_type_from_dict(f["T"],f) for (name,f) in d["fields"]]
+	return CompositeDrivingField(fields, d["prefactors"])
+end
+
 function construct_type_from_dict(::Type{Vector{Observable}},d::Dict{String})
 	obs = Observable[]
 	for o in values(d)

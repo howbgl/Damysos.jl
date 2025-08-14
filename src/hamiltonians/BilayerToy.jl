@@ -7,12 +7,12 @@ A toy model of touching quadratic bands with a gap turning them quartic near the
 
 The Hamiltonian reads 
 ```math
-\\hat{H} = \\frac{\\zeta}{2}[(k_y^2-k_x^2)\\sigma_x - k_x k_y \\sigma_y] + \\frac{\\Delta}{2}\\sigma_z
+\\hat{H} = \\frac{\\zeta}{2}[(k_y^2-k_x^2)\\sigma_x - 2 k_x k_y \\sigma_y] + \\frac{\\Delta}{2}\\sigma_z
 ``` 
-such that ``\\vec{h}=[\\zeta/2 (k_y^2-k_x^2), -\\zeta/2 k_x k_y, \\Delta/2]``. 
+such that ``\\vec{h}=[\\zeta/2 (k_y^2-k_x^2), -\\zeta k_x k_y, \\Delta/2]``. 
 The dimensionful form (SI) would be
 ```math
-\\hat{H}_{SI} = \\frac{\\hbar^2}{2m^*}[(k_y^2-k_x^2)\\sigma_x - k_x k_y \\sigma_y]+\\frac{E_{gap}}{2}\\sigma_z
+\\hat{H}_{SI} = \\frac{\\hbar^2}{2m^*}[(k_y^2-k_x^2)\\sigma_x - 2 k_x k_y \\sigma_y]+\\frac{E_{gap}}{2}\\sigma_z
 ```
 
 # Examples

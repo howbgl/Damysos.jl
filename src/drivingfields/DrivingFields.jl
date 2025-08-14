@@ -54,6 +54,8 @@ function central_frequency_SI(df::DrivingField,us::UnitScaling)
     return frequencySI(central_frequency(df),us)
 end
 
+reference_frequency_plotting(df::DrivingField) = central_frequency(df)
+
 # TODO generic fallback for central frequency (via Fourier trafo?)
 
 
@@ -64,3 +66,4 @@ get_vecpoty(sim::Simulation) = get_vecpoty(sim.drivingfield)
 
 include("GaussianAPulse.jl")
 include("GaussianEPulse.jl")
+include("CompositeDrivingField.jl")

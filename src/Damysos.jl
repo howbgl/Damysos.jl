@@ -10,6 +10,7 @@ using CUDA
 using Dates
 using Distributed
 using DataFrames
+using DataStructures
 using DSP
 using EnumX
 using HDF5

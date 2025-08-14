@@ -8,6 +8,7 @@ const DEFAULT_FIGSIZE           = (1200,800)
 const DEFAULT_MAX_HARMONIC      = 40
 const DEFAULT_COLORSCHEME_CONT  = ColorSchemes.viridis
 
+
 function plottimeseries(timeseries::Vector{Vector{T}},
                         labels::Vector{String},
                         tsamples::Vector{Vector{T}};
@@ -137,7 +138,7 @@ end
 
 
 function plotdata(
-        sims::Vector{Simulation{T}}, 
+        sims::Vector{<:Simulation}, 
         vel::Union{Velocity{T}, VelocityX{T}}, 
         path::String = pwd();
         maxharm=DEFAULT_MAX_HARMONIC,
@@ -163,7 +164,7 @@ function plotdata(
 
         for sim in sims
             lc_in_nm    = ustrip(u"nm",lengthscaleSI(sim.unitscaling))
-            ν           = central_frequency(sim.drivingfield)
+            ν           = reference_frequency_plotting(sim.drivingfield)
             d           = sim.dimensions
             ts_in_cyc   = gettsamples(sim) .* ν
             v           = filter(x -> x isa veltype,sim.observables)[1]
@@ -184,6 +185,7 @@ function plotdata(
             title=vname * " (" * title * ")",
             colors="continuous",
             ylabel=sims[1].dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
+            xlabel="time [1/ν_ref]",
             kwargs...)
         figspectra  = plotpowerspectra(timeseries,
             labels,
@@ -192,6 +194,7 @@ function plotdata(
             maxharm=maxharm,
             fftwindow=fftwindow,
             title=vname * " (" * title * ")",
+            xlabel="time [ν/ν_ref]",
             colors="continuous",
             kwargs...)
         
@@ -203,7 +206,7 @@ function plotdata(
 end
 
 
-function plotdata(sims::Vector{Simulation{T}}, ::Occupation{T}, path::String = pwd();
+function plotdata(sims::Vector{<:Simulation}, ::Occupation{T}, path::String = pwd();
     title = stringexpand_vector([s.id for s in sims]),
     kwargs...) where {T<:Real}
 
@@ -216,7 +219,7 @@ function plotdata(sims::Vector{Simulation{T}}, ::Occupation{T}, path::String = p
     for sim in sims
 
         lc      = sim.unitscaling.lengthscale
-        ν       = central_frequency(sim.drivingfield)
+        ν       = reference_frequency_plotting(sim.drivingfield)
         o       = filter(x -> x isa Occupation,sim.observables)[1]
         data    = o.cbocc  / (lc^sim.dimensions)
 
@@ -232,6 +235,7 @@ function plotdata(sims::Vector{Simulation{T}}, ::Occupation{T}, path::String = p
         labels,
         tsamples;
         title="CB occupation" * "(" * title * ")",
+        xlabel="time [1/ν_ref]",
         colors="continuous",
         kwargs...)
 
@@ -276,7 +280,8 @@ function plotdata(
     kwargs...)
 
     dt          = getdt(sim)
-    ν           = central_frequency(sim.drivingfield)
+    ν           = reference_frequency_plotting(sim.drivingfield)
+    ν_SI        = frequencySI(ν,sim.unitscaling)
     ts_in_cyc   = collect(gettsamples(sim)) .* ν
     velocities  = [vel.vx,vel.vxintra,vel.vxinter]
     v_nm_per_s  = v -> ustrip(u"nm/s",velocitySI(v,sim.unitscaling))
@@ -301,6 +306,7 @@ function plotdata(
             title=sim.id,
             sidelabel=printparamsSI(sim),
             ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
+            xlabel="time [1/$(ν_SI)]",
             kwargs...)
         figspectra  = plotpowerspectra(
             data,
@@ -333,7 +339,8 @@ function plotdata(
     kwargs...)
 
     dt          = getdt(sim)
-    ν           = central_frequency(sim.drivingfield)
+    ν           = reference_frequency_plotting(sim.drivingfield)
+    ν_SI        = frequencySI(ν,sim.unitscaling)
     d           = sim.dimensions
     ts_in_cyc   = collect(gettsamples(sim)) .* ν
     velocities  = [vel.vx,vel.vxintra,vel.vxinter]
@@ -369,6 +376,7 @@ function plotdata(
             title=sim.id,
             sidelabel=printparamsSI(sim),
             ylabel=sim.dimensions == 1 ? "v [vF nm^-1]" : "v [vF nm^-2]",
+            xlabel="time [1/$(ν_SI)]",
             kwargs...)
         figspectra  = plotpowerspectra(
             data,
@@ -400,7 +408,8 @@ function plotdata(
     kwargs...) where {T<:Real}
 
     dt          = getdt(sim)
-    ν           = central_frequency(sim.drivingfield)
+    ν           = reference_frequency_plotting(sim.drivingfield)
+    ν_SI        = frequencySI(ν,sim.unitscaling)
     lc_in_nm    = ustrip(u"nm",lengthscaleSI(sim.unitscaling))
     d           = sim.dimensions
     data        = occ.cbocc ./ lc_in_nm^d
@@ -412,6 +421,7 @@ function plotdata(
         [ts_in_cyc];
         title=sim.id,
         sidelabel=printparamsSI(sim),
+        xlabel="time [1/$(ν_SI)]",
         ylabel = sim.dimensions == 1 ? "ρcc [nm^-1]" : "ρcc [nm^-2]",
         kwargs...)
 
@@ -433,7 +443,8 @@ function plotfield(sim::Simulation,path::String = joinpath(pwd(),getname(sim)))
     ex      = get_efieldx(sim)
     ey      = get_efieldy(sim)
 
-    ν                   = central_frequency(sim.drivingfield)
+    ν                   = reference_frequency_plotting(sim.drivingfield)
+    ν_SI                = frequencySI(ν,sim.unitscaling)
     ts_in_cyc           = ts .* ν
     tc                  = timescaleSI(sim.unitscaling)
     lc                  = lengthscaleSI(sim.unitscaling)
@@ -446,7 +457,7 @@ function plotfield(sim::Simulation,path::String = joinpath(pwd(),getname(sim)))
             [ts_in_cyc,ts_in_cyc],
             title=name,
             sidelabel=printparamsSI(sim),
-            xlabel="time [1/ν]",
+            xlabel="time [1/$(ν_SI)]",
             ylabel="vector potential [fs MV/cm]")
         fige    = plottimeseries(
             [ex.(ts) .* field_SI_factor,ey.(ts) .* field_SI_factor],
@@ -454,7 +465,7 @@ function plotfield(sim::Simulation,path::String = joinpath(pwd(),getname(sim)))
             [ts_in_cyc,ts_in_cyc],
             title=name,
             sidelabel=printparamsSI(sim),
-            xlabel="time [1/ν]",
+            xlabel="time [1/$(ν_SI)]",
             ylabel="el. field [MV/cm]")
 
         (success,path)  = ensuredirpath([path])

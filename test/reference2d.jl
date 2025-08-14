@@ -70,20 +70,16 @@ const sim_2d = make_test_simulation_2d()
 linchunked = LinearChunked()
 const fns_2d_linchunked = define_functions(sim_2d, linchunked)
 
-skipcuda = false
 multigpu = false
+skipcuda = !(CUDA.functional())
 
-try
+skipcuda &&  @warn "Skipping CUDA tests, CUDA.jl is not functional (mark as broken)."
+
+if !skipcuda
 	s = LinearCUDA()
 	global multigpu = s.ngpus > 1
-catch err
-	if err == ErrorException("CUDA.jl is not functional, cannot use LinearCUDA solver.")
-		global skipcuda = true
-		@warn "Skipping CUDA tests, CUDA.jl is not functional."
-	else
-		rethrow()
-	end
 end
+
 lincuda = skipcuda ? nothing : LinearCUDA(10_000,GPUVern7(),1)
 const fns_2d_lincuda = skipcuda ? nothing : define_functions(sim_2d, lincuda)
 s_multigpu = multigpu ? LinearCUDA() : nothing

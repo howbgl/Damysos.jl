@@ -1,9 +1,9 @@
 
 export get_rhs_x
-export buildrhs_x_expression
+export buildrhs_x_expression_svec
 
 
-function buildrhs_x_expression(l::TwoBandDephasingLiouvillian,df::DrivingField)
+function buildrhs_x_expression_svec(l::TwoBandDephasingLiouvillian,df::DrivingField)
     
     rhs_cc,rhs_cv   = buildrhs_cc_cv_x_expression(l,df)
     rhs             = :(SA[$rhs_cc,$rhs_cv])
@@ -19,9 +19,9 @@ end
 """
     buildrhs_x_expression(s::Simulation)
 
-Construct the symbolic right-hand side for the x-direction equations of motion from a Simulation object.
+Construct the symbolic right-hand side for the x-direction equations of motion, returns SA.
 """
-buildrhs_x_expression(s::Simulation) = buildrhs_x_expression(s.liouvillian,s.drivingfield)
+buildrhs_x_expression_svec(s::Simulation) = buildrhs_x_expression_svec(s.liouvillian,s.drivingfield)
 
 function buildrhs_cc_cv_x_expression(l::TwoBandDephasingLiouvillian,df::DrivingField)
 
@@ -49,7 +49,7 @@ end
 """
     buildrhs_cc_cv_x_expression(s::Simulation)
 
-Build symbolic right-hand sides for the cc and cv components from a Simulation object.
+Build symbolic right-hand sides for the occupations (cc) and coherences (cv).
 """
 function buildrhs_cc_cv_x_expression(s::Simulation)
     return buildrhs_cc_cv_x_expression(s.liouvillian,s.drivingfield)

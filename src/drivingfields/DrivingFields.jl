@@ -58,12 +58,16 @@ reference_frequency_plotting(df::DrivingField) = central_frequency(df)
 
 # TODO generic fallback for central frequency (via Fourier trafo?)
 
-
-get_efieldx(sim::Simulation) = get_efieldx(sim.drivingfield)
-get_efieldy(sim::Simulation) = get_efieldy(sim.drivingfield)
-get_vecpotx(sim::Simulation) = get_vecpotx(sim.drivingfield)
-get_vecpoty(sim::Simulation) = get_vecpoty(sim.drivingfield)
-
+include("GaussianAPulseX.jl")
 include("GaussianAPulse.jl")
 include("GaussianEPulse.jl")
 include("CompositeDrivingField.jl")
+
+
+for (func1,func2) ∈ zip(
+        [:get_efieldx,:get_efieldy,:get_vecpotx,:get_vecpoty],
+        [:efieldx,:efieldy,:vecpotx,:vecpoty])
+
+    @eval(Damysos, $func1(df::DrivingField) = t -> $func2(df,t))
+	@eval(Damysos, $func1(s::Simulation) = $func1(s.drivingfield))
+end

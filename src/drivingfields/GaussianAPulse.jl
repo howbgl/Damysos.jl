@@ -17,6 +17,8 @@ The form of the vector potential is given by
 ``` 
 where ``\\vec{A}_0=A_0(\\cos\\varphi\\,\\vec{e}_x + \\sin\\varphi\\,\\vec{e}_y``). 
 
+# See also
+[`GaussianAPulseX`](@ref)
 """
 struct GaussianAPulse{T<:Real} <: DrivingField{T}
     σ::T
@@ -49,27 +51,6 @@ end
 export GaussianPulse
 GaussianPulse = GaussianAPulse
 
-
-function get_efieldx(df::GaussianAPulse)
-    return t-> cos(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
-                gauss(t,df.σ) / (df.ω*df.σ^2)  
-end
-function get_vecpotx(df::GaussianAPulse)
-    return t -> cos(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
-end
-
-function get_efieldy(df::GaussianAPulse)
-    return t-> sin(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
-                gauss(t,df.σ) / (df.ω*df.σ^2)  
-end
-function get_vecpoty(df::GaussianAPulse)
-    return t -> sin(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
-end
-
-function getfields(df::GaussianAPulse)
-    return (get_vecpotx(df),get_vecpoty(df),get_efieldx(df),get_efieldy(df))
-end
-
 function efieldx(df::GaussianAPulse)
     c1 = cos(df.φ) * df.eE / (df.ω*df.σ^2)
     c2 = df.σ^2*df.ω
@@ -92,23 +73,10 @@ function vecpoty(df::GaussianAPulse)
     return :($c1 * cos($(df.ω)*t+$(df.θ)) * gauss(t,$(df.σ)))
 end
 
-function efieldx(df::GaussianAPulse,t::Real)
-    return cos(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
-        gauss(t,df.σ) / (df.ω*df.σ^2) 
-end
-
-function vecpotx(df::GaussianAPulse,t::Real)
-    return cos(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
-end
-
-function efieldy(df::GaussianAPulse,t::Real)
-    return sin(df.φ) * df.eE * (t*cos(df.ω*t + df.θ) + df.σ^2*df.ω*sin(df.ω*t + df.θ)) * 
-        gauss(t,df.σ) / (df.ω*df.σ^2)  
-end
-
-function vecpoty(df::GaussianAPulse,t::Real)
-    return sin(df.φ) * df.eE * cos(df.ω*t + df.θ) * gauss(t,df.σ) / df.ω
-end
+efieldx(df::GaussianAPulse,t::Real) = cos(df.φ) * efieldx(GaussianAPulseX(df),t)
+vecpotx(df::GaussianAPulse,t::Real) = cos(df.φ) * vecpotx(GaussianAPulseX(df),t)
+efieldy(df::GaussianAPulse,t::Real) = sin(df.φ) * efieldy(GaussianAPulseX(df),t)
+vecpoty(df::GaussianAPulse,t::Real) = sin(df.φ) * vecpoty(GaussianAPulseX(df),t)
 
 # Specialized methods for efficiency
 maximum_vecpot(df::GaussianAPulse)  = abs(df.eE) / df.ω
@@ -121,19 +89,24 @@ maximum_efieldy(df::GaussianAPulse) = sin(df.φ) * abs(df.eE)
 
 central_angular_frequency(df::GaussianAPulse) = df.ω
 
-function printparamsSI(df::GaussianAPulse,us::UnitScaling;digits=4)
+function printparamsSI(df::Union{GaussianAPulse,GaussianAPulseX},us::UnitScaling;digits=4)
 
     σ       = timeSI(df.σ,us)
     ω       = uconvert(u"fs^-1",frequencySI(df.ω,us))
     ħω      = uconvert(u"eV",energySI(df.ω,us))
     ν       = frequencySI(df.ω/2π,us)
     eE      = electricfieldSI(df.eE,us)
-    φ       = df.φ
 
-    symbols     = [:σ,:ω,:ν,:eE,:φ,:ħω]
-    valuesSI    = [σ,ω,ν,eE,φ,ħω]
-    values      = [df.σ,df.ω,central_frequency(df),df.eE,df.φ,df.ω]
+    symbols     = [:σ,:ω,:ν,:eE,:ħω]
+    valuesSI    = [σ,ω,ν,eE,ħω]
+    values      = [df.σ,df.ω,central_frequency(df),df.eE,df.ω]
     str         = ""
+
+    if df isa GaussianAPulse
+        push!(symbols,:φ)
+        push!(valuesSI,df.φ)
+        push!(values,df.φ)
+    end
 
     for (s,v,vsi) in zip(symbols,values,valuesSI)
         valSI   = round(typeof(vsi),vsi,sigdigits=digits)

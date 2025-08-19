@@ -25,8 +25,8 @@ struct GaussianAPulseX{T<:Real} <: DrivingField{T}
     θ::T
     GaussianAPulseX{T}(σ,ω,eE,θ) where {T<:Real} = new(σ,ω,eE,θ)
 end
-GaussianAPulseX(σ::T,ω::T,eE::T,φ::T,θ::T) where {T<:Real} = GaussianAPulseX{T}(σ,ω,eE,θ)
-function GaussianAPulseX(σ::Real,ω::Real,eE::Real,φ::Real=0,θ::Real=0)     
+GaussianAPulseX(σ::T,ω::T,eE::T,θ::T) where {T<:Real} = GaussianAPulseX{T}(σ,ω,eE,θ)
+function GaussianAPulseX(σ::Real,ω::Real,eE::Real,θ::Real=0)     
     return GaussianAPulseX(promote(σ,ω,eE,θ)...)
 end
 function GaussianAPulseX(us::UnitScaling,
@@ -42,7 +42,6 @@ function GaussianAPulseX(us::UnitScaling,
     eE  = uconvert(Unitful.NoUnits,q_e*tc*lc*fieldstrength/ħ)
     return GaussianAPulseX(promote(σ,ω,eE,θ)...)
 end
-GaussianAPulseX(df::GaussianAPulse) = GaussianAPulseX(df.σ,df.ω,df.eE,df.θ)
 
 function efieldx(df::GaussianAPulseX)
     c1 = df.eE / (df.ω*df.σ^2)

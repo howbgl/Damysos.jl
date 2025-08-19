@@ -34,7 +34,8 @@ function getall_drivingfields()
     φ = 2π * rand()
     return (
         GaussianAPulse(σ,f,strength,θ,φ),
-        GaussianEPulse(σ,f,strength,θ,φ))
+        GaussianEPulse(σ,f,strength,θ,φ),
+        GaussianAPulseX(σ,f,strength,θ))
 end
 
 

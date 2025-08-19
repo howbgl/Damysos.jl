@@ -149,7 +149,7 @@ function runkchunk!(
 	return obs
 end
 
-define_rhs_x(sim::Simulation, ::LinearCUDA) = @eval (u, p, t) -> $(buildrhs_x_expression_svec(sim))
+define_rhs_x(sim::Simulation, ::LinearCUDA) = @eval (u, p, t) -> $(buildrhs_expression_svec(sim))
 
 define_bzmask(sim::Simulation, ::LinearCUDA) = define_bzmask(sim)
 

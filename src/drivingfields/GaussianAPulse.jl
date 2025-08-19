@@ -73,10 +73,14 @@ function vecpoty(df::GaussianAPulse)
     return :($c1 * cos($(df.ω)*t+$(df.θ)) * gauss(t,$(df.σ)))
 end
 
+# Convenient helper to avoid some boilerplate
+GaussianAPulseX(df::GaussianAPulse) = GaussianAPulseX(df.σ,df.ω,df.eE,df.θ)
+GaussianAPulse(df::GaussianAPulseX) = GaussianAPulse(df.σ,df.ω,df.eE,0,df.θ)
+
 efieldx(df::GaussianAPulse,t::Real) = cos(df.φ) * efieldx(GaussianAPulseX(df),t)
 vecpotx(df::GaussianAPulse,t::Real) = cos(df.φ) * vecpotx(GaussianAPulseX(df),t)
-efieldy(df::GaussianAPulse,t::Real) = sin(df.φ) * efieldy(GaussianAPulseX(df),t)
-vecpoty(df::GaussianAPulse,t::Real) = sin(df.φ) * vecpoty(GaussianAPulseX(df),t)
+efieldy(df::GaussianAPulse,t::Real) = sin(df.φ) * efieldx(GaussianAPulseX(df),t)
+vecpoty(df::GaussianAPulse,t::Real) = sin(df.φ) * vecpotx(GaussianAPulseX(df),t)
 
 # Specialized methods for efficiency
 maximum_vecpot(df::GaussianAPulse)  = abs(df.eE) / df.ω

@@ -60,7 +60,7 @@ end
 
 function define_rhs_x(sim::Simulation,::SingleMode)
     
-    ccex,cvex = buildrhs_cc_cv_x_expression(sim)
+    ccex,cvex = buildrhs_cc_cv_expression(sim)
     return (@eval (cc,cv,kx,ky,t) -> $ccex, @eval (cc,cv,kx,ky,t) -> $cvex)
 end
 

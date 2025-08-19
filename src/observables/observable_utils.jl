@@ -64,7 +64,7 @@ end
 
 
 sig(x)                      = 0.5*(1.0+tanh(x/2.0)) # = logistic function 1/(1+e^(-t)) 
-bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
+bzmask1d(k,dk,kmin,kmax)    = sig((k-kmin)/(2dk)) * sig((kmax-k)/(2dk))
 
 
 function timesplit_obs(obs::Vector{<:Observable},ts::Vector{<:Vector{<:Real}})
@@ -85,9 +85,16 @@ function define_bzmask(sim::Simulation)
 
     bz = getbzbounds(sim)
     ax = vecpotx(sim.drivingfield)
+    ay = vecpoty(sim.drivingfield)
     dkx = sim.grid.kgrid.dkx
+    dky = sim.grid.kgrid.dky
 
-    @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2]))
+    if sim.drivingfield isa GaussianAPulseX # ∀times ay == 0 
+        return @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2]))
+    else
+        return @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2])) *
+           bzmask1d(p[2] - $ay,$dky,$(bz[3]),$(bz[4])) 
+    end    
 end
 
 function write_ensemblesols_to_observables!(sim::Simulation,data)
@@ -104,24 +111,6 @@ function write_ensemblesols_to_observables!(sim::Simulation,data)
     end
     return sim.observables
 end
-
-getmovingbz(sim::Simulation) = getmovingbz(sim,getkxsamples(sim))
-
-function getmovingbz(sim::Simulation{T},kxsamples::AbstractVector{T}) where {T<:Real}
-    nkx            = getnkx(sim)
-    ax             = get_vecpotx(sim.drivingfield)
-    ay             = get_vecpoty(sim.drivingfield)
-    moving_bz      = zeros(T,nkx,getnt(sim))
-    dkx            = sim.grid.kgrid.dkx
-    bz             = getbzbounds(sim)
-    bzmask1d(kx)   = sig((kx-bz[1])/(2*dkx)) * sig((bz[2]-kx)/(2*dkx))
-
-    for i in 1:getnt(sim)
-        moving_bz[:,i] .= bzmask1d.(kxsamples .- ax(p.tsamples[i]))
-    end
-    return moving_bz    
-end
-
 
 getbzbounds(::DrivingField,::KGrid0d) = ()
 

@@ -56,9 +56,9 @@ function Simulation(
 	df::DrivingField,
 	g::NGrid,
 	obs::Vector{<:Observable},
-	us::UnitScaling)
-
-	id = string(hash([l, df, g, obs, us]), base = 16)
+	us::UnitScaling,
+	id = string(hash([l, df, g, obs, us]), base = 16))
+	
 	return Simulation(l, df, g, [obs...], us, id)
 end
 

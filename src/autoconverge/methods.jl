@@ -434,7 +434,7 @@ function _run!(
 	done_sims        = test.completedsims
 	currentiteration = length(done_sims)
 	currentsim 		 = currentiteration == 0 ? test.start : next(done_sims[end], method)
-	previoussim 	 = nothing
+	previoussim 	 = currentiteration == 0 ? nothing : done_sims[end]
 
 	while currentiteration < test.maxiterations && isopen(c)
 

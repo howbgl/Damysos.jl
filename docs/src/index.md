@@ -6,7 +6,7 @@ CurrentModule = Damysos
 
 *A package to solve the Semiconductor Bloch equations using GPU or CPU.*
 
-Documentation for [Damysos](https://git.uni-regensburg.de/how09898/Damysos.jl).
+Documentation for [Damysos](https://github.com/howbgl/Damysos.jl.git).
 
 ## Package features
 

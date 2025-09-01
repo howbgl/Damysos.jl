@@ -20,8 +20,7 @@ function ConvergenceTest(
 	atolgoal::Real = read(file,"atolgoal"),
 	rtolgoal::Real = read(file,"rtolgoal"),
 	maxtime::Union{Real, Unitful.Time} = read(file,"maxtime"),
-	maxiterations::Integer = convert(Int,read(file,"maxiterations")),
-	resume = false)
+	maxiterations::Integer = convert(Int,read(file,"maxiterations")))
 
 	g 			= file["completedsims"]
 	done_sims 	= Simulation[load_obj_hdf5(g[s]) for s in keys(g)]
@@ -37,7 +36,7 @@ function ConvergenceTest(
 		rtolgoal=rtolgoal,
 		maxtime=maxtime,
 		maxiterations=maxiterations,
-		completedsims = resume ? done_sims : empty([start]))
+		completedsims=done_sims)
 end
 
 function check_compatibility(sim::Simulation, m::ConvergenceTestMethod, s::DamysosSolver)

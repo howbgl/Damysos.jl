@@ -121,6 +121,14 @@ function Base.isapprox(
         atol = atol, rtol = rtol, nans = nans) for (o1, o2) in allobs])
 end
 
+function add_observable!(sim::Simulation, ::Type{O}) where {O <: Observable}
+	sim.observables = [sim.observables... , O(sim)]
+	return nothing	
+end
+function add_observable!(sim::Simulation, o::Observable)
+	push!(sim.observables, o)
+	return nothing	
+end
 
 function getshortname(sim::Simulation{T}) where {T <: Real}
 	return "Simulation{$T}($(sim.dimensions)d)" * getshortname(sim.liouvillian) * "_" *

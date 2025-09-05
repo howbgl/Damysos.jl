@@ -16,6 +16,7 @@ Only the conduction band occupation ``\\rho_{cc}(t)`` is stored since ``Tr\\rho(
 struct Occupation{T<:Real} <: Observable{T}
     cbocc::Vector{T}
 end
+Occupation(sim::Simulation) = Occupation(sim.grid)
 function Occupation(::SimulationComponent{T}) where {T<:Real}
     return Occupation(Vector{T}(undef,0))
 end
@@ -41,6 +42,7 @@ end
 
 getnames_obs(occ::Occupation)   = ["cbocc", "cbocck"]
 arekresolved(occ::Occupation)   = [false, true]
+getshortname(::Occupation)      = "Occupation"
 
 @inline function addto!(o::Occupation,ototal::Occupation)
     ototal.cbocc .= ototal.cbocc .+ o.cbocc

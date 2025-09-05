@@ -104,7 +104,6 @@ function observables_out(sol, bzmask, obsfunctions, observables)
 		sum_observables!(o, fns, p, cc, cv,sol.t, weigths)
 	end
 
-	@show typeof(obs)
 	return (obs, false)
 end
 

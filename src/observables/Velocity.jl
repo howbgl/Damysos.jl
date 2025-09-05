@@ -31,6 +31,7 @@ struct Velocity{T<:Real} <: Observable{T}
     vyintra::Vector{T}
     vyinter::Vector{T}
 end
+Velocity(sim::Simulation) = Velocity(sim.grid)
 function Velocity(::SimulationComponent{T}) where {T<:Real}
     return Velocity(Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0),
                     Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0))
@@ -89,7 +90,7 @@ end
 
 getnames_obs(v::Velocity)   = ["vx","vxintra","vxinter","vy","vyintra","vyinter"]
 arekresolved(v::Velocity)   = [false,false,false,false,false,false]
-
+getshortname(::Velocity)    = "Velocity"
 
 @inline function addto!(v::Velocity,vtotal::Velocity)
     vtotal.vx .= vtotal.vx .+ v.vx
@@ -181,21 +182,6 @@ build_expression_vxinter(h::Hamiltonian) = :(2real(cv * $(vx_vc(h))))
 build_expression_vyintra(h::Hamiltonian) = :(real(cc) * $(vy_cc(h)) + (1-real(cc)) * $(vy_vv(h)))
 build_expression_vyinter(h::Hamiltonian) = :(2real(cv * $(vy_vc(h))))
 
-
-function buildobservable_vec_of_expr(sim::Simulation,v::Velocity)
-
-    vxintra,vxinter,vyintra,vyinter = buildobservable_vec_of_expr_cc_cv(sim,v)
-    
-    rules   = Dict(
-        :cc => :(u[1]),
-        :cv => :(u[2]))
-    
-    for v in (vxintra,vxinter,vyintra,vyinter)
-        replace_expressions!(v,rules)
-    end
-    
-    return [vxintra,vxinter,vyintra,vyinter]
-end
 
 function buildobservable_vec_of_expr_cc_cv(sim::Simulation, ::Velocity)
 

@@ -90,6 +90,18 @@ function define_bzmask(sim::Simulation)
     @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2]))
 end
 
+function observable_expr_cc_cv_to_upt(expr::Expr)
+    rules   = Dict(
+        :cc => :(u[1]),
+        :cv => :(u[2]))
+    replace_expressions!(expr,rules)
+    return expr    
+end
+
+function buildobservable_vec_of_expr(sim::Simulation,o::Observable)
+    return observable_expr_cc_cv_to_upt.(buildobservable_vec_of_expr_cc_cv(sim,o))    
+end
+
 function write_ensemblesols_to_observables!(sim::Simulation,data)
 
     resize_obs!(sim)

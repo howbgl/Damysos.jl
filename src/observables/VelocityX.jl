@@ -26,6 +26,7 @@ struct VelocityX{T<:Real} <: Observable{T}
     vxintra::Vector{T}
     vxinter::Vector{T}
 end
+VelocityX(sim::Simulation) = VelocityX(sim.grid)
 function VelocityX(::SimulationComponent{T}) where {T<:Real}
     return VelocityX(Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0))
 end
@@ -71,7 +72,7 @@ end
 
 getnames_obs(v::VelocityX)   = ["vx","vxintra","vxinter"]
 arekresolved(v::VelocityX)   = [false,false,false]
-
+getshortname(::VelocityX)    = "VelocityX"
 
 @inline function addto!(v::VelocityX,vtotal::VelocityX)
     vtotal.vx .= vtotal.vx .+ v.vx
@@ -130,21 +131,6 @@ function Base.isapprox(
     upsample!(vx1,vx2)
 
     return isapprox(vx1,vx2;atol=atol,rtol=rtol,nans=nans)
-end
-
-function buildobservable_vec_of_expr(sim::Simulation,v::VelocityX)
-
-    vxintra,vxinter = buildobservable_vec_of_expr_cc_cv(sim,v)
-    
-    rules   = Dict(
-        :cc => :(u[1]),
-        :cv => :(u[2]))
-    
-    for v in (vxintra,vxinter)
-        replace_expressions!(v,rules)
-    end
-    
-    return [vxintra,vxinter]
 end
 
 

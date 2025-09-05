@@ -27,7 +27,7 @@ function make_test_simulation_1d(
     tgrid   = SymmetricTimeGrid(dt, -5df.σ)
     kgrid   = CartesianKGrid1d(dkx, kxmax)
     grid    = NGrid(kgrid, tgrid)
-    obs     = [Velocity(grid), Occupation(grid), VelocityX(grid)]
+    obs     = [Velocity(grid), Occupation(grid), VelocityX(grid), DensityMatrixSnapshots(l,grid)]
 
     id    = "sim1d"
 

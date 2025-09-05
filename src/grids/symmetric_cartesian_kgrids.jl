@@ -211,9 +211,12 @@ end
 
 getnk(kgrid::CartesianKGrid) = getnkx(kgrid) * getnky(kgrid)
 
-function buildkgrid_chunks(kgrid::CartesianKGrid, kchunksize::Integer)
-	kxs = collect(getkxsamples(kgrid))
+function getksamples(kgrid::CartesianKGrid)
+    kxs = collect(getkxsamples(kgrid))
 	kys = collect(getkysamples(kgrid))
-	ks  = [getkgrid_point(i, kxs, kys) for i in 1:getnk(kgrid)]
-	return subdivide_vector(ks, kchunksize)
+	return [getkgrid_point(i, kxs, kys) for i in 1:getnk(kgrid)]
+end
+
+function buildkgrid_chunks(kgrid::CartesianKGrid, kchunksize::Integer)
+	return subdivide_vector(getksamples(kgrid), kchunksize)
 end

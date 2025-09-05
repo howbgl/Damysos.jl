@@ -37,7 +37,7 @@ function plottimeseries(timeseries::Vector{Vector{T}},
     end
 
     axislegend(ax,position=:lb)
-    Label(f[1,2],sidelabel,tellheight=false,justification = :left)
+    # Label(f[1,2],sidelabel,tellheight=false,justification = :left)
     
     return f
 end
@@ -105,7 +105,7 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
         
     end
     axislegend(ax,position=:lb)
-    Label(f[1,2],sidelabel,tellheight=false,justification = :left)
+    # Label(f[1,2],sidelabel,tellheight=false,justification = :left)
 
     !isnothing(xlims) && xlims!(ax,xlims)
     !isnothing(ylims) && ylims!(ax,ylims)
@@ -528,7 +528,7 @@ function plotbandstructure2d(sim::Simulation,path::String = joinpath(pwd(),getna
         end
         lines!(ax,bzSI_kx,bzSI_ky,color=:black)
         tooltip!(bzSI[2],bzSI[4],"Brillouin Zone",offset=0,align=0.8)
-        Label(fig[1,3],printparamsSI(sim),tellheight=false,justification = :left)
+        # Label(fig[1,3],printparamsSI(sim),tellheight=false,justification = :left)
 
         (success,path)  = ensuredirpath([path])
         if success

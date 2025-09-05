@@ -67,6 +67,7 @@ include("observables/observable_utils.jl")
 include("observables/Velocity.jl")
 include("observables/VelocityX.jl")
 include("observables/Occupation.jl")
+include("observables/DensityMatrixSnapshots.jl")
 
 include("printdimless_params.jl")
 include("equationsofmotion.jl")

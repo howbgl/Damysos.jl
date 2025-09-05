@@ -73,8 +73,6 @@ function _run!(
 		reltol = solver.rtol,
 		progress = true)
 
-	write_ensemblesols_to_observables!(sim, res.u)
-
 	return sim.observables
 end
 
@@ -87,28 +85,26 @@ end
 define_bzmask(sim::Simulation, ::LinearChunked) = define_bzmask(sim)
 
 function define_observable_functions(sim::Simulation, ::LinearChunked)
-	expressions = [buildobservable_expression_svec_upt(sim, o) for o in sim.observables]
-	return @eval (u, p, t) -> SA[$(expressions...)]
+	return [define_observable_functions(sim, LinearChunked(), o) for o in sim.observables]
 end
 
-function observables_out(sol, bzmask, obsfunction)
+function define_observable_functions(sim::Simulation, ::LinearChunked, o::Observable)
+	return [@eval (cc, cv, p, t) -> $ex for ex in buildobservable_vec_of_expr_cc_cv(sim, o)]
+end
+
+function observables_out(sol, bzmask, obsfunctions, observables)
 
 	p       = sol.prob.p
-	weigths = zeros(eltype(p[1]), length(p))
-	obs     = []
+	weigths = bzmask.(p, sol.t')
+	cc      = sol[1:2:end,:]
+	cv      = sol[2:2:end,:]
+	obs     = zero.(observables)
 
-	for (i, u, t) in zip(1:length(sol.u), sol.u, sol.t)
-
-		weigths .= bzmask.(p, t)
-
-		# this reinterpret code somehow produces wrong results, maybe post to 
-		# stackexchange
-		# rho     = reinterpret(SVector{2,eltype(u)},reshape(u,(2,:)))'
-
-		rho = [SA[cc, cv] for (cc, cv) in zip(u[1:2:end], u[2:2:end])]
-		push!(obs, sum(weigths .* obsfunction.(rho, p, t)))
+	for (fns, o) in zip(obsfunctions, obs)
+		sum_observables!(o, fns, p, cc, cv,sol.t, weigths)
 	end
 
+	@show typeof(obs)
 	return (obs, false)
 end
 
@@ -119,21 +115,25 @@ function buildensemble(
 	rhs_cc::Function,
 	rhs_cv::Function,
 	bzmask::Function,
-	obsfunction::Function)
+	obsfunctions)
 
 	kbatches = buildkgrid_chunks(sim.grid.kgrid, solver.kchunksize)
 	prob     = buildode(sim, solver, kbatches[1], rhs_cc, rhs_cv)
 	ensprob  = EnsembleProblem(
-	prob,
-	prob_func   = let kb = kbatches
-		(prob, i, repeat) -> remake(
 		prob,
-		p = kb[i],
-		u0 = zeros(Complex{eltype(kb[i][1])}, 2length(kb[i])))
-	end,
-	output_func = (sol, i) -> observables_out(sol, bzmask, obsfunction),
-	reduction   = (u, data, I) -> (append!(u, sum(data)), false),
-	safetycopy  = false)
+		prob_func   = let kb = kbatches
+			(prob, i, repeat) -> remake(
+			prob,
+			p = kb[i],
+			u0 = zeros(Complex{eltype(kb[i][1])}, 2length(kb[i])))
+		end,
+		output_func = (sol, i) -> observables_out(sol, bzmask, obsfunctions, sim.observables),
+		reduction   = (u, data, I) -> begin 
+			u .+= sum(data)
+			return 	(u, false)
+		end,
+		u_init = sim.observables,
+		safetycopy  = false)
 
 	return ensprob, kbatches
 end

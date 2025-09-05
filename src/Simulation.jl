@@ -149,8 +149,9 @@ function checkbzbounds(sim::Simulation)
 end
 
 function resize_obs!(sim::Simulation)
-	sim.observables .= [resize(o, sim.grid) for o in sim.observables]
+	sim.observables .= [resize(o, sim) for o in sim.observables]
 end
+resize(o::Observable, sim::Simulation) = resize(o, sim.grid)
 
 function define_functions(sim::Simulation, solver::DamysosSolver)
 	!solver_compatible(sim, solver) && throw(incompatible_solver_exception(sim, solver))

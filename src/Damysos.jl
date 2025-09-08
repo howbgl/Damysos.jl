@@ -64,6 +64,7 @@ include("grids/symmetric_cartesian_kgrids.jl")
 
 
 include("observables/observable_utils.jl")
+include("observables/auxiliary_structs.jl")
 include("observables/Velocity.jl")
 include("observables/VelocityX.jl")
 include("observables/Occupation.jl")

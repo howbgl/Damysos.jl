@@ -130,6 +130,30 @@ function savedata_hdf5(o::Occupation, parent::Union{HDF5.File, HDF5.Group})
 	generic_save_hdf5(o, parent, "occupation")
 end
 
+function savedata_hdf5(
+	dms::DensityMatrixSnapshots{T,U}, 
+	parent::Union{HDF5.File, HDF5.Group}) where {T,U<:SMatrix}
+
+	dms_grp = ensuregroup(parent, "density_matrix_snapshots")
+	dms_grp["T"] = "$(typeof(dms))"
+	dms_grp["density_matrix_type"] = "Vector{SMatrix}"
+	dms_grp["tsamples"] = dms.tsamples
+
+	generic_save_hdf5(dms.density_matrices[1].kgrid, dms_grp, "kgrid")
+
+	n,m,l = size(toarray(dms.density_matrices[1]))
+	ndms  = length(dms.density_matrices)
+	t     = eltype(dms.density_matrices[1].density_matrix[1])
+	dspace = dataspace((n,m,l,ndms))
+
+	dm_set = create_dataset(dms_grp, "density_matrices", t, dspace)
+	for (i,dm) in enumerate(dms.density_matrices)
+		dm_set[:,:,:,i] = toarray(dm)
+	end
+	close(dm_set)
+	close(dms_grp)
+end
+
 function savedata_hdf5(t::ConvergenceTest,parent::Union{HDF5.File, HDF5.Group})
 
 	g = ensuregroup(parent, "convergence_parameters")

@@ -1,95 +1,13 @@
 export DensityMatrixSnapshots
-export DensityMatrix
-
-
-"""    DensityMatrix{T<:Real,U}
-
-Holds the density matrix elements on a k grid.
-
-# Fields
-- `kgrid::KGrid{T}`: k grid on which the density matrix is defined
-- `density_matrix::Vector{U}`: density matrices at each k-point
-
-# See also
-[`DensityMatrixSnapshots`](@ref DensityMatrixSnapshots)
-"""
-struct DensityMatrix{T<:Real,U}
-    kgrid::KGrid{T}
-    density_matrix::Vector{U}
-end
-
-DensityMatrix(sim::Simulation)         = DensityMatrix(sim.liouvillian,sim.grid)
-DensityMatrix(l::Liouvillian,g::NGrid) = DensityMatrix(l,g.kgrid)
-
-function DensityMatrix(l::TwoBandDephasingLiouvillian,kgrid::KGrid{T}) where {T<:Real}
-    nk = getnk(kgrid)
-    dm = [@SMatrix zeros(Complex{T}, 2, 2) for _ in 1:nk]
-    return DensityMatrix(kgrid, dm)
-end
-
-function DensityMatrix(::SimulationComponent{T}) where {T<:Real}
-    return DensityMatrix(KGridEmpty{T}(), empty(zeros(T,1)))    
-end
-
-resize(dm::DensityMatrix,sim::Simulation) =  DensityMatrix(sim.liouvillian,sim.grid)   
-normalize!(dm::DensityMatrix,norm::Real)  = nothing # is always normalized per mode
-
-function +(dm1::DensityMatrix{T,U},dm2::DensityMatrix{V,W}) where {T,U,V,W}
-    @argcheck dm1.kgrid == dm2.kgrid "k-grids must be the same"
-    return DensityMatrix(dm1.kgrid, dm1.density_matrix .+ dm2.density_matrix)
-end
-function -(dm1::DensityMatrix{T,U},dm2::DensityMatrix{V,W}) where {T,U,V,W}
-    @argcheck dm1.kgrid == dm2.kgrid "k-grids must be the same"
-    return DensityMatrix(dm1.kgrid, dm1.density_matrix .- dm2.density_matrix)
-end
-function *(dm::DensityMatrix{T,U},α::Real) where {T,U}
-    return DensityMatrix(dm.kgrid, dm.density_matrix .* α)
-end
-*(α::Real,dm::DensityMatrix) = dm * α
-
-function zero(dm::DensityMatrix{T,U}) where {T,U}
-    return DensityMatrix(dm.kgrid, [zero(d) for d in dm.density_matrix])
-end
-
-function Base.isapprox(
-    dm1::DensityMatrix{T,U},
-    dm2::DensityMatrix{V,W};
-    atol = 0,
-    rtol = atol > 0 ? 0 : √eps(promote_type(eltype(T),eltype(V))),
-    nans::Bool=false) where {T,U,V,W}
-
-    @argcheck dm1.kgrid == dm2.kgrid "k-grids must be the same"
-
-    return all(isapprox.(dm1.density_matrix, dm2.density_matrix; atol=atol, rtol=rtol, nans=nans))    
-end
-
-function count_nans(dm::DensityMatrix)
-    return sum(sum(isnan.(mat)) for mat in dm.density_matrix)
-end
-
-function Base.show(io::IO, ::MIME"text/plain", dm::DensityMatrix{T,U}) where {T,U}
-
-    buf         = IOBuffer()
-    nkpoints    = length(getksamples(dm.kgrid))
-
-	println(io, "$nkpoints-element DensityMatrix{$T,$U}:")
-    ds       = get(io, :displaysize, displaysize(io))
-    io = IOContext(io, 
-        :displaysize => (ds[1]-1,ds[2]), 
-        :typeinfo => eltype(dm.density_matrix),
-        :compact => true)
-    io_recur = IOContext(io, :SHOWN_SET => dm.density_matrix)
-    Base.print_array(io_recur, dm.density_matrix)
-end
 
 """
-    DensityMatrixSnapshots{N<:Integer,T<:Real} <: Observable{T}
+    DensityMatrixSnapshots{T<:Real,U} <: Observable{T}
 
 Holds snapshots in time of the density matrix on the k grid.
 
 # Fields
 - `tsamples::Vector{T}`: time samples at which the density matrix is stored
-- `density_matrices::Vector{DensityMatrix{T,U}}`: vector of density matrices
+- `density_matrices::Vector{DensityMatrix{T,U}}`: vector of density matrices of type `U`
 
 # See also
 [`Occupation`](@ref Occupation), [`Velocity`](@ref Velocity), [`DensityMatrix`](@ref DensityMatrix)
@@ -118,6 +36,17 @@ function resize(dms::DensityMatrixSnapshots,sim::Simulation)
     @argcheck all([t ∈ gettsamples(sim) for t in dms.tsamples])
     return DensityMatrixSnapshots(sim.liouvillian,sim.grid;
         tsamples = isempty(dms.tsamples) ? collect(gettsamples(sim.grid)) : dms.tsamples)
+end
+
+function contract(dms::DensityMatrixSnapshots,ts::Vector{<:Real})
+    
+    inds = Int[]
+    for (i,t) in enumerate(dms.tsamples)
+        if t in ts
+            push!(inds,i)
+        end        
+    end
+    return DensityMatrixSnapshots(dms.tsamples[inds], dms.density_matrices[inds])
 end
 
 function Base.append!(dms1::DensityMatrixSnapshots,dms2::DensityMatrixSnapshots)
@@ -159,7 +88,7 @@ function Base.isapprox(
     rtol = atol > 0 ? 0 : √eps(promote_type(eltype(T),eltype(V))),
     nans::Bool=false) where {T,U,V,W}
 
-    @argcheck dms1.tsamples == dms2.tsamples "Time samples must be the same"
+    @argcheck dms1.tsamples ≈ dms2.tsamples "Time samples must be the same"
 
     return all(isapprox.(dms1.density_matrices, dms2.density_matrices; atol=atol, rtol=rtol, nans=nans))    
 end
@@ -177,37 +106,55 @@ function sum_observables!(
     ts::Vector{<:Real},
     weigths::Matrix{<:Real})
 
-    total_ks = getksamples(dms.density_matrices[1].kgrid)
-    k_inds   = find_indices_in(ks, total_ks)
+    total_ks    = getksamples(dms.density_matrices[1].kgrid)
+    k_inds      = find_indices_in(ks, total_ks)
+    dm          = funcs[1]
 
-    dm   = funcs[1]
-    inds = find_indices_in(dms.tsamples, ts) # ts[inds] == dms.tsamples ∈ ts
-    _cc  = @view cc[:, inds]
-    _cv  = @view cv[:, inds]
-    _ts  = @view ts[inds]
-    dmdata = dm.(_cc,_cv,ks,_ts')
-    for i in inds
-        dm_dest = dms.density_matrices[i].density_matrix
-        dm_dest[k_inds] .= dmdata[:,i]
-    end 
+    for (dm_dest, t, i) in zip(dms.density_matrices, dms.tsamples, 1:length(dms.tsamples))
+        t_index         = find_index_nearest(t, ts)
+        dms.tsamples[i] = ts[t_index]
+        _cc             = @view cc[:, t_index]
+        _cv             = @view cv[:, t_index]
+
+        dm_dest.density_matrix[k_inds] .= dm.(_cc,_cv,ks,t)
+    end
+
     return dms
 end
 
-function find_indices_in(x::Vector{T}, y::Vector{T}) where {T}
-    sx = Set(x)
-    inds = Int[]
-    for (i, yi) in pairs(y)
-        if yi in sx
-            push!(inds, i)
-        end
+function sum_observables!(
+    dms::DensityMatrixSnapshots,
+    funcs::Vector,
+    d_kchunk::CuArray{<:SVector{2,<:Real}},
+    d_us::CuArray{<:SVector{2,<:Complex}},
+    d_ts::CuArray{<:Real,2},
+    d_weigths::CuArray{<:Real,2},
+    buf::CuArray{<:Real,2})
+    
+    total_ks = getksamples(dms.density_matrices[1].kgrid)
+    k_inds   = find_indices_in(collect(d_kchunk), total_ks)
+    dm       = funcs[1]
+    
+    # Views on GPU arrays are not permitted, require scalar indexing
+    # Hence, copy everything to CPU first (DensityMatrixSnapshots are not performant on GPU)
+    ks      = Array(d_kchunk)
+    us      = Array(d_us)
+    ts      = Array(d_ts[:,1])
+
+    for (dm_dest, t, i) in zip(dms.density_matrices, dms.tsamples, 1:length(dms.tsamples))
+        t_index             = find_index_nearest(t, ts)
+        dms.tsamples[i]     = ts[t_index]
+        _us                 = @view us[t_index, :]
+
+        dm_dest.density_matrix[k_inds] .= dm.(_us,ks,t)
     end
-    return inds
+
+    return dms
 end
 
 function count_nans(dms::DensityMatrixSnapshots)
     return sum(count_nans.(dms.density_matrices))
 end
-
 
 function Base.show(io::IO, ::MIME"text/plain", dms::DensityMatrixSnapshots{T,U}) where {T,U}
 

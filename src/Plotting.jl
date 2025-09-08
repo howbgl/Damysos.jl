@@ -431,6 +431,16 @@ function plotdata(
     
 end
 
+function plotdata(
+    s::Union{Simulation,Vector{<:Simulation}},
+    obs::Observable, 
+    path::String = joinpath(pwd(),getname(sim));
+    kwargs...)
+    
+    @warn "Plotting of $(getshortname(obs)) not implemented"
+
+    return nothing
+end
 
 function plotfield(sim::Simulation,path::String = joinpath(pwd(),getname(sim)))
 

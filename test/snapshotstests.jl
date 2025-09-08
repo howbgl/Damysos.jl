@@ -40,7 +40,7 @@ function make_test_simulation_snap(
 	return Simulation(l, df, grid, obs, us, id)
 end
 
-function test_snapshots_lichunked(sim::Simulation, fns, solver; atol=1e-10, rtol=1e-8)
+function test_snapshots(sim::Simulation, fns, solver; atol=1e-10, rtol=1e-8)
 
 	run!(sim, fns, solver; savedata=false, saveplots=false)
 	
@@ -49,19 +49,28 @@ function test_snapshots_lichunked(sim::Simulation, fns, solver; atol=1e-10, rtol
 	ts 	= dms.tsamples
 	
 	occ_ref = sim.observables[2]
-	obs  	= Observable[Occupation(sim.grid)]
-
-	bzmask = fns[2]
+	cbocc   = empty(occ_ref.cbocc)
+	obs     = [Occupation(cbocc)]
+	bzmask 	= fns[2]
 
 	for (i,dm) in enumerate(dms.density_matrices)
 		cc 				= [real(m[1,1]) for m in dm.density_matrix]
 		weights 		= bzmask.(ks, ts[i]) 
-		obs[1].cbocc[i]	= sum(cc .* weights)
+		push!(cbocc,sum(cc .* weights))
 	end
+
 	Damysos.applyweights_afterintegration!(obs, sim.grid.kgrid)
     Damysos.normalize!.(obs,(2π)^sim.dimensions)
 
-	return isapprox(obs[1],occ_ref,atol=atol,rtol=rtol)
+	full_ts 	= Damysos.gettsamples(sim.grid)
+	cbocc_ref 	= empty(occ_ref.cbocc)
+
+	for t in ts
+		i = Damysos.find_index_nearest(t, full_ts)
+		push!(cbocc_ref, occ_ref.cbocc[i])
+	end
+
+	return isapprox(cbocc,cbocc_ref,atol=atol,rtol=rtol)
 end
 
 function test_snapshots_saving_loading(sim::Simulation)
@@ -82,13 +91,13 @@ const fns_sim_snap_lincuda = skipcuda ? nothing : define_functions(sim_snap, lin
 
 @testset "DensityMatrixSnapshots" begin
     @testset "LinearChunked" begin
-        @test test_snapshots_lichunked(sim_snap, fns_sim_snap_linchunked, linchunked)
+        @test test_snapshots(sim_snap, fns_sim_snap_linchunked, linchunked)
     end
     @testset "LinearCUDA" begin
-        @test test_snapshots_lichunked(sim_snap, fns_sim_snap_lincuda, lincuda) skip=skipcuda
+        @test test_snapshots(sim_snap, fns_sim_snap_lincuda, lincuda) skip=skipcuda
     end
 	@testset "Saving & loading" begin
-		@test test_snapshots_saving_loading(sims_snap)
+		@test test_snapshots_saving_loading(sim_snap)
 	end
 end
 

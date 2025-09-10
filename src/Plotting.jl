@@ -65,6 +65,7 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
                     colors="categorical",
                     xlims=nothing,
                     ylims=nothing,
+                    noiselevel_mark=nothing,
                     kwargs...) where {T<:Real}
 
     f   = Figure(size=DEFAULT_FIGSIZE)
@@ -104,8 +105,15 @@ function plotpowerspectra(timeseries::Vector{Vector{T}},
         end
         
     end
-    axislegend(ax,position=:lb)
     # Label(f[1,2],sidelabel,tellheight=false,justification = :left)
+
+    if !isnothing(noiselevel_mark)
+        hlines!(ax,[noiselevel_mark*total_ymax];
+            color=:red,
+            linestyle=:dash,
+            label="$(noiselevel_mark) * maximum")
+    end
+    axislegend(ax,position=:lb)
 
     !isnothing(xlims) && xlims!(ax,xlims)
     !isnothing(ylims) && ylims!(ax,ylims)
@@ -144,6 +152,7 @@ function plotdata(
         maxharm=DEFAULT_MAX_HARMONIC,
         fftwindow=hanning,
         title = stringexpand_vector([s.id for s in sims]),
+        noiselevel_mark=nothing,
         kwargs...) where {T<:Real}
 
         collection = if vel isa Velocity
@@ -196,6 +205,7 @@ function plotdata(
             title=vname * " (" * title * ")",
             xlabel="time [ν/ν_ref]",
             colors="continuous",
+            noiselevel_mark=noiselevel_mark,
             kwargs...)
         
         ensuredirpath(path)

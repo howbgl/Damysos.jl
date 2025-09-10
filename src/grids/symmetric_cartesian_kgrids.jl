@@ -1,6 +1,8 @@
 export CartesianKGrid1d
 export CartesianKGrid2d
+export CartesianKGrid2dStrips
 export KGrid0d
+export KGridEmpty
 
 abstract type CartesianKGrid{T} <: KGrid{T} end
 
@@ -11,6 +13,9 @@ function symmetric_steprange(max::Real, step::Real)
 	lo = zero(step):-step:-max
 	return append!(reverse(collect(lo))[1:end-1], collect(hi))
 end
+
+"Empty k grid for initialization purposes"
+struct KGridEmpty{T} <: KGrid{T} end
 
 """
 	KGrid0d{T}(kx,ky) <: CartesianKGrid{T}
@@ -204,11 +209,14 @@ end
     return kysamples[idx[2]]
 end
 
-ntrajectories(kgrid::CartesianKGrid) = getnkx(kgrid) * getnky(kgrid)
+getnk(kgrid::CartesianKGrid) = getnkx(kgrid) * getnky(kgrid)
+
+function getksamples(kgrid::CartesianKGrid)
+    kxs = collect(getkxsamples(kgrid))
+	kys = collect(getkysamples(kgrid))
+	return [getkgrid_point(i, kxs, kys) for i in 1:getnk(kgrid)]
+end
 
 function buildkgrid_chunks(kgrid::CartesianKGrid, kchunksize::Integer)
-	kxs = collect(getkxsamples(kgrid))
-	kys = collect(getkysamples(kgrid))
-	ks  = [getkgrid_point(i, kxs, kys) for i in 1:ntrajectories(kgrid)]
-	return subdivide_vector(ks, kchunksize)
+	return subdivide_vector(getksamples(kgrid), kchunksize)
 end

@@ -27,7 +27,8 @@ const LOADABLES = Dict(
 	"Occupation"					=> Occupation,
 	"PowerLawTest"					=> PowerLawTest,
 	"LinearTest"					=> LinearTest,
-	"ExtendKymaxTest"				=> ExtendKymaxTest
+	"ExtendKymaxTest"				=> ExtendKymaxTest,
+	"DensityMatrixSnapshots{.*?, SMatrix{.*?}}"		=> DensityMatrixSnapshots
 )
 
 const BACKWARDSCOMPATLOADABLES = Dict(

@@ -34,6 +34,32 @@ function count_nans(o::Observable)
     return n
 end
 
+function find_indices_in(x::Vector{T}, y::Vector{T}) where {T}
+    sx = Set(x)
+    inds = Int[]
+    for (i, yi) in pairs(y)
+        if yi in sx
+            push!(inds, i)
+        end
+    end
+    return inds
+end
+
+function find_index_nearest(x::Real, v::AbstractVector{<:Real})
+
+    # Find the largest index such that v[i] ≤ x
+    i = searchsortedlast(v, x)
+
+    if i == length(v)
+        return i
+    elseif abs(v[i] - x) <= abs(v[i+1] - x)
+        return i
+    else
+        return i + 1
+    end
+end
+
+
 
 function extrapolate(obs_h_itr::AbstractVector{<:Tuple{<:Observable{T}, <:Number}};
     invert_h = false,
@@ -68,8 +94,11 @@ bzmask1d(kx,dkx,kmin,kmax)  = sig((kx-kmin)/(2dkx)) * sig((kmax-kx)/(2dkx))
 
 
 function timesplit_obs(obs::Vector{<:Observable},ts::Vector{<:Vector{<:Real}})
-    return [[resize(o,length(t)) for o in obs] for t in ts]
+    return [[contract(o,t) for o in obs] for t in ts]
 end
+# Some observables, like DensityMatrixSnapshots, have to be resized in a special way,
+# dispatch to a simple resize by default
+contract(o::Observable,ts::Vector{<:Real}) = resize(o,length(ts))
 
 function timemerge_obs(obsvec::Vector{<:Vector{<:Observable}})
     firstobs = obsvec[1]
@@ -90,19 +119,16 @@ function define_bzmask(sim::Simulation)
     @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2]))
 end
 
-function write_ensemblesols_to_observables!(sim::Simulation,data)
+function observable_expr_cc_cv_to_upt(expr::Expr)
+    rules   = Dict(
+        :cc => :(u[1]),
+        :cv => :(u[2]))
+    replace_expressions!(expr,rules)
+    return expr    
+end
 
-    resize_obs!(sim)
-    observabledata = [empty([d]) for d in data[1]]
-    for slice in data
-        for (d,obs) in zip(slice,observabledata) 
-            push!(obs,d)
-        end
-    end
-    for (o,d) in zip(sim.observables,observabledata)
-        write_ensembledata_to_observable!(o,d)
-    end
-    return sim.observables
+function buildobservable_vec_of_expr(sim::Simulation,o::Observable)
+    return observable_expr_cc_cv_to_upt.(buildobservable_vec_of_expr_cc_cv(sim,o))    
 end
 
 getmovingbz(sim::Simulation) = getmovingbz(sim,getkxsamples(sim))

@@ -91,3 +91,20 @@ end
 function construct_type_from_dict(::Type{<:LinearTest},d::Dict{String})
 	return LinearTest(Symbol(d["parameter"]),d["shift"])
 end
+
+function construct_type_from_dict(::Type{DensityMatrixSnapshots},d::Dict{String})
+	
+	tsamples = d["tsamples"]
+	data     = d["density_matrices"]
+	kgrid    = construct_type_from_dict(d["kgrid"]["T"],d["kgrid"])
+	density_matrix_type = d["density_matrix_type"]
+
+	if density_matrix_type == "Vector{SMatrix}"
+		dmatrices  = [DensityMatrix(kgrid, data[:,:,:,i]) for i in 1:length(tsamples)]
+	else
+		throw(ArgumentError(
+			"Density matrix type $density_matrix_type not implemented/unknown"))		
+	end
+
+	return DensityMatrixSnapshots(tsamples, dmatrices)
+end

@@ -26,6 +26,7 @@ struct VelocityX{T<:Real} <: Observable{T}
     vxintra::Vector{T}
     vxinter::Vector{T}
 end
+VelocityX(sim::Simulation) = VelocityX(sim.grid)
 function VelocityX(::SimulationComponent{T}) where {T<:Real}
     return VelocityX(Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0))
 end
@@ -71,7 +72,7 @@ end
 
 getnames_obs(v::VelocityX)   = ["vx","vxintra","vxinter"]
 arekresolved(v::VelocityX)   = [false,false,false]
-
+getshortname(::VelocityX)    = "VelocityX"
 
 @inline function addto!(v::VelocityX,vtotal::VelocityX)
     vtotal.vx .= vtotal.vx .+ v.vx
@@ -132,32 +133,8 @@ function Base.isapprox(
     return isapprox(vx1,vx2;atol=atol,rtol=rtol,nans=nans)
 end
 
-function build_expression_velocity_svec(h::Hamiltonian,::VelocityX)
 
-    vxintra_expr = build_expression_vxintra(h)
-    vxinter_expr = build_expression_vxinter(h)
-
-    return :(SA[$vxintra_expr,$vxinter_expr])
-end
-
-function buildobservable_expression_svec_upt(sim::Simulation,v::VelocityX)
-    
-    h   = sim.liouvillian.hamiltonian
-    df  = sim.drivingfield
-    ax  = vecpotx(df)
-    ay  = vecpoty(df)
-    
-    vel_expr = build_expression_velocity_svec(h,v)
-    rules    = Dict(
-        :kx => :(p[1] - $ax),
-        :ky => :(p[2]),
-        :cc => :(u[1]),
-        :cv => :(u[2]))
-    
-    return replace_expressions!(vel_expr,rules)
-end
-
-function buildobservable_vec_of_expr(sim::Simulation,::VelocityX)
+function buildobservable_vec_of_expr_cc_cv(sim::Simulation, ::VelocityX)
 
     h   = sim.liouvillian.hamiltonian
     df  = sim.drivingfield
@@ -168,15 +145,33 @@ function buildobservable_vec_of_expr(sim::Simulation,::VelocityX)
     vxinter = build_expression_vxinter(h)
     rules   = Dict(
         :kx => :(p[1] - $ax),
-        :ky => :(p[2]),
-        :cc => :(u[1]),
-        :cv => :(u[2]))
+        :ky => :(p[2]))
     
     for v in (vxintra,vxinter)
         replace_expressions!(v,rules)
     end
     
     return [vxintra,vxinter]
+    
+end
+
+function sum_observables!(
+    v::VelocityX,
+    funcs,
+    ks,
+    cc::Matrix{<:Complex},
+    cv::Matrix{<:Complex},
+    ts::Vector{<:Real},
+    weigths::Matrix{<:Real})
+    
+    vcontributions = (v.vxintra,v.vxinter)
+
+    for (vm,f) in zip(vcontributions,funcs) 
+        total       = reduce(+, f.(cc,cv,ks,ts') .* weigths; dims=1)
+        vm          .= Array(vec(total))
+    end
+    v.vx .= v.vxintra .+ v.vxinter
+    return v    
 end
 
 function sum_observables!(

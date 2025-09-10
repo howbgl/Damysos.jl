@@ -121,6 +121,14 @@ function Base.isapprox(
         atol = atol, rtol = rtol, nans = nans) for (o1, o2) in allobs])
 end
 
+function add_observable!(sim::Simulation, ::Type{O}) where {O <: Observable}
+	sim.observables = [sim.observables... , O(sim)]
+	return nothing	
+end
+function add_observable!(sim::Simulation, o::Observable)
+	push!(sim.observables, o)
+	return nothing	
+end
 
 function getshortname(sim::Simulation{T}) where {T <: Real}
 	return "Simulation{$T}($(sim.dimensions)d)" * getshortname(sim.liouvillian) * "_" *
@@ -149,8 +157,9 @@ function checkbzbounds(sim::Simulation)
 end
 
 function resize_obs!(sim::Simulation)
-	sim.observables .= [resize(o, sim.grid) for o in sim.observables]
+	sim.observables .= [resize(o, sim) for o in sim.observables]
 end
+resize(o::Observable, sim::Simulation) = resize(o, sim.grid)
 
 function define_functions(sim::Simulation, solver::DamysosSolver)
 	!solver_compatible(sim, solver) && throw(incompatible_solver_exception(sim, solver))

@@ -46,7 +46,7 @@ function test_plotting_simvector(sims::Vector{Simulation})
 end
 
 function test_continue_ctest(test::ConvergenceTest,path::String)
-	loaded_test = ConvergenceTest(path,LinearCUDA(),resume=true)
+	loaded_test = ConvergenceTest(path,LinearCUDA())
 	return all(test.completedsims .≈ loaded_test.completedsims)
 end
 

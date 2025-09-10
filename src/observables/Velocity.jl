@@ -31,6 +31,7 @@ struct Velocity{T<:Real} <: Observable{T}
     vyintra::Vector{T}
     vyinter::Vector{T}
 end
+Velocity(sim::Simulation) = Velocity(sim.grid)
 function Velocity(::SimulationComponent{T}) where {T<:Real}
     return Velocity(Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0),
                     Vector{T}(undef,0),Vector{T}(undef,0),Vector{T}(undef,0))
@@ -89,7 +90,7 @@ end
 
 getnames_obs(v::Velocity)   = ["vx","vxintra","vxinter","vy","vyintra","vyinter"]
 arekresolved(v::Velocity)   = [false,false,false,false,false,false]
-
+getshortname(::Velocity)    = "Velocity"
 
 @inline function addto!(v::Velocity,vtotal::Velocity)
     vtotal.vx .= vtotal.vx .+ v.vx
@@ -181,34 +182,8 @@ build_expression_vxinter(h::Hamiltonian) = :(2real(cv * $(vx_vc(h))))
 build_expression_vyintra(h::Hamiltonian) = :(real(cc) * $(vy_cc(h)) + (1-real(cc)) * $(vy_vv(h)))
 build_expression_vyinter(h::Hamiltonian) = :(2real(cv * $(vy_vc(h))))
 
-function build_expression_velocity_svec(h::Hamiltonian,::Velocity)
 
-    vxintra_expr = build_expression_vxintra(h)
-    vxinter_expr = build_expression_vxinter(h)
-    vyintra_expr = build_expression_vyintra(h)
-    vyinter_expr = build_expression_vyinter(h)
-
-    return :(SA[$vxintra_expr,$vxinter_expr,$vyintra_expr,$vyinter_expr])
-end
-
-function buildobservable_expression_svec_upt(sim::Simulation,v::Velocity)
-    
-    h   = sim.liouvillian.hamiltonian
-    df  = sim.drivingfield
-    ax  = vecpotx(df)
-    ay  = vecpoty(df)
-    
-    vel_expr = build_expression_velocity_svec(h,v)
-    rules    = Dict(
-        :kx => :(p[1] - $ax),
-        :ky => :(p[2]),
-        :cc => :(u[1]),
-        :cv => :(u[2]))
-    
-    return replace_expressions!(vel_expr,rules)
-end
-
-function buildobservable_vec_of_expr(sim::Simulation,::Velocity)
+function buildobservable_vec_of_expr_cc_cv(sim::Simulation, ::Velocity)
 
     h   = sim.liouvillian.hamiltonian
     df  = sim.drivingfield
@@ -221,15 +196,38 @@ function buildobservable_vec_of_expr(sim::Simulation,::Velocity)
     vyinter = build_expression_vyinter(h)
     rules   = Dict(
         :kx => :(p[1] - $ax),
-        :ky => :(p[2]),
-        :cc => :(u[1]),
-        :cv => :(u[2]))
+        :ky => :(p[2]))
     
     for v in (vxintra,vxinter,vyintra,vyinter)
         replace_expressions!(v,rules)
     end
     
     return [vxintra,vxinter,vyintra,vyinter]
+end
+
+function update_totals!(v::Velocity)
+    v.vx .= v.vxintra .+ v.vxinter
+    v.vy .= v.vyintra .+ v.vyinter
+    return nothing    
+end
+
+function sum_observables!(
+    v::Velocity,
+    funcs,
+    ks,
+    cc::Matrix{<:Complex},
+    cv::Matrix{<:Complex},
+    ts::Vector{<:Real},
+    weigths::Matrix{<:Real})
+    
+    vcontributions = (v.vxintra,v.vxinter,v.vyintra,v.vyinter)
+    
+    for (vm,f) in zip(vcontributions,funcs) 
+        total       = reduce(+, f.(cc,cv,ks,ts') .* weigths; dims=1)
+        vm          .= Array(vec(total))
+    end
+    update_totals!(v)
+    return v
 end
 
 function sum_observables!(
@@ -248,8 +246,7 @@ function sum_observables!(
         total   = reduce(+,buf;dims=2)
         vm      .= Array(total)
     end
-    v.vx .= v.vxintra .+ v.vxinter
-    v.vy .= v.vyintra .+ v.vyinter
+    update_totals!(v)
     return v
 end
 
@@ -260,8 +257,7 @@ function calculate_observable_singlemode!(sim::Simulation,v::Velocity,f,res::ODE
         vv .= ff.(res.u,res.t)
     end
     
-    v.vx .= v.vxintra .+ v.vxinter
-    v.vy .= v.vyintra .+ v.vyinter
+    update_totals!(v)
 
     return nothing
 end

@@ -19,6 +19,7 @@ global_logger(TerminalLogger(stderr, Logging.Info))
 	include("reference1d.jl")
 	include("reference2d.jl")
 	include("convergencetest.jl")
+	include("snapshotstests.jl")
 	
 end
 

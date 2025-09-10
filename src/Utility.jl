@@ -10,6 +10,11 @@ export replace_expression!
     return reshape(reinterpret(T,u),(N,:))
 end
 
+@inline function vector_of_smat_to_array(x::Vector{<:SMatrix{N,M,T}}) where {N,M,T}
+    return reshape(reinterpret(T,x),(N,M,:))
+end
+
+
 function replace_expression!(e::Expr, old::Union{Expr,Symbol}, new::Union{Expr,Symbol})
     for (i,a) in enumerate(e.args)
         if a==old

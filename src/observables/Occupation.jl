@@ -16,6 +16,7 @@ Only the conduction band occupation ``\\rho_{cc}(t)`` is stored since ``Tr\\rho(
 struct Occupation{T<:Real} <: Observable{T}
     cbocc::Vector{T}
 end
+Occupation(sim::Simulation) = Occupation(sim.grid)
 function Occupation(::SimulationComponent{T}) where {T<:Real}
     return Occupation(Vector{T}(undef,0))
 end
@@ -41,6 +42,7 @@ end
 
 getnames_obs(occ::Occupation)   = ["cbocc", "cbocck"]
 arekresolved(occ::Occupation)   = [false, true]
+getshortname(::Occupation)      = "Occupation"
 
 @inline function addto!(o::Occupation,ototal::Occupation)
     ototal.cbocc .= ototal.cbocc .+ o.cbocc
@@ -74,9 +76,23 @@ function Base.isapprox(
     return Base.isapprox(cb1,cb2;atol=atol,rtol=rtol,nans=nans)
 end
 
-buildobservable_expression_svec_upt(sim::Simulation,::Occupation) = :(SA[real(u[1])])
+buildobservable_vec_of_expr_cc_cv(::Simulation,::Occupation)      = [:(real(cc))]
 buildobservable_vec_of_expr(sim::Simulation,::Occupation)         = [:(real(u[1]))]
 
+function sum_observables!(
+    o::Occupation,
+    funcs,
+    ks,
+    cc::Matrix{<:Complex},
+    cv::Matrix{<:Complex},
+    ts::Vector{<:Real},
+    weigths::Matrix{<:Real})
+    
+    cb          = funcs[1]
+    total       = reduce(+,cb.(cc,cv,ks,ts') .* weigths; dims=1)
+    o.cbocc     .= Array(vec(total))
+    return o
+end
 
 function sum_observables!(
     o::Occupation,
@@ -89,7 +105,7 @@ function sum_observables!(
 
     cb          = funcs[1]
     buf         .= cb.(d_us,d_kchunk',d_ts) .* d_weigths
-    total       = reduce(+,buf;dims=2)
+    total       = reduce(+,buf; dims=2)
     o.cbocc     .= Array(total)
     return o
 end

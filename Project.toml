@@ -53,6 +53,7 @@ DataStructures = "0.18.22"
 Infiltrator = "1.8.3"
 KernelAbstractions = "0.9.33"
 OrdinaryDiffEq = "6.90.1"
+ProgressLogging = "0.1"
 julia = "1.10.2"
 
 [extras]

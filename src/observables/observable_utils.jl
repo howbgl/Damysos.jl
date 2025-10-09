@@ -87,9 +87,9 @@ function define_bzmask(sim::Simulation)
     ax = vecpotx(sim.drivingfield)
     ay = vecpoty(sim.drivingfield)
     dkx = sim.grid.kgrid.dkx
-    dky = sim.grid.kgrid.dky
+    dky = sim.dimensions > 1 ? sim.grid.kgrid.dky : nothing
 
-    if sim.drivingfield isa GaussianAPulseX # ∀times ay == 0 
+    if sim.drivingfield isa GaussianAPulseX || sim.dimensions < 2 # ∀times ay == 0 
         return @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2]))
     else
         return @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2])) *
@@ -117,14 +117,16 @@ getbzbounds(::DrivingField,::KGrid0d) = ()
 function getbzbounds(df::DrivingField,g::CartesianKGrid1d)
     axmax   = maximum_vecpotx(df)
     kxmax   = maximum(getkxsamples(g))
-    return (-kxmax + 1.3axmax,kxmax - 1.3axmax)
+    return (-kxmax + 1.3axmax,kxmax - 1.3axmax) # 1.3 is a safety margin ( tested
+        # observables for smoothness for a typical system, probably can be optimized)
 end
 
 function getbzbounds(df::DrivingField,g::Union{CartesianKGrid2d,CartesianKGrid2dStrips})
     bz_1d = getbzbounds(df,CartesianKGrid1d(g.dkx,g.kxmax))
     aymax   = maximum_vecpoty(df)
     kymax   = maximum(getkysamples(g))
-    return (bz_1d...,-kymax + 1.3aymax,kymax - 1.3aymax)
+    return (bz_1d...,-kymax + 1.3aymax,kymax - 1.3aymax) # 1.3 is a safety margin ( tested
+        # observables for smoothness for a typical system, probably can be optimized)
 end
 
 

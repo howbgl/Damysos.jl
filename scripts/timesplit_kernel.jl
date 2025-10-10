@@ -266,7 +266,7 @@ end
     end
 end
 
-@kernel function resume_ode_solve_kernel(_us, _ts, _integs, tspan)
+@kernel function resume_solve_kernel(_us, _ts, _integs, tfinal)
 
     i               = @index(Global, Linear)
     integ           = @inbounds init(_integs[i])
@@ -285,10 +285,10 @@ end
         !saved_in_cb && DiffEqGPU.savevalues!(integ, ts, us)
         @cushow i, integ.step_idx, convert(Float64,integ.t)
     end
-    if integ.t > tspan[2]
+    if integ.t > tfinal
         ## Intepolate to tf
-        @inbounds us[end] = integ(tspan[2])
-        @inbounds ts[end] = tspan[2]
+        @inbounds us[end] = integ(tfinal)
+        @inbounds ts[end] = tfinal
     end
 
     if !isnothing(_integs)
@@ -296,24 +296,24 @@ end
     end
 end
 
-function resume_ode_solve(integrators, tspan)
+function resume_solve(integrators, tfinal)
 
     backend    = get_backend(integrators)
     integ      = init(Array(integrators)[1])
-    tspan      = convert.(eltype(integ.dt), tspan)
-    timeseries = tspan[1]:integ.dt:tspan[2]
-    len        = length(timeseries) - 1 # omit initial time tspan[1]
+    tfinal     = convert(typeof(integ.t), tfinal)
+    timeseries = integ.t:integ.dt:tfinal
+    len        = length(timeseries) - 1 # omit initial time integ.t
     ts         = allocate(backend, typeof(integ.dt), (len, length(integrators)))
-    fill!(ts, tspan[1])
+    fill!(ts, integ.t)
     us         = allocate(backend, typeof(integ.u), (len, length(integrators)))
 
-    kernel = resume_ode_solve_kernel(backend)
+    kernel = resume_solve_kernel(backend)
 
     if backend isa CPU
         @warn "Running the kernel on CPU"
     end
 
-    kernel(us, ts, integrators, tspan; ndrange = length(integrators))
+    kernel(us, ts, integrators, tfinal; ndrange = length(integrators))
 
     ts, us, integrators
 end
@@ -435,7 +435,7 @@ define_snapshot(probs1, prob1, GPUTsit5(), 0.1)
 # end
 # probs2 = cu(probs2)
 # define_snapshot(probs2, prob2, GPUTsit5(), 0.1)
-@time CUDA.@sync ts2, us2, integs2 = resume_ode_solve(integs1, (2.5, 5.0))
+@time CUDA.@sync ts2, us2, integs2 = resume_solve(integs1, 5.0)
 
 @show all(myts .== vcat(ts1, ts2))
 @show all(myus .== vcat(us1, us2))

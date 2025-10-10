@@ -1,4 +1,3 @@
-using DiffEqGPU, DifferentialEquations, StaticArrays, CUDA, KernelAbstractions, Adapt
 
 import DiffEqGPU.init
 import DiffEqGPU.ImmutableODEProblem
@@ -57,178 +56,9 @@ function define_snapshot(integ)
     return eval(:($name))
 end
 
-
-#################### complete version: featureset of vectorized_solve ####################
-
-
-@kernel function my_solve_kernel(@Const(probs), alg, _us, _ts, _integs, dt, callback,
-        tstops, nsteps,
-        saveat, ::Val{save_everystep}) where {save_everystep}
-    i = @index(Global, Linear)
-
-    # @cushow typeof(@inbounds _integs[i])
-    
-    # get the actual problem for this thread
-    prob = @inbounds probs[i]
-    
-    # get the input/output arrays for this thread
-    ts = @inbounds view(_ts, :, i)
-    us = @inbounds view(_us, :, i)
-    
-    _saveat = get(prob.kwargs, :saveat, nothing)
-    
-    saveat = _saveat === nothing ? saveat : _saveat
-    
-    integ = init(alg, prob.f, false, prob.u0, prob.tspan[1], dt, prob.p, tstops,
-    callback, save_everystep, saveat)
-
-    u0 = prob.u0
-    tspan = prob.tspan
-
-    integ.cur_t = 0
-    if saveat !== nothing
-        integ.cur_t = 1
-        if prob.tspan[1] == saveat[1]
-            integ.cur_t += 1
-            @inbounds us[1] = u0
-        end
-    else
-        @inbounds ts[integ.step_idx] = prob.tspan[1]
-        @inbounds us[integ.step_idx] = prob.u0
-    end
-
-    integ.step_idx += 1
-    # FSAL
-    while integ.t < tspan[2] && integ.retcode != DiffEqBase.ReturnCode.Terminated
-        saved_in_cb = DiffEqGPU.step!(integ, ts, us)
-        !saved_in_cb && DiffEqGPU.savevalues!(integ, ts, us)
-    end
-    if integ.t > tspan[2] && saveat === nothing
-        ## Intepolate to tf
-        @inbounds us[end] = integ(tspan[2])
-        @inbounds ts[end] = tspan[2]
-    end
-
-    if saveat === nothing && !save_everystep
-        @inbounds us[2] = integ.u
-        @inbounds ts[2] = integ.t
-    end
-
-    _integs[i] = snapshot(integ)
-end
-
-
-function handle_allocations(probs, prob::ODEProblem, alg;
-        dt, 
-        saveat = nothing,
-        save_everystep = true,
-        callback = CallbackSet(nothing), 
-        tstops = nothing,
-        kwargs...)
-    
-    backend = maybe_prefer_blocks(get_backend(probs))
-    timeseries = prob.tspan[1]:dt:prob.tspan[2]
-    nsteps = length(timeseries)
-
-    prob = convert(ImmutableODEProblem, prob)
-    dt = convert(eltype(prob.tspan), dt)
-
-    if saveat === nothing
-        if save_everystep
-            len = length(timeseries)
-            if tstops !== nothing
-                len += length(tstops) - count(x -> x in tstops, timeseries)
-                nsteps += length(tstops) - count(x -> x in tstops, timeseries)
-            end
-        else
-            len = 2
-        end
-        ts = allocate(backend, typeof(dt), (len, length(probs)))
-        fill!(ts, prob.tspan[1])
-        us = allocate(backend, typeof(prob.u0), (len, length(probs)))
-    else
-        saveat = if saveat isa AbstractRange
-            _saveat = range(convert(eltype(prob.tspan), first(saveat)),
-                convert(eltype(prob.tspan), last(saveat)),
-                length = length(saveat))
-            convert(StepRangeLen{
-                    eltype(_saveat),
-                    eltype(_saveat),
-                    eltype(_saveat),
-                    eltype(_saveat) === Float32 ? Int32 : Int64,
-                },
-                _saveat)
-        elseif saveat isa AbstractVector
-            adapt(backend, convert.(eltype(prob.tspan), saveat))
-        else
-            _saveat = prob.tspan[1]:convert(eltype(prob.tspan), saveat):prob.tspan[end]
-            convert(StepRangeLen{
-                    eltype(_saveat),
-                    eltype(_saveat),
-                    eltype(_saveat),
-                    eltype(_saveat) === Float32 ? Int32 : Int64,
-                },
-                _saveat)
-        end
-        ts = allocate(backend, typeof(dt), (length(saveat), length(probs)))
-        fill!(ts, prob.tspan[1])
-        us = allocate(backend, typeof(prob.u0), (length(saveat), length(probs)))
-    end
-
-    tstops = adapt(backend, tstops)
-
-    @show saveat
-    @show tstops
-    @show save_everystep
-    integ = init(alg, prob.f, false, prob.u0, prob.tspan[1], dt, prob.p, 
-        tstops, callback, save_everystep, saveat)
-
-    return backend, ts, us, integ, nsteps
-end
-
-function get_integ(probs, prob::ODEProblem, alg;
-    dt, saveat = nothing,
-    save_everystep = true,
-    debug = false, callback = CallbackSet(nothing), tstops = nothing,
-    kwargs...)
-
-    backend, ts, us, integ, nsteps = handle_allocations(probs, prob, alg;
-        dt = dt, saveat = saveat, save_everystep = save_everystep,
-        callback = callback, tstops = tstops, kwargs...)
-
-    return integ
-end
-
-function my_vectorized_solve(probs, prob::ODEProblem, alg;
-        dt, saveat = nothing,
-        save_everystep = true,
-        debug = false, callback = CallbackSet(nothing), tstops = nothing,
-        integrators = nothing, kwargs...)
-
-    backend, ts, us, integ, nsteps = handle_allocations(probs, prob, alg;
-        dt = dt, saveat = saveat, save_everystep = save_everystep,
-        callback = callback, tstops = tstops, kwargs...)
-
-    integs = allocate(backend, typeof(snapshot(integ)), (length(probs),))
-    @show typeof(integs)
-    @info "Building kernel"
-    kernel = my_solve_kernel(backend)
-
-    if backend isa CPU
-        @warn "Running the kernel on CPU"
-    end
-
-    @info "Compiling & launching kernel"
-    kernel(probs, alg, us, ts, integs, dt, callback, tstops, nsteps, saveat,
-        Val(save_everystep);
-        ndrange = length(probs))
-
-    ts, us, integs
-end
-
 #################### custom version: only save_everystep ####################
 
-@kernel function solve_ode_kernel(@Const(probs), alg, _us, _ts, _integs, dt, callback)
+@kernel function solve_kernel(@Const(probs), alg, _us, _ts, _integs, dt, callback)
 
     i = @index(Global, Linear)
     
@@ -266,7 +96,7 @@ end
     end
 end
 
-@kernel function resume_ode_solve_kernel(_us, _ts, _integs, tspan)
+@kernel function resume_solve_kernel(_us, _ts, _integs, tspan)
 
     i               = @index(Global, Linear)
     integ           = @inbounds init(_integs[i])
@@ -307,7 +137,7 @@ function resume_ode_solve(integrators, tspan)
     fill!(ts, tspan[1])
     us         = allocate(backend, typeof(integ.u), (len, length(integrators)))
 
-    kernel = resume_ode_solve_kernel(backend)
+    kernel = resume_solve_kernel(backend)
 
     if backend isa CPU
         @warn "Running the kernel on CPU"
@@ -338,7 +168,7 @@ function get_integ(probs, prob::Union{ODEProblem,ImmutableODEProblem}, alg, dt;
         nothing, callback, true, nothing)
 end
 
-function solve_odes_gpu(probs, prob::ODEProblem, alg, dt;
+function vectorized_solve(probs, prob::ODEProblem, alg, dt;
     callback = CallbackSet(nothing),
     initial_integrators = nothing, 
     kwargs...)
@@ -358,7 +188,7 @@ function solve_odes_gpu(probs, prob::ODEProblem, alg, dt;
         initial_integrators
     end
 
-    kernel = solve_ode_kernel(backend)
+    kernel = solve_kernel(backend)
 
     if backend isa CPU
         @warn "Running the kernel on CPU"
@@ -410,9 +240,9 @@ probs = cu(probs)
 ## Run my version
 define_snapshot(probs, prob, GPUTsit5(), 0.1)
 
-@time CUDA.@sync myts, myus, integs = solve_odes_gpu(probs, prob, GPUTsit5(), 0.1)
+@time CUDA.@sync myts, myus, integs = vectorized_solve(probs, prob, GPUTsit5(), 0.1)
 
-@time CUDA.@sync myts, myus, integs = solve_odes_gpu(probs, prob, GPUTsit5(), 0.1)
+@time CUDA.@sync myts, myus, integs = vectorized_solve(probs, prob, GPUTsit5(), 0.1)
 
 # 1st time is bugged in original version, mine is correct
 # last are equal to numerical precision, but somehow not exactly equal (both ts and us)
@@ -426,7 +256,7 @@ probs1 = map(1:trajectories) do i
 end
 probs1 = cu(probs1)
 define_snapshot(probs1, prob1, GPUTsit5(), 0.1)
-@time CUDA.@sync ts1, us1, integs1 = solve_odes_gpu(probs1, prob1, GPUTsit5(), 0.1)
+@time CUDA.@sync ts1, us1, integs1 = vectorized_solve(probs1, prob1, GPUTsit5(), 0.1)
 
 # t = 2.5 to 5
 # prob2 = ODEProblem{false}(lorenz, u0, (2.5, 5.0), p)
@@ -449,42 +279,4 @@ define_snapshot(probs, prob, GPUTsit5(); save_everystep = true, dt = 0.1)
 @time CUDA.@sync ts2, us2, integs = my_vectorized_solve(probs, prob, GPUTsit5();
     save_everystep = true, dt = 0.1);
 
-
-############################### old approach symbolize ###############################
-
-function symbolize(x::DataType)
-    if isprimitivetype(x) || x == String
-        return Symbol(x)
-    else
-        return Expr(:curly, nameof(x), symbolize.(x.parameters)...)
-    end
-end
-symbolize(x::Number) = x
-symbolize(x::TypeVar) = Symbol(x)
-
-function bottomtype(T::UnionAll)
-    cur_T = T
-    while cur_T isa UnionAll
-        cur_T = cur_T.body
-    end
-    return cur_T
-end
-
-function immutize(T)
-    bt = bottomtype(T)
-    fnames = fieldnames(bt)
-    ftypes = [symbolize(fieldtype(bt,var)) for var in fnames]
-    eval(Expr(:struct,false,
-        Expr(:curly,Symbol("Immutable",nameof(bt)),Symbol.(bt.parameters)...),
-        Expr(:block,[Expr(:(::),f,t) for (f,t) in zip(fnames,ftypes)]...)))
-end
-
-function define_immutable_struct(T::UnionAll)
-    immutize(T)
-    bt      = bottomtype(T)
-    @eval function $(Symbol("Immutable",nameof(bt)))(x::$T)
-        fields  = [getproperty(x, f) for f in fieldnames($T)]
-        return $(Symbol("Immutable",nameof(T)))(fields...)
-    end
-end
 

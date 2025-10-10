@@ -83,7 +83,6 @@ end
     while integ.step_idx < len + 1 && integ.retcode != DiffEqBase.ReturnCode.Terminated
         saved_in_cb = DiffEqGPU.step!(integ, ts, us)
         !saved_in_cb && DiffEqGPU.savevalues!(integ, ts, us)
-        @cushow i, integ.step_idx, integ.t, len
     end
     if integ.t > tspan[2]
         ## Intepolate to tf
@@ -108,12 +107,10 @@ end
     us              = @inbounds view(_us, :, i)
     
     # don't save initial state
-    @cushow i,integ.u[1],integ.u[2],integ.u[3]
 
     while integ.step_idx < len + 1 && integ.retcode != DiffEqBase.ReturnCode.Terminated
         saved_in_cb = DiffEqGPU.step!(integ, ts, us)
         !saved_in_cb && DiffEqGPU.savevalues!(integ, ts, us)
-        @cushow i, integ.step_idx, convert(Float64,integ.t)
     end
     if integ.t > tspan[2]
         ## Intepolate to tf
@@ -170,23 +167,17 @@ end
 
 function vectorized_solve(probs, prob::ODEProblem, alg, dt;
     callback = CallbackSet(nothing),
-    initial_integrators = nothing, 
     kwargs...)
 
-    resume              = !isnothing(initial_integrators)
     integ               = get_integ(probs, prob, alg, dt; callback = callback, kwargs...)
     timeseries          = prob.tspan[1]:dt:prob.tspan[2]
     backend, prob, dt   = adapt_odeproblem(probs, prob, alg, dt; kwargs...)
 
-    len     = isnothing(initial_integrators) ? length(timeseries) : length(timeseries) -1
+    len     = length(timeseries)
     ts      = allocate(backend, typeof(dt), (len, length(probs)))
     fill!(ts, prob.tspan[1])
     us      = allocate(backend, typeof(prob.u0), (len, length(probs)))
-    integs  = if isnothing(initial_integrators)
-        allocate(backend, typeof(snapshot(integ)), (length(probs),))
-    else
-        initial_integrators
-    end
+    integs  = allocate(backend, typeof(snapshot(integ)), (length(probs),))
 
     kernel = solve_kernel(backend)
 

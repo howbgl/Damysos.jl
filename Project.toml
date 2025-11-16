@@ -1,7 +1,7 @@
 name = "Damysos"
 uuid = "fd5f980c-983e-4c87-a5d0-4feb611f7d72"
-authors = ["Wolfgang Hogger <wolfgang.hogger@ur.de>"]
 version = "0.1.1"
+authors = ["Wolfgang Hogger <wolfgang.hogger@ur.de>"]
 
 [deps]
 Accessors = "7d9f7c33-5ae7-4f3b-8dc6-eff91059b697"
@@ -47,6 +47,7 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 [compat]
 Adapt = "4.1.1"
 ArgCheck = "2.4.0"
+ArgParse = "1"
 CUDA = "5.3.3"
 Cthulhu = "2.16.5"
 DataStructures = "0.18.22"

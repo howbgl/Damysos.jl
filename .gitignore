@@ -13,3 +13,4 @@
 *.code-workspace
 /scripts/nhr_fau/
 /docs/builds/
+.vscode/

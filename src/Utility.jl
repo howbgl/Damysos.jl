@@ -2,7 +2,6 @@
 export ensuredirpath
 export ensurefilepath
 export find_files_with_name
-export random_word
 export replace_expression!
 
 
@@ -205,21 +204,6 @@ function chopto_length_from_front(s::AbstractString,l::Integer)
     end
 end
 
-
-function random_word()::String
-    lines = readlines("words.txt")
-    
-    # Check if the file is empty
-    if isempty(lines)
-        return ""
-    end
-    
-    random_index = rand(1:length(lines))
-    # Remove spaces from the selected line using a regular expression
-    selected_line = replace(lines[random_index], r"\s+" => "")
-    
-    return selected_line
-end
 
 function appendtoname(filepath::String,s::String)
     path,ext = splitext(filepath)

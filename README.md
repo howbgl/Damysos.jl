@@ -1,8 +1,3 @@
-# Damysos
-
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://howbgl.github.io/Damysos.jl/)
-[![Build Status](https://github.com/howbgl/Damysos.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/howbgl/Damysos.jl/actions)
-[![Coverage Status](https://codecov.io/gh/howbgl/Damysos.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/howbgl/Damysos.jl)
 
 Shield: [![CC BY-ND 4.0][cc-by-nd-shield]][cc-by-nd]
 
@@ -15,6 +10,13 @@ This work is licensed under a
 [cc-by-nd-image]: https://licensebuttons.net/l/by-nd/4.0/88x31.png
 [cc-by-nd-shield]: https://img.shields.io/badge/License-CC%20BY--ND%204.0-lightgrey.svg
 
+
+# Damysos.jl
+
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://howbgl.github.io/Damysos.jl/)
+[![Build Status](https://github.com/howbgl/Damysos.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/howbgl/Damysos.jl/actions)
+[![Coverage Status](https://codecov.io/gh/howbgl/Damysos.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/howbgl/Damysos.jl)
+
 ## Installation
 
 ### Install julia
@@ -26,12 +28,34 @@ Since Damysos is not yet in the official Julia registry it needs to be cloned lo
 git clone https://github.com/howbgl/Damysos.jl.git
 ```
 
+## Reproducing published data 
+
+Here is a short instruction on how to reproduce data published in <https://doi.org/10.1103/4gwm-9lpy> and available at <https://doi.org/10.5281/zenodo.17828205>. Choose an `.hdf5`-file from the `rawdata` folder in <https://doi.org/10.5281/zenodo.17828205>. Load the file with
+
+```julia
+julia> using Damysos,HDF5; file = h5open("rawdata/Fig2_data.hdf5")
+```
+and the desired simulation with
+```julia
+julia> simulation = load_obj_hdf5(file["t2=0.2"]); close(file)
+```
+Choose either the CPU (`LinearChunked(nkchunks::Integer,...)`) or the GPU solver(`LinearCUDA(nkchunks::Integer,...)`) 
+```julia
+julia> solver=LinearChunked();functions=define_functions(simulation,solver)
+```
+and run simulation with
+```julia
+julia> results = run!(simulation,functions,solver;savepath="Fig2_rerun")
+```
+An example script with data is located at `scripts/reproduce.jl`.
+
+
 ## Testing package (warning: long runtime possible)
 
 
 Navigate to the package directory and open a Julia prompt via
-```
-julia --project -t auto
+```julia
+julia> --project -t auto
 ```
 Using multiple threads via `-t auto` is recommended to improve runtime of the test simulations.
 ```julia

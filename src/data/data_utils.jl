@@ -1,5 +1,6 @@
 
 export loaddata
+export load_obj_hdf5
 export loadlast_testsim
 export savedata
 

@@ -30,23 +30,26 @@ git clone https://github.com/howbgl/Damysos.jl.git
 
 ## Reproducing published data 
 
-To reproduce data published in <https://doi.org/10.1103/4gwm-9lpy> and available at <https://doi.org/10.5281/zenodo.17828205>. Choose an `.hdf5`-file from the `rawdata` folder in <https://doi.org/10.5281/zenodo.17828205>. Load the file with
+Here is a short instruction on how to reproduce data published in <https://doi.org/10.1103/4gwm-9lpy> and available at <https://doi.org/10.5281/zenodo.17828205>. Choose an `.hdf5`-file from the `rawdata` folder in <https://doi.org/10.5281/zenodo.17828205>. Load the file with
 
 ```julia
-julia> using Damysos,HDF5; file = h5open("rawdata/Fig5_data.hdf5")
+julia> using Damysos,HDF5; file = h5open("rawdata/Fig2_data.hdf5")
 ```
 and the desired simulation with
 ```julia
-julia> simulation = load_obj_hdf5(file["t2=0.2"])
+julia> simulation = load_obj_hdf5(file["t2=0.2"]); close(file)
 ```
-Choose either the CPU (`LinearChunked()`) or the GPU solver(`LinearCUDA()`) 
+Choose either the CPU (`LinearChunked(nkchunks::Integer,...)`) or the GPU solver(`LinearCUDA(nkchunks::Integer,...)`) 
 ```julia
 julia> solver=LinearChunked();functions=define_functions(simulation,solver)
 ```
 and run simulation with
 ```julia
-julia> results = run!(simulation,functions,solver;savepath="Fig5_rerun")
+julia> results = run!(simulation,functions,solver;savepath="Fig2_rerun")
 ```
+An example script with data is located at `scripts/reproduce.jl`.
+
+
 ## Testing package (warning: long runtime possible)
 
 

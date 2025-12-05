@@ -1,0 +1,6 @@
+{
+    "julia.environmentPath": "/home/richter/.julia/dev/hub_damysos/Damysos.jl",
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "python-envs.pythonProjects": []
+}

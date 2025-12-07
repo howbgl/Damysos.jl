@@ -1,3 +1,14 @@
+##########################################################
+# Example script for reproducing published results
+##########################################################
+#
+# * published in
+# * data: https://doi.org/10.5281/zenodo.8341513 
+
+# Example data file included in repository at rawdata/Fig2_data.hdf5
+# To reproduce other results, download the corresponding data file
+# from the Zenodo link above and change the path below accordingly.
+
 using Damysos,HDF5
 
 # Load the the simulation data (includes metadata needed to reconstruct the simulation)

@@ -80,7 +80,7 @@ function adjust_density(samples::Vector{<:Number}, desired_samples::Int)
     interpolation_positions = range(1, stop = n, length = desired_samples)
 
     # Interpolate the values at the new positions
-    interpolated_values = itp[interpolation_positions]
+    interpolated_values = itp.(interpolation_positions)
 
     return interpolated_values
 end

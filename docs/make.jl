@@ -25,4 +25,8 @@ makedocs(;
 
 deploydocs(
     repo="https://github.com/howbgl/Damysos.jl.git",
+    devbranch="main",
+    versions = [
+        "dev" => "dev",
+    ],
 )

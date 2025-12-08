@@ -14,7 +14,6 @@ makedocs(;
         prettyurls=get(ENV, "CI", "false") == "true",
         # canonical="https://how09898.gitlab.io/Damysos.jl",
         edit_link="main",
-        assets=String["assets/logo.png"],
     ),
     pages=[
         "Home" => "index.md",

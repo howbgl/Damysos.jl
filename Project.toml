@@ -17,8 +17,10 @@ Cthulhu = "f68482b8-f384-11e8-15f7-abe071a5a75f"
 DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 DiffEqGPU = "071ae1c0-96b5-11e9-1965-c90190d839ea"
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
+Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 EnumX = "4e289a0a-7415-4d19-859d-a7e5c4648b56"
 FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
@@ -28,10 +30,12 @@ Infiltrator = "5903a43b-9cc3-4c30-8d17-598619ec4e9b"
 Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
 JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 KernelAbstractions = "63c18a36-062a-441e-b654-da1e3ab1ce7c"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 LoggingExtras = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
 ProgressLogging = "33c8b6b6-d38a-422a-b730-caa89a2f386c"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Richardson = "708f8203-808e-40c0-ba2d-98a6953ed40d"
@@ -41,7 +45,7 @@ TerminalLoggers = "5d786b92-1e48-4d6f-9151-6b4477ca9bed"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [compat]
-julia = "1.10"           # >= 1.10, < 2.0        
+julia = "1.10"           
 
 Accessors          = "0.1"   # v0.1.43
 Adapt              = "4"     # v4.4.0

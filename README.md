@@ -47,7 +47,7 @@ and run simulation with
 ```julia
 julia> results = run!(simulation,functions,solver;savepath="Fig2_rerun")
 ```
-An example script with data is located at `scripts/reproduce.jl`.
+An example script with data is located at `scripts/published_calculations/reproduce.jl`.
 
 
 ## Testing package (warning: long runtime possible)

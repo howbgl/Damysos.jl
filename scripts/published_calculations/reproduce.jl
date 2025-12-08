@@ -8,6 +8,9 @@
 # Example data file included in repository at rawdata/Fig2_data.hdf5
 # To reproduce other results, download the corresponding data file
 # from the Zenodo link above and change the path below accordingly.
+# Check the plots.ipynb notebook to see which rawdata file corresponds
+# to which figure.
+##########################################################
 
 using Damysos,HDF5
 
@@ -25,4 +28,6 @@ const solver = LinearChunked(1_024)
 const fns = define_functions(simulation,solver)
 
 # Run the simulation
-const results = run!(simulation,fns,solver; savepath="scripts/reproduced_data")
+const results = run!(simulation,fns,solver; 
+    savepath="scripts/reproduced_data",
+    saveplots=false)

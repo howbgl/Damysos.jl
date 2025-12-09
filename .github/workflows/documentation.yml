@@ -4,7 +4,9 @@ name: Documentation
 on:
   push:
     branches:
-      - main  # Adjust to your default branch
+      - main
+    tags:
+      - 'v*'      # Trigger on version tags like v1.0.0
   pull_request:
 
 jobs:

@@ -81,6 +81,7 @@ include("data/construct_type_from_dict.jl")
 include("data/savedata_hdf5.jl")
 
 include("Plotting.jl")
+include("odesolve_gpu.jl")
 include("Core.jl")
 
 end

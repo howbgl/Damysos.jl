@@ -1,4 +1,5 @@
 export HexagonalMPKGrid2d
+export CartesianMPKGrid1d
 
 abstract type HexagonalKGrid2d{T} <: PeriodicKGrid{T} end
 
@@ -66,13 +67,18 @@ function getqs(kgrid::HexagonalMPKGrid2d)
     return q1, q2
 end
 
+function getksamples(kgrid::HexagonalMPKGrid2d)
+	b1, b2 = reciprocal_primitive_vectors(kgrid)
+    q1, q2 = getqs(kgrid)
+    inds   = CartesianIndices((q1,q2))
+    kmat   = [u_monkhorst_pack(I[1],q1)*b1 + u_monkhorst_pack(I[2],q2)*b2 for I in inds]
+    return vec(kmat)
+end
+
 ntrajectories(kgrid::HexagonalMPKGrid2d) = reduce(*, getqs(kgrid))
 
 function buildkgrid_chunks(kgrid::HexagonalMPKGrid2d, kchunksize::Integer)
-	b1, b2 = reciprocal_primitive_vectors(kgrid)
-    q1, q2 = getqs(kgrid)
-    ks = [u_monkhorst_pack(I[1],q1)*b1 + u_monkhorst_pack(I[2],q2)*b2 for I in CartesianIndices((q1,q2))]
-	return subdivide_vector(vec(ks), kchunksize)
+	return subdivide_vector(getksamples(kgrid), kchunksize)
 end
 
 function printparamsSI(kgrid::HexagonalMPKGrid2d, us::UnitScaling; digits = 3)
@@ -130,11 +136,14 @@ getqs(kgrid::CartesianMPKGrid1d) = round(Int, 2π / kgrid.dkx)
 
 ntrajectories(kgrid::CartesianMPKGrid1d) = getqs(kgrid)
 
-function buildkgrid_chunks(kgrid::CartesianMPKGrid1d, kchunksize::Integer)
+function getksamples(kgrid::CartesianMPKGrid1d)
     q1 = round(Int, 2π / kgrid.dkx)
     kxs = [u_monkhorst_pack(I, q1) * (2π / q1) for I in 1:q1]
-    ks  = [SA[kx,zero(kx)] for kx in kxs]
-    return subdivide_vector(ks, kchunksize)
+    return [SA[kx,zero(kx)] for kx in kxs]
+end
+
+function buildkgrid_chunks(kgrid::CartesianMPKGrid1d, kchunksize::Integer)
+    return subdivide_vector(getksamples(kgrid), kchunksize)
 end
 
 function printparamsSI(kgrid::CartesianMPKGrid1d, us::UnitScaling; digits = 3)

@@ -78,11 +78,14 @@ function savedata_hdf5(
 	
 	g["T"] 		   = "$(typeof(grid))"
 	g["tsamples"]  = grid |> gettsamples |> collect
-	if getdimension(grid) >= 1
-		g["kxsamples"] = grid |> getkxsamples |> collect
-	end
-	if getdimension(grid) == 2
-		g["kysamples"] = grid |> getkysamples |> collect
+	g["ksamples"]  = grid |> getksamples |> collect
+	if grid.kgrid isa CartesianKGrid
+		if getdimension(grid) >= 1
+			g["kxsamples"] = grid |> getkxsamples |> collect
+		end
+		if getdimension(grid) == 2
+			g["kysamples"] = grid |> getkysamples |> collect
+		end
 	end
 	close(g)
 end
@@ -95,9 +98,7 @@ function savedata_hdf5(kgrid::CartesianKGrid2dStrips, parent::Union{HDF5.File, H
 	return savedata_hdf5(CartesianKGrid2d(kgrid), parent)
 end
 
-function savedata_hdf5(
-	kgrid::Union{CartesianKGrid1d,CartesianKGrid2d,KGrid0d},
-	parent::Union{HDF5.File, HDF5.Group})
+function savedata_hdf5(kgrid::KGrid,parent::Union{HDF5.File, HDF5.Group})
 	generic_save_hdf5(kgrid, parent, "kgrid")
 end
 

@@ -243,7 +243,7 @@ end
 
 function currentvalue(
 	m::Union{PowerLawTest, LinearTest},
-	grid::Union{CartesianKGrid, SymmetricTimeGrid})
+	grid::KGrid)
 	return getproperty(grid, m.parameter)
 end
 

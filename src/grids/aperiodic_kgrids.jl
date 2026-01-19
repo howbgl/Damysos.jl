@@ -4,7 +4,7 @@ export CartesianKGrid2dStrips
 export KGrid0d
 export KGridEmpty
 
-abstract type CartesianKGrid{T} <: KGrid{T} end
+abstract type CartesianKGrid{T} <: AperiodicKGrid{T} end
 
 function symmetric_steprange(max::Real, step::Real)
 	step < zero(step) && return symmetric_steprange(max, -step)

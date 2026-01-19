@@ -19,7 +19,7 @@ end
 
 TwoBandDephasingLiouvillian(l::Dict) = construct_type_from_dict(TwoBandDephasingLiouvillian,l)
 
-for func = (BAND_SYMBOLS...,DIPOLE_SYMBOLS...,VELOCITY_SYMBOLS...)
+for func = (BAND_SYMBOLS...,DIPOLE_SYMBOLS...,VELOCITY_SYMBOLS..., :isperiodic)
     @eval(Damysos,$func(l::Liouvillian) = $func(l.hamiltonian))
 end
 

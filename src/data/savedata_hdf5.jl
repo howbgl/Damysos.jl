@@ -78,7 +78,7 @@ function savedata_hdf5(
 	
 	g["T"] 		   = "$(typeof(grid))"
 	g["tsamples"]  = grid |> gettsamples |> collect
-	g["ksamples"]  = grid |> getksamples |> collect
+	g["ksamples"]  = grid.kgrid |> getksamples |> collect
 	if grid.kgrid isa CartesianKGrid
 		if getdimension(grid) >= 1
 			g["kxsamples"] = grid |> getkxsamples |> collect

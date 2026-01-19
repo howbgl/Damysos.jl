@@ -132,13 +132,13 @@ end
 
 volume_element(kgrid::CartesianMPKGrid1d) =  kgrid.dkx
 
-getqs(kgrid::CartesianMPKGrid1d) = round(Int, 2π / kgrid.dkx)
+getqs(kgrid::CartesianMPKGrid1d) = round(Int, 2π/kgrid.a / kgrid.dkx)
 
 ntrajectories(kgrid::CartesianMPKGrid1d) = getqs(kgrid)
 
 function getksamples(kgrid::CartesianMPKGrid1d)
-    q1 = round(Int, 2π / kgrid.dkx)
-    kxs = [u_monkhorst_pack(I, q1) * (2π / q1) for I in 1:q1]
+    q1 = getqs(kgrid)
+    kxs = [u_monkhorst_pack(I, q1) * (2π / kgrid.a) for I in 1:q1]
     return [SA[kx,zero(kx)] for kx in kxs]
 end
 

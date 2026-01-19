@@ -163,6 +163,9 @@ getshortname(c::SimulationComponent) = split("$c", '{')[1]
 getbzbounds(sim::Simulation) = getbzbounds(sim.drivingfield, sim.grid.kgrid)
 
 function checkbzbounds(sim::Simulation)
+	if isperiodic(sim.liouvillian)
+		return
+	end
 	bz = getbzbounds(sim)
 	if isempty(bz)
 		return

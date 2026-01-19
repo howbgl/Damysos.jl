@@ -132,7 +132,8 @@ ntrajectories(kgrid::CartesianMPKGrid1d) = getqs(kgrid)
 
 function buildkgrid_chunks(kgrid::CartesianMPKGrid1d, kchunksize::Integer)
     q1 = round(Int, 2π / kgrid.dkx)
-    ks = [u_monkhorst_pack(I, q1) * (2π / q1) for I in 1:q1]
+    kxs = [u_monkhorst_pack(I, q1) * (2π / q1) for I in 1:q1]
+    ks  = [SA[kx,zero(kx)] for kx in kxs]
     return subdivide_vector(ks, kchunksize)
 end
 

@@ -38,6 +38,8 @@ function GappedDirac(us::UnitScaling,m::Unitful.Energy,vf::Unitful.Velocity)
     end
 end
 
+isperiodic(::GappedDirac) = false
+
 hx(h::GappedDirac,kx,ky)    = kx
 hx(h::GappedDirac)          = quote kx end
 

@@ -42,6 +42,8 @@ function BilayerToy(us::UnitScaling,gap::Unitful.Energy,mass::Unitful.Mass)
     return BilayerToy(delta,zeta)
 end
 
+isperiodic(::BilayerToy) = false
+
 hx(h::BilayerToy,kx,ky)    = h.ζ * (kx^2 - ky^2) / 2
 hx(h::BilayerToy)          = quote $(h.ζ/2) * (kx^2 - ky^2) end
 

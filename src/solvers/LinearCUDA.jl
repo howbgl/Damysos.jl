@@ -209,6 +209,7 @@ function solve_ode_problems(problems::CuArray, prob, solver::LinearCUDA{true}, s
 	return ts, us
 end
 
+# TODO: optimize memory usage, d_weigths are all one for periodic models
 function sum_observables!(
 	d_kchunk::CuArray{<:SVector{2, <:Real}},
 	d_us::CuArray{<:SVector{2, <:Complex}},

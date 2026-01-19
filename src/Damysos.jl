@@ -43,6 +43,8 @@ abstract type SimulationComponent{T} end
 abstract type Hamiltonian{T} end
 abstract type KGrid{T} end
 abstract type TimeGrid{T} end
+abstract type AperiodicKGrid{T}         <: KGrid{T} end
+abstract type PeriodicKGrid{T}          <: KGrid{T} end
 abstract type Liouvillian{T}            <: SimulationComponent{T} end
 abstract type DrivingField{T}           <: SimulationComponent{T} end
 
@@ -57,10 +59,13 @@ include("grids/SymmetricTimeGrid.jl")
 include("hamiltonians/GappedDirac.jl")
 include("hamiltonians/QuadraticToy.jl")
 include("hamiltonians/BilayerToy.jl")
+include("hamiltonians/MonolayerhBN.jl")
+include("hamiltonians/SemiconductorToy1d.jl")
 
 include("Liouvillian.jl")
 include("drivingfields/DrivingFields.jl")
-include("grids/symmetric_cartesian_kgrids.jl")
+include("grids/aperiodic_kgrids.jl")
+include("grids/periodic_kgrids.jl")
 
 
 include("observables/observable_utils.jl")

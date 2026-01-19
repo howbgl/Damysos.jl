@@ -28,13 +28,28 @@ struct Simulation{T <: Real}
 	id::String
 	dimensions::UInt8
 	function Simulation{T}(l, df, g, obs, us, id, d) where {T <: Real}
-		if d != getdimension(g)
-			@warn """
-			The dimension d=$d does not match the the NumericalParameters.
-			Overwriting to d=$(getdimension(g)) instead."""
-		end
+		check_compatibility(l, df, g, obs, us, id, d)
 		new(l, df, g, obs, us, id, getdimension(g))
 	end
+end
+
+function check_compatibility(
+	l::Liouvillian, 
+	df::DrivingField, 
+	g::NGrid, 
+	obs::Vector{<:Observable}, 
+	us::UnitScaling, 
+	id::String, 
+	d::Integer)
+	if d != getdimension(g)
+		@warn """
+		The dimension d=$d does not match the the numerical k grid.
+		Overwriting to d=$(getdimension(g)) instead."""
+	end
+	if isperiodic(l) && !(g.kgrid isa PeriodicKGrid)
+		throw(ArgumentError("Liouvillian is periodic, but k-grid is not periodic."))
+	end
+	return nothing
 end
 
 Simulation(path::String) = load_obj_hdf5(path)

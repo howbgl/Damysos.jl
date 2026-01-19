@@ -92,6 +92,8 @@ function define_observable_functions(sim::Simulation, ::LinearChunked, o::Observ
 	return [@eval (cc, cv, p, t) -> $ex for ex in buildobservable_vec_of_expr_cc_cv(sim, o)]
 end
 
+
+# TODO: optimize memory usage, d_weigths are all one for periodic models
 function observables_out(sol, bzmask, obsfunctions, observables)
 
 	p       = sol.prob.p

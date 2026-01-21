@@ -3,7 +3,9 @@
 ##########################################################
 #
 # * published in
+# * article: https://doi.org/10.1103/4gwm-9lpy
 # * data: https://doi.org/10.5281/zenodo.8341513 
+# * arXiv: https://arxiv.org/abs/2503.11432
 
 # Example data file included in repository at rawdata/Fig2_data.hdf5
 # To reproduce other results, download the corresponding data file

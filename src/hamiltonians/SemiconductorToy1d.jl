@@ -9,22 +9,34 @@ The Hamiltonian reads
 ```math
 \\hat{H} = \\frac{\\Delta}{2}\\sigma_x - t \\sin(a k_x/2)\\sigma_z
 ``` 
-with kx=0 the BZ center. The default values fit bandgap and dipole at kx=0 to 
-the wurtzite ZnO model used in <https://doi.org/10.1103/PhysRevLett.113.073901>.
+with kx=0 the BZ center. The default values when given a [`UnitScaling`](@ref UnitScaling)
+object (see Examples below) fit bandgap and dipole at ``k_x=0`` with ``\\hat{x}∥\\Gamma -M``
+to the wurtzite ZnO model used in <https://doi.org/10.1103/PhysRevLett.113.073901>.
 
 
 # Examples
 ```jldoctest
-julia> h = SemiconductorToy1d(0.2,1.0,1.0)
+julia> h = SemiconductorToy1d(UnitScaling(u"1.0fs",u"1.0Å"))
 SemiconductorToy1d:
-  Δ: 0.2
-  t: 1.0
-  a: 1.0
+  Δ: 2.507
+  t: 6.031
+  a: 2.82
+
+```
+
+
+```jldoctest
+julia> h = SemiconductorToy1d(UnitScaling(u"1.0fs",u"1.0Å"))
+SemiconductorToy1d:
+  Δ: 2.507
+  t: 6.031
+  a: 2.82
 
 ```
 
 # See also
 [`GeneralTwoBand`](@ref GeneralTwoBand) [`GappedDirac`](@ref GappedDirac)
+[`MonolayerhBN`](@ref MonolayerhBN) [`BilayerToy`](@ref BilayerToy) 
 """
 struct SemiconductorToy1d{T<:Real} <: GeneralTwoBand{T} 
     Δ::T
@@ -36,7 +48,7 @@ isperiodic(::SemiconductorToy1d) = true
 
 function SemiconductorToy1d(
     us::UnitScaling,
-    gap::Unitful.Energy=u"3.29eV",
+    gap::Unitful.Energy=u"1.65eV",
     hopping::Unitful.Energy=u"3.97eV",
     latticeconst::Unitful.Length=u"2.82Å")
 

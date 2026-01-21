@@ -24,6 +24,7 @@ MonolayerhBN:
 
 # See also
 [`GeneralTwoBand`](@ref GeneralTwoBand) [`GappedDirac`](@ref GappedDirac)
+[`BilayerToy`](@ref BilayerToy) [`SemiconductorToy1d.jl`](@ref SemiconductorToy1d)
 """
 struct MonolayerhBN{T<:Real} <: GeneralTwoBand{T} 
     Δ::T

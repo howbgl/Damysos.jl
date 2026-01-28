@@ -13,7 +13,7 @@ makedocs(;
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
         # canonical="https://how09898.gitlab.io/Damysos.jl",
-        edit_link="main",
+        edit_link="dev",
     ),
     pages=[
         "Home" => "index.md",
@@ -24,7 +24,7 @@ makedocs(;
 
 deploydocs(
     repo="https://github.com/howbgl/Damysos.jl.git",
-    devbranch="main",
+    devbranch="dev",
     versions = [
         "dev" => "dev",
         "v1.0.0" => "v1.0.0",

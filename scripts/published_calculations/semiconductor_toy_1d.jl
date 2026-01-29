@@ -8,16 +8,18 @@
 # TODO put figure number & page.
 ##########################################################
 
+using Damysos,CUDA
+
 function make_simulation()
 
     freq    = uconvert(u"THz", Unitful.c0 / u"3.25μm")
-    emax    = u"0.15V/Å"
+    emax    = u"20.0MV/cm"
     tcycle  = uconvert(u"fs", 1 / freq) # approx 10.83 fs
     t2      = tcycle / 4             # approx 2.71 fs
     σ       = 4.0 * tcycle  # approx 21.66 fs
 
     us      = UnitScaling(u"1.0fs", u"1.0Å")
-    h       = SemiconductorToy1d(us,u"1.65eV")
+    h       = SemiconductorToy1d(us)
     l       = TwoBandDephasingLiouvillian(h, Inf, timescaled(t2, us))
     df      = GaussianAPulse(us, σ, freq, emax)
 

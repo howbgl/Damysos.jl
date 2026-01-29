@@ -25,6 +25,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # IMPORTANT: full history + tags available to Documenter
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1.11'

@@ -49,7 +49,7 @@ isperiodic(::SemiconductorToy1d) = true
 function SemiconductorToy1d(
     us::UnitScaling,
     gap::Unitful.Energy=u"1.65eV",
-    hopping::Unitful.Energy=u"3.97eV",
+    hopping::Unitful.Energy=u"4.30eV",
     latticeconst::Unitful.Length=u"2.82Å")
 
     return SemiconductorToy1d(

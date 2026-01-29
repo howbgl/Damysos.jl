@@ -6,16 +6,14 @@ using LoggingExtras
 using TerminalLoggers
 using Test
 
-function make_test_simulation_sc_toy1d()
+function make_test_simulation_sc_toy1d(freq=uconvert(u"THz", Unitful.c0 / u"3.25μm"), emax=u"0.15V/Å")
 
-    freq    = uconvert(u"THz", Unitful.c0 / u"3.25μm") # approx 92.3 THz
-    emax    = u"0.15V/Å"
     tcycle  = uconvert(u"fs", 1 / freq) # approx 10.83 fs
     t2      = tcycle / 4             # approx 2.71 fs
-    σ       = 2.0 * tcycle  # approx 21.66 fs
+    σ       = 4.0 * tcycle  # approx 21.66 fs
     
     us      = UnitScaling(u"1.0fs", u"1.0Å")
-    h       = SemiconductorToy1d(us)
+    h       = SemiconductorToy1d(us,u"1.65eV")
     l       = TwoBandDephasingLiouvillian(h, Inf, timescaled(t2, us))
     df      = GaussianAPulse(us, σ, freq, emax)
 

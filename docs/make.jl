@@ -22,12 +22,16 @@ makedocs(;
     ],
 )
 
+
 deploydocs(
-    repo="https://github.com/howbgl/Damysos.jl.git",
+    repo="github.com/howbgl/Damysos.jl.git",
     devbranch="dev",
     versions = [
         "dev" => "dev",
-        "v#.#.#" => "v#.#.#",
-        "stable" => "v^",
+        "v1.0.2" => "v1.0.2",
+        "v1.0.1" => "v1.0.1",
+        "v1.0.0" => "v1.0.0",
+        "stable" => "v1.0.2",
     ],
 )
+

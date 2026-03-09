@@ -1,19 +1,17 @@
 using Documenter
 using Damysos
-
 import Documenter.Remotes.GitHub
 
 DocMeta.setdocmeta!(Damysos, :DocTestSetup, :(using Damysos); recursive=true)
 
 makedocs(;
     modules=[Damysos],
-    authors="Wolfgang Hogger <wolfgang.hogger@gmail.com>",
+    authors="Wolfgang Hogger ",
     repo=GitHub("howbgl", "Damysos.jl"),
     sitename="Damysos.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        # canonical="https://how09898.gitlab.io/Damysos.jl",
-        edit_link="dev",
+        edit_link="main",
     ),
     pages=[
         "Home" => "index.md",
@@ -22,16 +20,12 @@ makedocs(;
     ],
 )
 
-
 deploydocs(
     repo="github.com/howbgl/Damysos.jl.git",
-    devbranch="dev",
+    devbranch="main",
     versions = [
+        "stable" => "v^",
+        "v#.#.#",
         "dev" => "dev",
-        "v1.0.2" => "v1.0.2",
-        "v1.0.1" => "v1.0.1",
-        "v1.0.0" => "v1.0.0",
-        "stable" => "v1.0.2",
     ],
 )
-

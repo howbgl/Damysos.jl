@@ -1,4 +1,5 @@
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://howbgl.github.io/Damysos.jl/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://howbgl.github.io/Damysos.jl/dev)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://howbgl.github.io/Damysos.jl/stable)
 [![Build Status](https://github.com/howbgl/Damysos.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/howbgl/Damysos.jl/actions)
 [![Coverage Status](https://codecov.io/gh/howbgl/Damysos.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/howbgl/Damysos.jl)
 

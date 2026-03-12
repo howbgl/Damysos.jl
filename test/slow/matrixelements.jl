@@ -7,6 +7,8 @@ using LoggingExtras
 using TerminalLoggers
 using Test
 
+include(joinpath(@__DIR__, "..", "testutils.jl"))
+
 import Damysos.paulivector
 import Damysos.adiabatic_melements_numeric
 import Damysos.getshortname

@@ -7,6 +7,8 @@ using LoggingExtras
 using TerminalLoggers
 using Test
 
+include(joinpath(@__DIR__, "..", "testutils.jl"))
+
 import Damysos.load_obj_hdf5
 
 function make_test_simulation_snap(
@@ -73,15 +75,7 @@ function test_snapshots(sim::Simulation, fns, solver; atol=1e-10, rtol=1e-8)
 	return isapprox(cbocc,cbocc_ref,atol=atol,rtol=rtol)
 end
 
-function test_snapshots_saving_loading(sim::Simulation)
-	Damysos.savedata(sim,"testresults/snapshot_test")
-	return isapprox(sim,Simulation("testresults/snapshot_test/data.hdf5"))
-end
-
 const sim_snap = make_test_simulation_snap()
-
-linchunked = LinearChunked(256)
-const fns_sim_snap_linchunked = define_functions(sim_snap, linchunked)
 
 skipcuda = !(CUDA.functional())
 
@@ -89,15 +83,8 @@ skipcuda &&  @warn "Skipping CUDA tests, CUDA.jl is not functional (mark as brok
 lincuda = skipcuda ? nothing : LinearCUDA(10_000)
 const fns_sim_snap_lincuda = skipcuda ? nothing : define_functions(sim_snap, lincuda)
 
-@testset "DensityMatrixSnapshots" begin
-    @testset "LinearChunked" begin
-        @test test_snapshots(sim_snap, fns_sim_snap_linchunked, linchunked)
-    end
+@testset "DensityMatrixSnapshots (GPU)" begin
     @testset "LinearCUDA" begin
         @test test_snapshots(sim_snap, fns_sim_snap_lincuda, lincuda) skip=skipcuda
     end
-	@testset "Saving & loading" begin
-		@test test_snapshots_saving_loading(sim_snap)
-	end
 end
-

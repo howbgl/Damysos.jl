@@ -6,6 +6,8 @@ using LoggingExtras
 using TerminalLoggers
 using Test
 
+include(joinpath(@__DIR__, "..", "testutils.jl"))
+
 function make_test_simulation_2d(
 	dt::Real = 0.01,
 	dkx::Real = 1.0,
@@ -38,7 +40,7 @@ function make_test_simulation_2d(
 	grid = NGrid(kgrid,tgrid)
 	obs  = [Velocity(grid), Occupation(grid)]
 
-	id    = "sim1"
+	id    = "sim2d_gpu"
 
 	return Simulation(l, df, grid, obs, us, id)
 end
@@ -49,13 +51,13 @@ function test_2d(v_ref::Velocity,sim::Simulation,fns,solver::DamysosSolver;
 	rtol = 1e-2)
     
     res = run!(sim, fns, solver; saveplots = false, 
-		savepath = joinpath("testresults",Damysos.getname(sim)))
+		savepath = joinpath(testresults_dir(), Damysos.getname(sim)))
 	v   = filter(o -> o isa Velocity,res)[1]
 	return isapprox(v, v_ref, atol = atol, rtol = rtol)
 end
 
 
-const referencedata2d = DataFrame(CSV.File("referencedata.csv"))
+const referencedata2d = DataFrame(CSV.File(datafile("referencedata.csv")))
 const vref2d = Velocity(
 	referencedata2d.vx,
 	referencedata2d.vxintra,
@@ -67,23 +69,12 @@ const vref2d = Velocity(
 const sim_2d = make_test_simulation_2d()
 
 
-linchunked = LinearChunked()
-const fns_2d_linchunked = define_functions(sim_2d, linchunked)
-
-multigpu = false
 skipcuda = !(CUDA.functional())
 
 skipcuda &&  @warn "Skipping CUDA tests, CUDA.jl is not functional (mark as broken)."
 
-if !skipcuda
-	s = LinearCUDA()
-	global multigpu = s.ngpus > 1
-end
-
 lincuda = skipcuda ? nothing : LinearCUDA(10_000,GPUVern7(),1)
 const fns_2d_lincuda = skipcuda ? nothing : define_functions(sim_2d, lincuda)
-s_multigpu = multigpu ? LinearCUDA() : nothing
-const fns_2d_multigpu = multigpu ? define_functions(sim_2d, s_multigpu) : nothing
 
 @testset "Reference (2d)" begin
     # @testset "LinearChunked" begin
@@ -92,7 +83,4 @@ const fns_2d_multigpu = multigpu ? define_functions(sim_2d, s_multigpu) : nothin
     @testset "LinearCUDA" begin
         @test test_2d(vref2d,sim_2d,fns_2d_lincuda,lincuda) skip = skipcuda
     end
-	@testset "LinearCUDA: multi-GPU" begin
-		@test test_2d(vref2d,sim_2d,fns_2d_multigpu,s_multigpu)  skip = !multigpu
-	end
 end

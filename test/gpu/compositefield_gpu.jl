@@ -6,6 +6,8 @@ using LoggingExtras
 using TerminalLoggers
 using Test
 
+include(joinpath(@__DIR__, "..", "testutils.jl"))
+
 function make_test_simulation_composite_1d(
     dt::Real = 0.01,
     dkx::Real = 1.0,
@@ -31,7 +33,7 @@ function make_test_simulation_composite_1d(
     grid    = NGrid(kgrid, tgrid)
     obs     = [Velocity(grid), Occupation(grid), VelocityX(grid)]
 
-    id    = "sim1d_composite"
+    id    = "sim1d_composite_gpu"
 
     return Simulation(l, df, grid, obs, us, id)
 end
@@ -40,20 +42,12 @@ function test_composite_1d(sim::Simulation,fns,solver::DamysosSolver;
 	atol = 1e-10,
 	rtol = 1e-2)
     
-    run!(sim, fns, solver; saveplots = true, savedata = true, 
-        savepath = joinpath("testresults",sim.id))
+    run!(sim, fns, solver; saveplots = false, savedata = true, 
+        savepath = joinpath(testresults_dir(), sim.id))
 	return true
 end
 
-function test_load_composite_1d(sim::Simulation, path::String; atol = 1e-10, rtol = 1e-8)
-    loaded_sim = Simulation(path)
-    return isapprox(sim, loaded_sim, atol=atol, rtol=rtol)    
-end
-
 const sim_composite_1d = make_test_simulation_composite_1d()
-
-linchunked = LinearChunked()
-const fns_1d_linchunked = define_functions(sim_composite_1d, linchunked)
 
 skipcuda = !(CUDA.functional())
 
@@ -63,16 +57,8 @@ lincuda = skipcuda ? nothing : LinearCUDA(10_000,GPUVern7(),1)
 const fns_1d_lincuda = skipcuda ? nothing : define_functions(sim_composite_1d, lincuda)
 
 
-@testset "CompositeField" begin
-    @testset "LinearChunked" begin
-        @test test_composite_1d(sim_composite_1d,fns_1d_linchunked,linchunked)
-    end
+@testset "CompositeField (GPU)" begin
     @testset "LinearCUDA" begin
         @test test_composite_1d(sim_composite_1d,fns_1d_lincuda,lincuda) skip = skipcuda
-    end
-    @testset "Loading from .hdf5" begin
-        @test test_load_composite_1d(
-            sim_composite_1d, 
-            joinpath("testresults",sim_composite_1d.id,"data.hdf5"))
     end
 end

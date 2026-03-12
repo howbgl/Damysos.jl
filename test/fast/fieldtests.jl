@@ -7,6 +7,8 @@ using LoggingExtras
 using TerminalLoggers
 using Test
 
+include(joinpath(@__DIR__, "..", "testutils.jl"))
+
 
 function getfield_functions(df::DrivingField)
 

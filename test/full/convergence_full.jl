@@ -7,6 +7,8 @@ using LoggingExtras
 using TerminalLoggers
 using Test
 
+include(joinpath(@__DIR__, "..", "testutils.jl"))
+
 import Damysos.load_obj_hdf5
 
 function make_test_simulation_tiny(
@@ -40,7 +42,8 @@ function make_test_simulation_tiny(
 end
 
 function test_plotting_simvector(sims::Vector{Simulation})
-	path = "testresults/plots"
+	path = joinpath(testresults_dir(), "plots")
+	mkpath(path)
 	plotdata(sims, path)
 	return any([occursin(".png",f) for f in readdir(path,join=true)])
 end
@@ -97,20 +100,20 @@ const kymax_tests_extend = [ConvergenceTest(
     @testset "LinearChunked" begin
         @testset "dt" begin
             @test successful_retcode(run!(dt_tests[1];
-										filepath="testresults/dt_linchunked.hdf5"))
+										filepath=joinpath(testresults_dir(), "dt_linchunked.hdf5")))
         end
     end
     @testset "LinearCUDA" begin
         @testset "dt" begin
             @test successful_retcode(run!(dt_tests[2];
-									filepath="testresults/dt_cuda.hdf5")) skip = skipcuda
+									filepath=joinpath(testresults_dir(), "dt_cuda.hdf5"))) skip = skipcuda
         end
     end
 	@testset "Plotting" begin
 		@test test_plotting_simvector(dt_tests[1].completedsims)
 	end
 	@testset "HDF5 loading" begin
-		@test test_continue_ctest(dt_tests[1],"testresults/dt_linchunked.hdf5")
+		@test test_continue_ctest(dt_tests[1], joinpath(testresults_dir(), "dt_linchunked.hdf5"))
 	end
 	@testset "ExtendKymaxTest" begin
 		@testset "LinearChunked" begin
@@ -125,4 +128,3 @@ const kymax_tests_extend = [ConvergenceTest(
 		end
 	end
 end
-

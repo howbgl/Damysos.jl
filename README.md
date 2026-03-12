@@ -51,20 +51,31 @@ julia> results = run!(simulation,functions,solver;savepath="Fig2_rerun")
 An example script with data is located at `scripts/published_calculations/reproduce.jl`.
 
 
-## Testing package (warning: long runtime possible)
+## Testing package
 
+Tests are tiered to keep default CI fast while preserving full validation options.
+
+- `fast` (default): small deterministic checks and smoke tests
+- `slow`: CPU regression tests with full simulations
+- `gpu`: CUDA smoke tests (requires functional CUDA)
+- `full`: long-running convergence and multi-GPU validation
 
 Navigate to the package directory and open a Julia prompt via
 ```julia
 julia> --project -t auto
 ```
-Using multiple threads via `-t auto` is recommended to improve runtime of the test simulations.
+Using multiple threads via `-t auto` is recommended for the `slow` and `full` tiers.
 ```julia
-julia> using Damysos,Pkg
+julia> using Damysos, Pkg
 
-julia> Pkg.test("Damysos")
+julia> Pkg.test("Damysos")  # fast only
+
+julia> Pkg.test("Damysos"; test_args=["slow"])
+julia> Pkg.test("Damysos"; test_args=["gpu"])
+julia> Pkg.test("Damysos"; test_args=["slow","gpu"])
+julia> Pkg.test("Damysos"; test_args=["full"])
 ```
-This runs a few test simulations both CPU and GPU (if available), which might take a long time depending on the machine.
+Test output paths can be overridden with `ENV["DAMYSOS_TESTRESULTS_DIR"]`.
 
 ## Usage
 

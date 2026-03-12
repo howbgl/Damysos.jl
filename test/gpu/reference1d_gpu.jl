@@ -6,6 +6,8 @@ using LoggingExtras
 using TerminalLoggers
 using Test
 
+include(joinpath(@__DIR__, "..", "testutils.jl"))
+
 function make_test_simulation_1d(
     dt::Real = 0.01,
     dkx::Real = 1.0,
@@ -29,7 +31,7 @@ function make_test_simulation_1d(
     grid    = NGrid(kgrid, tgrid)
     obs     = [Velocity(grid), Occupation(grid), VelocityX(grid)]
 
-    id    = "sim1d"
+    id    = "sim1d_gpu"
 
     return Simulation(l, df, grid, obs, us, id)
 end
@@ -38,15 +40,15 @@ function test_1d(v_ref::Velocity,sim::Simulation,fns,solver::DamysosSolver;
 	atol = 1e-10,
 	rtol = 1e-2)
     
-    res = run!(sim, fns, solver; saveplots = true, savedata = true, 
-        savepath = joinpath("testresults",Damysos.getname(sim)))
+    res = run!(sim, fns, solver; saveplots = false, savedata = true, 
+        savepath = joinpath(testresults_dir(), Damysos.getname(sim)))
 	v   = filter(o -> o isa Velocity,res)[1]
     vx  = filter(o -> o isa VelocityX,res)[1]
     vx_ref = VelocityX(v_ref.vx,v_ref.vxintra,v_ref.vxinter)
 	return isapprox(v,v_ref,atol=atol,rtol=rtol) && isapprox(vx,vx_ref,atol=atol,rtol=rtol)
 end
 
-const referencedata1d = DataFrame(CSV.File("referencedata1d.csv"))
+const referencedata1d = DataFrame(CSV.File(datafile("referencedata1d.csv")))
 const vref1d = Velocity(
 	referencedata1d.vx,
 	referencedata1d.vxintra,
@@ -56,11 +58,6 @@ const vref1d = Velocity(
 	referencedata1d.vyinter)
 
 const sim_1d = make_test_simulation_1d()
-const sim_1d_dkx = make_test_simulation_1d(0.01,2.0)
-
-linchunked = LinearChunked()
-const fns_1d_linchunked = define_functions(sim_1d, linchunked)
-
 skipcuda = !(CUDA.functional())
 
 skipcuda &&  @warn "Skipping CUDA tests, CUDA.jl is not functional (mark as broken)."
@@ -69,9 +66,6 @@ const fns_1d_lincuda = skipcuda ? nothing : define_functions(sim_1d, lincuda)
 
 
 @testset "Reference (1d)" begin
-    @testset "LinearChunked" begin
-        @test test_1d(vref1d,sim_1d,fns_1d_linchunked,linchunked)
-    end
     @testset "LinearCUDA" begin
         @test test_1d(vref1d,sim_1d,fns_1d_lincuda,lincuda) skip = skipcuda
     end

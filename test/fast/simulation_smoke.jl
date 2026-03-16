@@ -28,7 +28,7 @@ end
     sim = make_smoke_simulation()
     solver = LinearChunked(64)
     fns = define_functions(sim, solver)
-    res = run!(sim, fns, solver; savedata = false, saveplots = false)
+    res = run!(sim, fns, solver; savedata = false, saveplots = false, showinfo = false)
 
     v = filter(o -> o isa Velocity, res)[1]
     @test !isempty(v.vx)

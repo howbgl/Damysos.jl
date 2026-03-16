@@ -85,7 +85,6 @@ Unitful            = "1"     # v1.26.0
 
 # extras
 Test               = "1"     # stdlib, so this line is not necessary
-# CUDA_Runtime_jll = "5"     
 
 
 [extras]
@@ -93,4 +92,4 @@ CUDA_Runtime_jll = "76a88914-d11a-5bdc-97e0-2f5a05c973a2"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Test", "CUDA_Runtime_jll"]

@@ -61,7 +61,7 @@ function _run!(
 
 	# At DifferentialEquations.jl > 7.10 auto-detection of ode alg throws error due to
 	# ForwardDiff of ComplexF64, so use ode_alg workaround
-	ode_alg = AutoVern7(KenCarp47(autodiff = false), lazy = true)
+	ode_alg = AutoVern7(KenCarp47(autodiff = NoAutoDiff()), lazy = true)
 
 	res = solve(
 		prob,

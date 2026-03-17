@@ -25,8 +25,8 @@ const PAULI_SYMBOLS = (
 	:σy_cv, :σy_cv_i, :σy_cv_r, :σy_vc, :σy_vc_i, :σy_vc_r,
     :σz_cv, :σz_cv_i, :σz_cv_r, :σz_vc, :σz_vc_i, :σz_vc_r)
 
-pone(x::Vararg{<:Real}) = one(eltype(promote(x...)))
-pone(x::AbstractArray)  = one(eltype(x))
+pone(x::Vararg{T}) where T  = one(eltype(promote(x...)))
+pone(x::AbstractArray)  	= one(eltype(x))
 
 σx_cv(hx::Real, hy::Real, hz::Real) = (im * hy + hx * hz / ϵ(hx, hy, hz)) / (hx + im * hy)
 σx_cv(h::SVector{3, <:Real})            = (im * h[2] + h[1] * h[3] / ϵ(h)) / (h[1] + im * h[2])

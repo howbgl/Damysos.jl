@@ -1,0 +1,19 @@
+name: Full Validation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  full-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      JULIA_NUM_THREADS: auto
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.10"
+      - uses: julia-actions/cache@v2
+      - name: Run full validation
+        run: julia --color=yes --project=. -e 'using Pkg; Pkg.test(; test_args=["full"])'

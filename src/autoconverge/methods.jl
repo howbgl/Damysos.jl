@@ -352,18 +352,21 @@ function run!(
 	savedata = true,
 	filepath = joinpath(pwd(),getname(test)*"_$(test.rtolgoal).hdf5"),
 	nan_limit = DEFAULT_NAN_LIMIT,
-	max_nan_retries = DEFAULT_MAX_NAN_RETRIES)
+	max_nan_retries = DEFAULT_MAX_NAN_RETRIES,
+	showinfo = true)
 
 	starting_time 			= now()
 	
 	savedata && prepare_hdf5_file(test, filepath)
 
-	@info """
-	## Starting $(repr("text/plain", test))
-	$(repr("text/plain", test.method))
-	"""
-	printinfo(test.start,test.solver)
-
+	if showinfo
+		@info """
+		## Starting $(repr("text/plain", test))
+		$(repr("text/plain", test.method))
+		"""
+		printinfo(test.start,test.solver)
+	end
+	
 	producer = let t=test, nl=nan_limit
 		c::Channel -> _run!(c, t, t.method; nan_limit=nl)
 	end 
@@ -395,7 +398,7 @@ function run!(
 
 			oe = extrapolate(test)
 			i  = length(sims)
-			@info """ 
+			showinfo && @info """ 
 				- Iteration $i of maximum of $(test.maxiterations)
 				- Current value: $(currentvalue(method,sim)) $(getname(method)))
 				- $(repr("text/plain",oe))
@@ -422,7 +425,8 @@ function run!(
 
 	return postrun!(test, seconds_passed_since(starting_time), retcode; 
 		savedata = savedata,
-		filepath = filepath)
+		filepath = filepath,
+		showinfo = showinfo)
 end
 
 function _run!(
@@ -465,7 +469,8 @@ end
 
 function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, retcode;
 	savedata = true,
-	filepath = joinpath(pwd(),getname(test)*"_$(test.rtolgoal).hdf5"),)
+	filepath = joinpath(pwd(),getname(test)*"_$(test.rtolgoal).hdf5"),
+	showinfo = true)
 
 	retcode = terminated_retcode(retcode) ? retcode : ReturnCode.failed
 	
@@ -486,7 +491,7 @@ function postrun!(test::ConvergenceTest, elapsedtime_seconds::Real, retcode;
 		
 	savedata && Damysos.savedata(result, filepath)
 	
-	testresult_message(result)
+	showinfo && testresult_message(result)
 
 	return result
 end

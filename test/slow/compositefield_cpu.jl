@@ -16,13 +16,13 @@ end
 const sim_composite_1d_cpu = make_test_simulation_composite_1d(; id = "sim1d_composite_cpu")
 
 linchunked = LinearChunked()
-const fns_1d_linchunked = define_functions(sim_composite_1d_cpu, linchunked)
+const fns_composite_1d_linchunked = define_functions(sim_composite_1d_cpu, linchunked)
 
 @testset "CompositeField" begin
     savepath_cpu_composite_1d = joinpath(
         testresults_dir(), sim_composite_1d_cpu.id, "cpu_composite_1d")
     @testset "LinearChunked" begin
-        @test !isempty(run!(sim_composite_1d_cpu, fns_1d_linchunked, linchunked;
+        @test !isempty(run!(sim_composite_1d_cpu, fns_composite_1d_linchunked, linchunked;
             showinfo = false, 
             saveplots = false, 
             savedata = true, 

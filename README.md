@@ -3,6 +3,8 @@
 [![Build Status](https://github.com/howbgl/Damysos.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/howbgl/Damysos.jl/actions)
 [![Coverage Status](https://codecov.io/gh/howbgl/Damysos.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/howbgl/Damysos.jl)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18414810.svg)](https://doi.org/10.5281/zenodo.18414810)
+
 Shield: [![CC BY-ND 4.0][cc-by-nd-shield]][cc-by-nd]
 
 This work is licensed under a

@@ -19,10 +19,10 @@ end
 
 function _run!(
     sim::Simulation,
-    functions,
+    functions::SimulationFunctions,
     solver::SingleMode)
 
-    rhscc,rhscv = functions[1]
+    rhscc,rhscv = rhs(functions)
     k           = SA[sim.numericalparams.kx,sim.numericalparams.ky]
     prob        = buildode(sim,solver,k,rhscc,rhscv)
 
@@ -33,7 +33,7 @@ function _run!(
         abstol = sim.numericalparams.atol,
         reltol = sim.numericalparams.rtol)
 
-    for (o,f) in zip(sim.observables,functions[3])
+    for (o,f) in zip(sim.observables, observable_functions(functions))
         calculate_observable_singlemode!(sim,o,f,res)
     end
 
@@ -73,4 +73,3 @@ end
 function define_observable_functions(sim::Simulation,::SingleMode,o::Observable)
     return [@eval (u,p,t) -> $ex for ex in buildobservable_vec_of_expr(sim,o)]
 end
-

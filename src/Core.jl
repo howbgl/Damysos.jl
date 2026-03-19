@@ -19,7 +19,8 @@ Run a simulation.
 
 # Arguments
 - `sim::Simulation`: contains physical & numerical information (see [`Simulation`](@ref))
-- `functions`: needed by the solver/integrator (see [`define_functions`](@ref)).
+- `functions::SimulationFunctions`: function bundle needed by the solver/integrator
+  (see [`define_functions`](@ref)).
 - `solver`: strategy for integrating in k-space. Defaults to [`LinearChunked`](@ref))
 
 # Keyword Arguments
@@ -36,7 +37,8 @@ The observables obtained from the simulation.
 [`Simulation`](@ref), [`define_functions`](@ref), [`LinearChunked`](@ref)
 
 """
-function run!(sim::Simulation,functions,solver::DamysosSolver=LinearChunked(); kwargs...)
+function run!(sim::Simulation, functions::SimulationFunctions,
+	solver::DamysosSolver = LinearChunked(); kwargs...)
 
     prerun!(sim,solver;kwargs...)
     _run!(sim,functions,solver)
@@ -55,7 +57,8 @@ Hardcode the functions needed to run the Simulation.
 - `solver`: strategy for integrating in k-space. Defaults to [`LinearChunked`](@ref))
 
 # Returns
-Vector of functions used by [`run!`](@ref).
+`SimulationFunctions`: an internal bundle of solver-specific functions used by
+[`run!`](@ref).
 
 # See also
 [`Simulation`](@ref), [`run!`](@ref), [`LinearChunked`](@ref)

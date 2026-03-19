@@ -28,6 +28,12 @@ end
     sim = make_smoke_simulation()
     solver = LinearChunked(64)
     fns = define_functions(sim, solver)
+
+    @test fns isa Damysos.SimulationFunctions
+    @test Damysos.rhs(fns) isa Tuple
+    @test Damysos.bzmask(fns) isa Function
+    @test Damysos.observable_functions(fns) isa Vector
+
     res = run!(sim, fns, solver; savedata = false, saveplots = false, showinfo = false)
 
     v = filter(o -> o isa Velocity, res)[1]

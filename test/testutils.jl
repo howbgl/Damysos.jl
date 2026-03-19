@@ -72,7 +72,7 @@ if !@isdefined(test_snapshots)
         occ_ref = sim.observables[2]
         cbocc = empty(occ_ref.cbocc)
         obs = [Occupation(cbocc)]
-        bzmask = fns[2]
+        bzmask = Damysos.bzmask(fns)
 
         for (i, dm) in enumerate(dms.density_matrices)
             cc = [real(m[1, 1]) for m in dm.density_matrix]

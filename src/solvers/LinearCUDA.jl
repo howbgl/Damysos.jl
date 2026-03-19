@@ -77,7 +77,7 @@ end
 
 function _run!(
 		sim::Simulation,
-		functions,
+		functions::SimulationFunctions,
 		solver::LinearCUDA;
 		bypass_memcheck = false) 
 		
@@ -101,7 +101,7 @@ end
 
 function runtimeslices!(
 		sim::Simulation,
-		functions,
+		functions::SimulationFunctions,
 		solver::LinearCUDA,
 		kchunks;
 		bypass_memcheck = false)
@@ -131,16 +131,18 @@ end
 
 function runkchunk!(
 		sim::Simulation,
-		functions,
+		functions::SimulationFunctions,
 		solver::LinearCUDA,
 		kchunk::Vector{<:SVector{2, <:Real}},
 		ts::AbstractVector{<:Real} = gettsamples(sim),
 		obs::Vector{<:Observable} = sim.observables)
 
-	rhs, bzmask, obsfuncs = functions
-	d_ts, d_us = solvechunk(sim, solver, kchunk, rhs, ts)
+	rhs_fn = rhs(functions)
+	bzmask_fn = bzmask(functions)
+	obsfuncs = observable_functions(functions)
+	d_ts, d_us = solvechunk(sim, solver, kchunk, rhs_fn, ts)
 
-	sum_observables!(cu(kchunk), d_us, d_ts, bzmask, obs, obsfuncs)
+	sum_observables!(cu(kchunk), d_us, d_ts, bzmask_fn, obs, obsfuncs)
 
 	# it seems that sometimes the GC is too slow, so to be safe free GPU arrays
 	CUDA.unsafe_free!(d_ts)
@@ -280,9 +282,11 @@ function cuda_memory_estimate_linear(sim::Simulation, fns, solver::LinearCUDA,
 		ts = subdivide_vector(gettsamples(sim), nt)
 		obs = timesplit_obs(obs, ts)[1]
 
-		rhs, bzmask, obsfuncs = fns
-		d_ts, d_us = solvechunk(sim, solver, kchunk, rhs, ts[1])
-		sum_observables!(cu(kchunk), d_us, d_ts, bzmask, obs, obsfuncs; free_memory = false)
+		rhs_fn = rhs(fns)
+		bzmask_fn = bzmask(fns)
+		obsfuncs = observable_functions(fns)
+		d_ts, d_us = solvechunk(sim, solver, kchunk, rhs_fn, ts[1])
+		sum_observables!(cu(kchunk), d_us, d_ts, bzmask_fn, obs, obsfuncs; free_memory = false)
 
 		free, tot = CUDA.memory_info()
 		push!(mem_fractions, (tot - free) / (tot * nk))

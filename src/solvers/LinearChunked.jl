@@ -51,11 +51,11 @@ end
 
 function _run!(
 	sim::Simulation,
-	functions,
+	functions::SimulationFunctions,
 	solver::LinearChunked)
 
-	rhscc, rhscv = functions[1]
-	fns = (rhscc, rhscv, functions[2:end]...)
+	rhscc, rhscv = rhs(functions)
+	fns = (rhscc, rhscv, bzmask(functions), observable_functions(functions))
 
 	prob, kchunks = buildensemble(sim, solver, fns...)
 
@@ -188,4 +188,3 @@ function Base.show(io::IO, ::MIME"text/plain", s::LinearChunked)
 	"""
 	print(io, prepend_spaces(str, 2))
 end
-

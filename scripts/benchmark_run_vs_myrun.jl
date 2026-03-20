@@ -14,8 +14,10 @@ function myrun!(
     solver::DamysosSolver = LinearChunked();
     kwargs...)
 
+    fns = define_functions(sim, solver)
+
     Damysos.prerun!(sim, solver; kwargs...)
-    Damysos._run!(sim, functions, solver)
+    Base.invokelatest(Damysos._run!, sim, fns, solver)
     Damysos.postrun!(sim; kwargs...)
 
     return sim.observables

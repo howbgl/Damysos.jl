@@ -13,14 +13,7 @@ function myrun!(
     functions::Damysos.SimulationFunctions,
     solver::DamysosSolver = LinearChunked();
     kwargs...)
-
-    fns = define_functions(sim, solver)
-
-    Damysos.prerun!(sim, solver; kwargs...)
-    Base.invokelatest(Damysos._run!, sim, fns, solver)
-    Damysos.postrun!(sim; kwargs...)
-
-    return sim.observables
+    return invokelatest(Damysos.run!, sim, define_functions(sim, solver), solver; kwargs...)
 end
 
 function run_silently!(
@@ -70,7 +63,7 @@ function benchmark_solver(
 ")
     show_trial("run!", benchmark_runner(VANILLA_RUN!, sim_template, functions, solver;
         samples = samples))
-    show_trial("myrun!", benchmark_runner(myrun!, sim_template, functions, solver;
+    show_trial("myrun! (invokelatest bottleneck)", benchmark_runner(myrun!, sim_template, functions, solver;
         samples = samples))
 end
 

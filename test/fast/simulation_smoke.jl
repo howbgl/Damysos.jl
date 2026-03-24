@@ -28,15 +28,41 @@ end
     sim = make_smoke_simulation()
     solver = LinearChunked(64)
     fns = define_functions(sim, solver)
+    psim = PreparedSimulation(sim, solver)
 
     @test fns isa Damysos.SimulationFunctions
     @test Damysos.rhs(fns) isa Tuple
     @test Damysos.bzmask(fns) isa Function
     @test Damysos.observable_functions(fns) isa Vector
+    @test psim isa Damysos.PreparedSimulation
+    @test psim.sim === sim
+    @test psim.solver === solver
+    @test psim.functions isa Damysos.SimulationFunctions
 
-    res = run!(sim, fns, solver; savedata = false, saveplots = false, showinfo = false)
+    sim_prepared = make_smoke_simulation()
+    psim_prepared = PreparedSimulation(sim_prepared, solver)
+    res_prepared = run!(
+        psim_prepared;
+        savedata = false,
+        saveplots = false,
+        showinfo = false)
 
-    v = filter(o -> o isa Velocity, res)[1]
-    @test !isempty(v.vx)
-    @test all(isfinite, v.vx)
+    v_prepared = filter(o -> o isa Velocity, res_prepared)[1]
+    @test !isempty(v_prepared.vx)
+    @test all(isfinite, v_prepared.vx)
+
+    sim_legacy = make_smoke_simulation()
+    fns_legacy = define_functions(sim_legacy, solver)
+    res_legacy = run!(
+        sim_legacy,
+        fns_legacy,
+        solver;
+        savedata = false,
+        saveplots = false,
+        showinfo = false)
+
+    v_legacy = filter(o -> o isa Velocity, res_legacy)[1]
+    @test !isempty(v_legacy.vx)
+    @test all(isfinite, v_legacy.vx)
+    @test v_prepared.vx ≈ v_legacy.vx
 end

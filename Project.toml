@@ -1,7 +1,7 @@
 name = "Damysos"
 uuid = "fd5f980c-983e-4c87-a5d0-4feb611f7d72"
-authors = ["Wolfgang Hogger <wolfgang.hogger@ur.de>"]
 version = "1.0.2"
+authors = ["Wolfgang Hogger <wolfgang.hogger@ur.de>"]
 
 [deps]
 Accessors = "7d9f7c33-5ae7-4f3b-8dc6-eff91059b697"
@@ -34,6 +34,7 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 LoggingExtras = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
+ProfileCanvas = "efd6af41-a80b-495e-886c-e51b0c7d77a3"
 ProgressLogging = "33c8b6b6-d38a-422a-b730-caa89a2f386c"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
@@ -45,47 +46,44 @@ TerminalLoggers = "5d786b92-1e48-4d6f-9151-6b4477ca9bed"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [compat]
-julia = "1.10"           
-
-Accessors          = "0.1"   # v0.1.43
-Adapt              = "4"     # v4.4.0
-ArgCheck           = "2"     # v2.5.0
-ArgParse           = "1"     # v1.2.0
-BenchmarkTools     = "1"     # v1.6.3
-CSV                = "0.10"  # v0.10.15
-CUDA               = "5"     # v5.9.5
-CairoMakie         = "0.15"  # v0.15.8
-ColorSchemes       = "3"     # v3.31.0
-Cthulhu            = "2"     # v2.17.6
-DSP                = "0.8"   # v0.8.4
-DataFrames         = "1"     # v1.8.1
-DataStructures     = "0.18"  # v0.18.22
-DiffEqGPU          = "3"     # v3.9.0
-DifferentialEquations = "7"  # v7.17.0
-Documenter         = "1"     # v1.16.1
-EnumX              = "1"     # v1.0.5
-FFTW               = "1"     # v1.10.0
-FiniteDifferences  = "0.12"  # v0.12.33
-HDF5               = "0.17"  # v0.17.2
-Infiltrator        = "1"     # v1.9.4
-Interpolations     = "0.16"  # v0.16.2
-JuliaFormatter     = "2"     # v2.2.0
-KernelAbstractions = "0.9"   # v0.9.39
-LoggingExtras      = "1"     # v1.2.0
-Makie              = "0.24"  # v0.24.8
-OrdinaryDiffEq     = "6"     # v6.103.0
-ProgressLogging    = "0.1"   # v0.1.6
-Reexport           = "1"     # v1.2.2
-Revise             = "3"     # v3.12.2
-Richardson         = "1"     # v1.4.2
-SpecialFunctions   = "2"     # v2.6.1
-StaticArrays       = "1"     # v1.9.15
-TerminalLoggers    = "0.1"   # v0.1.7
-Unitful            = "1"     # v1.26.0
-
-# extras
-Test               = "1"     # stdlib, so this line is not necessary
-
+Accessors = "0.1"
+Adapt = "4"
+ArgCheck = "2"
+ArgParse = "1"
+BenchmarkTools = "1"
+CSV = "0.10"
+CUDA = "5"
+CairoMakie = "0.15"
+ColorSchemes = "3"
+Cthulhu = "2"
+DSP = "0.8"
+DataFrames = "1"
+DataStructures = "0.18"
+DiffEqGPU = "3"
+DifferentialEquations = "7"
+Documenter = "1"
+EnumX = "1"
+FFTW = "1"
+FiniteDifferences = "0.12"
+HDF5 = "0.17"
+Infiltrator = "1"
+Interpolations = "0.16"
+JuliaFormatter = "2"
+KernelAbstractions = "0.9"
+LoggingExtras = "1"
+Makie = "0.24"
+OrdinaryDiffEq = "6"
+ProfileCanvas = "0.1.7"
+ProgressLogging = "0.1"
+Reexport = "1"
+Revise = "3"
+Richardson = "1"
+SpecialFunctions = "2"
+StaticArrays = "1"
+TerminalLoggers = "0.1"
+Test = "1"
+Unitful = "1"
+julia = "1.10"
 
 [extras]
 CUDA_Runtime_jll = "76a88914-d11a-5bdc-97e0-2f5a05c973a2"

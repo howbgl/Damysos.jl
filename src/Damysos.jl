@@ -36,6 +36,7 @@ export DrivingField
 export Hamiltonian
 export Liouvillian
 export NGrid
+export PreparedSimulation
 
 abstract type DamysosSolver end
 abstract type Observable{T} end
@@ -81,6 +82,7 @@ include("data/construct_type_from_dict.jl")
 include("data/savedata_hdf5.jl")
 
 include("Plotting.jl")
+include("PreparedSimulation.jl")
 include("Core.jl")
 
 end

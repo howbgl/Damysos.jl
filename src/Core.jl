@@ -13,15 +13,13 @@ default_kchunk_size(::Type{T}) where {T<:DamysosSolver} = 256
 
 
 """
-    run!(sim, functions[, solver]; kwargs...)
+    run!(psim; kwargs...)
 
 Run a simulation.
 
 # Arguments
-- `sim::Simulation`: contains physical & numerical information (see [`Simulation`](@ref))
-- `functions::SimulationFunctions`: function bundle needed by the solver/integrator
-  (see [`define_functions`](@ref)).
-- `solver`: strategy for integrating in k-space. Defaults to [`LinearChunked`](@ref))
+- `psim::PreparedSimulation`: prepared simulation bundle containing the
+  [`Simulation`](@ref), solver, and solver-specific function bundle.
 
 # Keyword Arguments
 - `savedata::Bool`: save observables and simulation to disk after completion
@@ -34,11 +32,23 @@ Run a simulation.
 The observables obtained from the simulation.
 
 # See also
-[`Simulation`](@ref), [`define_functions`](@ref), [`LinearChunked`](@ref)
+[`PreparedSimulation`](@ref), [`Simulation`](@ref), [`define_functions`](@ref)
 
 """
+function run!(psim::PreparedSimulation; kwargs...)
+    return _run_prepared!(psim.sim, psim.functions, psim.solver; kwargs...)
+end
+
 function run!(sim::Simulation, functions::SimulationFunctions,
 	solver::DamysosSolver = LinearChunked(); kwargs...)
+    return run!(PreparedSimulation(sim, solver, functions); kwargs...)
+end
+
+function _run_prepared!(
+    sim::Simulation,
+    functions::SimulationFunctions,
+    solver::DamysosSolver;
+    kwargs...)
 
     prerun!(sim,solver;kwargs...)
     _run!(sim,functions,solver)

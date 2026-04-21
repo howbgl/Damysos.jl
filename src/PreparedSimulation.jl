@@ -1,14 +1,21 @@
+export PreparedSimulation
+
 """
     PreparedSimulation(sim[, solver])
-    PreparedSimulation(sim, solver, functions)
 
-Bundle a [`Simulation`](@ref), a [`DamysosSolver`](@ref), and the corresponding
-[`SimulationFunctions`](@ref) for execution via [`run!`](@ref).
+Bundles a [`Simulation`](@ref), a `DamysosSolver`, and the corresponding
+`SimulationFunctions` for execution via [`run!`](@ref).
 
-The preferred construction path is `PreparedSimulation(sim, solver)`, which
-computes the solver-specific function bundle with [`define_functions`](@ref).
-The 3-argument form remains available for advanced callers that already have a
-prepared `SimulationFunctions` instance.
+Note that the call to `run!(psim)` must be more recent in world age than the definition of 
+the `PreparedSimulation`.
+
+# Avialable solvers
+- [`LinearCUDA()`](@ref)
+- [`LinearChunked()`](@ref)
+- [`SingleMode()`](@ref)
+
+# See also
+[`run!`](@ref), [`Simulation`](@ref)
 """
 struct PreparedSimulation{T <: Real, U}
     sim::Simulation{T}

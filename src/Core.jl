@@ -29,7 +29,7 @@ Run a simulation given as Simulation or PreparedSimulation.
 The observables obtained from the simulation.
 
 # See also
-[`PreparedSimulation`](@ref), [`Simulation`](@ref), [`define_functions`](@ref)
+[`PreparedSimulation`](@ref), [`Simulation`](@ref)
 
 """
 function run!(psim::PreparedSimulation; kwargs...)

@@ -14,16 +14,6 @@ Represents an integration strategy for k-space via simple midpoint sum.
 - `algorithm::SciMLBase.BasicEnsembleAlgorithm`: algorithm for the `EnsembleProblem`.
 - `odesolver::SciMLBase.AbstractODEAlgorithm`: ODE algorithm
 
-# Examples
-```jldoctest
-julia> solver = LinearChunked(256,EnsembleThreads())
-LinearChunked:
-  - kchunksize: 256
-  - algorithm: EnsembleThreads()
-  - odesolver: Vern7{typeof(OrdinaryDiffEqCore.trivial_limiter!), typeof(OrdinaryDiffEqCore.trivial_limiter!), Static.False}(OrdinaryDiffEqCore.trivial_limiter!, OrdinaryDiffEqCore.trivial_limiter!, static(false), true)
-  
-```
-
 # See also
 [`LinearChunked`](@ref LinearChunked), [`SingleMode`](@ref SingleMode)
 """

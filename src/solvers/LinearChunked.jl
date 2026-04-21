@@ -59,9 +59,8 @@ function _run!(
 
 	prob, kchunks = buildensemble(sim, solver, fns...)
 
-	# At DifferentialEquations.jl > 7.10 auto-detection of ode alg throws error due to
-	# ForwardDiff of ComplexF64, so use ode_alg workaround
-	ode_alg = AutoVern7(KenCarp47(autodiff = NoAutoDiff()), lazy = true)
+	# Default auto-stiffness detection algorithm with high accuracy according to docs
+	ode_alg = AutoVern7(Rodas5()) 
 
 	res = solve(
 		prob,

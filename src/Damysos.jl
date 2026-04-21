@@ -10,11 +10,9 @@ using CUDA
 using Dates
 using Distributed
 using DataFrames
-using DataStructures
 using DSP
 using EnumX
 using HDF5
-using Infiltrator
 using Interpolations
 using LinearAlgebra
 using ProgressLogging
@@ -23,7 +21,7 @@ using Reexport
 using Richardson
 using TerminalLoggers
 
-@reexport using DifferentialEquations
+@reexport using OrdinaryDiffEq
 @reexport using DiffEqGPU
 @reexport using Unitful
 @reexport using SpecialFunctions

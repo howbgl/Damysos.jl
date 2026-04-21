@@ -13,15 +13,12 @@ default_kchunk_size(::Type{T}) where {T<:DamysosSolver} = 256
 
 
 """
-    run!(psim; kwargs...)
+    run!(sim; kwargs...)
 
-Run a simulation.
-
-# Arguments
-- `psim::PreparedSimulation`: prepared simulation bundle containing the
-  [`Simulation`](@ref), solver, and solver-specific function bundle.
+Run a simulation given as Simulation or PreparedSimulation.
 
 # Keyword Arguments
+- `solver::DamysosSolver`: only possible if `sim` is a `Simulation`
 - `savedata::Bool`: save observables and simulation to disk after completion
 - `saveplots::Bool`: create default plots and save them to disk after completion
 - `savepath::String`: path to directory to save data & plots
@@ -37,6 +34,10 @@ The observables obtained from the simulation.
 """
 function run!(psim::PreparedSimulation; kwargs...)
     return _run_prepared!(psim.sim, psim.functions, psim.solver; kwargs...)
+end
+
+function run!(sim::Simulation; solver::DamysosSolver=LinearChunked(), kwargs...)
+    return invokelatest(run!, PreparedSimulation(sim, solver); kwargs...)
 end
 
 function run!(sim::Simulation, functions::SimulationFunctions,
@@ -57,23 +58,7 @@ function _run_prepared!(
     return sim.observables
 end
 
-"""
-    define_functions(sim,solver)
 
-Hardcode the functions needed to run the Simulation. 
-
-# Arguments
-- `sim::Simulation`: contains physical & numerical information (see [`Simulation`](@ref))
-- `solver`: strategy for integrating in k-space. Defaults to [`LinearChunked`](@ref))
-
-# Returns
-`SimulationFunctions`: an internal bundle of solver-specific functions used by
-[`run!`](@ref).
-
-# See also
-[`Simulation`](@ref), [`run!`](@ref), [`LinearChunked`](@ref)
-
-"""
 function define_functions end
 
 function prerun!(sim::Simulation,solver::DamysosSolver;

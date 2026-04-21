@@ -219,17 +219,19 @@ Simulation{Float64} (2d):
  id: "simulation-name"
 ```
 
-To run it, we need to choose a solver and get the solver-specific function bundle via
-`define_functions`:
+The constructed simulation can then be executed via
 ```julia
-julia> solver = LinearChunked(2000)
-LinearChunked:
-  - kchunksize: 2000
-  - algorithm: EnsembleThreads()
-  - odesolver: Vern7(; stage_limiter! = trivial_limiter!, step_limiter! = trivial_limiter!, thread = static(false), lazy = true,)
-
-julia> fns = define_functions(sim,solver);
-
-julia> res = run!(sim,fns,solver;savedata=true,saveplots=true,savedir="path/to/savedir")
-
+julia> result = run!(sim;
+  solver=LinearChunked(2000),
+  saveplots=false,
+  savedata=true)
 ```
+
+and the result given back is `sim.observables` (see docs for `run!` for explanation of keyword arguments).
+For maximal performance use `PreparedSimulation` via
+```julia
+julia> const psim = PreparedSimulation(sim, LinearChunked());
+julia> result = run!(psim)
+```
+which pre-defines the functions used in the numerical computations.
+Note that the call to `run!(psim)` must be more recent in world age than the definition of the `PreparedSimulation` (see official Julia [documentation](https://docs.julialang.org/en/v1/manual/worldage/#The-World-Age-mechanism) for info on the world age mechanism), otherwise a `MethodError` will be thrown.

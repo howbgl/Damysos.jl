@@ -14,16 +14,6 @@ Represents an integration strategy for k-space via simple midpoint sum.
 - `algorithm::SciMLBase.BasicEnsembleAlgorithm`: algorithm for the `EnsembleProblem`.
 - `odesolver::SciMLBase.AbstractODEAlgorithm`: ODE algorithm
 
-# Examples
-```jldoctest
-julia> solver = LinearChunked(256,EnsembleThreads())
-LinearChunked:
-  - kchunksize: 256
-  - algorithm: EnsembleThreads()
-  - odesolver: Vern7{typeof(OrdinaryDiffEqCore.trivial_limiter!), typeof(OrdinaryDiffEqCore.trivial_limiter!), Static.False}(OrdinaryDiffEqCore.trivial_limiter!, OrdinaryDiffEqCore.trivial_limiter!, static(false), true)
-  
-```
-
 # See also
 [`LinearChunked`](@ref LinearChunked), [`SingleMode`](@ref SingleMode)
 """
@@ -51,17 +41,16 @@ end
 
 function _run!(
 	sim::Simulation,
-	functions,
+	functions::SimulationFunctions,
 	solver::LinearChunked)
 
-	rhscc, rhscv = functions[1]
-	fns = (rhscc, rhscv, functions[2:end]...)
+	rhscc, rhscv = rhs(functions)
+	fns = (rhscc, rhscv, bzmask(functions), observable_functions(functions))
 
 	prob, kchunks = buildensemble(sim, solver, fns...)
 
-	# At DifferentialEquations.jl > 7.10 auto-detection of ode alg throws error due to
-	# ForwardDiff of ComplexF64, so use ode_alg workaround
-	ode_alg = AutoVern7(KenCarp47(autodiff = NoAutoDiff()), lazy = true)
+	# Default auto-stiffness detection algorithm with high accuracy according to docs
+	ode_alg = AutoVern7(Rodas5()) 
 
 	res = solve(
 		prob,
@@ -188,4 +177,3 @@ function Base.show(io::IO, ::MIME"text/plain", s::LinearChunked)
 	"""
 	print(io, prepend_spaces(str, 2))
 end
-

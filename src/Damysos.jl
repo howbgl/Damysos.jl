@@ -10,11 +10,9 @@ using CUDA
 using Dates
 using Distributed
 using DataFrames
-using DataStructures
 using DSP
 using EnumX
 using HDF5
-using Infiltrator
 using Interpolations
 using LinearAlgebra
 using ProgressLogging
@@ -23,7 +21,7 @@ using Reexport
 using Richardson
 using TerminalLoggers
 
-@reexport using DifferentialEquations
+@reexport using OrdinaryDiffEq
 @reexport using DiffEqGPU
 @reexport using Unitful
 @reexport using SpecialFunctions
@@ -36,6 +34,7 @@ export DrivingField
 export Hamiltonian
 export Liouvillian
 export NGrid
+export PreparedSimulation
 
 abstract type DamysosSolver end
 abstract type Observable{T} end
@@ -81,6 +80,7 @@ include("data/construct_type_from_dict.jl")
 include("data/savedata_hdf5.jl")
 
 include("Plotting.jl")
+include("PreparedSimulation.jl")
 include("Core.jl")
 
 end

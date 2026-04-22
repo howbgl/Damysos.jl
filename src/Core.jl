@@ -13,16 +13,12 @@ default_kchunk_size(::Type{T}) where {T<:DamysosSolver} = 256
 
 
 """
-    run!(sim, functions[, solver]; kwargs...)
+    run!(sim; kwargs...)
 
-Run a simulation.
-
-# Arguments
-- `sim::Simulation`: contains physical & numerical information (see [`Simulation`](@ref))
-- `functions`: needed by the solver/integrator (see [`define_functions`](@ref)).
-- `solver`: strategy for integrating in k-space. Defaults to [`LinearChunked`](@ref))
+Run a simulation given as Simulation or PreparedSimulation.
 
 # Keyword Arguments
+- `solver::DamysosSolver`: only possible if `sim` is a `Simulation`
 - `savedata::Bool`: save observables and simulation to disk after completion
 - `saveplots::Bool`: create default plots and save them to disk after completion
 - `savepath::String`: path to directory to save data & plots
@@ -33,10 +29,27 @@ Run a simulation.
 The observables obtained from the simulation.
 
 # See also
-[`Simulation`](@ref), [`define_functions`](@ref), [`LinearChunked`](@ref)
+[`PreparedSimulation`](@ref), [`Simulation`](@ref)
 
 """
-function run!(sim::Simulation,functions,solver::DamysosSolver=LinearChunked(); kwargs...)
+function run!(psim::PreparedSimulation; kwargs...)
+    return _run_prepared!(psim.sim, psim.functions, psim.solver; kwargs...)
+end
+
+function run!(sim::Simulation; solver::DamysosSolver=LinearChunked(), kwargs...)
+    return invokelatest(run!, PreparedSimulation(sim, solver); kwargs...)
+end
+
+function run!(sim::Simulation, functions::SimulationFunctions,
+	solver::DamysosSolver = LinearChunked(); kwargs...)
+    return run!(PreparedSimulation(sim, solver, functions); kwargs...)
+end
+
+function _run_prepared!(
+    sim::Simulation,
+    functions::SimulationFunctions,
+    solver::DamysosSolver;
+    kwargs...)
 
     prerun!(sim,solver;kwargs...)
     _run!(sim,functions,solver)
@@ -45,22 +58,7 @@ function run!(sim::Simulation,functions,solver::DamysosSolver=LinearChunked(); k
     return sim.observables
 end
 
-"""
-    define_functions(sim,solver)
 
-Hardcode the functions needed to run the Simulation. 
-
-# Arguments
-- `sim::Simulation`: contains physical & numerical information (see [`Simulation`](@ref))
-- `solver`: strategy for integrating in k-space. Defaults to [`LinearChunked`](@ref))
-
-# Returns
-Vector of functions used by [`run!`](@ref).
-
-# See also
-[`Simulation`](@ref), [`run!`](@ref), [`LinearChunked`](@ref)
-
-"""
 function define_functions end
 
 function prerun!(sim::Simulation,solver::DamysosSolver;

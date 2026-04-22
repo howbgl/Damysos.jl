@@ -161,12 +161,20 @@ function resize_obs!(sim::Simulation)
 end
 resize(o::Observable, sim::Simulation) = resize(o, sim.grid)
 
+struct SimulationFunctions{T}
+	data::T
+end
+
+@inline rhs(fns::SimulationFunctions) = fns.data[1]
+@inline bzmask(fns::SimulationFunctions) = fns.data[2]
+@inline observable_functions(fns::SimulationFunctions) = fns.data[3]
+
 function define_functions(sim::Simulation, solver::DamysosSolver)
 	!solver_compatible(sim, solver) && throw(incompatible_solver_exception(sim, solver))
-	return (
+	return SimulationFunctions((
 		define_rhs_x(sim, solver),
 		define_bzmask(sim, solver),
-		define_observable_functions(sim, solver))
+		define_observable_functions(sim, solver)))
 end
 
 function incompatible_solver_exception(sim::Simulation, solver::DamysosSolver)
@@ -226,4 +234,3 @@ function markdown_paramsSI(sim::Simulation)
 
 	return table_str
 end
-

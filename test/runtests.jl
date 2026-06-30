@@ -41,6 +41,7 @@ const TEST_GROUPS = parse_groups(ARGS)
             include(joinpath(@__DIR__, "fast", "fieldtests.jl"))
             include(joinpath(@__DIR__, "fast", "matrixelements_smoke.jl"))
             include(joinpath(@__DIR__, "fast", "simulation_smoke.jl"))
+            include(joinpath(@__DIR__, "fast", "periodic_smoke.jl"))
         end
     end
 

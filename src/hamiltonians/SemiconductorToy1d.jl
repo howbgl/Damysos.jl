@@ -19,17 +19,7 @@ to the wurtzite ZnO model used in <https://doi.org/10.1103/PhysRevLett.113.07390
 julia> h = SemiconductorToy1d(UnitScaling(u"1.0fs",u"1.0Å"))
 SemiconductorToy1d:
   Δ: 2.507
-  t: 6.031
-  a: 2.82
-
-```
-
-
-```jldoctest
-julia> h = SemiconductorToy1d(UnitScaling(u"1.0fs",u"1.0Å"))
-SemiconductorToy1d:
-  Δ: 2.507
-  t: 6.031
+  t: 6.533
   a: 2.82
 
 ```

@@ -168,6 +168,17 @@ function getbzbounds(df::DrivingField,g::Union{CartesianKGrid2d,CartesianKGrid2d
     return (bz_1d...,-kymax + 1.3aymax,kymax - 1.3aymax)
 end
 
+function printBZSI(df::DrivingField,g::HexagonalMPKGrid2d,us::UnitScaling;digits=3)
+    b1, b2 = reciprocal_primitive_vectors(g)
+    b1norm = round(norm(b1),sigdigits=digits)
+    b2norm = round(norm(b2),sigdigits=digits)
+    b1SI   = round(typeof(wavenumberSI(norm(b1),us)),wavenumberSI(norm(b1),us),sigdigits=digits)
+    b2SI   = round(typeof(wavenumberSI(norm(b2),us)),wavenumberSI(norm(b2),us),sigdigits=digits)
+
+    return """
+        BZ spanned by reciprocal vectors with |b1| = $b1SI ($b1norm), |b2| = $b2SI ($b2norm)\n"""
+end
+
 function printBZSI(df::DrivingField,g::CartesianMPKGrid1d,us::UnitScaling;digits=3)
     a     = g.a    
     bz    = [round(-π/a,sigdigits=digits),round(π/a,sigdigits=digits)]

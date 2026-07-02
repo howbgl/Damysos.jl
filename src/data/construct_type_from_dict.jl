@@ -30,6 +30,8 @@ function construct_type_from_dict(
 		CartesianKGrid1d,
 		CartesianKGrid2d,
 		CartesianKGrid2dStrips,
+		CartesianMPKGrid1d,
+		HexagonalMPKGrid2d,
 		KGrid0d,
 		SymmetricTimeGrid,
 		ExtendKymaxTest}},

@@ -56,33 +56,33 @@ hz(h::MonolayerhBN,kx,ky)    = h.Δ / 2
 hz(h::MonolayerhBN)          = quote $(h.Δ / 2) end
 
 dhdkx(h::MonolayerhBN,kx,ky) = SA[
-    -h.t * sin(kx * h.a/2) * cos(√3 * ky * h.a / 2),
-    h.t * sin(kx * h.a/2) * sin(√3 * ky * h.a / 2),
+    -h.t * h.a * sin(kx * h.a/2) * cos(√3 * ky * h.a / 2),
+    h.t * h.a * sin(kx * h.a/2) * sin(√3 * ky * h.a / 2),
     zero(h.Δ)]
 dhdkx(h::MonolayerhBN)       = SA[
-    :(-$(h.t) * sin(kx*$(h.a)/2) * cos(√3*ky*$(h.a)/2)),  
-    :($(h.t) * sin(kx*$(h.a)/2) * sin(√3*ky*$(h.a)/2)),  
+    :(-$(h.t) * $(h.a) * sin(kx*$(h.a)/2) * cos(√3*ky*$(h.a)/2)),
+    :($(h.t) * $(h.a) * sin(kx*$(h.a)/2) * sin(√3*ky*$(h.a)/2)),
     zero(h.Δ)]
 
 dhdky(h::MonolayerhBN,kx,ky) = SA[
-    -√3 * h.t * cos(kx * h.a/2) * sin(√3 * ky * h.a / 2),       
-    -√3 * h.t * cos(kx * h.a/2) * cos(√3 * ky * h.a / 2),      
+    -√3 * h.t * h.a * cos(kx * h.a/2) * sin(√3 * ky * h.a / 2),
+    -√3 * h.t * h.a * cos(kx * h.a/2) * cos(√3 * ky * h.a / 2),
     zero(h.Δ)]
 dhdky(h::MonolayerhBN)       = SA[
-    :(-√3 * $(h.t) * cos(kx*$(h.a)/2) * sin(√3*ky*$(h.a)/2)),   
-    :(-√3 * $(h.t) * cos(kx*$(h.a)/2) * cos(√3*ky*$(h.a)/2)),  
+    :(-√3 * $(h.t) * $(h.a) * cos(kx*$(h.a)/2) * sin(√3*ky*$(h.a)/2)),
+    :(-√3 * $(h.t) * $(h.a) * cos(kx*$(h.a)/2) * cos(√3*ky*$(h.a)/2)),
     zero(h.Δ)]
 
 # Jacobian ∂h_i/∂k_j
 jac(h::MonolayerhBN,kx,ky) = SA[
-    -h.t * sin(kx * h.a/2) * cos(√3 * ky * h.a / 2)   -√3 * h.t * cos(kx * h.a/2) * sin(√3 * ky * h.a / 2)
-    h.t * sin(kx * h.a/2) * sin(√3 * ky * h.a / 2)    -√3 * h.t * cos(kx * h.a/2) * cos(√3 * ky * h.a / 2)
-    zero(h.Δ)                                           zero(h.Δ)]
+    -h.t * h.a * sin(kx * h.a/2) * cos(√3 * ky * h.a / 2)   -√3 * h.t * h.a * cos(kx * h.a/2) * sin(√3 * ky * h.a / 2)
+    h.t * h.a * sin(kx * h.a/2) * sin(√3 * ky * h.a / 2)    -√3 * h.t * h.a * cos(kx * h.a/2) * cos(√3 * ky * h.a / 2)
+    zero(h.Δ)                                                 zero(h.Δ)]
 
 jac(h::MonolayerhBN) = @SMatrix [
-    :(-$(h.t) * sin(kx*$(h.a)/2) * cos(√3*ky*$(h.a)/2))     :(-√3 * $(h.t) * cos(kx*$(h.a)/2) * sin(√3*ky*$(h.a)/2))
-    :($(h.t) * sin(kx*$(h.a)/2) * sin(√3*ky*$(h.a)/2))      :(-√3 * $(h.t) * cos(kx*$(h.a)/2) * cos(√3*ky*$(h.a)/2))
-    quote zero($(h.Δ)) end                                  quote zero($(h.Δ)) end]
+    :(-$(h.t) * $(h.a) * sin(kx*$(h.a)/2) * cos(√3*ky*$(h.a)/2))     :(-√3 * $(h.t) * $(h.a) * cos(kx*$(h.a)/2) * sin(√3*ky*$(h.a)/2))
+    :($(h.t) * $(h.a) * sin(kx*$(h.a)/2) * sin(√3*ky*$(h.a)/2))      :(-√3 * $(h.t) * $(h.a) * cos(kx*$(h.a)/2) * cos(√3*ky*$(h.a)/2))
+    quote zero($(h.Δ)) end                                           quote zero($(h.Δ)) end]
 
 
 function printparamsSI(h::MonolayerhBN,us::UnitScaling;digits=3)
@@ -114,18 +114,18 @@ gethvec(h::MonolayerhBN) = let Δ=h.Δ,a=h.a,t=h.t
 end
 
 getdhdkx(h::MonolayerhBN) = let Δ=h.Δ,a=h.a,t=h.t
-    (kx,ky) -> SA[-t*sin(kx*a/2)*cos(√3*ky*a/2), t*sin(kx*a/2)*sin(√3*ky*a/2), zero(Δ)]
+    (kx,ky) -> SA[-t*a*sin(kx*a/2)*cos(√3*ky*a/2), t*a*sin(kx*a/2)*sin(√3*ky*a/2), zero(Δ)]
 end
 
 getdhdky(h::MonolayerhBN) = let Δ=h.Δ,a=h.a,t=h.t
-    (kx,ky) -> SA[-√3*t*cos(kx*a/2)*sin(√3*ky*a/2), -√3*t*cos(kx*a/2)*cos(√3*ky*a/2), zero(Δ)]
+    (kx,ky) -> SA[-√3*t*a*cos(kx*a/2)*sin(√3*ky*a/2), -√3*t*a*cos(kx*a/2)*cos(√3*ky*a/2), zero(Δ)]
 end
 
 # Jacobian ∂h_i/∂k_j
 getjac(h::MonolayerhBN) = let Δ=h.Δ,a=h.a,t=h.t
     (kx,ky) -> SA[
-        -t*sin(kx*a/2)*cos(√3*ky*a/2)   -√3*t*cos(kx*a/2)*sin(√3*ky*a/2)
-        t*sin(kx*a/2)*sin(√3*ky*a/2)    -√3*t*cos(kx*a/2)*cos(√3*ky*a/2)
-        zero(Δ)                         zero(Δ)]
+        -t*a*sin(kx*a/2)*cos(√3*ky*a/2)   -√3*t*a*cos(kx*a/2)*sin(√3*ky*a/2)
+        t*a*sin(kx*a/2)*sin(√3*ky*a/2)    -√3*t*a*cos(kx*a/2)*cos(√3*ky*a/2)
+        zero(Δ)                           zero(Δ)]
 end
 

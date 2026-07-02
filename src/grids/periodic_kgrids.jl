@@ -4,9 +4,9 @@ export CartesianMPKGrid1d
 abstract type HexagonalKGrid2d{T} <: PeriodicKGrid{T} end
 
 function reciprocal_primitive_vectors(::Type{T}, a) where {T<:HexagonalKGrid2d}
-    b1 = (2π / a) * SVector(1/√3, 1)
-    b2 = (2π / a) * SVector(1/√3, -1)
-    return b1, b2   
+    b1 = (2π / a) * SVector(1, 1/√3)
+    b2 = (2π / a) * SVector(1, -1/√3)
+    return b1, b2
 end
 
 function u_monkhorst_pack(r::Integer, q::Integer)
@@ -54,7 +54,11 @@ function applyweights_afterintegration!(obs::Vector{<:Observable}, kgrid::Hexago
     normalize!.(obs,1 / volume_element(kgrid))
 end
 
-volume_element(kgrid::HexagonalMPKGrid2d) =  kgrid.dk1 * kgrid.dk2
+function volume_element(kgrid::HexagonalMPKGrid2d)
+    b1, b2 = reciprocal_primitive_vectors(kgrid)
+    q1, q2 = getqs(kgrid)
+    return abs(b1[1] * b2[2] - b1[2] * b2[1]) / (q1 * q2)
+end
 
 function reciprocal_primitive_vectors(kgrid::HexagonalMPKGrid2d)
     return reciprocal_primitive_vectors(HexagonalMPKGrid2d, kgrid.a)
@@ -113,12 +117,12 @@ struct CartesianMPKGrid1d{T <: Real} <: PeriodicKGrid{T}
         @argcheck dkx > 0
         @argcheck a > 0
 
-        q1    = round(Int, 2π / dkx)
+        q1    = round(Int, 2π / (a * dkx))
         if q1<2
             throw(ArgumentError(
-                "CartesianMPKGrid1d requires at least 2 k-points. Got $(q1)."))            
+                "CartesianMPKGrid1d requires at least 2 k-points. Got $(q1)."))
         end
-        return new(2π / q1, a)
+        return new(2π / (a * q1), a)
     end
 end
 CartesianMPKGrid1d(dkx::T,a::T) where {T <: Real} = CartesianMPKGrid1d{T}(dkx,a)

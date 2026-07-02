@@ -15,7 +15,7 @@ function make_sctoy1d_smoke()
     l     = TwoBandDephasingLiouvillian(h, Inf, timescaled(t2, us))
     df    = GaussianAPulse(us, σ, freq, emax)
     tgrid = SymmetricTimeGrid(0.1, -2df.σ)
-    kgrid = CartesianMPKGrid1d(π / 2, h.a)  # 4 k-points
+    kgrid = CartesianMPKGrid1d(2π / (4h.a), h.a)  # 4 k-points
     grid  = NGrid(kgrid, tgrid)
     obs   = [Velocity(grid)]
     return Simulation(l, df, grid, obs, us, "sctoy1d_smoke")
@@ -44,7 +44,14 @@ end
         kg = CartesianMPKGrid1d(π / 10, 1.0)
         @test kg.dkx ≈ 2π / round(Int, 2π / (π / 10))
         @test Damysos.ntrajectories(kg) == round(Int, 2π / (π / 10))
+        @test length(Damysos.getksamples(kg)) == Damysos.ntrajectories(kg)
         @test_throws ArgumentError CartesianMPKGrid1d(5.0, 1.0)  # q1 < 2
+
+        # lattice constant a != 1: spacing and sample count derive from BZ length 2π/a
+        kg2 = CartesianMPKGrid1d(2π / (5 * 2.0), 2.0)
+        @test kg2.dkx ≈ 2π / (5 * 2.0)
+        @test Damysos.ntrajectories(kg2) == 5
+        @test length(Damysos.getksamples(kg2)) == 5
     end
 
     @testset "HexagonalMPKGrid2d" begin
@@ -54,6 +61,36 @@ end
         @test Damysos.ntrajectories(kg) > 0
         @test Damysos.getdimension(kg) == UInt8(2)
         @test_throws ArgumentError HexagonalMPKGrid2d(100.0, 100.0, h.a)  # q < 2
+
+        # integration weight includes the 120° cell Jacobian sin factor
+        @test Damysos.volume_element(kg) ≈ (√3 / 2) * kg.dk1 * kg.dk2
+
+        # b1, b2 must be reciprocal translations of the hBN Hamiltonian
+        b1, b2 = Damysos.reciprocal_primitive_vectors(kg)
+        for b in (b1, b2), k in ([0.3, -0.7], [1.1, 0.4])
+            @test Damysos.hvec(h, k...) ≈ Damysos.hvec(h, (k .+ b)...)
+        end
+    end
+end
+
+@testset "Periodic grid HDF5 round-trip" begin
+    us = UnitScaling(u"1.0fs", u"1.0Å")
+    objs = [
+        CartesianMPKGrid1d(2π / (4 * 2.82), 2.82),
+        HexagonalMPKGrid2d(π / 5, π / 5, 2.51),
+        SemiconductorToy1d(us),
+        MonolayerhBN(us)]
+
+    path = joinpath(testresults_dir(), "periodic_roundtrip.hdf5")
+    Damysos.HDF5.h5open(path, "w") do file
+        for (i, obj) in enumerate(objs)
+            Damysos.generic_save_hdf5(obj, file, "obj$i")
+        end
+    end
+    Damysos.HDF5.h5open(path, "r") do file
+        for (i, obj) in enumerate(objs)
+            @test Damysos.load_obj_hdf5(file["obj$i"]) == obj
+        end
     end
 end
 
@@ -91,6 +128,9 @@ end
     fns    = define_functions(sim, solver)
 
     @test fns isa Damysos.SimulationFunctions
+
+    # showinfo=true path dispatches printBZSI on the hexagonal grid
+    @test Damysos.printBZSI(sim.drivingfield, sim.grid.kgrid, sim.unitscaling) isa String
 
     res = run!(sim, fns, solver; savedata = false, saveplots = false, showinfo = false)
     v   = filter(o -> o isa Velocity, res)[1]

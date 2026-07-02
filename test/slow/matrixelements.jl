@@ -87,7 +87,12 @@ end
 
 hconj(x::AbstractMatrix) = transpose(conj(x))
 
-const ALL_HAMILTONIANS = [GappedDirac(0.2), QuadraticToy(1.6, 0.4), BilayerToy(1.0, 0.6)]
+const ALL_HAMILTONIANS = [
+    GappedDirac(0.2),
+    QuadraticToy(1.6, 0.4),
+    BilayerToy(1.0, 0.6),
+    MonolayerhBN(0.2, 1.0, 2.5),        # a != 1 to catch missing lattice factors
+    SemiconductorToy1d(2.5, 6.0, 2.8)]
 
 @testset "Pauli matrixelements" begin
     for h in ALL_HAMILTONIANS

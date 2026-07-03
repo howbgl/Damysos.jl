@@ -42,6 +42,8 @@ function QuadraticToy(us::UnitScaling,gap::Unitful.Energy,mass::Unitful.Mass)
     return QuadraticToy(delta,zeta)
 end
 
+isperiodic(::QuadraticToy) = false
+
 hx(h::QuadraticToy,kx,ky)    = h.ζ * kx^2 / 2
 hx(h::QuadraticToy)          = quote $(h.ζ/2) * kx^2 end
 

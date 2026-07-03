@@ -112,11 +112,15 @@ end
 
 function define_bzmask(sim::Simulation)
 
-    bz = getbzbounds(sim)
-    ax = vecpotx(sim.drivingfield)
-    dkx = sim.grid.kgrid.dkx
+    if isperiodic(sim.liouvillian)
+        return (p,t) -> one(t)
+    else
+        bz = getbzbounds(sim)
+        ax = vecpotx(sim.drivingfield)
+        dkx = sim.grid.kgrid.dkx
 
-    @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2]))
+        return @eval (p,t) -> bzmask1d(p[1] - $ax,$dkx,$(bz[1]),$(bz[2]))
+    end
 end
 
 function observable_expr_cc_cv_to_upt(expr::Expr)
@@ -164,6 +168,26 @@ function getbzbounds(df::DrivingField,g::Union{CartesianKGrid2d,CartesianKGrid2d
     return (bz_1d...,-kymax + 1.3aymax,kymax - 1.3aymax)
 end
 
+function printBZSI(df::DrivingField,g::HexagonalMPKGrid2d,us::UnitScaling;digits=3)
+    b1, b2 = reciprocal_primitive_vectors(g)
+    b1norm = round(norm(b1),sigdigits=digits)
+    b2norm = round(norm(b2),sigdigits=digits)
+    b1SI   = round(typeof(wavenumberSI(norm(b1),us)),wavenumberSI(norm(b1),us),sigdigits=digits)
+    b2SI   = round(typeof(wavenumberSI(norm(b2),us)),wavenumberSI(norm(b2),us),sigdigits=digits)
+
+    return """
+        BZ spanned by reciprocal vectors with |b1| = $b1SI ($b1norm), |b2| = $b2SI ($b2norm)\n"""
+end
+
+function printBZSI(df::DrivingField,g::CartesianMPKGrid1d,us::UnitScaling;digits=3)
+    a     = g.a    
+    bz    = [round(-π/a,sigdigits=digits),round(π/a,sigdigits=digits)]
+    bzSI  = [wavenumberSI(k,us) for k in bz]
+    bzSI  = map(x -> round(typeof(x),x,sigdigits=digits),bzSI)
+
+    return """
+        BZ(kx) = [$(bzSI[1]),$(bzSI[2])] ([$(bz[1]),$(bz[2])])\n"""
+end
 
 function printBZSI(df::DrivingField,g::CartesianKGrid2d,us::UnitScaling;digits=3)
     

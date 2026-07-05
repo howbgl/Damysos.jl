@@ -40,5 +40,5 @@ const solver = if CUDA.functional()
 else
     LinearChunked()
 end
-const fns = define_functions(sim,solver)
-const res = run!(sim, fns, solver; savepath="SC_toy1d")
+const psim = PreparedSimulation(sim,solver)
+const res = run!(psim; savepath="SC_toy1d")

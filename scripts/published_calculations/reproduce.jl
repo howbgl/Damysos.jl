@@ -27,9 +27,9 @@ end
 # Choose chunk size according to available memory
 
 const solver = LinearChunked(1_024)
-const fns = define_functions(simulation,solver)
+const psim = PreparedSimulation(simulation,solver)
 
 # Run the simulation
-const results = run!(simulation,fns,solver; 
+const results = run!(psim;
     savepath="scripts/reproduced_data",
     saveplots=false)

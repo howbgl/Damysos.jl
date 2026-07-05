@@ -7,9 +7,13 @@ A toy model for a 1D semiconductor with a direct bandgap at the Brillouin zone c
 
 The Hamiltonian reads 
 ```math
-\\hat{H} = \\frac{\\Delta}{2}\\sigma_x - t \\sin(a k_x/2)\\sigma_z
+\\hat{H} = \\Delta\\sigma_x - t \\sin(a k_x/2)\\sigma_z
 ``` 
-with kx=0 the BZ center. The default values when given a [`UnitScaling`](@ref UnitScaling)
+with kx=0 the BZ center. Note that ``\\Delta`` is **half** the direct bandgap: the band
+splitting of a [`GeneralTwoBand`](@ref GeneralTwoBand) is ``2|\\vec{h}|``, so the gap at
+``k_x=0`` is ``2\\Delta``. Accordingly, the constructor argument `halfgap` (default
+1.65 eV) yields a physical bandgap of 3.3 eV.
+The default values when given a [`UnitScaling`](@ref UnitScaling)
 object (see Examples below) fit bandgap and dipole at ``k_x=0`` with ``\\hat{x}∥\\Gamma -M``
 to the wurtzite ZnO model used in <https://doi.org/10.1103/PhysRevLett.113.073901>.
 
@@ -38,12 +42,12 @@ isperiodic(::SemiconductorToy1d) = true
 
 function SemiconductorToy1d(
     us::UnitScaling,
-    gap::Unitful.Energy=u"1.65eV",
+    halfgap::Unitful.Energy=u"1.65eV",
     hopping::Unitful.Energy=u"4.30eV",
     latticeconst::Unitful.Length=u"2.82Å")
 
     return SemiconductorToy1d(
-        energyscaled(gap,us),
+        energyscaled(halfgap,us),
         energyscaled(hopping,us),
         lengthscaled(latticeconst,us))
 end

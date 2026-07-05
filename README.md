@@ -44,11 +44,11 @@ julia> simulation = load_obj_hdf5(file["t2=0.2"]); close(file)
 ```
 Choose either the CPU (`LinearChunked(nkchunks::Integer,...)`) or the GPU solver(`LinearCUDA(nkchunks::Integer,...)`) 
 ```julia
-julia> solver = LinearChunked(); functions = define_functions(simulation, solver)
+julia> solver = LinearChunked(); psim = PreparedSimulation(simulation, solver)
 ```
 and run simulation with
 ```julia
-julia> results = run!(simulation, functions, solver; savepath = "Fig2_rerun")
+julia> results = run!(psim; savepath = "Fig2_rerun")
 ```
 An example script with data is located at `scripts/published_calculations/reproduce.jl`.
 

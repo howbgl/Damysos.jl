@@ -16,6 +16,14 @@ function myrun!(
     return invokelatest(Damysos.run!, sim, define_functions(sim, solver), solver; kwargs...)
 end
 
+function preparedrun!(
+    sim::Simulation,
+    functions::Damysos.SimulationFunctions,
+    solver::DamysosSolver = LinearChunked();
+    kwargs...)
+    return Damysos.run!(PreparedSimulation(sim, solver, functions); kwargs...)
+end
+
 function run_silently!(
     runner,
     sim::Simulation,
@@ -65,6 +73,8 @@ function benchmark_solver(
         samples = samples))
     show_trial("myrun! (invokelatest bottleneck)", benchmark_runner(myrun!, sim_template, functions, solver;
         samples = samples))
+    show_trial("run!(psim) - PreparedSimulation (no invokelatest)",
+        benchmark_runner(preparedrun!, sim_template, functions, solver; samples = samples))
 end
 
 const CPU_SIM = make_test_simulation_2d(; id = "sim2d_cpu_bench")

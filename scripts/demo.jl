@@ -52,12 +52,12 @@ end
 const sim = make_demo_simulation()
 const logger = make_teelogger(pwd(),sim.id)
 const solver = LinearChunked(1_024)
-const fns = define_functions(sim,solver)
+const psim = PreparedSimulation(sim,solver)
 
 global_logger(logger)
 @info "$(now())\nOn $(gethostname()):"
 
-const results,time,rest... = @timed run!(sim,fns,solver;savepath="scripts/demodata")
+const results,time,rest... = @timed run!(psim;savepath="scripts/demodata")
 
 @info "$(time/60.)min spent in run!(...)"
 @debug rest

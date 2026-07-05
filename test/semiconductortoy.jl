@@ -13,7 +13,7 @@ function make_test_simulation_sc_toy1d(freq=uconvert(u"THz", Unitful.c0 / u"3.25
     σ       = 4.0 * tcycle  # approx 21.66 fs
     
     us      = UnitScaling(u"1.0fs", u"1.0Å")
-    h       = SemiconductorToy1d(us,u"1.65eV")
+    h       = SemiconductorToy1d(us,u"3.3eV")
     l       = TwoBandDephasingLiouvillian(h, Inf, timescaled(t2, us))
     df      = GaussianAPulse(us, σ, freq, emax)
 

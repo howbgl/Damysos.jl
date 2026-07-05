@@ -18,7 +18,7 @@ to the wurtzite ZnO model used in <https://doi.org/10.1103/PhysRevLett.113.07390
 ```jldoctest
 julia> h = SemiconductorToy1d(UnitScaling(u"1.0fs",u"1.0Å"))
 SemiconductorToy1d:
-  Δ: 2.507
+  Δ: 5.014
   t: 6.533
   a: 2.82
 
@@ -38,7 +38,7 @@ isperiodic(::SemiconductorToy1d) = true
 
 function SemiconductorToy1d(
     us::UnitScaling,
-    gap::Unitful.Energy=u"1.65eV",
+    gap::Unitful.Energy=u"3.3eV",
     hopping::Unitful.Energy=u"4.30eV",
     latticeconst::Unitful.Length=u"2.82Å")
 
@@ -48,8 +48,8 @@ function SemiconductorToy1d(
         lengthscaled(latticeconst,us))
 end
 
-hx(h::SemiconductorToy1d,kx,ky)    = h.Δ
-hx(h::SemiconductorToy1d)          = quote $(h.Δ) end
+hx(h::SemiconductorToy1d,kx,ky)    = h.Δ / 2
+hx(h::SemiconductorToy1d)          = quote $(h.Δ / 2) end
 
 hy(h::SemiconductorToy1d,kx,ky)    = zero(h.Δ)
 hy(h::SemiconductorToy1d)          = quote zero($(h.Δ)) end
@@ -109,7 +109,7 @@ function getparamsSI(h::SemiconductorToy1d,us::UnitScaling)
 end
 
 gethvec(h::SemiconductorToy1d) = let Δ=h.Δ,a=h.a,t=h.t
-    (kx,ky) -> SA[Δ,0.0,-t * sin(kx * a/2)]
+    (kx,ky) -> SA[Δ/2,0.0,-t * sin(kx * a/2)]
 end
 
 getdhdkx(h::SemiconductorToy1d) = let Δ=h.Δ,a=h.a,t=h.t

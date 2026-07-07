@@ -1,10 +1,11 @@
-# Two-band Hamiltonians
+# Two-band formalism
 
 ```@meta
 CurrentModule = Damysos
 ```
 
 Here we outline the implementation of calculating matrixelements of two-band Hamiltonians.
+For the concrete models implemented in Damysos see [Hamiltonian models](hamiltonians.md).
 
 ## Idea
 

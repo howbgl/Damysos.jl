@@ -10,7 +10,7 @@ Documentation for [Damysos](https://github.com/howbgl/Damysos.jl.git).
 
 ## Package features
 
-- Modular building blocks (driving field, Hamiltonian etc. ) for creating simulations
+- Modular building blocks (driving field, Hamiltonian etc. ) for creating simulations, see [Hamiltonian models](hamiltonians.md) for the available Hamiltonians
 - Using velocity-gauge to parallelize over k-points
 - Run any Simulation on GPU or CPU without re-writing any code
 - Built using the powerful [DifferentialEquations.jl](https://github.com/SciML/DiffEqDocs.jl) and [DiffEqGPU.jl](https://github.com/SciML/DiffEqGPU.jl)

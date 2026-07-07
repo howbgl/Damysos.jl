@@ -15,7 +15,8 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
-        "Two-band Hamiltonians" => "twoband.md",
+        "Two-band formalism" => "twoband.md",
+        "Hamiltonian models" => "hamiltonians.md",
         "reference.md",
     ],
 )

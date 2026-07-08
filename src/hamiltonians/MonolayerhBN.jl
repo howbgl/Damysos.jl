@@ -7,7 +7,7 @@ A tight-binding model for monolayer hexagonal boron nitride (hBN).
 
 The Hamiltonian reads 
 ```math
-\\hat{H} = t[1+2\\sin(a k_x/2)\\cos(\\sqrt{3} k_y a/2)]\\sigma_x - 2t \\cos(a k_x/2)\\sin(\\sqrt{3} k_y a/2)\\sigma_y + \\frac{\\Delta}{2}\\sigma_z
+\\hat{H} = t[1+2\\cos(a k_x/2)\\cos(\\sqrt{3} k_y a/2)]\\sigma_x - 2t \\cos(a k_x/2)\\sin(\\sqrt{3} k_y a/2)\\sigma_y + \\frac{\\Delta}{2}\\sigma_z
 ``` 
 see  <https://doi.org/10.1103/PhysRevB.83.235312> for details.
 
@@ -24,7 +24,7 @@ MonolayerhBN:
 
 # See also
 [`GeneralTwoBand`](@ref GeneralTwoBand) [`GappedDirac`](@ref GappedDirac)
-[`BilayerToy`](@ref BilayerToy) [`SemiconductorToy1d.jl`](@ref SemiconductorToy1d)
+[`BilayerToy`](@ref BilayerToy) [`SemiconductorToy1d`](@ref SemiconductorToy1d)
 """
 struct MonolayerhBN{T<:Real} <: GeneralTwoBand{T} 
     Δ::T

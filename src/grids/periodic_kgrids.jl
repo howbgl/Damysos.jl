@@ -110,7 +110,22 @@ function Base.show(
     print(io, prepend_spaces(printfields_generic(kgrid)))
 end
 
-struct CartesianMPKGrid1d{T <: Real} <: PeriodicKGrid{T} 
+"""
+	CartesianMPKGrid1d{T}(dkx, a) <: PeriodicKGrid{T}
+
+One-dimensional Monkhorst-Pack mesh in reciprocal (k-)space for lattice constant `a`.
+
+The Brillouin zone of length ``2π/a`` is sampled with ``q = 2π/(a\\,dk_x)`` (rounded to
+the nearest integer) points; the stored `dkx` is normalized to exactly ``2π/(aq)``.
+
+# Reference
+<https://doi.org/10.1103/PhysRevB.13.5188>
+
+# See also
+[`Simulation`](@ref), [`SymmetricTimeGrid`](@ref), [`HexagonalMPKGrid2d`](@ref),
+[`CartesianKGrid1d`](@ref)
+"""
+struct CartesianMPKGrid1d{T <: Real} <: PeriodicKGrid{T}
     dkx::T
     a::T
     function CartesianMPKGrid1d{T}(dkx::T, a::T) where {T <: Real}

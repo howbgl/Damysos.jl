@@ -38,6 +38,7 @@ const TEST_GROUPS = parse_groups(ARGS)
 @testset "Damysos.jl" begin
     if "fast" in TEST_GROUPS
         @testset "fast" begin
+            include(joinpath(@__DIR__, "fast", "convergence_unit.jl"))
             include(joinpath(@__DIR__, "fast", "fieldtests.jl"))
             include(joinpath(@__DIR__, "fast", "matrixelements_smoke.jl"))
             include(joinpath(@__DIR__, "fast", "simulation_smoke.jl"))

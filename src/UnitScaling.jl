@@ -3,7 +3,7 @@ using Unitful:𝐌
 using Unitful:𝐓
 using Unitful:𝐈
 
-@derived_dimension Vectorpotential 𝐋*𝐌*𝐓^-2*𝐈^-1 true
+@derived_dimension Vectorpotential 𝐋*𝐌*𝐓^-2*𝐈^-1
 
 export UnitScaling
 

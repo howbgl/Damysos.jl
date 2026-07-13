@@ -15,8 +15,13 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "Getting started" => "tutorial.md",
+        "Solvers" => "solvers.md",
+        "Convergence testing" => "convergence.md",
+        "Data I/O" => "data.md",
         "Two-band formalism" => "twoband.md",
         "Hamiltonian models" => "hamiltonians.md",
+        "Testing & development" => "testing.md",
         "reference.md",
     ],
 )

@@ -12,6 +12,6 @@
 /jupyter/
 *.code-workspace
 /scripts/nhr_fau/
-/docs/builds/
+/docs/build/
 .vscode/
 /test/testresults/

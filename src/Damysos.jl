@@ -36,15 +36,63 @@ export Liouvillian
 export NGrid
 export PreparedSimulation
 
+"""
+    DamysosSolver
+
+Abstract supertype for the integration strategies that run a [`Simulation`](@ref), such as
+[`LinearChunked`](@ref), [`LinearCUDA`](@ref) and [`SingleMode`](@ref).
+"""
 abstract type DamysosSolver end
+
+"""
+    Observable{T}
+
+Abstract supertype for quantities computed during a [`Simulation`](@ref), such as
+[`Velocity`](@ref) and [`Occupation`](@ref).
+"""
 abstract type Observable{T} end
+
 abstract type SimulationComponent{T} end
+
+"""
+    Hamiltonian{T}
+
+Abstract supertype for the Hamiltonians describing the electronic band structure, such as
+[`GappedDirac`](@ref).
+"""
 abstract type Hamiltonian{T} end
+
+"""
+    KGrid{T}
+
+Abstract supertype for k-space integration grids, such as [`CartesianKGrid2d`](@ref) or
+[`KGrid0d`](@ref).
+"""
 abstract type KGrid{T} end
+
+"""
+    TimeGrid{T}
+
+Abstract supertype for time integration grids, such as [`SymmetricTimeGrid`](@ref).
+"""
 abstract type TimeGrid{T} end
+
 abstract type AperiodicKGrid{T}         <: KGrid{T} end
 abstract type PeriodicKGrid{T}          <: KGrid{T} end
+
+"""
+    Liouvillian{T}
+
+Abstract supertype for the equations of motion governing the density-matrix dynamics, such as
+[`TwoBandDephasingLiouvillian`](@ref).
+"""
 abstract type Liouvillian{T}            <: SimulationComponent{T} end
+
+"""
+    DrivingField{T}
+
+Abstract supertype for the driving fields, such as [`GaussianAPulse`](@ref).
+"""
 abstract type DrivingField{T}           <: SimulationComponent{T} end
 
 

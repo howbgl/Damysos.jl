@@ -15,6 +15,15 @@ Documentation for [Damysos](https://github.com/howbgl/Damysos.jl.git).
 - Run any Simulation on GPU or CPU without re-writing any code
 - Built using the powerful [DifferentialEquations.jl](https://github.com/SciML/DiffEqDocs.jl) and [DiffEqGPU.jl](https://github.com/SciML/DiffEqGPU.jl)
 
+## Manual
+
+- [Getting started](tutorial.md) — build and run your first simulation.
+- [Solvers](solvers.md) — choosing between the CPU and GPU backends.
+- [Convergence testing](convergence.md) — automatically refine numerical parameters.
+- [Data I/O](data.md) — save, load, and reproduce published data.
+- [Two-band formalism](twoband.md) and [Hamiltonian models](hamiltonians.md) — the physics and the available models.
+- [Testing & development](testing.md) — the test tiers and CI workflows.
+
 ## Semiconductor Bloch equations
 
 The computational task for this package consists of solving the Semiconductor Bloch equations (SBEs):

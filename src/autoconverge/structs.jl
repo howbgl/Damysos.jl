@@ -6,6 +6,12 @@ export ExtendKymaxTest
 export LinearTest
 export PowerLawTest
 
+"""
+    ConvergenceTestMethod
+
+Abstract supertype for the parameter-refinement strategies used by a [`ConvergenceTest`](@ref):
+[`PowerLawTest`](@ref), [`LinearTest`](@ref) and [`ExtendKymaxTest`](@ref).
+"""
 abstract type ConvergenceTestMethod end
 
 @enumx ReturnCode success maxtime maxiter running failed exception nan_abort

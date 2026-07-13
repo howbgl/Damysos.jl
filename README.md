@@ -18,220 +18,68 @@ This work is licensed under a
 
 # Damysos.jl
 
+**Damysos.jl** solves the semiconductor Bloch equations (SBEs) for light–matter interaction in
+two-band models on either CPU or GPU. It provides modular building blocks — driving fields,
+Hamiltonians, and grids — that assemble into a `Simulation`, and uses the velocity gauge to
+parallelize the dynamics over k-points. The same simulation runs unchanged on CPU or CUDA GPU(s),
+built on top of [DifferentialEquations.jl](https://github.com/SciML/DiffEqDocs.jl) and
+[DiffEqGPU.jl](https://github.com/SciML/DiffEqGPU.jl).
 
+📖 **[Full documentation](https://howbgl.github.io/Damysos.jl/dev)**
 
 ## Installation
 
-### Install julia
-First make sure you have Julia installed and setup (https://julialang.org/downloads/).
+First make sure you have [Julia](https://julialang.org/downloads/) installed and set up. Since
+Damysos is not yet in the official Julia registry it has to be cloned locally. Go to the desired
+folder and run
 
-### Clone package
-Since Damysos is not yet in the official Julia registry it needs to be cloned locally. Go to the desired folder and run
 ```
 git clone https://github.com/howbgl/Damysos.jl.git
 ```
 
-## Reproducing published data 
-
-Here is a short instruction on how to reproduce data published in <https://doi.org/10.1103/4gwm-9lpy> and available at <https://doi.org/10.5281/zenodo.17828205>. Choose an `.hdf5`-file from the `rawdata` folder in <https://doi.org/10.5281/zenodo.17828205>. Load the file with
+## Quick example
 
 ```julia
-julia> using Damysos,HDF5; file = h5open("rawdata/Fig2_data.hdf5")
-```
-and the desired simulation with
-```julia
-julia> simulation = load_obj_hdf5(file["t2=0.2"]); close(file)
-```
-Choose either the CPU (`LinearChunked(nkchunks::Integer,...)`) or the GPU solver(`LinearCUDA(nkchunks::Integer,...)`) 
-```julia
-julia> solver = LinearChunked(); psim = PreparedSimulation(simulation, solver)
-```
-and run simulation with
-```julia
-julia> results = run!(psim; savepath = "Fig2_rerun")
-```
-An example script with data is located at `scripts/published_calculations/reproduce.jl`.
+using Damysos
 
+df    = GaussianAPulse(2.0, 2π, 1.3)                 # Gaussian vector-potential pulse
+h     = GappedDirac(0.1)                             # gapped Dirac Hamiltonian
+l     = TwoBandDephasingLiouvillian(h, Inf, Inf)     # dynamics + dephasing times
+us    = UnitScaling(u"1/10THz", u"5.5e5m/s" / u"10THz")  # link scaled units to SI
 
-## Testing package
+tgrid = SymmetricTimeGrid(0.01, -5df.σ)              # time grid
+kgrid = CartesianKGrid2d(1.0, 100.0, 1.0, 100.0)     # 2d k-space grid
+grid  = NGrid(kgrid, tgrid)
+obs   = [Velocity(grid), Occupation(grid)]           # observables to compute
 
-Tests are tiered to keep default CI fast while preserving full validation options.
+sim   = Simulation(l, df, grid, obs, us, "my-simulation")
 
-- `fast` (default): small deterministic checks and smoke tests
-- `slow`: CPU regression tests with full simulations
-- `gpu`: CUDA smoke tests (requires functional CUDA)
-- `full`: long-running convergence and multi-GPU validation
-
-Navigate to the package directory and open a Julia prompt via
-```julia
-julia> --project -t auto
-```
-Using multiple threads via `-t auto` is recommended for the `slow` and `full` tiers.
-```julia
-julia> using Damysos, Pkg
-
-julia> Pkg.test("Damysos")  # fast only
-
-julia> Pkg.test("Damysos"; test_args=["slow"])
-julia> Pkg.test("Damysos"; test_args=["gpu"])
-julia> Pkg.test("Damysos"; test_args=["slow","gpu"])
-julia> Pkg.test("Damysos"; test_args=["full"])
-```
-Test output paths can be overridden with `ENV["DAMYSOS_TESTRESULTS_DIR"]`.
-
-## Usage
-
-### Demo script
-
-The script [demo.jl](scripts/demo.jl) shows how to run a single simulation and save the results as well as some automated plots.
-
-### Setting up your own simulation
-
-The `Simulation` object holds information about the physical system as well as numerical parameters.
-The physical system is described by a `Liouvillian` and a `DrivingField` governing the dynamics.
-
-```julia
-julia> using Damysos
-
-julia> df = GaussianAPulse(2.0,2π,1.3)
-GaussianAPulse:
- σ: 2.0
- ν: 1.0
- ω: 6.283185307179586
- eE: 1.3
- φ: 0.0
- ħω: 6.283185307179586
- θ: 0.0
-
-julia> h = GappedDirac(0.1)
-GappedDirac:
- m: 0.1
- vF: 1.0
-
-julia> l = TwoBandDephasingLiouvillian(h,Inf,Inf)
-TwoBandDephasingLiouvillian(GappedDirac)
-  Hamiltonian: GappedDirac
-  m: 0.1
-  vF: 1.0
- t1: Inf
- t2: Inf
-
+result = run!(sim; solver = LinearChunked(2000))
 ```
 
-All quantities above are in scaled units, which are used for all numerical calculations. The `UnitScaling` links these dimensionless quantities to SI units via a characteristic time and length.
-```julia
-julia> us = UnitScaling(u"1/10THz",u"5.5e5m/s" / u"10THz")
-UnitScaling:
- timescale: 100.0 fs
- lengthscale: 55.0 nm
-```
-It is built on the [Unitful.jl](https://github.com/PainterQubits/Unitful.jl) package, thus all units recognized by said package can be used here.
-The period of a $1\,$THz pulse ($T_0=100\,$fs) was chosen as timescale and $l_c=\frac{5.5\times10^5\frac{\mathrm{m}}{\mathrm{s}}}{T_0}$, such that a scaled Fermi velocity of $v_F=1$ corresponds to $5.5\times10^5$m/s.
-We can check this via the builtin conversion methods:
-```julia
-julia> velocitySI(1.0,us)
-550000.0 m s^-1
+See the [Getting started](https://howbgl.github.io/Damysos.jl/dev/tutorial/) guide for a
+step-by-step walkthrough, and [`scripts/demo.jl`](scripts/demo.jl) for a complete example with
+logging and plotting.
 
-julia> velocityscaled(u"5.5e5m/s",us)
-1.0
-```
+## Documentation
 
-The observables to be calculated by the simulation are given via a Vector of `Observable` objects.
-```julia
-julia> obs = [Velocity(l),Occupation(l)]
-2-element Vector{Observable{Float64}}:
- Velocity{Float64}(Float64[], Float64[], Float64[], Float64[], Float64[], Float64[])
- Occupation{Float64}(Float64[])
+- [Getting started](https://howbgl.github.io/Damysos.jl/dev/tutorial/) — build and run a simulation.
+- [Solvers](https://howbgl.github.io/Damysos.jl/dev/solvers/) — CPU vs GPU backends.
+- [Convergence testing](https://howbgl.github.io/Damysos.jl/dev/convergence/) — automatically refine numerical parameters.
+- [Data I/O](https://howbgl.github.io/Damysos.jl/dev/data/) — saving, loading, and reproducing published data.
+- [Two-band formalism](https://howbgl.github.io/Damysos.jl/dev/twoband/) & [Hamiltonian models](https://howbgl.github.io/Damysos.jl/dev/hamiltonians/) — the physics and available models.
 
-```
+## Reproducing published data
 
-The timegrid used for integration is specified via a `TimeGrid` object.
-Momentarily there is only the option of a `SymmetricTimeGrid <: TimeGrid`:
-```julia
-julia> tgrid = SymmetricTimeGrid(0.01,-5df.σ)
-SymmetricTimeGrid:
-  dt: 0.01
-  t0: -10.0
-```
-Integration in k-space is specified via a subtype of `KGrid`.
-At the moment only cartesian grids and a single k-point are implemented, where the object is specific to the type of simulation:
+Data published with Damysos can be reloaded and re-run directly from the archived HDF5 files. See the
+[Data I/O](https://howbgl.github.io/Damysos.jl/dev/data/#Reproducing-published-data) page for a
+walkthrough (using the dataset at <https://doi.org/10.5281/zenodo.17828205>), and
+[`scripts/published_calculations/reproduce.jl`](scripts/published_calculations/reproduce.jl) for a
+ready-to-run script.
 
-1. Single k-mode => `KGrid0d`
-2. One-dimensional Fermi sea => `CartesianKGrid1d`
-3. Two-dimensional Fermi sea => `CartesianKGrid2d`
+## Testing
 
-Time- and k-space grids form an `NGrid`:
-```julia
-julia> kgrid = CartesianKGrid2d(1.0,100,1,100)
-CartesianKGrid2d:
-  dkx: 1.0
-  kxmax: 100.0
-  dky: 1.0
-  kymax: 100.0
-
-
-julia> grid = NGrid(kgrid, tgrid)
-NGrid:
-CartesianKGrid2d:
-  dkx: 1.0
-  kxmax: 100.0
-  dky: 1.0
-  kymax: 100.0
- SymmetricTimeGrid:
-  dt: 0.01
-  t0: -10.0
-```
-
-
-With this we can create the `Simulation` object
-```julia
-julia> sim = Simulation(l,df,grid,obs,us,"simulation-name")
-Simulation{Float64} (2d):
- TwoBandDephasingLiouvillian(GappedDirac)
-   Hamiltonian: GappedDirac
-   m: 0.1
-   vF: 1.0
-  t1: Inf
-  t2: Inf
- GaussianAPulse:
-   σ: 2.0
-   ω: 6.283
-   eE: 1.3
-   φ: 0.0
-   θ: 0.0
-  
- NGrid:
- CartesianKGrid2d:
-   dkx: 1.0
-   kxmax: 100.0
-   dky: 1.0
-   kymax: 100.0
-  SymmetricTimeGrid:
-   dt: 0.01
-   t0: -10.0
-  
- Observables:
-  Velocity
-  Occupation
- UnitScaling:
-  timescale: 100.0 fs
-  lengthscale: 55.0 nm
- id: "simulation-name"
-```
-
-The constructed simulation can then be executed via
-```julia
-julia> result = run!(sim;
-  solver=LinearChunked(2000),
-  saveplots=false,
-  savedata=true)
-```
-
-and the result given back is `sim.observables` (see docs for `run!` for explanation of keyword arguments).
-For maximal performance use `PreparedSimulation` via
-```julia
-julia> const psim = PreparedSimulation(sim, LinearChunked());
-julia> result = run!(psim)
-```
-which pre-defines the functions used in the numerical computations.
-Note that the call to `run!(psim)` must be more recent in world age than the definition of the `PreparedSimulation` (see official Julia [documentation](https://docs.julialang.org/en/v1/manual/worldage/#The-World-Age-mechanism) for info on the world age mechanism), otherwise a `MethodError` will be thrown.
+Tests are tiered (`fast`, `slow`, `gpu`, `full`) to keep default CI fast while preserving full
+validation. Run the default fast tier with `Pkg.test("Damysos")`; see the
+[Testing & development](https://howbgl.github.io/Damysos.jl/dev/testing/) page for the other tiers
+and the CI workflows.

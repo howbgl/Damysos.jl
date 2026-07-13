@@ -7,6 +7,13 @@ export scaledriving_frequency
 
 gauss(t::T,σ::T) where {T<:Real} = exp(-t^2 / (2σ^2))
 
+"""
+    scaledriving_frequency(frequency, fermivelocity)
+
+Construct a [`UnitScaling`](@ref) from a driving `frequency` and a `fermivelocity` (both Unitful
+quantities), using the driving period as the timescale and `fermivelocity * period` as the
+lengthscale.
+"""
 function scaledriving_frequency(ufrequency,ufermivelocity)
     return scaledriving_frequency(promote(ufrequency,ufermivelocity)...)
 end

@@ -27,7 +27,6 @@ const LOADABLES = Dict(
 	"CompositeDrivingField{.*?}"	=> CompositeDrivingField,
 	"Vector{Observable{.*?}}"		=> Vector{Observable},
 	"VelocityX"						=> VelocityX,
-	"\bVelocity\b"					=> Velocity,
 	"Velocity{.*?}"					=> Velocity,
 	"Occupation"					=> Occupation,
 	"PowerLawTest"					=> PowerLawTest,
@@ -201,9 +200,12 @@ function generic_save_hdf5(object, parent::Union{HDF5.File, HDF5.Group}, grpname
 end
 
 function generic_save_hdf5(object, parent::Union{HDF5.File, HDF5.Group})
-	if isloadable(object)
-		parent["T"] = "$(typeof(object))"
-	end
+	# Refuse to write untagged (i.e. unloadable) data: silently omitting "T" here
+	# used to produce files that load_obj_hdf5 can never reconstruct.
+	isloadable(object) || throw(ArgumentError(
+		"$(typeof(object)) has no matching entry in LOADABLES; register it there " *
+		"before saving, otherwise the file could never be loaded again."))
+	parent["T"] = "$(typeof(object))"
 	for n in fieldnames(typeof(object))
 		parent["$n"] = getproperty(object, n)
 	end

@@ -1,6 +1,6 @@
 name = "Damysos"
 uuid = "fd5f980c-983e-4c87-a5d0-4feb611f7d72"
-version = "1.0.2"
+version = "1.1.0"
 authors = ["Wolfgang Hogger <wolfgang.hogger@ur.de>"]
 
 [deps]
